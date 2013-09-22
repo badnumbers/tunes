@@ -1,0 +1,127 @@
+var samplePath = thisProcess.nowExecutingPath.dirname +/+ "Samples";
+
+var hats = Buffer.read(s, samplePath +/+ "HiHats1.hihat2.wav");
+var kick = Buffer.read(s, samplePath +/+ "BassDrums1.bassdrum2.wav");
+var snare = Buffer.read(s, samplePath +/+ "SnareDrums1.snaredrum2.wav");
+
+var hats2 = Buffer.read(s, samplePath +/+ "HiHats1.hihat5.wav");
+var kick2 = Buffer.read(s, samplePath +/+ "BassDrums1.bassdrum8.wav");
+var snare2 = Buffer.read(s, samplePath +/+ "SnareDrums1.snaredrum9.wav");
+
+SynthDef(\hats,
+	{
+		|out, amp|
+		var audio = PlayBuf.ar(1, hats, doneAction:2);
+		audio = Pan2.ar(audio, 0.5);
+		Out.ar(out, audio * amp);
+	}
+).add;
+
+SynthDef(\kicks,
+	{
+		|out, amp|
+		var audio = PlayBuf.ar(1, kick, doneAction:2);
+		audio = LPF.ar(audio, 300);
+		audio = Pan2.ar(audio, 0.2);
+		Out.ar(out, audio * amp);
+	}
+).add;
+
+SynthDef(\snares,
+	{
+		|out, amp|
+		var audio = PlayBuf.ar(1, snare, doneAction:2);
+		audio = BPeakEQ.ar(audio, 450, 1.3, 5);
+		audio = Pan2.ar(audio, 0.1);
+		Out.ar(out, audio * amp);
+	}
+).add;
+
+
+SynthDef(\hats2,
+	{
+		|out, amp|
+		var audio = PlayBuf.ar(1, hats2, doneAction:2);
+		audio = Pan2.ar(audio, -0.5);
+		Out.ar(out, audio * amp);
+	}
+).add;
+
+SynthDef(\kicks2,
+	{
+		|out, amp|
+		var audio = PlayBuf.ar(1, kick2, doneAction:2);
+		audio = LPF.ar(audio, 500);
+		audio = Pan2.ar(audio, -0.5);
+		Out.ar(out, audio * amp);
+	}
+).add;
+
+SynthDef(\snares2,
+	{
+		|out, amp|
+		var audio = PlayBuf.ar(1, snare2, doneAction:2);
+		audio = BPeakEQ.ar(audio, 1000, 1.3, 5);
+		audio = Pan2.ar(audio, -0.5);
+		Out.ar(out, audio * amp);
+	}
+).add;
+
+SynthDef(\acid,
+    {
+        |out, gate = 1, freq, prevFreq = -1000, amp, cutoff, resonance, filtEnvAmt|
+        var env, audio, filtEnv, foo;
+		foo = BinaryOpUGen('==', prevFreq, -1000);
+		freq = if(foo, freq, Line.kr(midicps(prevFreq), freq, 0.1));
+        env = Linen.kr(gate, 0, 1, 0, doneAction: 2);
+        audio = LFSaw.ar(freq, mul: amp);
+        filtEnv = Line.kr(midicps(cutoff + filtEnvAmt), midicps(cutoff),  0.2);
+        audio = RLPFD.ar(audio, ffreq: filtEnv + MouseX.kr(0, 5000), res: MouseY.kr(0, 1), dist: 0);
+        Out.ar(out, audio * env);
+    }
+).add;
+
+
+SynthDef(\sine,
+	{
+		|out, gate = 1, freq, amp|
+		var env = EnvGen.kr(Env.perc, gate, doneAction: 2);
+		var audio = SinOsc.ar(freq, mul: amp);
+		Out.ar(out, audio * env);
+	}
+).add;
+
+SynthDef(\effects,
+	{
+		|in, out|
+		var vol = 0.03;
+		var audio = In.ar(in, 2) * vol;
+		audio = BPeakEQ.ar(audio, 150, 1.2, 10);
+		//audio = Disintegrator.ar(audio, probability: 0.5, multiplier: -1);
+		//audio = Normalizer.ar(audio, level: MouseX.kr(0, 2), dur: MouseY.kr(0.0001, 0.03));
+		audio = GVerb.ar(audio, roomsize: 20, damping: 0.9, drylevel: 5);
+		Out.ar(out, audio);
+	}
+).add;
+
+SynthDef(\drums2Effects,
+	{
+		|in, out|
+		var vol = 0.3;
+		var audio = In.ar(in, 2) * vol;
+		audio = BPeakEQ.ar(audio, 800, 1.2, 10);
+		audio = Disintegrator.ar(audio, probability: 0.5, multiplier: -1);
+		//audio = Normalizer.ar(audio, level: 0.25, dur: 0.01);
+		audio = FreeVerb.ar(audio, mix: 0.2, room: 1, damp: 0.7);
+		audio = Pan2.ar(audio, -0.8);
+		Out.ar(out, audio);
+	}
+).add;
+
+SynthDef(\beeper,
+	{
+		|out, freq, amp|
+		var audio = SinOsc.ar(freq, mul: amp);
+		Out.ar(out, audio);
+	}
+).add;
