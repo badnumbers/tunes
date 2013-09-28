@@ -3,7 +3,7 @@ var snares2Part = Array.newClear(100);
 var snares2 = Pbind(*[
 	out: ~drums2EffectsBus,
 	instrument: \snares2,
-	dur: 0.1,
+	dur: q,
 	amp: Pseq([\, \, \, \, 1, \, 0.3, \, \, 0.25, \, \, 1, \, \, \])
 ]);
 

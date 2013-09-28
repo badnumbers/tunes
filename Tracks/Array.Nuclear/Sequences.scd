@@ -1,3 +1,12 @@
+// Standard note durations
+w = 1;
+h = 0.5;
+q = 0.25;
+
+~bpm = 150;
+
+TempoClock.default.tempo = ~bpm/60;
+
 ~drums1EffectsBus = Bus.audio(s, 2);
 ~drums1Hats = "Parts/Drums1/Hats1.scd".loadRelative[0];
 ~drums1Snares = "Parts/Drums1/Snares1.scd".loadRelative[0];

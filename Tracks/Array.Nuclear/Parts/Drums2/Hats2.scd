@@ -3,7 +3,7 @@ var hats2Part = Array.newClear(100);
 var hats2 = Pbind(*[
 	out: ~drums2EffectsBus,
 	instrument: \hats2,
-	dur: Pseq([0.2, 0.1, 0.1, 0.2, 0.2, 0.2, 0.1, 0.1, 0.2, 0.2]),
+	dur: Pseq([h, q, q, h, h, h, q, q, h, h]),
 	amp: Pseq([1, 1, 0.3, 1, 1, 1, 1, 0.3, 1, 1])
 ]);
 

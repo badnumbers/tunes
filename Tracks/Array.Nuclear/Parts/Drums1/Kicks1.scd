@@ -3,7 +3,7 @@ var kicksPart = Array.newClear(100);
 var kicks = Pbind(*[
 	out: ~drums1EffectsBus,
 	instrument: \kicks,
-	dur: Pseq([0.6, 0.4, 0.4, 0.2]),
+	dur: Pseq([h*3, h*2, h*2, h]),
 	amp: Pseq([1, 1, 1, 0.5])
 ]);
 

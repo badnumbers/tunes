@@ -8,7 +8,7 @@ var bass = Pbind(*[
 	octave: 3,
 	degree: Pseq([0, \, 3, 3, 4, 4, 9, 4, 4]),
 	prevFreq: Pseq([\, \, \, 50, \, \, \, \, \]),
-	dur: Pseq([0.4, 0.4, 0.1, 0.1, 0.1, 0.1, 0.2, 0.1, 0.1]),
+	dur: Pseq([w, w, q, q, q, q, h, q, q]),
 	cutoff: Pseq([60, \, 50, 60, 80, 60, 90, 80, 50]),
 	filtEnvAmt: Pseq([20, \, 20, 20, 20, 20, -10, 20, 20]),
 	resonance: Pseq([0.5, \, 0.5, 0.5, 0.5, 0.5, 0.3, 0.5, 0.5])
