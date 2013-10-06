@@ -67,6 +67,22 @@ SynthDef(\snares2,
 	}
 ).add;
 
+SynthDef(\bass,
+	{
+		|out, freq, freqLag, gate = 1, cutoff, resonance|
+		var audio, env, envShape;
+		freq = Lag.kr(freq, 0.2 * freqLag) + LFBrownNoise1.kr(0.2, 1, 0, freq * 0.005);
+		envShape = Env.adsr(0.7, 0.2, 0.7, 0, 1, 4);
+		env = EnvGen.kr(envShape, gate, doneAction: 2);
+		audio = SawDPW.ar(freq);
+		audio = RLPFD.ar(audio, ffreq: cutoff.midicps, res: resonance, dist: 0.9);
+		audio = BPeakEQ.ar(audio, 300, 1.2, 10);
+		audio = Decimator.ar(audio, bits: MouseX.kr(0, 24));
+		audio = Pan2.ar(audio, 0);
+		Out.ar(out, audio * env);
+	}
+).add;
+
 SynthDef(\acid,
     {
         |out, gate = 1, freq, prevFreq = -1000, amp, cutoff, resonance, filtEnvAmt|

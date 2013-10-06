@@ -22,12 +22,14 @@ TempoClock.default.tempo = ~bpm/60;
 
 ~acid = "Parts/Acid.scd".loadRelative[0];
 
+~bass = "Parts/Bass.scd".loadRelative[0];
+
 /*s.prepareForRecord; // you have to call this first
 
 s.record;*/
 
 Pspawner({ | sp |
-	2.do {
+	inf.do {
 		(0..3).do { |item, index|
 			sp.seq(
 				Ppar([
@@ -39,6 +41,7 @@ Pspawner({ | sp |
 					,~drums2Kicks[item]
 					,~drums2Effects[item]
 					,~acid[item]
+					,~bass[item]
 				])
 			);
 		};

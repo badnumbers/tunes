@@ -1,6 +1,6 @@
-var bassPart = Array.newClear(100);
+var acidPart = Array.newClear(100);
 
-var bass = Pbind(*[
+var acid = Pbind(*[
 	out: 0,
 	instrument: \acid,
 	stepsPerOctave: 19,
@@ -14,9 +14,9 @@ var bass = Pbind(*[
 	resonance: Pseq([0.5, \, 0.5, 0.5, 0.5, 0.5, 0.3, 0.5, 0.5])
 ]);
 
-bassPart[0] = bass;
-bassPart[1] = bass;
-bassPart[2] = bass;
-bassPart[3] = nil;
+acidPart[0] = acid;
+acidPart[1] = acid;
+acidPart[2] = acid;
+acidPart[3] = nil;
 
-bassPart;
+acidPart;
