@@ -126,7 +126,7 @@ SynthDef(\drums2Effects,
 		|in, out|
 		var vol = 0.3;
 		var audio = In.ar(in, 2) * vol;
-		audio = BPeakEQ.ar(audio, MouseX.kr(500, 2000), 1.2, 5);
+		audio = BPeakEQ.ar(audio, 800, 1.2, 10);
 		audio = Disintegrator.ar(audio, probability: 0.5, multiplier: -1);
 		//audio = Normalizer.ar(audio, level: 0.25, dur: 0.01);
 		audio = FreeVerb.ar(audio, mix: 0.2, room: 1, damp: 0.7);
