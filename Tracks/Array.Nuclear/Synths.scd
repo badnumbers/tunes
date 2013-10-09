@@ -31,9 +31,9 @@ SynthDef(\snares,
 	{
 		|out, amp|
 		var audio = PlayBuf.ar(1, snare, doneAction:2);
-		audio = BPeakEQ.ar(audio, 450, 1.3, 5);
+		audio = BPeakEQ.ar(audio, 450, 1.3, 10);
 		audio = Pan2.ar(audio, 0.1);
-		Out.ar(out, audio * amp);
+		Out.ar(out, audio * amp * 1.2);
 	}
 ).add;
 
@@ -77,7 +77,7 @@ SynthDef(\bass,
 		audio = SawDPW.ar(freq);
 		audio = RLPFD.ar(audio, ffreq: cutoff.midicps, res: resonance, dist: 0.9);
 		audio = BPeakEQ.ar(audio, 300, 1.2, 10);
-		audio = Decimator.ar(audio, bits: MouseX.kr(0, 24));
+		//audio = Decimator.ar(audio, bits: MouseX.kr(0, 24));
 		audio = Pan2.ar(audio, 0);
 		Out.ar(out, audio * env);
 	}
@@ -86,14 +86,14 @@ SynthDef(\bass,
 SynthDef(\acid,
     {
         |out, gate = 1, freq, prevFreq = -1000, amp, cutoff, resonance, filtEnvAmt|
-        var env, audio, filtEnv, foo;
+        var env, audio, filtEnv, foo, vol = 2;
 		foo = BinaryOpUGen('==', prevFreq, -1000);
 		freq = if(foo, freq, Line.kr(midicps(prevFreq), freq, 0.1));
         env = Linen.kr(gate, 0, 1, 0, doneAction: 2);
         audio = LFSaw.ar(freq, mul: amp);
         filtEnv = Line.kr(midicps(cutoff + filtEnvAmt), midicps(cutoff),  0.2);
         audio = RLPFD.ar(audio, ffreq: filtEnv + MouseX.kr(0, 5000), res: MouseY.kr(0, 1), dist: 0);
-        Out.ar(out, audio * env);
+        Out.ar(out, audio * env * vol);
     }
 ).add;
 
@@ -112,7 +112,8 @@ SynthDef(\effects,
 		|in, out|
 		var vol = 0.03;
 		var audio = In.ar(in, 2) * vol;
-		audio = BPeakEQ.ar(audio, 150, 1.2, 10);
+		audio = BPeakEQ.ar(audio, 1600, 1.5, 8);
+		audio = BPeakEQ.ar(audio, 150, 1.2, 4);
 		//audio = Disintegrator.ar(audio, probability: 0.5, multiplier: -1);
 		//audio = Normalizer.ar(audio, level: MouseX.kr(0, 2), dur: MouseY.kr(0.0001, 0.03));
 		audio = GVerb.ar(audio, roomsize: 20, damping: 0.9, drylevel: 5);
@@ -125,7 +126,7 @@ SynthDef(\drums2Effects,
 		|in, out|
 		var vol = 0.3;
 		var audio = In.ar(in, 2) * vol;
-		audio = BPeakEQ.ar(audio, 800, 1.2, 10);
+		audio = BPeakEQ.ar(audio, MouseX.kr(500, 2000), 1.2, 5);
 		audio = Disintegrator.ar(audio, probability: 0.5, multiplier: -1);
 		//audio = Normalizer.ar(audio, level: 0.25, dur: 0.01);
 		audio = FreeVerb.ar(audio, mix: 0.2, room: 1, damp: 0.7);
