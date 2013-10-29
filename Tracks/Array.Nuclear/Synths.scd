@@ -92,7 +92,8 @@ SynthDef(\acid,
         env = Linen.kr(gate, 0, 1, 0, doneAction: 2);
         audio = LFSaw.ar(freq, mul: amp);
         filtEnv = Line.kr(midicps(cutoff + filtEnvAmt), midicps(cutoff),  0.2);
-        audio = RLPFD.ar(audio, ffreq: filtEnv + MouseX.kr(0, 5000), res: MouseY.kr(0, 1), dist: 0);
+        audio = RLPFD.ar(audio, ffreq: filtEnv + 2500, res: 0.5, dist: 0);
+		//audio = RLPFD.ar(audio, ffreq: filtEnv + MouseX.kr(0, 5000), res: MouseY.kr(0, 1), dist: 0);
         Out.ar(out, audio * env * vol);
     }
 ).add;
@@ -135,10 +136,18 @@ SynthDef(\drums2Effects,
 	}
 ).add;
 
-SynthDef(\beeper,
+SynthDef(\lead,
 	{
-		|out, freq, amp|
-		var audio = SinOsc.ar(freq, mul: amp);
-		Out.ar(out, audio);
+		|out, gate = 1, freq, amp, cutoff, filtEnvAmt, portamento|
+		var vol = 0.5, audio, env, envShape, filtEnv, filtEnvShape;
+		freq = Lag.kr(freq, 0.1 * portamento) + LFBrownNoise1.kr(0.2, 1, 0, freq * 0.005);
+		envShape = Env.adsr(0.05, 0.2, 0.7, 0.4, 1, -4);
+		env = EnvGen.kr(envShape, gate, doneAction: 2);
+		filtEnvShape = Env.adsr(0.05, 0.3, 0.7, 0.4, midicps(cutoff + filtEnvAmt), 2, midicps(cutoff));
+		filtEnv = EnvGen.kr(filtEnvShape, gate);
+		audio = SawDPW.ar(freq) + SawDPW.ar(freq * 0.999) + SawDPW.ar(freq * 1.001);
+		audio = MoogLadder.ar(audio, filtEnv + MouseX.kr(0, 4000), MouseY.kr(0, 0.99));
+		audio = Pan2.ar(audio, 0);
+		Out.ar(out, audio * env * vol * amp);
 	}
 ).add;
