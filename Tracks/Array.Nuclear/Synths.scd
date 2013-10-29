@@ -147,6 +147,7 @@ SynthDef(\lead,
 		filtEnv = EnvGen.kr(filtEnvShape, gate);
 		audio = SawDPW.ar(freq) + SawDPW.ar(freq * 0.999) + SawDPW.ar(freq * 1.001);
 		audio = MoogLadder.ar(audio, filtEnv + MouseX.kr(0, 4000), MouseY.kr(0, 0.99));
+		audio = HPF.ar(audio, 1000);
 		audio = Pan2.ar(audio, 0);
 		Out.ar(out, audio * env * vol * amp);
 	}
