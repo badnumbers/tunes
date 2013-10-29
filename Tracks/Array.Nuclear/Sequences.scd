@@ -24,7 +24,9 @@ TempoClock.default.tempo = ~bpm/60;
 
 ~bass = "Parts/Bass.scd".loadRelative[0];
 
-~lead= "Parts/Lead.scd".loadRelative[0];
+~lead = "Parts/Lead.scd".loadRelative[0];
+
+~chords = "Parts/Chords.scd".loadRelative[0];
 
 /*s.prepareForRecord; // you have to call this first
 
@@ -32,19 +34,20 @@ s.record;*/
 
 Pspawner({ | sp |
 	inf.do {
-		(0..2).do { |item, index|
+		(0..11).do { |item, index|
 			sp.seq(
 				Ppar([
-					~drums1Hats[item]
-					,~drums1Snares[item]
-					,~drums1Kicks[item]
-					,~drums2Hats[item]
-					,~drums2Snares[item]
-					,~drums2Kicks[item]
-					,~drums2Effects[item]
-					,~acid[item]
-					,~bass[item]
-					,~lead[item]
+					//~drums1Hats[item]
+					//,~drums1Snares[item]
+					//,~drums1Kicks[item]
+					//,~drums2Hats[item]
+					//,~drums2Snares[item]
+					//,~drums2Kicks[item]
+					//,~drums2Effects[item]
+					//~acid[item]
+					//,~bass[item]
+					~lead[item]
+					,~chords[item]
 				])
 			);
 		};
