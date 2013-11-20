@@ -8,6 +8,9 @@ var hats2 = Buffer.read(s, samplePath +/+ "HiHats1.hihat5.wav");
 var kick2 = Buffer.read(s, samplePath +/+ "BassDrums1.bassdrum8.wav");
 var snare2 = Buffer.read(s, samplePath +/+ "SnareDrums1.snaredrum9.wav");
 
+~acidCutoffBus = Bus.control(s, 1);
+~acidResonanceBus = Bus.control(s, 1);
+
 SynthDef(\hats,
 	{
 		|out, amp|
@@ -92,7 +95,7 @@ SynthDef(\acid,
         env = Linen.kr(gate, 0, 1, 0, doneAction: 2);
         audio = LFSaw.ar(freq, mul: amp);
         filtEnv = Line.kr(midicps(cutoff + filtEnvAmt), midicps(cutoff),  0.2);
-        audio = RLPFD.ar(audio, ffreq: filtEnv + 2500, res: 0.5, dist: 0);
+		audio = RLPFD.ar(audio, ffreq: filtEnv + (In.kr(~acidCutoffBus, 1) * 3000), res: In.kr(~acidResonanceBus, 1), dist: 0);
 		//audio = RLPFD.ar(audio, ffreq: filtEnv + MouseX.kr(0, 5000), res: MouseY.kr(0, 1), dist: 0);
         Out.ar(out, audio * env * vol);
     }

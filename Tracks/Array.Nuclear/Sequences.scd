@@ -32,22 +32,24 @@ TempoClock.default.tempo = ~bpm/60;
 
 s.record;*/
 
+OSCdef(\test, {|msg, time, addr, recvPort| ~acidCutoffBus.value = msg[1];~acidResonanceBus.value = 1 - msg[2];}, '/3/xy', n); // def style
+
 Pspawner({ | sp |
 	inf.do {
-		(0..11).do { |item, index|
+		(0..2).do { |item, index|
 			sp.seq(
 				Ppar([
-					//~drums1Hats[item]
-					//,~drums1Snares[item]
-					//,~drums1Kicks[item]
-					//,~drums2Hats[item]
-					//,~drums2Snares[item]
-					//,~drums2Kicks[item]
-					//,~drums2Effects[item]
-					//~acid[item]
+					~drums1Hats[item]
+					,~drums1Snares[item]
+					,~drums1Kicks[item]
+					,~drums2Hats[item]
+					,~drums2Snares[item]
+					,~drums2Kicks[item]
+					,~drums2Effects[item]
+					,~acid[item]
 					//,~bass[item]
-					~lead[item]
-					,~chords[item]
+					//,~lead[item]
+					//,~chords[item]
 				])
 			);
 		};
