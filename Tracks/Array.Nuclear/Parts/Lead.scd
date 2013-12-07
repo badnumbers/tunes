@@ -16,15 +16,15 @@ leadPart[0] = Pbind(*[
 	filtEnvAmt: 15
 ]);
 leadPart[1] = Pbind(*[
-	type: Pseq([\off, \on, \set, \set, \set, \set]),
-	id: Pseq([~leadId1, ~leadId2, ~leadId2, ~leadId2, ~leadId2, ~leadId2]),
+	type: Pseq([\set, \off, \on, \set, \set, \set, \set]),
+	id: Pseq([~leadId1, ~leadId1, ~leadId2, ~leadId2, ~leadId2, ~leadId2, ~leadId2]),
 	instrument: \lead,
 	args: #[],
 	stepsPerOctave: 19,
 	scale: [0, 3, 5, 8, 11, 13, 17],
 	octave: 5,
-	degree: Pseq([\, 4, 2, 5, 2, 4]),
-	dur: Pseq([w, h, h, h, h, w]),
+	degree: Pseq([\, \, 4, 2, 5, 2, 4]),
+	dur: Pseq([h, h, h, h, h, h, w]),
 	amp: 0.5,
 	portamento: 1,
 	cutoff: 70,
@@ -61,17 +61,17 @@ leadPart[3] = Pbind(*[
 	filtEnvAmt: 15
 ]);
 leadPart[4] = Pbind(*[
-	type: Pseq([\off, \on, \set, \set, \set, \set]),
-	id: Pseq([~leadId1, ~leadId2, ~leadId2, ~leadId2, ~leadId2, ~leadId2]),
+	type: Pseq([\set, \off, \on, \set, \set, \set, \set]),
+	id: Pseq([~leadId1, ~leadId1, ~leadId2, ~leadId2, ~leadId2, ~leadId2, ~leadId2]),
 	instrument: \lead,
 	args: #[],
 	stepsPerOctave: 19,
 	scale: [0, 3, 5, 8, 11, 13, 17],
 	octave: 5,
-	degree: Pseq([4, 4, 2, 5, 2, 4]),
-	dur: Pseq([w, h, h, h, h, w]),
+	degree: Pseq([\, \, 4, 2, 5, 2, 4]),
+	dur: Pseq([h, h, h, h, h, h, w]),
 	amp: 0.5,
-	portamento: Pseq([1, 1, 1, 1, 1, 1]),
+	portamento: 1,
 	cutoff: 70,
 	filtEnvAmt: 15
 ]);
@@ -106,17 +106,17 @@ leadPart[6] = Pbind(*[
 	filtEnvAmt: 15
 ]);
 leadPart[7] = Pbind(*[
-	type: Pseq([\off, \on, \set, \set, \set, \set]),
-	id: Pseq([~leadId1, ~leadId2, ~leadId2, ~leadId2, ~leadId2, ~leadId2]),
+	type: Pseq([\set, \off, \on, \set, \set, \set, \set]),
+	id: Pseq([~leadId1, ~leadId1, ~leadId2, ~leadId2, ~leadId2, ~leadId2, ~leadId2]),
 	instrument: \lead,
 	args: #[],
 	stepsPerOctave: 19,
 	scale: [0, 3, 5, 8, 11, 13, 17],
 	octave: 5,
-	degree: Pseq([4, 4, 2, 5, 2, 4]),
-	dur: Pseq([w, h, h, h, h, w]),
+	degree: Pseq([\, \, 4, 2, 5, 2, 4]),
+	dur: Pseq([h, h, h, h, h, h, w]),
 	amp: 0.5,
-	portamento: Pseq([1, 1, 1, 1, 1, 1]),
+	portamento: 1,
 	cutoff: 70,
 	filtEnvAmt: 15
 ]);
@@ -176,7 +176,7 @@ leadPart[11] = Pbind(*[
 	degree: 7,
 	dur: Pseq([w*3, w]),
 	amp: 0.5,
-	portamento: 1,
+	portamento: 3,
 	cutoff: 70,
 	filtEnvAmt: 15
 ]);

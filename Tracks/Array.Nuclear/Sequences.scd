@@ -42,16 +42,16 @@ Pspawner({ | sp |
 		(0..11).do { |item, index|
 			sp.seq(
 				Ppar([
-					~drums1Hats[item]
-					,~drums1Snares[item]
-					,~drums1Kicks[item]
-					,~drums2Hats[item]
-					,~drums2Snares[item]
-					,~drums2Kicks[item]
-					,~drums2Effects[item]
-					,~acid[item]
+					//~drums1Hats[item]
+					//,~drums1Snares[item]
+					//,~drums1Kicks[item]
+					//,~drums2Hats[item]
+					//,~drums2Snares[item]
+					//,~drums2Kicks[item]
+					//,~drums2Effects[item]
+					//,~acid[item]
 					//,~bass[item]
-					,~lead[item]
+					~lead[item]
 					//,~chords[item]
 				])
 			);
