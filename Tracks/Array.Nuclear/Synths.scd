@@ -6,6 +6,7 @@ var snare = Buffer.read(s, samplePath +/+ "SnareDrums1.snaredrum2.wav");
 
 var hats2 = Buffer.read(s, samplePath +/+ "HiHats1.hihat5.wav");
 var kick2 = Buffer.read(s, samplePath +/+ "BassDrums1.bassdrum8.wav");
+//var kick2 = Buffer.read(s, "sounds/Bonkers.wav");
 var snare2 = Buffer.read(s, samplePath +/+ "SnareDrums1.snaredrum9.wav");
 
 ~acidCutoffBus = Bus.control(s, 1);
@@ -54,7 +55,7 @@ SynthDef(\kicks2,
 	{
 		|out, amp|
 		var audio = PlayBuf.ar(1, kick2, doneAction:2);
-		audio = LPF.ar(audio, 500);
+		//audio = LPF.ar(audio, 500);
 		audio = Pan2.ar(audio, -0.5);
 		Out.ar(out, audio * amp);
 	}
@@ -94,7 +95,7 @@ SynthDef(\acid,
 		freq = if(foo, freq, Line.kr(midicps(prevFreq), freq, 0.1));
         env = Linen.kr(gate, 0, 1, 0, doneAction: 2);
         audio = LFSaw.ar(freq, mul: amp);
-        filtEnv = Line.kr(midicps(cutoff + filtEnvAmt), midicps(cutoff),  0.2);
+        filtEnv = XLine.kr(midicps(cutoff + filtEnvAmt), midicps(cutoff),  0.2);
 		audio = RLPFD.ar(audio, ffreq: filtEnv + (In.kr(~acidCutoffBus, 1) * 3000), res: In.kr(~acidResonanceBus, 1), dist: 0);
 		//audio = RLPFD.ar(audio, ffreq: filtEnv + MouseX.kr(0, 5000), res: MouseY.kr(0, 1), dist: 0);
         Out.ar(out, audio * env * vol);
@@ -125,28 +126,46 @@ SynthDef(\effects,
 	}
 ).add;
 
-SynthDef(\drums2Effects,
+SynthDef(\drums2Effectse,
 	{
 		|in, out|
 		var vol = 0.3;
 		var audio = In.ar(in, 2) * vol;
-		audio = BPeakEQ.ar(audio, 800, 1.2, 10);
-		audio = Disintegrator.ar(audio, probability: 0.5, multiplier: -1);
+		var carrier = Saw.ar(MouseY.kr(20, 4000));
+		//audio = Vocoder.ar(carrier, audio, num: 32, low: 100, high: 5000, q: 0.02, hpf: 20, hpfscal: 0.05, outscal: MouseX.kr(0, 100));
+		audio = Vocode.ar(audio, 3, carrier, anabwscale: MouseX.kr(0, 5), outbw: 0.01, freqmul:  1);
+		//audio = BPeakEQ.ar(audio, 800, 1.2, 10);
+		//audio = Disintegrator.ar(audio, probability: 0.5, multiplier: -1);
 		//audio = Normalizer.ar(audio, level: 0.25, dur: 0.01);
-		audio = FreeVerb.ar(audio, mix: 0.2, room: 1, damp: 0.7);
-		audio = Pan2.ar(audio, -0.8);
+		//audio = FreeVerb.ar(audio, mix: 0.2, room: 1, damp: 0.7);
+		//audio = Pan2.ar(audio, -0.8);
 		Out.ar(out, audio);
 	}
 ).add;
 
+SynthDef(\drums2Effectsf, { |in, out|
+	var audio = In.ar(in);
+	var carrier = Saw.ar(MouseY.kr(50, 500));
+	audio = Vocoder.ar(carrier, audio, num: 40, low: 100, high: 5000, q: 0.02, hpf: 500, hpfscal: 0.25, outscal: 25);
+	Out.ar(out, audio);
+}).add;
+
+SynthDef(\drums2Effects, { |in, out|
+	var audio, chain;
+	audio = In.ar(in, 1);
+    chain = FFT(LocalBuf(2048), audio);
+	chain = PV_RandComb(chain, 0.8, Impulse.kr(1000));
+	Out.ar(out, IFFT(chain) * 2);
+}).add;
+
 SynthDef(\lead,
 	{
-		|out, gate = 1, freq, amp, cutoff, filtEnvAmt, portamento|
+		|out, gate = 1, freq, amp = 0, cutoff, filtEnvAmt, portamento|
 		var vol = 0.5, audio, env, envShape, filtEnv, filtEnvShape;
 		freq = Lag.kr(freq, 0.1 * portamento) + LFBrownNoise1.kr(0.2, 1, 0, freq * 0.005);
 		envShape = Env.adsr(0.05, 0.2, 0.7, 0.4, 1, -4);
 		env = EnvGen.kr(envShape, gate, doneAction: 2);
-		filtEnvShape = Env.adsr(0.05, 0.3, 0.7, 0.4, midicps(cutoff + filtEnvAmt), 2, midicps(cutoff));
+		filtEnvShape = Env.adsr(0.05, 0.3, 0.7, 0.2, midicps(cutoff + filtEnvAmt), 2, midicps(cutoff));
 		filtEnv = EnvGen.kr(filtEnvShape, gate);
 		audio = SawDPW.ar(freq) + SawDPW.ar(freq * 0.999) + SawDPW.ar(freq * 1.001);
 		audio = MoogLadder.ar(audio, filtEnv + MouseX.kr(0, 4000), MouseY.kr(0, 0.99));
