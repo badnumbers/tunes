@@ -7,6 +7,9 @@ q = 0.25;
 
 TempoClock.default.tempo = ~bpm/60;
 
+~leadId1 = 50;
+~leadId2 = 51;
+
 ~drums1EffectsBus = Bus.audio(s, 2);
 ~drums1Hats = "Parts/Drums1/Hats1.scd".loadRelative[0];
 ~drums1Snares = "Parts/Drums1/Snares1.scd".loadRelative[0];
@@ -36,7 +39,7 @@ OSCdef(\test, {|msg, time, addr, recvPort| ~acidCutoffBus.value = msg[1];~acidRe
 
 Pspawner({ | sp |
 	inf.do {
-		(0..2).do { |item, index|
+		(0..11).do { |item, index|
 			sp.seq(
 				Ppar([
 					~drums1Hats[item]
@@ -48,7 +51,7 @@ Pspawner({ | sp |
 					,~drums2Effects[item]
 					,~acid[item]
 					//,~bass[item]
-					//,~lead[item]
+					,~lead[item]
 					//,~chords[item]
 				])
 			);
