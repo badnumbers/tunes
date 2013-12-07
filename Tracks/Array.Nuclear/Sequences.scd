@@ -49,9 +49,9 @@ Pspawner({ | sp |
 					//,~drums2Snares[item]
 					//,~drums2Kicks[item]
 					//,~drums2Effects[item]
-					//,~acid[item]
+					~acid[item]
 					//,~bass[item]
-					~lead[item]
+					,~lead[item]
 					//,~chords[item]
 				])
 			);

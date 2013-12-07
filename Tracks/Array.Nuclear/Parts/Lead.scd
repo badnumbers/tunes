@@ -176,7 +176,7 @@ leadPart[11] = Pbind(*[
 	degree: 7,
 	dur: Pseq([w*3, w]),
 	amp: 0.5,
-	portamento: 3,
+	portamento: 5,
 	cutoff: 70,
 	filtEnvAmt: 15
 ]);

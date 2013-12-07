@@ -26,7 +26,7 @@ var acid2 = Pbind(*[
 	filtEnvAmt: Pseq([20, \, 20, 20, 20, 20, -10, 20, 20]),
 	resonance: Pseq([0.5, \, 0.5, 0.5, 0.5, 0.5, 0.3, 0.5, 0.5])
 ]);
-var acid3 = Pbind(*[
+var acid5 = Pbind(*[
 	out: 0,
 	instrument: \acid,
 	stepsPerOctave: 19,
@@ -39,7 +39,7 @@ var acid3 = Pbind(*[
 	filtEnvAmt: Pseq([20, \]),
 	resonance: Pseq([0.5, \])
 ]);
-var acid4 = Pbind(*[
+var acid9 = Pbind(*[
 	out: 0,
 	instrument: \acid,
 	stepsPerOctave: 19,
@@ -52,11 +52,11 @@ var acid4 = Pbind(*[
 	filtEnvAmt: Pseq([20, \, 20, 20, 20, 20, -10, 20, 20]),
 	resonance: Pseq([0.5, \, 0.5, 0.5, 0.5, 0.5, 0.3, 0.5, 0.5])
 ]);
-var acid5 = Pbind(*[
+var acid10 = Pbind(*[
 	out: 0,
 	instrument: \acid,
 	stepsPerOctave: 19,
-	scale: [0, 3, 5, 8, 11, 13, 17],
+	scale: [0, 3, 5, 9, 11, 13, 17],
 	octave: 3,
 	degree: Pseq([1, \, 4, 4, 5, 5, 10, 4, 4]),
 	prevFreq: Pseq([\, \, \, 50, \, \, \, \, \]),
@@ -71,12 +71,12 @@ acidPart[1] = acid;
 acidPart[2] = acid2;
 acidPart[3] = acid;
 acidPart[4] = acid;
-acidPart[5] = acid3;
+acidPart[5] = acid5;
 acidPart[6] = acid;
 acidPart[7] = acid;
 acidPart[8] = acid2;
-acidPart[9] = acid4;
-acidPart[10] = acid5;
+acidPart[9] = acid9;
+acidPart[10] = acid10;
 acidPart[11] = acid;
 
 acidPart;
