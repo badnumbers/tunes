@@ -126,27 +126,22 @@ SynthDef(\effects,
 	}
 ).add;
 
-SynthDef(\drums2Effectse,
-	{
-		|in, out|
-		var vol = 0.3;
-		var audio = In.ar(in, 2) * vol;
-		var carrier = Saw.ar(MouseY.kr(20, 4000));
-		//audio = Vocoder.ar(carrier, audio, num: 32, low: 100, high: 5000, q: 0.02, hpf: 20, hpfscal: 0.05, outscal: MouseX.kr(0, 100));
-		audio = Vocode.ar(audio, 3, carrier, anabwscale: MouseX.kr(0, 5), outbw: 0.01, freqmul:  1);
-		//audio = BPeakEQ.ar(audio, 800, 1.2, 10);
-		//audio = Disintegrator.ar(audio, probability: 0.5, multiplier: -1);
-		//audio = Normalizer.ar(audio, level: 0.25, dur: 0.01);
-		//audio = FreeVerb.ar(audio, mix: 0.2, room: 1, damp: 0.7);
-		//audio = Pan2.ar(audio, -0.8);
-		Out.ar(out, audio);
-	}
-).add;
-
-SynthDef(\drums2Effectsf, { |in, out|
+SynthDef(\drums2Effects, { |in, out|
 	var audio = In.ar(in);
 	var carrier = Saw.ar(MouseY.kr(50, 500));
 	audio = Vocoder.ar(carrier, audio, num: 40, low: 100, high: 5000, q: 0.02, hpf: 500, hpfscal: 0.25, outscal: 25);
+	Out.ar(out, audio);
+}).add;
+
+SynthDef(\drums2Effects, { |in, out, freeze = 0|
+	var a, b, chain1, chain2, audio;
+	a = LocalBuf.new(512);
+	b = LocalBuf.new(512);
+	chain1 = FFT(a, LFSaw.ar(120), hop: 0.25, wintype: 0, winsize: 256); // to be filtered
+	chain2 = FFT(b, In.ar(in), hop: 0.25, wintype: 0, winsize: 256);
+	// mouse x to play with floor.
+	chain1 = PV_SpectralMap(buffer: chain1, specBuffer: chain2, floor: 0.25, freeze: LFNoise0.kr(10).range(-1, 0.1), mode: -1, norm: -1, window: 0);
+	audio = IFFT(chain1);
 	Out.ar(out, audio);
 }).add;
 
@@ -154,7 +149,7 @@ SynthDef(\drums2Effects, { |in, out|
 	var audio, chain;
 	audio = In.ar(in, 1);
     chain = FFT(LocalBuf(2048), audio);
-	chain = PV_RandComb(chain, 0.8, Impulse.kr(1000));
+	chain = PV_RandComb(chain, 0.5, Impulse.kr(10));
 	Out.ar(out, IFFT(chain) * 2);
 }).add;
 
