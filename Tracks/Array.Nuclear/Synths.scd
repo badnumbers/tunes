@@ -153,6 +153,14 @@ SynthDef(\drums2Effects, { |in, out|
 	Out.ar(out, IFFT(chain) * 2);
 }).add;
 
+SynthDef(\drums2Effects, { |in, out|
+	var audio, fft;
+	in = In.ar(in, 1);
+	fft = FFT(b, in, wintype:1);
+	audio=TPV.ar(fft, 1024, 512, 70,MouseX.kr(1,70), MouseY.kr(0.25,3),4,0.2);
+	Out.ar(out, audio);
+}).add;
+
 SynthDef(\lead,
 	{
 		|out, gate = 1, freq, amp = 0, cutoff, filtEnvAmt, portamento|
