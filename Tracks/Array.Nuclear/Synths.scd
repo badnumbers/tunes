@@ -156,7 +156,7 @@ SynthDef(\drums2Effects, { |in, out|
 SynthDef(\drums2Effects, { |in, out|
 	var audio, fft;
 	in = In.ar(in, 1);
-	fft = FFT(b, in, wintype:1);
+	fft = FFT(LocalBuf(1024), in, wintype:1);
 	audio=TPV.ar(fft, 1024, 512, 70,MouseX.kr(1,70), MouseY.kr(0.25,3),4,0.2);
 	Out.ar(out, audio);
 }).add;
