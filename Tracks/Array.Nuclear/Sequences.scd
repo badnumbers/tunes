@@ -7,6 +7,10 @@ q = 0.25;
 
 TempoClock.default.tempo = ~bpm/60;
 
+~sections = Array.newClear(2);
+~sections[0] = Array.newClear(12);
+~sections[1] = Array.newClear(2);
+
 ~leadId1 = 50;
 ~leadId2 = 51;
 
@@ -25,8 +29,6 @@ TempoClock.default.tempo = ~bpm/60;
 
 ~acid = "Parts/Acid.scd".loadRelative[0];
 
-~bass = "Parts/Bass.scd".loadRelative[0];
-
 ~lead = "Parts/Lead.scd".loadRelative[0];
 
 ~chords = "Parts/Chords.scd".loadRelative[0];
@@ -37,24 +39,27 @@ s.record;*/
 
 OSCdef(\test, {|msg, time, addr, recvPort| ~acidCutoffBus.value = msg[1];~acidResonanceBus.value = 1 - msg[2];}, '/3/xy', n); // def style
 
+~acid[0].postln;
+
 Pspawner({ | sp |
 	inf.do {
-		(0..11).do { |item, index|
-			sp.seq(
-				Ppar([
-					//~drums1Hats[item]
-					//,~drums1Snares[item]
-					//,~drums1Kicks[item]
-					//,~drums2Hats[item]
-					//,~drums2Snares[item]
-					//,~drums2Kicks[item]
-					//,~drums2Effects[item]
-					~acid[item]
-					//,~bass[item]
-					,~lead[item]
-					//,~chords[item]
-				])
-			);
+		(~sections.size).do { |i|
+			(~sections[i].size).do { |j|
+				sp.seq(
+					Ppar([
+						~drums1Hats[i][j]
+						,~drums1Snares[i][j]
+						,~drums1Kicks[i][j]
+						,~drums2Hats[i][j]
+						,~drums2Snares[i][j]
+						,~drums2Kicks[i][j]
+						,~drums2Effects[i][j]
+						,~acid[i][j]
+						,~lead[i][j]
+						,~chords[i][j]
+					])
+				);
+			};
 		};
 	};
 	sp.suspendAll;

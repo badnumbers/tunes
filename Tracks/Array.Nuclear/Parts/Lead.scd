@@ -1,6 +1,6 @@
-var leadPart = Array.newClear(100);
+var leadSections = Array.newClear(~sections.size);
 
-leadPart[0] = Pbind(*[
+var lead1 = Pbind(*[
 	type: Pseq([\on, \set, \set, \set]),
 	id: ~leadId1,
 	instrument: \lead,
@@ -15,7 +15,7 @@ leadPart[0] = Pbind(*[
 	cutoff: 70,
 	filtEnvAmt: 15
 ]);
-leadPart[1] = Pbind(*[
+var lead2 = Pbind(*[
 	type: Pseq([\set, \off, \on, \set, \set, \set, \set]),
 	id: Pseq([~leadId1, ~leadId1, ~leadId2, ~leadId2, ~leadId2, ~leadId2, ~leadId2]),
 	instrument: \lead,
@@ -30,7 +30,7 @@ leadPart[1] = Pbind(*[
 	cutoff: 70,
 	filtEnvAmt: 15
 ]);
-leadPart[2] = Pbind(*[
+var lead3 = Pbind(*[
 	type: Pseq([\set, \set, \off]),
 	id: ~leadId2,
 	instrument: \lead,
@@ -45,7 +45,7 @@ leadPart[2] = Pbind(*[
 	cutoff: 70,
 	filtEnvAmt: 15
 ]);
-leadPart[3] = Pbind(*[
+var lead4 = Pbind(*[
 	type: Pseq([\on, \set, \set, \set]),
 	id: ~leadId1,
 	instrument: \lead,
@@ -60,7 +60,7 @@ leadPart[3] = Pbind(*[
 	cutoff: 70,
 	filtEnvAmt: 15
 ]);
-leadPart[4] = Pbind(*[
+var lead5 = Pbind(*[
 	type: Pseq([\set, \off, \on, \set, \set, \set, \set]),
 	id: Pseq([~leadId1, ~leadId1, ~leadId2, ~leadId2, ~leadId2, ~leadId2, ~leadId2]),
 	instrument: \lead,
@@ -75,7 +75,7 @@ leadPart[4] = Pbind(*[
 	cutoff: 70,
 	filtEnvAmt: 15
 ]);
-leadPart[5] = Pbind(*[
+var lead6 = Pbind(*[
 	type: Pseq([\set, \off]),
 	id: ~leadId2,
 	instrument: \lead,
@@ -90,7 +90,7 @@ leadPart[5] = Pbind(*[
 	cutoff: 70,
 	filtEnvAmt: 15
 ]);
-leadPart[6] = Pbind(*[
+var lead7 = Pbind(*[
 	type: Pseq([\on, \set, \set, \set, \off]),
 	id: ~leadId1,
 	instrument: \lead,
@@ -105,7 +105,7 @@ leadPart[6] = Pbind(*[
 	cutoff: 70,
 	filtEnvAmt: 15
 ]);
-leadPart[7] = Pbind(*[
+var lead8 = Pbind(*[
 	type: Pseq([\set, \off, \on, \set, \set, \set, \set]),
 	id: Pseq([~leadId1, ~leadId1, ~leadId2, ~leadId2, ~leadId2, ~leadId2, ~leadId2]),
 	instrument: \lead,
@@ -120,7 +120,7 @@ leadPart[7] = Pbind(*[
 	cutoff: 70,
 	filtEnvAmt: 15
 ]);
-leadPart[8] = Pbind(*[
+var lead9 = Pbind(*[
 	type: Pseq([\set, \set, \off]),
 	id: ~leadId2,
 	instrument: \lead,
@@ -135,7 +135,7 @@ leadPart[8] = Pbind(*[
 	cutoff: 70,
 	filtEnvAmt: 15
 ]);
-leadPart[9] = Pbind(*[
+var lead10 = Pbind(*[
 	type: Pseq([\on, \set, \set, \set]),
 	id: ~leadId1,
 	instrument: \lead,
@@ -150,7 +150,7 @@ leadPart[9] = Pbind(*[
 	cutoff: 70,
 	filtEnvAmt: 15
 ]);
-leadPart[10] = Pbind(*[
+var lead11 = Pbind(*[
 	type: Pseq([\set, \off, \on, \set, \set, \set, \set]),
 	id: Pseq([~leadId1, ~leadId1, ~leadId2, ~leadId2, ~leadId2, ~leadId2, ~leadId2]),
 	instrument: \lead,
@@ -165,7 +165,7 @@ leadPart[10] = Pbind(*[
 	cutoff: 70,
 	filtEnvAmt: 15
 ]);
-leadPart[11] = Pbind(*[
+var lead12 = Pbind(*[
 	type: Pseq([\set, \off]),
 	id: ~leadId2,
 	instrument: \lead,
@@ -181,4 +181,23 @@ leadPart[11] = Pbind(*[
 	filtEnvAmt: 15
 ]);
 
-leadPart;
+leadSections[0] = Array.newClear(~sections[0].size);
+leadSections[1] = Array.newClear(~sections[1].size);
+
+leadSections[0][0] = lead1;
+leadSections[0][1] = lead2;
+leadSections[0][2] = lead3;
+leadSections[0][3] = lead4;
+leadSections[0][4] = lead5;
+leadSections[0][5] = lead6;
+leadSections[0][6] = lead7;
+leadSections[0][7] = lead8;
+leadSections[0][8] = lead9;
+leadSections[0][9] = lead10;
+leadSections[0][10] = lead11;
+leadSections[0][11] = lead12;
+
+leadSections[1][0] = nil;
+leadSections[1][1] = nil;
+
+leadSections;
