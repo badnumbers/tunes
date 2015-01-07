@@ -97,10 +97,30 @@ SynthDef(\rlim,
 Pdef(\rlims,
 	Pbind(
 		\instrument, \rlim,
-		\phaseFreq, Pseg(Pseq([10, 200, 10]), Pseq([3, 1]*4/5), \lin, inf).trace,
+		\phaseFreq,Pseq([
+			105,
+			57.5,
+			10,
+			25.8,
+
+			41.7,
+			57.5,
+			73.3,
+			89.2,
+
+			105,
+			120.8,
+			136.7,
+			152.5,
+
+			168.3,
+			184.2,
+			200,
+			152.5
+		], inf),
 		\dur, 0.2,
-		\amp, 0.4,
-		\pan, Pbrown(-1, 1, length: inf)
+		\amp, Pseq([0.4,0.4,1,0.4, 0.4,0.4,0.4,0.4, 0.4,0.4,0.4,0.4, 0.4,0.4,0.4,0.4], inf),
+		\pan, Pseg(Pseq([0.9, -0.9, 0.9]), Pseq([3, 1]*4/5), \lin, inf).trace
 	)
 ).play;
 )
