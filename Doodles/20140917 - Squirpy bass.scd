@@ -94,17 +94,15 @@ Pdef(\squirpy,
 			\instrument, \brash,
 			\ctranspose, -5,
 			\octave, 6,
-			/*\degree, Pseq([ \,2,\,0,     -1,-2,-4,\, -6,\,-4]),
-			\dur,    Pseq([ h,h + q,h,q, e,q,e,h, q,e,e]),*/
-			\degree, Pseq([ \,2,\, 0,-1,0,\, -3,-4,-3,\, -5]),
-			\dur,    Pseq([ h,h + q,h, q,e,e,q, q,e,e,q, q]),
-			\initialDegreeOffset, Pseq([\,-12,\, \,\,\,\, \,\,\,\, 12]),
-			\initialBendTime, Pseq([\,0.1,\, \,\,\,\, \,\,\,\, 0.05]),
-			\amp, 0.32,
+			\degree, Pseq([ \,2,\,-3,\,-3,4,\,3,\,3]),
+			\dur,    Pseq([ h,h+e,e,e,e,e,e,e,e,h,w]),
+			\initialDegreeOffset, Pseq([\,-12,\,\,\,\,\,\,\,\,-4]),
+			\initialBendTime, Pseq([\,0.1,\,\,\,\,\,\,\,\,0.1]),
+			\amp, 0.4,
 			\wobbleFreq, Pwhite(7,9),
 			\wobbleAmt, Pwhite(0.05, 0.06),
 			\wobbleDelayRand, Pwhite(0.09,0.12),
-			\wobbleDelayMul, Pseq([10,1,10, 10,10,10,10, 10,10,10,10, 1]),
+			\wobbleDelayMul, Pseq([10,1,\,\,\,\,\,\,\,\,1]),
 			\wobbleDelay, Pkey(\wobbleDelayRand)*Pkey(\wobbleDelayMul)
 		),
 		Pbind(
@@ -128,7 +126,7 @@ Pdef(\squirpy,
 			\degree, Pseq(1!14),
 			\dur, q
 		)
-	], 8)
+	], 1)
 ).play;
 )
 s.scope(2)
