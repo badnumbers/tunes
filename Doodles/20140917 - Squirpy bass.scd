@@ -28,7 +28,7 @@ SynthDef(\sampler,
 ).add;
 )
 (
-SynthDef(\sine,
+SynthDef(\grumblyBass,
 	{
 		|freq, amp, gate = 1, twirl, cutoff = 80, out = 0, pan = 0|
 		var audio, env, cutoffEnv;
@@ -43,16 +43,18 @@ SynthDef(\sine,
 ).add;
 )
 (
-SynthDef(\brash,
+SynthDef(\bleep,
 	{
-		|freq, initialDegreeOffset, initialBendTime = 0.1, amp, pan, gate = 1, out = 0, wobbleFreq = 6, wobbleAmt = 0.05, wobbleDelay = 0.2|
+		|freq, initialDegreeOffset, initialBendTime = 0.1, amp, pan, gate = 1, out = 0, wobbleFreq = 6, wobbleAmt = 0.05, wobbleDelay = 0.2, cutoff = 100, initialCutoff = 100, resonance = 0.7|
 		var audio, env, initialFreq, wobbleEnv;
 		initialFreq = ((freq.cpsmidi) + initialDegreeOffset).midicps;
 		freq = EnvGen.kr(Env([initialFreq, freq], [initialBendTime], \sine), gate);
+		cutoff = EnvGen.kr(Env([initialCutoff, cutoff], [0.1], \sine), gate);
 		wobbleEnv = EnvGen.kr(Env([0,0,wobbleAmt],[wobbleDelay,0.05]), gate);
 		freq = freq + (freq * wobbleEnv * SinOsc.kr(wobbleFreq));
 		env = EnvGen.kr(Env.adsr(0.1, 0.3, 0.5, 0.01), gate, amp, doneAction: 2);
-		audio = VarSaw.ar(freq, width: SinOsc.kr(4).range(0, 0.1) + 0.7, mul: env);
+		audio = Pulse.ar(freq, width: SinOsc.kr(4).range(0, 0.1) + 0.7, mul:env);
+		audio = RLPFD.ar(audio, cutoff.midicps, resonance) * 3;
 		audio = HPF.ar(audio, freq * 3);
 		audio = Pan2.ar(audio, pan);
 		Out.ar(out, audio);
@@ -63,7 +65,7 @@ SynthDef(\brash,
 Pdef(\squirpy,
 	Ppar([
 		Pbind(
-			\instrument, \sine,
+			\instrument, \grumblyBass,
 			\octave, 3,
 			\ctranspose, -5,
 			\dur, Pseq([q, q, e, e, q, q, h],2),
@@ -75,11 +77,14 @@ Pdef(\squirpy,
 			\pan, Pwhite(-1,1),
 			\out, 0
 		),
-		Pbind(
-			\instrument, \brash,
+		PmonoArtic(
+			\bleep,
 			\ctranspose, -5,
 			\octave, 6,
 			\degree, Pseq([ \,0,\,     -3,-4,-6,-7,\, -3]),
+			\cutoff, Pseq([ \,100,\,     103,80,90,70,\, 90]),
+			\initialCutoff, Pseq([ \,90,\,     95,80,90,70,\, 90]),
+			\resonance, Pseq([ \,0.7,\,     0.7,0.9,0.7,0.9,\, 0.7]),
 			\dur,    Pseq([ h,h + q,q, e,e,q,e,q, w      ]),
 			\initialDegreeOffset, Pseq([\,-12,\,  12,\,\,\,\, -4 ]),
 			\initialBendTime, Pseq([\,0.1,\, 0.05,\,\,\,\, 0.05 ]),
@@ -90,11 +95,14 @@ Pdef(\squirpy,
 			\wobbleDelayMul, Pseq([10,1,10, 10,10,0.5,10,10, 1.5]),
 			\wobbleDelay, Pkey(\wobbleDelayRand)*Pkey(\wobbleDelayMul)
 		),
-		Pbind(
-			\instrument, \brash,
+		PmonoArtic(
+			\bleep,
 			\ctranspose, -5,
 			\octave, 6,
 			\degree, Pseq([ \,2,\,-3,\,-3,4,\,3,\,3]),
+			\cutoff, Pseq([ \,100,\,90,\,80,100,\,90,\,90]),
+			\initialCutoff, Pseq([ \,90,\,100,\,70,100,\,105,\,95]),
+			\resonance, Pseq([ \,0.7,\,0.8,\,0.7,0.85,\,0.8,\,0.7]),
 			\dur,    Pseq([ h,h+e,e,e,e,e,e,e,e,h,w]),
 			\initialDegreeOffset, Pseq([\,-12,\,\,\,\,\,\,\,\,-4]),
 			\initialBendTime, Pseq([\,0.1,\,\,\,\,\,\,\,\,0.1]),
@@ -126,7 +134,7 @@ Pdef(\squirpy,
 			\degree, Pseq(1!14),
 			\dur, q
 		)
-	], 1)
+	], 111)
 ).play;
 )
 s.scope(2)
