@@ -5,7 +5,9 @@ q = 0.25;
 e = 0.125;
 
 // The track
-t = ();
+t = (
+	outputBarNumber: false
+);
 
 // Busses
 b = ();
