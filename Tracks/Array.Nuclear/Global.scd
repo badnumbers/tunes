@@ -6,7 +6,51 @@ e = 0.125;
 
 // The track
 t = (
-	outputBarNumber: false
+	activeTracks: [],
+	outputBarNumber: false,
+	play: {
+		Pdef(\track,
+			Pspawner({ | sp |
+				t.repeats.do {
+					t.structure.do { |currentSection|
+						var sectionLength, parts, bars;
+						sectionLength = t[currentSection].length;
+						if (t.bars == nil,{
+							bars = sectionLength;
+							},{
+								bars = t.bars;
+						});
+						bars.do({
+							|index|
+							if (t.outputBarNumber, { index.postln; });
+							parts = t.activeTracks.collect({
+								|item|
+								t[currentSection][item]
+							}).reject({
+								|item|
+								item == nil
+							});
+							sp.seq(
+								Ppar(
+									parts.collect({
+										|part|
+										part.for(index)
+									})
+								)
+							);
+						});
+					};
+				};
+				sp.suspendAll;
+				// s.stopRecording;
+			})
+		).play;
+	},
+	repeats: 1,
+	stop: {
+		Pdef(\track).stop;
+	},
+	structure: []
 );
 
 // Busses

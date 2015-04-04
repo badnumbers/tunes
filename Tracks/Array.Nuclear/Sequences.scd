@@ -39,45 +39,14 @@ s.record;*/
 OSCdef(\test, {|msg, time, addr, recvPort| b.acid.cutoff.value = msg[1]; b.acid.resonance.value = 1 - msg[2];}, '/3/xy', n); // def style
 
 (
-~structure = {
-	[\mainSection, \silly]
-};
-~activeTracks = {
-	[\chords, \acid, \lead, \drums1, \drums2];
-};
+t.repeats = 1;
+t.bars = nil;
+t.outputBarNumber = false;
+t.structure = [\mainSection];
+t.activeTracks = [\chords, \drums1, \drums2, \acid, \lead];
 )
-(
-Pdef(\track,
-	Pspawner({ | sp |
-		1.do {
-			~structure.value.do { |currentSection|
-				var sectionLength = t[currentSection].length;
-				sectionLength.do({
-					|index|
-					if (t.outputBarNumber, { index.postln; });
-					var parts = ~activeTracks.value.collect({
-						|item|
-						t[currentSection][item]
-					}).reject({
-						|item|
-						item == nil
-					});
-					sp.seq(
-						Ppar(
-							parts.collect({
-								|part|
-								part.for(index)
-							})
-						)
-					);
-				});
-			};
-		};
-		sp.suspendAll;
-		// s.stopRecording;
-	})
-).play;
-)
+t.play;
+t.stop; // This doesn't work, I can't work out why
 Pdef(\track).stop;
 // s.freqscope;
 
