@@ -46,12 +46,6 @@ t.mainSection.drums1 = (
 	},
 	patterns: Array.newClear(t.mainSection.length)
 );
-t.silly.drums1 = (
-	for: {
-		|self, index|
-		nil
-	}
-);
 
 t.mainSection.drums1.patterns[0] = drums;
 t.mainSection.drums1.patterns[1] = drums;

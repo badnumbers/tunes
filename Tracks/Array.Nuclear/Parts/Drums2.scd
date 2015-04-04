@@ -31,22 +31,5 @@ t.mainSection.drums2 = (
 	},
 	patterns: Array.newClear(t.mainSection.length)
 );
-t.silly.drums2 = (
-	for: {
-		|self, index|
-		nil
-	}
-);
 
-t.mainSection.drums2.patterns[0] = nil;
-t.mainSection.drums2.patterns[1] = nil;
-t.mainSection.drums2.patterns[2] = nil;
 t.mainSection.drums2.patterns[3] = drums;
-t.mainSection.drums2.patterns[4] = nil;
-t.mainSection.drums2.patterns[5] = nil;
-t.mainSection.drums2.patterns[6] = nil;
-t.mainSection.drums2.patterns[7] = nil;
-t.mainSection.drums2.patterns[8] = nil;
-t.mainSection.drums2.patterns[9] = nil;
-t.mainSection.drums2.patterns[10] = nil;
-t.mainSection.drums2.patterns[11] = nil;

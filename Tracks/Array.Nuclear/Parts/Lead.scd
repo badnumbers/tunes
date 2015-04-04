@@ -186,12 +186,6 @@ t.mainSection.lead = (
 	},
 	patterns: Array.newClear(t.mainSection.length)
 );
-t.silly.lead = (
-	for: {
-		|self, index|
-		nil
-	},
-);
 
 t.mainSection.lead.patterns[0] = lead1;
 t.mainSection.lead.patterns[1] = lead2;

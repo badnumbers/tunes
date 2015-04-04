@@ -54,11 +54,19 @@ Pdef(\track,
 				var sectionLength = t[currentSection].length;
 				sectionLength.do({
 					|index|
+					if (t.outputBarNumber, { index.postln; });
+					var parts = ~activeTracks.value.collect({
+						|item|
+						t[currentSection][item]
+					}).reject({
+						|item|
+						item == nil
+					});
 					sp.seq(
 						Ppar(
-							~activeTracks.value.deepCollect(2, {
-								|track|
-								t[currentSection][track].for(index)
+							parts.collect({
+								|part|
+								part.for(index)
 							})
 						)
 					);
