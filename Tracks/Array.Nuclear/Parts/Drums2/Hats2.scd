@@ -1,5 +1,3 @@
-var hats2Sections = Array.newClear(~sections.size);
-
 var hats = Pbind(*[
 	out: ~drums2EffectsBus,
 	instrument: \hats2,
@@ -7,23 +5,34 @@ var hats = Pbind(*[
 	amp: Pseq([1, 1, 0.3, 1, 1, 1, 1, 0.3, 1, 1])
 ]);
 
-hats2Sections[0] = Array.newClear(~sections[0].size);
-hats2Sections[1] = Array.newClear(~sections[1].size);
+~track.mainSection.drums2Hats = (
+	for: {
+		|self, index|
+		if (self.patterns[index] == nil, {
+			nil
+		}, {
+				var effects = Synth(\drums2Effects, [\in: ~drums2EffectsBus, \out: 0, \operation, 0]);
+				~functions.playThenKill(self.patterns[index], effects);
+		});
+	},
+	patterns: Array.newClear(~track.mainSection.length)
+);
+~track.silly.drums2Hats = (
+	for: {
+		|self, index|
+		nil
+	}
+);
 
-hats2Sections[0][0] = nil;
-hats2Sections[0][1] = nil;
-hats2Sections[0][2] = nil;
-hats2Sections[0][3] = hats;
-hats2Sections[0][4] = nil;
-hats2Sections[0][5] = nil;
-hats2Sections[0][6] = nil;
-hats2Sections[0][7] = nil;
-hats2Sections[0][8] = nil;
-hats2Sections[0][9] = nil;
-hats2Sections[0][10] = nil;
-hats2Sections[0][11] = nil;
-
-hats2Sections[1][0] = nil;
-hats2Sections[1][1] = nil;
-
-hats2Sections;
+~track.mainSection.drums2Hats.patterns[0] = nil;
+~track.mainSection.drums2Hats.patterns[1] = nil;
+~track.mainSection.drums2Hats.patterns[2] = nil;
+~track.mainSection.drums2Hats.patterns[3] = hats;
+~track.mainSection.drums2Hats.patterns[4] = nil;
+~track.mainSection.drums2Hats.patterns[5] = nil;
+~track.mainSection.drums2Hats.patterns[6] = nil;
+~track.mainSection.drums2Hats.patterns[7] = nil;
+~track.mainSection.drums2Hats.patterns[8] = nil;
+~track.mainSection.drums2Hats.patterns[9] = nil;
+~track.mainSection.drums2Hats.patterns[10] = nil;
+~track.mainSection.drums2Hats.patterns[11] = nil;

@@ -127,36 +127,40 @@ SynthDef(\effects,
 	}
 ).add;
 
-SynthDef(\drums2Effects, { |in, out|
-	var audio = In.ar(in);
+SynthDef(\drums2Effects, { |in, out, gate = 1|
+	var env = EnvGen.kr(Env.cutoff, gate, doneAction: 2);
+	var audio = In.ar(in) * env;
 	var carrier = Saw.ar(MouseY.kr(50, 500));
 	audio = Vocoder.ar(carrier, audio, num: 40, low: 100, high: 5000, q: 0.02, hpf: 500, hpfscal: 0.25, outscal: 25);
 	Out.ar(out, audio);
 }).add;
 
-SynthDef(\drums2Effects, { |in, out, freeze = 0|
+SynthDef(\drums2Effects, { |in, out, freeze = 0, gate = 1|
 	var a, b, chain1, chain2, audio;
+	var env = EnvGen.kr(Env.cutoff, gate, doneAction: 2);
 	a = LocalBuf.new(512);
 	b = LocalBuf.new(512);
 	chain1 = FFT(a, LFSaw.ar(120), hop: 0.25, wintype: 0, winsize: 256); // to be filtered
-	chain2 = FFT(b, In.ar(in), hop: 0.25, wintype: 0, winsize: 256);
+	chain2 = FFT(b, In.ar(in) * env, hop: 0.25, wintype: 0, winsize: 256);
 	// mouse x to play with floor.
 	chain1 = PV_SpectralMap(buffer: chain1, specBuffer: chain2, floor: 0.25, freeze: LFNoise0.kr(10).range(-1, 0.1), mode: -1, norm: -1, window: 0);
 	audio = IFFT(chain1);
 	Out.ar(out, audio);
 }).add;
 
-SynthDef(\drums2Effects, { |in, out|
+SynthDef(\drums2Effects, { |in, out, gate = 1|
 	var audio, chain;
-	audio = In.ar(in, 1);
+	var env = EnvGen.kr(Env.cutoff, gate, doneAction: 2);
+	audio = In.ar(in, 1) * env;
     chain = FFT(LocalBuf(2048), audio);
 	chain = PV_RandComb(chain, 0.5, Impulse.kr(10));
 	Out.ar(out, IFFT(chain) * 2);
 }).add;
 
-SynthDef(\drums2Effects, { |in, out|
+SynthDef(\drums2Effects, { |in, out, gate = 1|
 	var audio, fft;
-	in = In.ar(in, 1);
+	var env = EnvGen.kr(Env.cutoff, gate, doneAction: 2);
+	in = In.ar(in, 1) * env;
 	fft = FFT(LocalBuf(1024), in, wintype:1);
 	audio=TPV.ar(fft, 1024, 512, 70,MouseX.kr(1,70), MouseY.kr(0.25,3),4,0.2);
 	Out.ar(out, audio);

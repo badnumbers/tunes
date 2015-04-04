@@ -39,10 +39,10 @@ TempoClock.default.tempo = ~bpm/60;
 "Parts/Drums1/Hats1.scd".loadRelative[0];
 "Parts/Drums1/Snares1.scd".loadRelative[0];
 "Parts/Drums1/Kicks1.scd".loadRelative[0];
-//"Parts/Drums2/Hats2.scd".loadRelative[0];
-//"Parts/Drums2/Snares2.scd".loadRelative[0];
-//"Parts/Drums2/Kicks2.scd".loadRelative[0];
-//"Parts/Drums2/Effects2.scd".loadRelative[0];
+"Parts/Drums2/Hats2.scd".loadRelative[0];
+"Parts/Drums2/Snares2.scd".loadRelative[0];
+"Parts/Drums2/Kicks2.scd".loadRelative[0];
+"Parts/Drums2/Effects2.scd".loadRelative[0];
 "Parts/Acid.scd".loadRelative[0];
 "Parts/Lead.scd".loadRelative[0];
 "Parts/Chords.scd".loadRelative[0];
@@ -58,10 +58,8 @@ OSCdef(\test, {|msg, time, addr, recvPort| ~acidCutoffBus.value = msg[1];~acidRe
 ~structure = {
 	[\mainSection]
 };
-~drums1 = [\drums1Hats];
 ~activeTracks = {
-	[\chords, \acid, \lead, \drums1Hats, \drums1Kicks, \drums1Snares];
-	[\chords, \acid, \lead, \drums1Hats];
+	[\chords, \acid, \lead, \drums1Hats, \drums1Kicks, \drums1Snares, \drums2Hats, \drums2Kicks, \drums2Snares];
 };
 )
 (
@@ -88,7 +86,7 @@ Pdef(\track,
 ).play;
 )
 Pdef(\track).stop;
-~track.mainSection.drums1Hats.for(0).play
+~track.mainSection.drums2Hats.for(3).play
 // s.freqscope;
 
 // This sounds amazing:
