@@ -1,18 +1,18 @@
 var drums = Ppar([
 	Pbind(*[
-		out: ~drums1EffectsBus,
+		out: b.drums1.effects,
 		instrument: \hats,
 		dur: Pseq([h, h, h, h, h, h, h, q, q]),
 		amp: Pseq([1, 1, 1, 1, 1, 1, 1, 0.5, 0.5])
 	]),
 	Pbind(*[
-		out: ~drums1EffectsBus,
+		out: b.drums1.effects,
 		instrument: \kicks,
 		dur: Pseq([h*3, h*2, h*2, h]),
 		amp: Pseq([1, 1, 1, 0.5])
 	]),
 	Pbind(*[
-		out: ~drums1EffectsBus,
+		out: b.drums1.effects,
 		instrument: \snares,
 		dur: q,
 		amp: Pseq([\, \, \, \, 1, \, \, \, \, 0.3, \, \, 1, \, \, \])
@@ -21,13 +21,13 @@ var drums = Ppar([
 
 var shortDrums = Ppar([
 	Pbind(*[
-		out: ~drums1EffectsBus,
+		out: b.drums1.effects,
 		instrument: \hats,
 		dur: Pseq([h, h, h, h]),
 		amp: Pseq([1, 1, 1, 1])
 	]),
 	Pbind(*[
-		out: ~drums1EffectsBus,
+		out: b.drums1.effects,
 		instrument: \kicks,
 		dur: Pseq([w*2]),
 		amp: 1
@@ -40,7 +40,7 @@ t.mainSection.drums1 = (
 		if (self.patterns[index] == nil, {
 			nil
 		}, {
-				var effects = Synth(\effects, [\in: ~drums1EffectsBus, \out: 0]);
+				var effects = Synth(\effects, [\in: b.drums1.effects, \out: 0]);
 				f.playThenKill(self.patterns[index], effects);
 		});
 	},

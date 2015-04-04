@@ -1,11 +1,16 @@
+// Time intervals
 w = 1;
 h = 0.5;
 q = 0.25;
 e = 0.125;
-t = (
-	mainSection: (length: 12),
-	silly: (length: 2)
-);
+
+// The track
+t = ();
+
+// Busses
+b = ();
+
+// Global functions
 f = (
 	playThenKill: {
 		|self, pattern, synth|

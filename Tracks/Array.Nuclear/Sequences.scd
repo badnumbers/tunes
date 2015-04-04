@@ -5,12 +5,22 @@
 TempoClock.default.tempo = ~bpm/60;
 ~leadId1 = 50;
 ~leadId2 = 51;
+t.mainSection = (length: 12);
+t.silly = (length: 2);
 )
 
 (
 // Busses
-~drums1EffectsBus = Bus.audio(s, 2);
-~drums2EffectsBus = Bus.audio(s, 2);
+b.acid = (
+	cutoff: Bus.control(s, 1),
+	resonance: Bus.control(s, 1)
+);
+b.drums1 = (
+	effects: Bus.audio(s, 2)
+);
+b.drums2 = (
+	effects: Bus.audio(s, 2)
+);
 )
 
 (
@@ -26,8 +36,7 @@ TempoClock.default.tempo = ~bpm/60;
 /*s.prepareForRecord; // you have to call this first
 s.record;*/
 
-OSCdef(\test, {|msg, time, addr, recvPort| ~acidCutoffBus.value = msg[1];~acidResonanceBus.value = 1 - msg[2];}, '/3/xy', n); // def style
-
+OSCdef(\test, {|msg, time, addr, recvPort| b.acid.cutoff.value = msg[1]; b.acid.resonance.value = 1 - msg[2];}, '/3/xy', n); // def style
 
 (
 ~structure = {
