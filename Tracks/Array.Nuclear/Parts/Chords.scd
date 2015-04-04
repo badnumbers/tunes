@@ -1,5 +1,3 @@
-var chordsSections = Array.newClear(~sections.size);
-
 var chords1 = Pbind(*[
 	out: 0,
 	instrument: \sine,
@@ -66,23 +64,33 @@ var chords7 = Pbind(*[
 	dur: h,
 ]);
 
-chordsSections[0] = Array.newClear(~sections[0].size);
-chordsSections[1] = Array.newClear(~sections[1].size);
+~track.mainSection.chords = (
+	for: {
+		|self, index|
+		self.patterns[index]
+	},
+	patterns: Array.newClear(~track.mainSection.length)
+);
+~track.silly.chords = (
+	for: {
+		|self, index|
+		self.patterns[index]
+	},
+	patterns: Array.newClear(~track.silly.length)
+);
 
-chordsSections[0][0] = chords1;
-chordsSections[0][1] = chords1;
-chordsSections[0][2] = chords2;
-chordsSections[0][3] = chords1;
-chordsSections[0][4] = chords1;
-chordsSections[0][5] = chords3;
-chordsSections[0][6] = chords1;
-chordsSections[0][7] = chords1;
-chordsSections[0][8] = chords2;
-chordsSections[0][9] = chords4;
-chordsSections[0][10] = chords5;
-chordsSections[0][11] = chords6;
+~track.mainSection.chords.patterns[0] = chords1;
+~track.mainSection.chords.patterns[1] = chords1;
+~track.mainSection.chords.patterns[2] = chords2;
+~track.mainSection.chords.patterns[3] = chords1;
+~track.mainSection.chords.patterns[4] = chords1;
+~track.mainSection.chords.patterns[5] = chords3;
+~track.mainSection.chords.patterns[6] = chords1;
+~track.mainSection.chords.patterns[7] = chords1;
+~track.mainSection.chords.patterns[8] = chords2;
+~track.mainSection.chords.patterns[9] = chords4;
+~track.mainSection.chords.patterns[10] = chords5;
+~track.mainSection.chords.patterns[11] = chords6;
 
-chordsSections[1][0] = chords7;
-chordsSections[1][1] = chords7;
-
-chordsSections;
+~track.silly.chords.patterns[0] = chords7;
+~track.silly.chords.patterns[1] = chords7;

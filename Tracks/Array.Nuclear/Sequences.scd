@@ -1,74 +1,119 @@
-// Standard note durations
+(
+// Initialisation
 w = 1;
 h = 0.5;
 q = 0.25;
-
 ~bpm = 150;
-
 TempoClock.default.tempo = ~bpm/60;
-
-~sections = Array.newClear(2);
-~sections[0] = Array.newClear(12);
-~sections[1] = Array.newClear(2);
-
+~track = (
+	mainSection: (length: 12),
+	silly: (length: 2)
+);
 ~leadId1 = 50;
 ~leadId2 = 51;
+~functions = (
+	playThenKill: {
+		|self, pattern, synth|
+		Pseq([
+			pattern,
+			Pbind(
+				\id, synth,
+				\type, \set,
+				\gate, Pseq([0]),
+				\args, [\gate],
+				\delta, 0
+			)
+		])
+	}
+);)
 
+(
+// Busses
 ~drums1EffectsBus = Bus.audio(s, 2);
-~drums1Hats = "Parts/Drums1/Hats1.scd".loadRelative[0];
-~drums1Snares = "Parts/Drums1/Snares1.scd".loadRelative[0];
-~drums1Kicks = "Parts/Drums1/Kicks1.scd".loadRelative[0];
-
 ~drums2EffectsBus = Bus.audio(s, 2);
-~drums2Hats = "Parts/Drums2/Hats2.scd".loadRelative[0];
-~drums2Snares = "Parts/Drums2/Snares2.scd".loadRelative[0];
-~drums2Kicks = "Parts/Drums2/Kicks2.scd".loadRelative[0];
-~drums2Effects = "Parts/Drums2/Effects2.scd".loadRelative[0];
+)
 
-~effectsSynth = Synth(\effects, [\in: ~drums1EffectsBus, \out: 0]);
-
-~acid = "Parts/Acid.scd".loadRelative[0];
-
-~lead = "Parts/Lead.scd".loadRelative[0];
-
-~chords = "Parts/Chords.scd".loadRelative[0];
+(
+// Load parts
+"Synths.scd".loadRelative[0];
+"Parts/Drums1/Hats1.scd".loadRelative[0];
+"Parts/Drums1/Snares1.scd".loadRelative[0];
+"Parts/Drums1/Kicks1.scd".loadRelative[0];
+//"Parts/Drums2/Hats2.scd".loadRelative[0];
+//"Parts/Drums2/Snares2.scd".loadRelative[0];
+//"Parts/Drums2/Kicks2.scd".loadRelative[0];
+//"Parts/Drums2/Effects2.scd".loadRelative[0];
+"Parts/Acid.scd".loadRelative[0];
+"Parts/Lead.scd".loadRelative[0];
+"Parts/Chords.scd".loadRelative[0];
+)
 
 /*s.prepareForRecord; // you have to call this first
-
 s.record;*/
 
 OSCdef(\test, {|msg, time, addr, recvPort| ~acidCutoffBus.value = msg[1];~acidResonanceBus.value = 1 - msg[2];}, '/3/xy', n); // def style
 
-~acid[0].postln;
 
-Pspawner({ | sp |
-	inf.do {
-		(~sections.size).do { |i|
-			(~sections[i].size).do { |j|
-				sp.seq(
-					Ppar([
-						~drums1Hats[i][j]
-						,~drums1Snares[i][j]
-						,~drums1Kicks[i][j]
-						,~drums2Hats[i][j]
-						,~drums2Snares[i][j]
-						,~drums2Kicks[i][j]
-						,~drums2Effects[i][j]
-						,~acid[i][j]
-						,~lead[i][j]
-						,~chords[i][j]
-					])
-				);
+(
+~structure = {
+	[\mainSection]
+};
+~drums1 = [\drums1Hats];
+~activeTracks = {
+	[\chords, \acid, \lead, \drums1Hats, \drums1Kicks, \drums1Snares];
+	[\drums1Hats];
+};
+)
+(
+Pdef(\track,
+	Pspawner({ | sp |
+		1.do {
+			~structure.value.do { |currentSection|
+				~track[currentSection].length.do({
+					|index|
+					sp.seq(
+						Ppar(
+							~activeTracks.value.deepCollect(2, {
+								|track|
+								~track[currentSection][track].for(index)
+							})
+						)
+					);
+				});
 			};
 		};
-	};
-	sp.suspendAll;
-	1.wait;
-	s.freeAll;
-	// s.stopRecording;
-}).play;
-
+		sp.suspendAll;
+		// s.stopRecording;
+	})
+).play;
+)
+Pdef(\track).stop;
 // s.freqscope;
+(
+var effects = Synth(\effects, [\in: ~drums1EffectsBus, \out: 0]);
+~functions.playThenKill(~track.mainSection.drums1Hats.patterns[0], effects).play;
+)
+(
+~functions = (
+	playThenKill: {
+		|self, pattern, synth|
+		Pseq([
+			pattern,
+			Pbind(
+				\id, synth,
+				\type, \set,
+				\gate, Pseq([0]),
+				\args, [\gate],
+				\delta, 0
+			)
+		])
+	}
+);
+)
+~wank
+~wank.set(\gate, 0)
+~track.mainSection.drums1Hats.for(0).play
+~activeTracks.value.deepCollect(2, {|item| item.postln})
 
 // This sounds amazing:
 /*bass = Pbind(*[

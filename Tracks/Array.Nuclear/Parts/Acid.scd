@@ -1,5 +1,3 @@
-var acidSections = Array.newClear(~sections.size);
-
 var acid = Pbind(*[
 	out: 0,
 	instrument: \acid,
@@ -79,23 +77,33 @@ var acid99 = Pbind(*[
 	resonance: Pseq([0.8, 0.8, 0.8, 0.8])
 ]);
 
-acidSections[0] = Array.newClear(~sections[0].size);
-acidSections[1] = Array.newClear(~sections[1].size);
+~track.mainSection.acid = (
+	for: {
+		|self, index|
+		self.patterns[index]
+	},
+	patterns: Array.newClear(~track.mainSection.length)
+);
+~track.silly.acid = (
+	for: {
+		|self, index|
+		self.patterns[index]
+	},
+	patterns: Array.newClear(~track.silly.length)
+);
 
-acidSections[0][0] = acid;
-acidSections[0][1] = acid;
-acidSections[0][2] = acid2;
-acidSections[0][3] = acid;
-acidSections[0][4] = acid;
-acidSections[0][5] = acid5;
-acidSections[0][6] = acid;
-acidSections[0][7] = acid;
-acidSections[0][8] = acid2;
-acidSections[0][9] = acid9;
-acidSections[0][10] = acid10;
-acidSections[0][11] = acid;
+~track.mainSection.acid.patterns[0] = acid;
+~track.mainSection.acid.patterns[1] = acid;
+~track.mainSection.acid.patterns[2] = acid2;
+~track.mainSection.acid.patterns[3] = acid;
+~track.mainSection.acid.patterns[4] = acid;
+~track.mainSection.acid.patterns[5] = acid5;
+~track.mainSection.acid.patterns[6] = acid;
+~track.mainSection.acid.patterns[7] = acid;
+~track.mainSection.acid.patterns[8] = acid2;
+~track.mainSection.acid.patterns[9] = acid9;
+~track.mainSection.acid.patterns[10] = acid10;
+~track.mainSection.acid.patterns[11] = acid;
 
-acidSections[1][0] = acid99;
-acidSections[1][1] = acid99;
-
-acidSections;
+~track.silly.acid.patterns[0] = acid99;
+~track.silly.acid.patterns[1] = acid99;

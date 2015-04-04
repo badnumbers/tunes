@@ -114,9 +114,10 @@ SynthDef(\sine,
 
 SynthDef(\effects,
 	{
-		|in, out|
+		|in, out, gate = 1|
 		var vol = 0.03;
-		var audio = In.ar(in, 2) * vol;
+		var env = EnvGen.kr(Env.cutoff, gate, doneAction: 2);
+		var audio = In.ar(in, 2) * vol * env;
 		audio = BPeakEQ.ar(audio, 1600, 1.5, 8);
 		audio = BPeakEQ.ar(audio, 150, 1.2, 4);
 		//audio = Disintegrator.ar(audio, probability: 0.5, multiplier: -1);

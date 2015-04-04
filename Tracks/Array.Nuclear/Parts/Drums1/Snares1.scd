@@ -1,5 +1,3 @@
-var snares1Sections = Array.newClear(~sections.size);
-
 var snares = Pbind(*[
 	out: ~drums1EffectsBus,
 	instrument: \snares,
@@ -7,23 +5,29 @@ var snares = Pbind(*[
 	amp: Pseq([\, \, \, \, 1, \, \, \, \, 0.3, \, \, 1, \, \, \])
 ]);
 
-snares1Sections[0] = Array.newClear(~sections[0].size);
-snares1Sections[1] = Array.newClear(~sections[1].size);
+~track.mainSection.drums1Snares = (
+	for: {
+		|self, index|
+		self.patterns[index]
+	},
+	patterns: Array.newClear(~track.mainSection.length)
+);
+~track.silly.drums1Snares = (
+	for: {
+		|self, index|
+		nil
+	}
+);
 
-snares1Sections[0][0] = snares;
-snares1Sections[0][1] = snares;
-snares1Sections[0][2] = snares;
-snares1Sections[0][3] = nil;
-snares1Sections[0][4] = snares;
-snares1Sections[0][5] = nil;
-snares1Sections[0][6] = snares;
-snares1Sections[0][7] = snares;
-snares1Sections[0][8] = snares;
-snares1Sections[0][9] = snares;
-snares1Sections[0][10] = snares;
-snares1Sections[0][11] = snares;
-
-snares1Sections[1][0] = nil;
-snares1Sections[1][1] = nil;
-
-snares1Sections;
+~track.mainSection.drums1Snares.patterns[0] = snares;
+~track.mainSection.drums1Snares.patterns[1] = snares;
+~track.mainSection.drums1Snares.patterns[2] = snares;
+~track.mainSection.drums1Snares.patterns[3] = nil;
+~track.mainSection.drums1Snares.patterns[4] = snares;
+~track.mainSection.drums1Snares.patterns[5] = nil;
+~track.mainSection.drums1Snares.patterns[6] = snares;
+~track.mainSection.drums1Snares.patterns[7] = snares;
+~track.mainSection.drums1Snares.patterns[8] = snares;
+~track.mainSection.drums1Snares.patterns[9] = snares;
+~track.mainSection.drums1Snares.patterns[10] = snares;
+~track.mainSection.drums1Snares.patterns[11] = snares;

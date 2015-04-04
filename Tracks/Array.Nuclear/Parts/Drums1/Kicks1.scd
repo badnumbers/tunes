@@ -1,5 +1,3 @@
-var kicks1Sections = Array.newClear(~sections.size);
-
 var kicks = Pbind(*[
 	out: ~drums1EffectsBus,
 	instrument: \kicks,
@@ -14,23 +12,29 @@ var shortKicks = Pbind(*[
 	amp: 1
 ]);
 
-kicks1Sections[0] = Array.newClear(~sections[0].size);
-kicks1Sections[1] = Array.newClear(~sections[1].size);
+~track.mainSection.drums1Kicks = (
+	for: {
+		|self, index|
+		self.patterns[index]
+	},
+	patterns: Array.newClear(~track.mainSection.length)
+);
+~track.silly.drums1Kicks = (
+	for: {
+		|self, index|
+		nil
+	}
+);
 
-kicks1Sections[0][0] = kicks;
-kicks1Sections[0][1] = kicks;
-kicks1Sections[0][2] = kicks;
-kicks1Sections[0][3] = nil;
-kicks1Sections[0][4] = kicks;
-kicks1Sections[0][5] = shortKicks;
-kicks1Sections[0][6] = kicks;
-kicks1Sections[0][7] = kicks;
-kicks1Sections[0][8] = kicks;
-kicks1Sections[0][9] = kicks;
-kicks1Sections[0][10] = kicks;
-kicks1Sections[0][11] = kicks;
-
-kicks1Sections[1][0] = nil;
-kicks1Sections[1][1] = nil;
-
-kicks1Sections;
+~track.mainSection.drums1Kicks.patterns[0] = kicks;
+~track.mainSection.drums1Kicks.patterns[1] = kicks;
+~track.mainSection.drums1Kicks.patterns[2] = kicks;
+~track.mainSection.drums1Kicks.patterns[3] = nil;
+~track.mainSection.drums1Kicks.patterns[4] = kicks;
+~track.mainSection.drums1Kicks.patterns[5] = shortKicks;
+~track.mainSection.drums1Kicks.patterns[6] = kicks;
+~track.mainSection.drums1Kicks.patterns[7] = kicks;
+~track.mainSection.drums1Kicks.patterns[8] = kicks;
+~track.mainSection.drums1Kicks.patterns[9] = kicks;
+~track.mainSection.drums1Kicks.patterns[10] = kicks;
+~track.mainSection.drums1Kicks.patterns[11] = kicks;

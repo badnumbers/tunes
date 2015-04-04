@@ -1,5 +1,3 @@
-var leadSections = Array.newClear(~sections.size);
-
 var lead1 = Pbind(*[
 	type: Pseq([\on, \set, \set, \set]),
 	id: ~leadId1,
@@ -181,23 +179,29 @@ var lead12 = Pbind(*[
 	filtEnvAmt: 15
 ]);
 
-leadSections[0] = Array.newClear(~sections[0].size);
-leadSections[1] = Array.newClear(~sections[1].size);
+~track.mainSection.lead = (
+	for: {
+		|self, index|
+		self.patterns[index]
+	},
+	patterns: Array.newClear(~track.mainSection.length)
+);
+~track.silly.lead = (
+	for: {
+		|self, index|
+		nil
+	},
+);
 
-leadSections[0][0] = lead1;
-leadSections[0][1] = lead2;
-leadSections[0][2] = lead3;
-leadSections[0][3] = lead4;
-leadSections[0][4] = lead5;
-leadSections[0][5] = lead6;
-leadSections[0][6] = lead7;
-leadSections[0][7] = lead8;
-leadSections[0][8] = lead9;
-leadSections[0][9] = lead10;
-leadSections[0][10] = lead11;
-leadSections[0][11] = lead12;
-
-leadSections[1][0] = nil;
-leadSections[1][1] = nil;
-
-leadSections;
+~track.mainSection.lead.patterns[0] = lead1;
+~track.mainSection.lead.patterns[1] = lead2;
+~track.mainSection.lead.patterns[2] = lead3;
+~track.mainSection.lead.patterns[3] = lead4;
+~track.mainSection.lead.patterns[4] = lead5;
+~track.mainSection.lead.patterns[5] = lead6;
+~track.mainSection.lead.patterns[6] = lead7;
+~track.mainSection.lead.patterns[7] = lead8;
+~track.mainSection.lead.patterns[8] = lead9;
+~track.mainSection.lead.patterns[9] = lead10;
+~track.mainSection.lead.patterns[10] = lead11;
+~track.mainSection.lead.patterns[11] = lead12;
