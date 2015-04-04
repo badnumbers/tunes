@@ -19,34 +19,34 @@ var drums = Ppar([
 	])
 ]);
 
-~track.mainSection.drums2 = (
+t.mainSection.drums2 = (
 	for: {
 		|self, index|
 		if (self.patterns[index] == nil, {
 			nil
 		}, {
 				var effects = Synth(\drums2Effects, [\in: ~drums2EffectsBus, \out: 0, \operation, 0]);
-				~functions.playThenKill(self.patterns[index], effects);
+				f.playThenKill(self.patterns[index], effects);
 		});
 	},
-	patterns: Array.newClear(~track.mainSection.length)
+	patterns: Array.newClear(t.mainSection.length)
 );
-~track.silly.drums2 = (
+t.silly.drums2 = (
 	for: {
 		|self, index|
 		nil
 	}
 );
 
-~track.mainSection.drums2.patterns[0] = nil;
-~track.mainSection.drums2.patterns[1] = nil;
-~track.mainSection.drums2.patterns[2] = nil;
-~track.mainSection.drums2.patterns[3] = drums;
-~track.mainSection.drums2.patterns[4] = nil;
-~track.mainSection.drums2.patterns[5] = nil;
-~track.mainSection.drums2.patterns[6] = nil;
-~track.mainSection.drums2.patterns[7] = nil;
-~track.mainSection.drums2.patterns[8] = nil;
-~track.mainSection.drums2.patterns[9] = nil;
-~track.mainSection.drums2.patterns[10] = nil;
-~track.mainSection.drums2.patterns[11] = nil;
+t.mainSection.drums2.patterns[0] = nil;
+t.mainSection.drums2.patterns[1] = nil;
+t.mainSection.drums2.patterns[2] = nil;
+t.mainSection.drums2.patterns[3] = drums;
+t.mainSection.drums2.patterns[4] = nil;
+t.mainSection.drums2.patterns[5] = nil;
+t.mainSection.drums2.patterns[6] = nil;
+t.mainSection.drums2.patterns[7] = nil;
+t.mainSection.drums2.patterns[8] = nil;
+t.mainSection.drums2.patterns[9] = nil;
+t.mainSection.drums2.patterns[10] = nil;
+t.mainSection.drums2.patterns[11] = nil;

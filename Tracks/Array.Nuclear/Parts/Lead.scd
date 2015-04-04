@@ -179,29 +179,29 @@ var lead12 = Pbind(*[
 	filtEnvAmt: 15
 ]);
 
-~track.mainSection.lead = (
+t.mainSection.lead = (
 	for: {
 		|self, index|
 		self.patterns[index]
 	},
-	patterns: Array.newClear(~track.mainSection.length)
+	patterns: Array.newClear(t.mainSection.length)
 );
-~track.silly.lead = (
+t.silly.lead = (
 	for: {
 		|self, index|
 		nil
 	},
 );
 
-~track.mainSection.lead.patterns[0] = lead1;
-~track.mainSection.lead.patterns[1] = lead2;
-~track.mainSection.lead.patterns[2] = lead3;
-~track.mainSection.lead.patterns[3] = lead4;
-~track.mainSection.lead.patterns[4] = lead5;
-~track.mainSection.lead.patterns[5] = lead6;
-~track.mainSection.lead.patterns[6] = lead7;
-~track.mainSection.lead.patterns[7] = lead8;
-~track.mainSection.lead.patterns[8] = lead9;
-~track.mainSection.lead.patterns[9] = lead10;
-~track.mainSection.lead.patterns[10] = lead11;
-~track.mainSection.lead.patterns[11] = lead12;
+t.mainSection.lead.patterns[0] = lead1;
+t.mainSection.lead.patterns[1] = lead2;
+t.mainSection.lead.patterns[2] = lead3;
+t.mainSection.lead.patterns[3] = lead4;
+t.mainSection.lead.patterns[4] = lead5;
+t.mainSection.lead.patterns[5] = lead6;
+t.mainSection.lead.patterns[6] = lead7;
+t.mainSection.lead.patterns[7] = lead8;
+t.mainSection.lead.patterns[8] = lead9;
+t.mainSection.lead.patterns[9] = lead10;
+t.mainSection.lead.patterns[10] = lead11;
+t.mainSection.lead.patterns[11] = lead12;

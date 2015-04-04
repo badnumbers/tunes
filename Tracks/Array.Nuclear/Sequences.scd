@@ -1,31 +1,11 @@
 (
 // Initialisation
-w = 1;
-h = 0.5;
-q = 0.25;
+"Global.scd".loadRelative[0];
 ~bpm = 150;
 TempoClock.default.tempo = ~bpm/60;
-~track = (
-	mainSection: (length: 12),
-	silly: (length: 2)
-);
 ~leadId1 = 50;
 ~leadId2 = 51;
-~functions = (
-	playThenKill: {
-		|self, pattern, synth|
-		Pseq([
-			pattern,
-			Pbind(
-				\id, synth,
-				\type, \set,
-				\gate, Pseq([0]),
-				\args, [\gate],
-				\delta, 0
-			)
-		])
-	}
-);)
+)
 
 (
 // Busses
@@ -62,14 +42,14 @@ Pdef(\track,
 	Pspawner({ | sp |
 		1.do {
 			~structure.value.do { |currentSection|
-				var sectionLength = ~track[currentSection].length;
+				var sectionLength = t[currentSection].length;
 				sectionLength.do({
 					|index|
 					sp.seq(
 						Ppar(
 							~activeTracks.value.deepCollect(2, {
 								|track|
-								~track[currentSection][track].for(index)
+								t[currentSection][track].for(index)
 							})
 						)
 					);
@@ -82,7 +62,6 @@ Pdef(\track,
 ).play;
 )
 Pdef(\track).stop;
-~track.mainSection.drums1.patterns[0]
 // s.freqscope;
 
 // This sounds amazing:
