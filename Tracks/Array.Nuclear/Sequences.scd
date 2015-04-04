@@ -61,7 +61,7 @@ OSCdef(\test, {|msg, time, addr, recvPort| ~acidCutoffBus.value = msg[1];~acidRe
 ~drums1 = [\drums1Hats];
 ~activeTracks = {
 	[\chords, \acid, \lead, \drums1Hats, \drums1Kicks, \drums1Snares];
-	[\drums1Hats];
+	[\chords, \acid, \lead, \drums1Hats];
 };
 )
 (
@@ -88,32 +88,8 @@ Pdef(\track,
 ).play;
 )
 Pdef(\track).stop;
-// s.freqscope;
-(
-var effects = Synth(\effects, [\in: ~drums1EffectsBus, \out: 0]);
-~functions.playThenKill(~track.mainSection.drums1Hats.patterns[0], effects).play;
-)
-(
-~functions = (
-	playThenKill: {
-		|self, pattern, synth|
-		Pseq([
-			pattern,
-			Pbind(
-				\id, synth,
-				\type, \set,
-				\gate, Pseq([0]),
-				\args, [\gate],
-				\delta, 0
-			)
-		])
-	}
-);
-)
-~wank
-~wank.set(\gate, 0)
 ~track.mainSection.drums1Hats.for(0).play
-~activeTracks.value.deepCollect(2, {|item| item.postln})
+// s.freqscope;
 
 // This sounds amazing:
 /*bass = Pbind(*[
