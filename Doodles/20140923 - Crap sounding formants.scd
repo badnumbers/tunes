@@ -1,9 +1,11 @@
 (
+TempoClock.default.tempo = 1;
+)
+(
 SynthDef(\formants,
 	{
 		|freq, amp, gate = 1|
 		var audio, env, switch, formants, diff1, diff2, diff3, diff4;
-		//freq = MouseY.kr(200, 2000).poll;
 		freq = Lag.kr(freq, 0.05);
 		switch = EnvGen.kr(Env.cutoff, gate, doneAction: 2);
 		env = EnvGen.kr(Env.adsr(0.1, 0.2, 0.7, 0.1, amp, curve:4 ), gate);
@@ -16,7 +18,7 @@ SynthDef(\formants,
 		diff1 = min((freq - 900 / 100).abs, 1);
 		diff2 = min((freq - 1800 / 300).abs, 1);
 		diff3 = min((freq - 360 / 20).abs, 1);
-		diff4 = min((freq - 450 / 30).abs, 1).poll;
+		diff4 = min((freq - 450 / 30).abs, 1);
 		formants = formants * diff1 * diff2 * diff3 * diff4;
 		formants = FreeVerb.ar(formants, room: 0.5, damp: 1);
 		audio = audio + formants;
@@ -25,10 +27,6 @@ SynthDef(\formants,
 	}
 ).add;
 )
-
-x = Synth(\formants, [amp: 0.1]);
-x.free;
-
 (
 Pdef(\formants,
 	Pmono(\formants,

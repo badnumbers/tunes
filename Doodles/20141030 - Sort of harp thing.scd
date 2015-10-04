@@ -1,3 +1,6 @@
+(
+TempoClock.default.tempo = 1;
+)
 ~exciterBus = Bus.audio(s, 1);
 (
 SynthDef(\exciter,

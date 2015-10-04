@@ -1,5 +1,8 @@
+(
+TempoClock.default.tempo = 1;
 ~scale = Scale.new([0,2,3,4,6,7,9,10,12], 13, \bp);
 ~reverbBus = Bus.audio(s, 2);
+)
 (
 SynthDef(\plonk,
 	{
