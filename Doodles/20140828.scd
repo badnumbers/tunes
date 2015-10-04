@@ -1,4 +1,7 @@
+(
+TempoClock.default.tempo = 1;
 b = Bus.audio(s,  2);
+)
 (
 SynthDef(\plonk,
 	{
@@ -7,7 +10,7 @@ SynthDef(\plonk,
 		pulseWidthLfo = SinOsc.kr(8).range(0, 1);
 		audio = Mix.new(Pulse.ar([freq, freq * 0.995, freq * 1.005], 0.5 + (pulseWidthLfo * wobbleAmt))) * amp;
 		filtEnv = EnvGen.kr(Env.adsr(0.1, 0.5, 0.2, 1, curve: 4), gate);
-		audio = RLPF.ar(audio, freq * filtEnv * cutoff, 0.8);
+		audio = RLPF.ar(audio, min(freq * filtEnv * cutoff, 30000), 0.8);
 		env = EnvGen.kr(Env.adsr(0.05, 0.3, 0.5, 0.2), gate, doneAction: 2);
 		audio = Pan2.ar(audio * env, pan);
 		Out.ar(out, audio);
