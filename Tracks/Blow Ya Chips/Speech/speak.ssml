@@ -1,0 +1,14 @@
+
+    <s xml:lang="en-uk">
+      <voice name="David" gender="male" age="25">
+<prosody rate="0.66">
+        <prosody rate="1.2">I</prosody>
+<prosody rate="1.5">make</prosody>
+<prosody rate="2.5">it</prosody>
+<prosody rate="1.4">funky</prosody>
+<prosody rate="1.1">with</prosody>
+<prosody rate="1.1">my</prosody>
+<prosody rate="0.82">supercollider synthesiser</prosody>
+</prosody>
+      </voice>
+    </s>
