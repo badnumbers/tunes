@@ -16,18 +16,18 @@ Pproto({
 	~fsynth = (type: \on, instrument: \acid, addAction: 1, db: -30).yield;
 	~fControl = [\set, ~fsynth[\id], ~fsynth[\msgFunc] ];
 }, [
-	Pbind(*[
-		#[type, id, msgFunc],    Pkey(\fControl), // fetch the parameters from the environment
-		octave: 4,
-		degree: Pseq((0..3)),
-		dur:    1
-	]),
-	Pbind(*[
-		#[type, id, msgFunc],    Pkey(\fControl), // fetch the parameters from the environment
-		cutoff: Pseq((5..20)) * 100,
-		args: #[cutoff],
-		dur:    0.25
-	])
+	Pbind(
+		[\type, \id, \msgFunc],    Pkey(\fControl), // fetch the parameters from the environment
+		\octave, 4,
+		\degree, Pseq((0..3)),
+		\dur, 1
+	),
+	Pbind(
+		[\type, \id, \msgFunc],    Pkey(\fControl), // fetch the parameters from the environment
+		\cutoff, Pseq((5..20)) * 100,
+		\args, #[cutoff],
+		\dur,    0.25
+	)
 ]
 ).play;
 ) 
