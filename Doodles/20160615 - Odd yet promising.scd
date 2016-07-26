@@ -192,16 +192,16 @@ Pdef(\pluck,
 			\jumpOctave, Pwrand([0,1],[20,1].normalizeSum),
 			\degree, Pwrand([0,1,2,3],[30,1,1,1].normalizeSum),
 			#[\amp,\dur], Pwrand([
-				[0.15,1],
+				[0.25,1],
 				Pseq([
-					[0.15,0.5],
-					[0.08,0.5]
+					[0.25,0.5],
+					[0.13,0.5]
 				]),
 				],
 				[5,1].normalizeSum),
 			\outdry, 0,
 			\outwet, b.reverb,
-			\fx, Pbrown(-5.0,0.6,0.3).max(0)
+			\fx, Pbrown(-5.0,0.8,0.3).max(0)
 		)
 	],inf)
 );
@@ -284,23 +284,71 @@ Pdef(\shhhhft,
 Pdef(\bongos,
 	Pmono(
 		\bongos,
-		#[\dur,\hit,\amp], Pseq([
-			[h,0,0.1],
+		#[\dur,\hit,\baseAmp], Pseq([
 			Prand([
-				[h,1,0.1],
-				[h,2,0.1],
-				Pseq([[q,2,0.1],[q,2,0.1]])
-			])
+				Prand([[w,0,0.17]],Pseq([[h,0,0.17],[h,0,0.1]])),
+				Pseq([[h,0,0.17],Prand([[h,1,0.07],Pseq([[q,1,0.07],[q,1,0.04]])])])
+			]),
+			Prand([
+				[w,1,0.1],
+				Pseq([[h,1,0.1],[h,1,0.07]]),
+				Pseq([[h,1,0.1],[q,1,0.07],[q,1,0.05]]),
+				Pseq([[q,1,0.08],[q,1,0.04],[h,1,0.06]]),
+				Pseq([[q,1,0.08],[q,1,0.04],[h,2,0.04]])
+			]),
+			Prand([
+				Prand([[w,0,0.17]],Pseq([[h,0,0.17],[h,0,0.1]])),
+				Pseq([[h,0,0.17],Prand([[h,1,0.07],Pseq([[q,1,0.07],[q,1,0.04]])])])
+			]),
+			Prand([
+				[w,1,0.1],
+				Pseq([[h,1,0.1],[h,1,0.07]]),
+				Pseq([[h,1,0.1],[q,1,0.07],[q,1,0.05]]),
+				Pseq([[q,1,0.08],[q,1,0.04],[h,1,0.06]]),
+				Pseq([[q,1,0.08],[q,1,0.04],[h,2,0.04]])
+			]),
+			Prand([
+				Prand([[w,0,0.17]],Pseq([[h,0,0.17],[h,0,0.1]])),
+				Pseq([[h,0,0.17],Prand([[h,1,0.07],Pseq([[q,1,0.07],[q,1,0.04]])])])
+			]),
+			Prand([
+				[w,1,0.1],
+				Pseq([[h,1,0.1],[h,1,0.07]]),
+				Pseq([[h,1,0.1],[q,1,0.07],[q,1,0.05]]),
+				Pseq([[q,1,0.08],[q,1,0.04],[h,1,0.06]]),
+				Pseq([[q,1,0.08],[q,1,0.04],[h,2,0.04]])
+			]),
+			Prand([
+				Prand([[w,0,0.17]],Pseq([[h,0,0.17],[h,0,0.1]])),
+				Pseq([[h,0,0.17],Prand([[h,1,0.07],Pseq([[q,1,0.07],[q,1,0.04]])])])
+			]),
+			Prand([
+				[w,1,0.1],
+				Pseq([[h,1,0.1],[h,1,0.07]]),
+				Pseq([[h,1,0.1],[q,1,0.07],[q,1,0.05]]),
+				Pseq([[q,1,0.08],[q,1,0.04],[h,1,0.06]]),
+				Pseq([[q,1,0.08],[q,1,0.04],[h,2,0.04]])
+			]),
+			Prand([
+				Prand([[w,0,0.17]],Pseq([[h,0,0.17],[h,0,0.1]])),
+				Pseq([[h,0,0.17],Prand([[h,1,0.07],Pseq([[q,1,0.07],[q,1,0.04]])])])
+			]),
+			[w,2,0.1],
 		],inf),
-		#[\trig, \lossStart, \lossEnd, \tensionStart, \tensionEnd, \tensionEnvDur],
+		#[\trig, \baseLossStart, \baseLossEnd, \tensionStart, \tensionEnd, \tensionEnvDur],
 		Pswitch([
-			[1,0.9997,0.9997,0.008,0.004,0.10], // kick
+			[1,0.9997,0.9997,0.008,0.012,0.35], // kick
 			[1,0.999,0.999,0.05,0.05,0.35], // high
 			[1,0.99,0.99,0.09,0.09,0.35], //click
 			[\,\,\,\,\,\], //rest
-		], Pkey(\hit,inf))
+		], Pkey(\hit,inf)),
+		\lossDistortion, Pbrown(0.2,1.1,0.05,inf).max(1),
+		\lossStart, Pkey(\baseLossStart),
+		\lossEnd, Pkey(\baseLossEnd) * Pkey(\lossDistortion),
+		\ampScaling, ((0.1 - (Pkey(\lossDistortion) - 1))*10),
+		\amp, Pkey(\baseAmp) * Pkey(\ampScaling) * 0.7
 	)
-).play;
+)
 )
 (
 Pdef(\pad,
@@ -308,7 +356,7 @@ Pdef(\pad,
 		PmonoArtic(
 			\pad,
 			\scale, Pfunc({m.scaleChord((0..6))}),
-			\octave, 6,
+			\octave, 5,
 			\freqSpread, 0.005,
 			\degree, Pseq([Pseq([0,4]),Pseq([2,5]),Pseq([6,5,6,7])]),
 			\dur, Pseq([Pseq([4,8]),Pseq([4,8]),Pseq([4,2,2,8])]),
@@ -365,7 +413,7 @@ Pdef(\pluck).quant = Quant(10);
 Pdef(\bowed).quant = Quant(10);
 Pdef(\shhhhft).quant = Quant(10);
 Pdef(\structure).quant = Quant(10,0,0.1);
-Pdef(\bongos).quant = Quant(10);
+Pdef(\bongos).quant = Quant(10,1);
 Pdef(\piano).quant = Quant(10);
 Pdef(\pad).quant = Quant(40);
 )
