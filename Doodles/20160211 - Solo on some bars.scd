@@ -41,6 +41,19 @@ SynthDef(\bip,
 		Out.ar(out,audio);
 	}
 ).add;
+SynthDef(\click,
+	{
+		|amp = 0.1,out=0, cutoff = 1000,pan=0,decay=0.1|
+		var audio, env, attwarp, decwarp;
+		attwarp = LFNoise0.kr(mul:0.5) + 1;
+		decwarp = LFNoise0.kr(mul:0.7,add:0.3) * decay + 1;
+		env = EnvGen.kr(Env([0,1,0],[0.005 * attwarp,0.05 * decwarp],[3,-3]),1,amp,doneAction:2);
+		audio = PinkNoise.ar(env);
+		audio = LPF.ar(audio,cutoff);
+		audio = Pan2.ar(audio,pan);
+		Out.ar(out,audio);
+	}
+).add;
 )
 
 (
@@ -77,7 +90,7 @@ p.twang.a = Pbind(
 	\amp, Pseq([4,7,5,8,5,9,4,8]/80,inf)*Pbrown(0.4,1.2,0.03,inf),
 	\pan, Pbrown(-0.5,-0.2,0.03,inf),
 	\dur, h,
-	\timingOffset, Pbrown(-0.05,0.05,0.02)
+	\timingOffset, Pbrown(-0.03,0.03,0.02)
 );
 p.bip.a = Pbind(
 	\instrument, \bip,
@@ -183,3 +196,17 @@ Pdef(\structure).play;
 Pdef(\twang).stop;
 Pdef(\bip).stop;
 Pdef(\structure).stop;
+
+(
+Pdef(\taps,
+	Pbind(
+		\instrument, \click,
+		\amp,Pbrown(0.6,1.5,0.07,inf) * Pseq([1,0.6],inf),
+		\dur, Pseq([q+(q/5),q-(q/5)],inf),
+		\cutoff, Pwhite(800,1200,inf),
+		\pan, Pbrown(-1.0,1.0,0.2,inf),
+		\timingOffset, Pbrown(-0.02,0.02,0.02) + 0.02,
+		\decay, Pseq([0.05,0.05, 0.05,0.05, 0.05,0.05, 0.9,0.05, 0.05,0.05, 0.05,0.05, 0.9,0.05, 0.05,0.05],inf)
+	)
+).play;
+)
