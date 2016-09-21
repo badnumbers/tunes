@@ -76,7 +76,8 @@ p.twang.a = Pbind(
 	\twanginess, Pseq([Pkey(\toptwang),Pkey(\bottomtwang)],inf),
 	\amp, Pseq([4,7,5,8,5,9,4,8]/80,inf)*Pbrown(0.4,1.2,0.03,inf),
 	\pan, Pbrown(-0.5,-0.2,0.03,inf),
-	\dur, h
+	\dur, h,
+	\timingOffset, Pbrown(-0.05,0.05,0.02)
 );
 p.bip.a = Pbind(
 	\instrument, \bip,
@@ -102,6 +103,7 @@ p.bip.a = Pbind(
 		Pseq(h!6),
 		Pseq(q!12),
 	],inf),
+	\timingOffset, Pbrown(-0.05,0.05,0.02),
 	\amp, 0.4
 );
 p.twang.b = p.twang.a;
