@@ -22,6 +22,7 @@ Pdef(\bass,
 	)
 ).play;
 )
+
 (
 Pdef(\melody,
 	Pbind(
@@ -37,22 +38,27 @@ Pdef(\melody,
 				Pseq([0,-1,0,-1,0,2,0]),
 				Pseq([0,[1,2],0,[2,3]]),
 				Pseq([0,2],[0,1],[0,2]),
-				Pseq([0,2,0,2])
+				Pseq([0,2,0,2]),
+				Pseq([\],Prand([2,4,8])),
+				Pseq([\],Prand([4,8,16])),
+				Pseq([\],Prand([8,16,32]))
 			]),
 			Prand([
 				Pseq([0,1,2]),
 				Pseq([0,-1,0,1,2]),
 				Pseq([0,-1,0,-1,0,2,0]),
 				Pseq([3,0,3,2]),
-		]),],Pkey(\quarters)) + Pkey(\offset),
+		])
+		],Pkey(\quarters)) + Pkey(\offset),
 		\dur, Pswitch([
 			Prand([Pseq(h!1),Pseq(q!2)]),
-			Prand([Pseq(q!2),Pseq(q!2),Pseq(q!2),Pseq([e,e,q],Pseq([q,e,e]))])],
-		Pkey(\quarters)),
+			Prand([Pseq(q!2),Pseq(q!2),Pseq(q!2),Pseq([e,e,q],Pseq([q,e,e]))])
+		],Pkey(\quarters)),
 		\timingOffset, Pbrown(-0.02,0.02,0.005,inf)
 	)
 ).play;
 )
+
 (
 Pdef(\harmony,
 	Pbind(
@@ -61,7 +67,8 @@ Pdef(\harmony,
 		\setChord, Pfunc({|e|m.chord=e.chord}),
 		\scale, Pseq([Scale.major,Scale.major,Scale.phrygian,Scale.phrygian,Scale.major,Scale.major,Scale.major,Scale.major,Scale.major,Scale.major,Scale.aeolian,Scale.major],inf),
 		\setChord, Pfunc({|e|m.scale=e.scale}),
-		\dur,c.beatsPerBar
+		\dur,c.beatsPerBar,
+		\readout, Pfunc({|e|postln(e.chord)})
 	)
 ).play;
 )
