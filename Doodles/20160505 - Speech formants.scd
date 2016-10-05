@@ -42,6 +42,99 @@ SynthDef(\formants,
 )
 
 (
+if (d.isNil, d = ());
+d.formants = (
+	tenor: (
+		a: (
+			f1: 650,
+			f2: 1080,
+			f3: 2650,
+			f4: 2900,
+			f5: 3250,
+			db1: 0,
+			db2: -6,
+			db3: -7,
+			db4: -8,
+			db5: -22,
+			bw1: 80,
+			bw2: 90,
+			bw3: 120,
+			bw4: 130,
+			bw5: 140
+		),
+		e: (
+			f1: 400,
+			f2: 1700,
+			f3: 2600,
+			f4: 3200,
+			f5: 3580,
+			db1: 0,
+			db2: -14,
+			db3: -12,
+			db4: -14,
+			db5: -20,
+			bw1: 70,
+			bw2: 80,
+			bw3: 100,
+			bw4: 120,
+			bw5: 120
+		),
+		i: (
+			f1: 290,
+			f2: 1870,
+			f3: 2800,
+			f4: 3250,
+			f5: 3540,
+			db1: 0,
+			db2: -15,
+			db3: -18,
+			db4: -20,
+			db5: -30,
+			bw1: 40,
+			bw2: 90,
+			bw3: 100,
+			bw4: 120,
+			bw5: 120
+		),
+		o: (
+			f1: 400,
+			f2: 800,
+			f3: 2600,
+			f4: 2800,
+			f5: 3000,
+			db1: 0,
+			db2: -10,
+			db3: -12,
+			db4: -12,
+			db5: -26,
+			bw1: 40,
+			bw2: 80,
+			bw3: 100,
+			bw4: 120,
+			bw5: 120
+		),
+		u: (
+			f1: 350,
+			f2: 600,
+			f3: 2700,
+			f4: 2900,
+			f5: 3300,
+			db1: 0,
+			db2: -20,
+			db3: -17,
+			db4: -14,
+			db5: -26,
+			bw1: 40,
+			bw2: 60,
+			bw3: 100,
+			bw4: 120,
+			bw5: 120
+		)
+	)
+);
+)
+
+(
 Pdef(\formants,
 	Pchain(
 		Pbind(
@@ -76,7 +169,7 @@ Pdef(\formants,
 					\degree,  Pseq([Pseq([\,0]),Pseq([2]),Pseq([0.1,2])]),
 					\dur, Pseq([h,w, w+w, q,q]),
 					\legato, Pseq([Pseq([\,1]),Pseq([0.9]),Pseq([0.9,0.9])]),
-					\amp, 0.3,
+					\amp, 0.1,
 					\freqLag, Pseq([Pseq([\,0]),Pseq([3]),Pseq([0,0])])
 				),
 				PmonoArtic(
@@ -85,7 +178,7 @@ Pdef(\formants,
 					\degree,  Pseq([Pseq([\,1]),Pseq([\]),Pseq([2,4])]),
 					\dur, Pseq([h,w, w+w, q,q]),
 					\legato, Pseq([Pseq([\,0.9]),Pseq([\]),Pseq([0.9,0.9])]),
-					\amp, 0.3,
+					\amp, 0.1,
 					\freqLag, Pseq([Pseq([\,0]),Pseq([\]),Pseq([0,0])])
 				)
 			]),
@@ -96,7 +189,7 @@ Pdef(\formants,
 					\degree,  Pseq([Pseq([\,\,0]),Pseq([2,4]),Pseq([0,0,3,0]),Pseq([0,2,0,0.1])]),
 					\dur, Pseq([q,q,w, q,q, q,q,q,q, q,q,q,q]),
 					\legato, Pseq([Pseq([\,\,1]),Pseq([1,1]),Pseq([1,1,1,1]),Pseq([1,1,1,0.8])]),
-					\amp, 0.3
+					\amp, 0.1
 				),
 				PmonoArtic(
 					\formants,
@@ -104,7 +197,7 @@ Pdef(\formants,
 					\degree,  Pseq([Pseq([\,\,1]),Pseq([4,6]),Pseq([1,1,5,1]),Pseq([1,3,1,2])]),
 					\dur, Pseq([q,q,w, q,q, q,q,q,q, q,q,q,q]),
 					\legato, Pseq([Pseq([\,\,1]),Pseq([1,1]),Pseq([1,1,1,1]),Pseq([1,1,1,0.8])]),
-					\amp, 0.3,
+					\amp, 0.1,
 					\freqLag, Pseq([Pseq([\,\,0.1]),Pseq([0.1,0.1]),Pseq([0.1,0.1]),Pseq([0.1,0.1,0.1,0.1])],inf),
 				)
 			])
@@ -113,97 +206,3 @@ Pdef(\formants,
 ).play;
 )
 Pdef(\formants).stop;
-(
-d = (
-	formants: (
-		tenor: (
-			a: (
-				f1: 650,
-				f2: 1080,
-				f3: 2650,
-				f4: 2900,
-				f5: 3250,
-				db1: 0,
-				db2: -6,
-				db3: -7,
-				db4: -8,
-				db5: -22,
-				bw1: 80,
-				bw2: 90,
-				bw3: 120,
-				bw4: 130,
-				bw5: 140
-			),
-			e: (
-				f1: 400,
-				f2: 1700,
-				f3: 2600,
-				f4: 3200,
-				f5: 3580,
-				db1: 0,
-				db2: -14,
-				db3: -12,
-				db4: -14,
-				db5: -20,
-				bw1: 70,
-				bw2: 80,
-				bw3: 100,
-				bw4: 120,
-				bw5: 120
-			),
-			i: (
-				f1: 290,
-				f2: 1870,
-				f3: 2800,
-				f4: 3250,
-				f5: 3540,
-				db1: 0,
-				db2: -15,
-				db3: -18,
-				db4: -20,
-				db5: -30,
-				bw1: 40,
-				bw2: 90,
-				bw3: 100,
-				bw4: 120,
-				bw5: 120
-			),
-			o: (
-				f1: 400,
-				f2: 800,
-				f3: 2600,
-				f4: 2800,
-				f5: 3000,
-				db1: 0,
-				db2: -10,
-				db3: -12,
-				db4: -12,
-				db5: -26,
-				bw1: 40,
-				bw2: 80,
-				bw3: 100,
-				bw4: 120,
-				bw5: 120
-			),
-			u: (
-				f1: 350,
-				f2: 600,
-				f3: 2700,
-				f4: 2900,
-				f5: 3300,
-				db1: 0,
-				db2: -20,
-				db3: -17,
-				db4: -14,
-				db5: -26,
-				bw1: 40,
-				bw2: 60,
-				bw3: 100,
-				bw4: 120,
-				bw5: 120
-			)
-		)
-	);
-);
-)
-s.meter
