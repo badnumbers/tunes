@@ -6,7 +6,7 @@ c.tempo = 1.5;
 m = (
 	chord: 0,
 	scale: Scale.phrygian(\just),
-	localScale: {
+	scaleChord: {
 		|self,voicing|
 		var notes = voicing + self.chord;
 		Scale(self.scale.degrees.wrapAt(notes).sort);
@@ -20,11 +20,6 @@ if (f.isNil, f = ());
 
 (
 b.arpegEchoes = Bus.audio(s,2);
-)
-
-(
-f.arpegEchoes.free;
-f.arpegEchoes = Synth(\arpegEchoes,[in:b.arpegEchoes,delay:(0.5/3)/c.tempo,decay:1]);
 )
 
 (
@@ -66,11 +61,16 @@ SynthDef(\arpegEchoes,
 )
 
 (
+f.arpegEchoes.free;
+f.arpegEchoes = Synth(\arpegEchoes,[in:b.arpegEchoes,delay:(0.5/3)/c.tempo,decay:1]);
+)
+
+(
 Pdef(\pad,
 	Ppar([
 		Pbind(
 			\instrument, \pad,
-			\scale, Pfunc({m.localScale([0,2,4])}),
+			\scale, Pfunc({m.scaleChord([0,2,4])}),
 			\degree, Pseq([[1,3]]),
 			\cutoffScale, 7,
 			\gain, 1,
@@ -87,7 +87,7 @@ Pdef(\arpeg,
 	Pbind(
 		\instrument, \arpeg,
 		\octave, 4,
-		\scale, Pfunc({m.localScale([0,2,4])}),
+		\scale, Pfunc({m.scaleChord([0,2,4])}),
 		\degree, Pseq([0,1,2],inf),
 		\dur, Pseq([t,t,u],inf)
 	)
@@ -100,7 +100,7 @@ Pdef(\arpeg2,
 	Pbind(
 		\instrument, \arpeg,
 		\octave, Pwrand([5,6],[10,1].normalizeSum,inf),
-		\scale, Pfunc({m.localScale([0,2,4,6])}),
+		\scale, Pfunc({m.scaleChord([0,2,4,6])}),
 		\degree, Prand([
 			Pseq([0,1,2]),
 			Pseq([0,1,2,3,2,1]),
