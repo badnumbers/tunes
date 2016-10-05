@@ -19,8 +19,7 @@ if (f.isNil, f = ());
 )
 
 (
-b.arpegEchoes = Bus.audio(s,2)
-);
+b.arpegEchoes = Bus.audio(s,2);
 )
 
 (
