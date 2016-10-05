@@ -24,7 +24,7 @@ b.arpegEchoes = Bus.audio(s,2);
 
 (
 f.arpegEchoes.free;
-f.arpegEchoes = Synth(\arpegEchoes,[in:b.arpegEchoes,delay:(0.5/3)/t.tempo,decay:1]);
+f.arpegEchoes = Synth(\arpegEchoes,[in:b.arpegEchoes,delay:(0.5/3)/c.tempo,decay:1]);
 )
 
 (
