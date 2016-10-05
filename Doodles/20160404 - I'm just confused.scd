@@ -1,6 +1,6 @@
 (
 w=1;h=0.5;q=0.25;e=0.125;
-u=0.33;v=0.34;
+t=0.33;u=0.34;
 c = TempoClock.default;
 c.tempo = 1.5;
 m = (
@@ -89,7 +89,7 @@ Pdef(\arpeg,
 		\octave, 4,
 		\scale, Pfunc({m.localScale([0,2,4])}),
 		\degree, Pseq([0,1,2],inf),
-		\dur, Pseq([u,u,v],inf)
+		\dur, Pseq([t,t,u],inf)
 	)
 ).play;
 )
@@ -109,7 +109,7 @@ Pdef(\arpeg2,
 			Pseq([0,1,2,1,3,1]),
 		],inf),
 		\amp, 0.02,
-		\dur, Pseq([u,u,v],inf) /2,
+		\dur, Pseq([t,t,u],inf) /2,
 		\pan, Pwhite(0.5,0.2,inf),
 		\out, b.arpegEchoes
 	)
