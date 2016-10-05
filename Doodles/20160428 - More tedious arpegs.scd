@@ -13,11 +13,14 @@ m = (
 	bar: 0
 );
 c.tempo = 2;
+if (b.isNil, b = ());
+if (f.isNil, f = ());
 )
+
 (
-b = (
-	echoes: Bus.audio(s,2)
+b.echoes = Bus.audio(s,2)
 );
+
 )
 (
 SynthDef(\blip,
@@ -91,13 +94,16 @@ SynthDef(\acid,
 	}
 ).add;
 )
+
 (
 f.echoes.free;
-f = (
-	echoes: Synth(\echoes,[in: b.echoes]);
-);
+f.echoes = Synth(\echoes,[in: b.echoes]);
 )
+
+)
+
 f.echoes.set(\decaytime, 5);
+
 (
 Pdef(\acid,
 	Pseq([
@@ -131,6 +137,7 @@ Pdef(\acid,
 ).play;
 )
 Pdef(\acid).stop;
+
 (
 Pdef(\pad,
 	Pbind(
@@ -144,6 +151,7 @@ Pdef(\pad,
 ).play;
 )
 Pdef(\pad).stop;
+
 (
 Pdef(\blip,
 	Pseq([
@@ -174,6 +182,7 @@ Pdef(\blip,
 ).play;
 )
 Pdef(\blip).stop;
+
 (
 Pdef(\arpeg,
 	Pmono(
@@ -188,13 +197,14 @@ Pdef(\arpeg,
 		\cutoff, Pseq([0,0,-100,0, 0,-100,0,0, -100,0,0,-100, 0,0,-100,0],inf) + Pkey(\cutoffdrift),
 		\gaindrift, Pbrown(-0.5,1,0.3,inf),
 		\gain, Pseq([1.8,1.8,1,1.8, 1.8,1,1.8,1.8, 1,1.8,1.8,1, 1.8,1.8,1,1.8],inf) + Pkey(\gaindrift),
-		\amp, 0.15,
+		\amp, 0.1,
 		\cutoffGate, 1,
 		\bendTime, Pseq([0.01,0.01,0.2,0.01],inf)
 	)
 ).play;
 )
 Pdef(\arpeg).stop;
+
 (
 Pdef(\structure,
 	Ppar([
@@ -215,4 +225,3 @@ Pdef(\structure,
 ).play(quant: Quant(timingOffset: 0.1));
 )
 Pdef(\structure).stop;
-s.meter
