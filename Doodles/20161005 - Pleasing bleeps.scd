@@ -43,9 +43,9 @@ b.reverb = Bus.audio(s,2);
 
 (
 SynthDef(\help_sinegrain,
-    { arg out=0, freq=440, sustain=0.05;
+    { arg out=0, freq=440, sustain=0.05, amp=0.1;
         var env;
-        env = EnvGen.kr(Env.perc(0.01, sustain, 0.2), doneAction:2);
+        env = EnvGen.kr(Env.perc(0.01, sustain, amp), doneAction:2);
         Out.ar(out, SinOsc.ar(freq, 0, env))
     }
 ).add;
@@ -97,6 +97,7 @@ Pdef(\patterns,
 	],inf)
 ).play;
 )
+Pdef(\patterns,Pbind(\type,\rest)).fadeTime_(40).play;
 Pdef(\patterns).stop;
 
 (
