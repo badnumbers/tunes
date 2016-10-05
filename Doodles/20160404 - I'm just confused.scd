@@ -1,8 +1,8 @@
 (
 w=1;h=0.5;q=0.25;e=0.125;
 u=0.33;v=0.34;
-t = TempoClock.default;
-t.tempo = 1.5;
+c = TempoClock.default;
+c.tempo = 1.5;
 m = (
 	chord: 0,
 	scale: Scale.phrygian(\just),
@@ -14,16 +14,20 @@ m = (
 	foo: 0,
 	bar: 0
 );
-b = (
-	arpegEchoes: Bus.audio(s,2)
+if (b.isNil, b = ());
+if (f.isNil, f = ());
+)
+
+(
+b.arpegEchoes = Bus.audio(s,2)
 );
 )
+
 (
 f.arpegEchoes.free;
-f = (
-	arpegEchoes: Synth(\arpegEchoes,[in:b.arpegEchoes,delay:(0.5/3)/t.tempo,decay:1]);
-);
+f.arpegEchoes = Synth(\arpegEchoes,[in:b.arpegEchoes,delay:(0.5/3)/t.tempo,decay:1]);
 )
+
 (
 SynthDef(\arpeg,
 	{
@@ -61,6 +65,7 @@ SynthDef(\arpegEchoes,
 	}
 ).add;
 )
+
 (
 Pdef(\pad,
 	Ppar([
@@ -76,7 +81,8 @@ Pdef(\pad,
 	],inf)
 ).play;
 )
-Pdef(\pad).stop
+Pdef(\pad).stop;
+
 (
 Pdef(\arpeg,
 	Pbind(
@@ -89,6 +95,7 @@ Pdef(\arpeg,
 ).play;
 )
 Pdef(\arpeg).stop;
+
 (
 Pdef(\arpeg2,
 	Pbind(
@@ -110,6 +117,7 @@ Pdef(\arpeg2,
 ).play;
 )
 Pdef(\arpeg2).stop;
+
 (
 Pdef(\structure,
 	Ppar([
@@ -117,25 +125,25 @@ Pdef(\structure,
 			\type,\rest,
 			\list,Pseq([0,0,0,0,2,2,0,0,0,0,3,3,0,0,0,0,4,4,3,2,0,0,0,0,1,1,6,6,5,5,4,4,4,4]),
 			\item,Pkey(\list).collect({|x|m.chord=x}),
-			\dur,t.beatsPerBar,
+			\dur,c.beatsPerBar,
 		),
 		Pbind(
 			\type,\rest,
 			\list,Pseq([0,0,1,1,0,0,0,0,2,2,0,0,0,0,1,1,0,0,0,0,0,0,2,2,0,0,0,0,0,0,0,0,2,2]),
 			\item,Pswitch([Scale.phrygian,Scale.dorian,Scale.lydian],Pkey(\list)).collect({|x|m.scale=x}),
-			\dur,t.beatsPerBar,
+			\dur,c.beatsPerBar,
 		),
 		Pbind(
 			\type,\rest,
 			\list, Pseq([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33]),
 			\item,Pkey(\list).collect({|x|m.bar=x}),
-			\dur,t.beatsPerBar,
+			\dur,c.beatsPerBar,
 		),
 		Pbind(
 			\type,\rest,
 			\list, Pseq([0,0,0,0,0,0,1,1,1,1,1,1,2,2,2,2,2,2,3,3,3,3,4,4,4,4,4,4,5,5,5,5,5,5]),
 			\item,Pkey(\list).collect({|x|m.foo=x}),
-			\dur,t.beatsPerBar,
+			\dur,c.beatsPerBar,
 			\readout, Pfunc({postln([m.bar,m.foo,m.chord,m.scale])})
 		)
 	],inf)
