@@ -27,7 +27,7 @@ Pdef(\bass,
 Pdef(\melody,
 	Pbind(
 		\voice, Pwrand([[0,2,4],[0,2,4,6],[0,1,2,4]],[2,1,1].normalizeSum,inf),
-		\ctranspose, Pstutter(Pwhite(1,7),Pwrand([0,-1,1],[20,1,1].normalizeSum,inf)),
+		//\ctranspose, Pstutter(Pwhite(1,7),Pwrand([0,-1,1],[20,1,1].normalizeSum,inf)),
 		\scale, Pfunc({|e| m.scaleChord(e.voice)}),
 		\offset,Pstutter(Pwhite(10,20,inf),Pbrown(Pwhite(-10,-1,inf),Pwhite(1,15),1,inf)),
 		\quarters, Pwrand([0,1],[4,1].normalizeSum,inf),
@@ -54,13 +54,16 @@ Pdef(\melody,
 			Prand([Pseq(h!1),Pseq(q!2)]),
 			Prand([Pseq(q!2),Pseq(q!2),Pseq(q!2),Pseq([e,e,q],Pseq([q,e,e]))])
 		],Pkey(\quarters)),
-		\timingOffset, Pbrown(-0.02,0.02,0.005,inf)
+		\timingOffset, Pbrown(-0.05,0.05,0.005,inf),
+		\amp, 0.01,
+		\instrument, \help_sinegrain
 	)
 ).play;
 )
+Pdef(\melody).stop;
 
 (
-Pdef(\harmony,
+Pdef(\structure,
 	Pbind(
 		\type, \rest,
 		\chord, Pseq([0,0,0,0,3,3,0,0,4,4,0,0],inf),
