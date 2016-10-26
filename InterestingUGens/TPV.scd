@@ -6,14 +6,16 @@ d=Buffer.read(s,Platform.resourceDir+/+"sounds/a11wlk01.wav");
 (
 {
 
-var in, fft, output;
+var in, fft, output, filteredIn;
 
-in = PlayBuf.ar(1,d,BufRateScale.kr(d),1,0,1);
+	in = SoundIn.ar(0);
 
 fft = FFT(b, in, wintype:1);
 
-output=TPV.ar(fft, 1024, 512, 70,MouseX.kr(1,70), MouseY.kr(0.25,3),4,0.2);
+	filteredIn = HPF.ar(in,2000);
 
+output=filteredIn + TPV.ar(fft, 1024, 512, 70,MouseX.kr(1,70), MouseY.kr(0.25,3),4,0.2);
+	output = output + (CombL.ar(output, 2, 0.5, 2) / 4);
 output
 }.play
 )
