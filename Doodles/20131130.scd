@@ -1,7 +1,14 @@
 (
-~effectsBus = Bus.audio(s, 1);
+if (b.isNil, b = ());
+if (f.isNil, f = ());
+)
 
-SynthDef(\moo,
+(
+b.bellEffects = Bus.audio(s, 1);
+)
+
+(
+SynthDef(\bell,
 	{
 		|freq, gate = 1, out|
 		var audio, env;
@@ -12,35 +19,31 @@ SynthDef(\moo,
 		Out.ar(out, audio * env * 0.25);
 	}
 ).add;
-
 SynthDef(\effects,
 	{
-		var audio;
-		audio = In.ar(~effectsBus, 1);
+		|in, out|
+		var audio = In.ar(in, 1);
 		audio = GVerb.ar(audio, roomsize: 50, revtime: 5, drylevel: 1, damping: 0.5, spread: 15) * 0.5;
-		Out.ar(0, audio);
+		Out.ar(out, audio);
 	}
 ).add;
 )
 
 (
-e = Synth(\effects);
-
-Pbind(*[
-	instrument: \moo,
-	stepsPerOctave: 17,
-	scale: [0, 1, 4, 7, 10, 11, 14],
-	octave: 6,
-	degree: Pseq([0, 3, 2, 3, 1, 4, 3, 4], inf),
-	dur: 0.5,
-	amp: 0.25,
-	out: ~effectsBus;
-]).play;
+f.bellEffects.free;
+f.bellEffects = Synth(\twangboard, [\in, b.bellEffects, \out, 0]);
 )
 
-var numberOfSines = 3;
-(1..numberOfSines);
-1/(1..numberOfSines);
-
-s.scope;
-s.freeAll;
+(
+Pdef(\bells,
+	Pbind(
+		\instrument, \bell,
+		\stepsPerOctave, 17,
+		\scale, [0, 1, 4, 7, 10, 11, 14],
+		\octave, 6,
+		\degree, Pseq([0, 3, 2, 3, 1, 4, 3, 4], inf),
+		\dur, 0.5,
+		\amp, 0.25,
+		\out: b.bellEffects;
+	).play;
+)

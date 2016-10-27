@@ -1,21 +1,19 @@
 (
 w = 1;h=0.5;q=0.25;e=0.125;
-t = TempoClock.default;
-t.tempo = 2.5;
+c = TempoClock.default;
+c.tempo = 2.5;
 m = (
 	scale: Scale.dorian,
 	chord: 0,
-	loopBar: 0,
-	localScale: {
-		|self,num,sort=true|
-		var notes = (1..num).collect({|x|x*2-1+self.chord});
-		if (sort == true,
-			Scale(self.scale.degrees.wrapAt(notes).sort),
-			Scale(self.scale.degrees.wrapAt(notes))
-		);
+	bar: 0,
+	scaleChord: {
+		|self,voicing|
+		var notes = self.chord + 1 + voicing;
+		Scale(self.scale.degrees.wrapAt(notes).sort);
 	}
 );
 )
+
 (
 SynthDef(\lead,
 	{
@@ -56,26 +54,15 @@ SynthDef(\bass,
 		Out.ar(out, audio);
 	}
 ).add;
-SynthDef(\strings,
-	{
-		|freq=200,amp=0.1,gate=1,out=0,pan=0,attack=0.5,decay=0.5,sus=0.5,release=1,cutoff=5000,res = 0.5,filtEnvAmt=1,filtEnvAttack=0.1,filtEnvDecay=0.1|
-		var audio, env, filtEnv;
-		env = EnvGen.kr(Env.adsr(attack,decay,sus,release), gate, amp, doneAction:2);
-		audio = 5.collect({
-			Pulse.ar(freq + (freq * LFNoise1.kr(0.1,0.005)), LFNoise1.kr(0.2).range(0.6,0.8), env / 5);
-		});
-		filtEnv = EnvGen.kr(Env([cutoff,cutoff + (cutoff*filtEnvAmt), cutoff],[filtEnvAttack,filtEnvDecay],\sin), gate);
-		audio = MoogVCF.ar(audio, min(cutoff, 20000),res);
-		audio = Pan2.ar(audio, pan);
-		Out.ar(out, audio);
-	}
-).add;
 )
+
 (
+Pdef(\lead).quant = [2 * c.beatsPerBar, 0, 0];
 Pdef(\lead,
 	PmonoArtic(
 		\lead,
-		\scale, Pfunc({m.localScale(4,false)}),
+		\rotation, Pswitch([3,1,3,1,2,0,2,2],Pfunc({m.bar})),
+		\scale, Pfunc({|e|Scale(m.scaleChord([0,2,4,6]).degrees.rotate(e.rotation))}),
 		\degree, Pseq([\,2,0,1,2,3,2,1],inf),
 		\dur, Pseq([2.5,2.5,h,h,h,h,h,h],inf),
 		\legato, Pseq([w,w,w,w,w,w,w,0.9],inf),
@@ -85,12 +72,15 @@ Pdef(\lead,
 ).play;
 )
 Pdef(\lead).stop;
+
 Pdef(\chords,Pbind(\type,\rest)).fadeTime_(20).play;
 (
+Pdef(\chords).quant = [c.beatsPerBar, 0, 0];
 Pdef(\chords,
 	Pbind(
 		\instrument, \chords,
-		\scale, Pfunc({m.localScale(4,false)}),
+		\rotation, Pswitch([3,1,3,1,2,0,2,2],Pfunc({m.bar})),
+		\scale, Pfunc({|e|Scale(m.scaleChord([0,2,4,6]).degrees.rotate(e.rotation))}),
 		\degree, Pstutter(Pwrand([1,2,3],[40,1,1].normalizeSum,inf),
 			Pseq([[0,1,2],[0,1,2],[0,1,2],[1,2,4],[1,2,4],[1,2,4],[2,3,4],[2,3,4]],inf)
 		),
@@ -103,12 +93,14 @@ Pdef(\chords,
 ).fadeTime_(40).play;
 )
 Pdef(\chords).stop;
+
 (
+Pdef(\bass).quant = [2 * c.beatsPerBar, 0, 0];
 Pdef(\bass,
 	Pbind(
 		\instrument, \bass,
 		\octave,Pseq([\,2,2,2,3,2],inf),
-		\scale, Pfunc({m.localScale(3,true)}),
+		\scale, Pfunc({m.scaleChord([0,2,4])}),
 		\degree, Pseq([\,0,1,1,0,0],inf),
 		\dur, Pseq([w*6,h,q,q,h,h],inf),
 		\legato, 0.8,
@@ -124,55 +116,24 @@ Pdef(\bass,
 ).play;
 )
 Pdef(\bass).stop;
+
 (
-Pdef(\strings,
-	Pbind(
-		\instrument, \strings,
-		\octave,5,
-		\scale, Pfunc({m.localScale(4)}),
-		\offset,Pfunc({t.bar % 3}),
-		\degree, Pkey(\offset) + [0,1,2,3],
-		\dur, t.beatsPerBar,
-		\legato, 1,
-		\cutoff, 8000,
-		\res, 0.5,
-		\attack,1,
-		\decay,0.8,
-		\sus,0.5,
-		\release,1,
-		\filtEnvAmt,1,
-		\filtEnvAttack,1,
-		\filtEnvDecay,2,
-		\pan,5,
-		\amp,0.04
-	)
+Pdef(\structure).quant = [2 * c.beatsPerBar, 0, 0.1];
+Pdef(\structure,
+	Ppar([
+		Pbind(
+			\type,\rest,
+			\list,Pseq([0,5,1,4,3,6,2,3],inf),
+			\item,Pkey(\list).collect({|x|m.chord=x}),
+			\dur, c.beatsPerBar
+		),
+		Pbind(
+			\type,\rest,
+			\list,Pseq((0..7),inf),
+			\item,Pkey(\list).collect({|x|m.bar=x}),
+			\dur, c.beatsPerBar
+		)
+	])
 ).play;
 )
-Pdef(\strings).stop;
-(
-Pdef(\setChords,
-	Pbind(
-		\type,\rest,
-		\list,Pseq([0,5,1,4,3,6,2,3],inf),
-		\item,Pkey(\list).collect({|x|m.chord=x}),
-		\dur, t.beatsPerBar
-	)
-).play;
-Pdef(\setBars,
-	Pbind(
-		\type,\rest,
-		\list,Pseq((0..7),inf),
-		\item,Pkey(\list).collect({|x|m.bar=x}),
-		\dur, t.beatsPerBar
-	)
-).play;
-)
-(
-Pdef(\readout,
-	Pbind(
-		\type,\rest,
-		\readout,Pfunc({postln([m.bar,m.chord])})
-	)
-).play;
-)
-s.scope(2);
+s.scope(2)

@@ -1,18 +1,19 @@
 (
 w=1;h=0.5;q=0.25;e=0.125;
-TempoClock.default.tempo = 2;
+c = TempoClock.default;
+c.tempo = 2;
 m = (
 	chord: 0,
 	scale: Scale.dorian,
 	scaleChord: {
-		|me,num|
-		var notes = (1..num).collect({|x|x*2-2+me.chord});
-		Scale(me.scale.degrees.wrapAt(notes).sort);
+		|self,voicing|
+		var notes = self.chord + voicing;
+		Scale(self.scale.degrees.wrapAt(notes).sort);
 	},
-	bar: 0,
-	bb: 4
+	bar: 0
 );
 )
+
 (
 SynthDef(\bass,
 	{
@@ -64,10 +65,12 @@ SynthDef(\snare,
 	}
 ).add;
 )
+
 (
+Pdef(\bass).quant = [c.beatsPerBar, 0, 0];
 Pdef(\bass,
 	PmonoArtic(\bass,
-		\scale, Pfunc({m.scaleChord(3)}),
+		\scale, Pfunc({m.scaleChord([0,2,4])}),
 		\octave, 4,
 		\degree, Pseq([0,-7,\,0,-7,\,\,\],inf),
 		\cutoffTrig,Pseq([1,0,\,1,0,\,\,\],inf),
@@ -77,19 +80,18 @@ Pdef(\bass,
 		\res,0.65,
 		\envRatio,Pbrown(1,3,0.2,inf),
 		\envTime,Pbrown(0.1,1,0.05,inf),
-		//\post, Ptuple([Pkey(\cutoff),Pkey(\envRatio)]).trace,
 		\legato, Pseq([1,0.9,\,1,0.9,\,\,\],inf)
 	)
 ).play;
 )
 Pdef(\bass).stop;
+
 Pdef(\lead,Pbind(\type,\rest)).fadeTime_(20).play;
 (
 Pdef(\lead,
 	Pbind(
 		\instrument, \lead,
-		//\type, Pswitch([\note,\rest],Pbrown(0.6,1.1,0.1,inf).floor),
-		\scale, Pfunc({m.scaleChord(4)}),
+		\scale, Pfunc({m.scaleChord([0,2,4,6])}),
 		\octave, 4,
 		\offset, Pstutter(Pwhite(1,5,inf),Pbrown(0,3,1,inf)),
 		\degree, Prand([
@@ -108,7 +110,9 @@ Pdef(\lead,
 ).fadeTime_(40).play;
 )
 Pdef(\lead).stop;
+
 (
+Pdef(\kick).quant = [c.beatsPerBar, 0, 0];
 Pdef(\kick,
 	Pbind(
 		\instrument, \kick,
@@ -118,7 +122,9 @@ Pdef(\kick,
 ).play;
 )
 Pdef(\kick).stop;
+
 (
+Pdef(\snare).quant = [c.beatsPerBar, 0, 0];
 Pdef(\snare,
 	Pbind(
 		\instrument, \snare,
@@ -128,35 +134,24 @@ Pdef(\snare,
 	)
 ).play;
 )
+Pdef(\snare).stop;
+
 (
-Pdef(\bars,
-	Pbind(
-		\type, \rest,
-		\list, Pseq((0..9),inf),
-		\item, Pkey(\list).collect({|x|m.bar=x}),
-		\dur, m.bb
-	)
-).play;
-Pdef(\chords,
-	Pbind(
-		\type, \rest,
-		\list, Pseq([0,0,3,3,0,0,1,1,4,4],inf),
-		\item, Pkey(\list).collect({|x|m.chord=x}),
-		\dur, m.bb
-	)
+Pdef(\structure).quant = [c.beatsPerBar, 0, 0.1];
+Pdef(\structure,
+	Ppar([
+		Pbind(
+			\type, \rest,
+			\list, Pseq((0..9),inf),
+			\item, Pkey(\list).collect({|x|m.bar=x}),
+			\dur, c.beatsPerBar
+		),
+		Pbind(
+			\type, \rest,
+			\list, Pseq([0,0,3,3,0,0,1,1,4,4],inf),
+			\item, Pkey(\list).collect({|x|m.chord=x}),
+			\dur, c.beatsPerBar
+		)
+	])
 ).play;
 )
-(
-Pdef(\readout,
-	Pbind(
-		\type, \rest,
-		\readout, Pfunc({postln([m.bar,m.chord])}),
-		\dur, m.bb
-	)
-).play;
-)
-Pdef(\readout).stop;
-s.scope(2)
-
-
-m.scale.degrees.wrapAt([4,6,8,10]).sort;

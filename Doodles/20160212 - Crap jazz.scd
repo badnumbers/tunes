@@ -1,14 +1,20 @@
 (
 w=1;h=0.5;q=0.25;e=0.125;
-TempoClock.default.tempo = 2.3;
+c = TempoClock.default;
+c.tempo = 2.3;
 m = (
 	scale: Scale.dorian,
 	chord: 0,
+	scaleChord: {
+		|self,voicing|
+		var notes = self.chord + voicing;
+		Scale(self.scale.degrees.wrapAt(notes).sort);
+	},
 	bar: 0,
 	bb: 3
-
 );
 )
+
 (
 SynthDef(\bandpass,
 	{
@@ -41,11 +47,13 @@ SynthDef(\glorious,
 	}
 ).add;
 )
+
 (
+Pdef(\bandpass).quant = [6 * h, 0, 0];
 Pdef(\bandpass,
 	Pbind(
 		\instrument, \bandpass,
-		\scale, Pfunc({Scale(m.scale.degrees.wrapAt([m.chord,m.chord+2,m.chord+4]))}),
+		\scale, Pfunc({m.scaleChord([0,2,4])}),
 		\octave, 3,
 		\degree, Pswitch([
 			Pseq([0,1,2]),
@@ -62,11 +70,13 @@ Pdef(\bandpass,
 ).play;
 )
 Pdef(\bandpass).stop;
+
 (
+Pdef(\highbandpass).quant = [6 * h, 0, 0];
 Pdef(\highbandpass,
 	Pbind(
 		\instrument, \bandpass,
-		\scale, Pfunc({Scale(m.scale.degrees.wrapAt([m.chord,m.chord+2,m.chord+4]))}),
+		\scale, Pfunc({m.scaleChord([0,2,4])}),
 		\octave, 5,
 		\base, Pfunc({m.bar%3}),
 		\degree, Pseq([0,1,2,3,4,3],inf)-Pkey(\base),
@@ -81,12 +91,13 @@ Pdef(\highbandpass,
 ).play;
 )
 Pdef(\highbandpass).stop;
+
 (
 Pdef(\glorious,
 	Pbind(
 		\instrument, \glorious,
 		\type, Pswitch([\note,\rest],Pbrown(0.0,1.3,0.1).floor),
-		\scale, Pfunc({Scale(m.scale.degrees.wrapAt([m.chord,m.chord+2,m.chord+4,m.chord+6]))}),
+		\scale, Pfunc({m.scaleChord([0,2,4,6])}),
 		\octave, 5,
 		\ctranspose, Pwrand([0,Pstutter(Pwhite(1,4),Pseq([-1]))],[0.95,0.05],inf),
 		\base, Pstutter(Pwhite(1,8),Pbrown(1,4,1,inf)),
@@ -114,30 +125,23 @@ Pdef(\glorious,
 ).play;
 )
 Pdef(\glorious).stop;
+
 (
-Pdef(\bars,
-	Pbind(
-		\type,\rest,
-		\list,Pseq((0..35),inf),
-		\item, Pkey(\list).collect({|x|m.bar=x}),
-		\dur, m.bb
-	)
-).play;
-Pdef(\chords,
-	Pbind(
-		\type,\rest,
-		\list,Pseq([0,2,0,3,0,1,0,1,3,4],inf),
-		\item, Pkey(\list).collect({|x|m.chord=x}),
-		\dur, Pseq([4,4,4,4,4,4,4,4,2,2]*m.bb,inf)
-	)
-).play;
-)
-(
-Pdef(\readout,
-	Pbind(
-		\type,\rest,
-		\readout,Pfunc({postln([m.bar,m.chord])}),
-		\dur, m.bb
-	)
+Pdef(\structure).quant = [6 * h, 0, 0.1];
+Pdef(\structure,
+	Ppar([
+		Pbind(
+			\type,\rest,
+			\list,Pseq((0..35),inf),
+			\item, Pkey(\list).collect({|x|m.bar=x}),
+			\dur, m.bb
+		),
+		Pbind(
+			\type,\rest,
+			\list,Pseq([0,2,0,3,0,1,0,1,3,4],inf),
+			\item, Pkey(\list).collect({|x|m.chord=x}),
+			\dur, Pseq([4,4,4,4,4,4,4,4,2,2]*m.bb,inf)
+		)
+	])
 ).play;
 )
