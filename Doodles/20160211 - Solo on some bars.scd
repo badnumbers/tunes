@@ -152,7 +152,8 @@ p.bip.a = Pbind(
 	\timingOffset, Pbrown(-0.05,0.05,0.02),
 	\amp, 0.4
 );
-p.twang.b = Pbindf(p.twang.a, \voicing, [0,2,4]);
+p.twang.b = Pbindf(p.twang.a, \voicing, [0,2,4], \scale, Pfunc({|e| m.scaleChord(e.voicing)}));
+// \scale has to be redeclared in order to appear after (and therefore be able to reference) the substituted \voicing key
 p.bip.b = p.bip.a;
 p.structure.a = Ppar([
 	Pbind(
@@ -177,33 +178,25 @@ p.structure.a = Ppar([
 p.structure.b = Ppar([
 	Pbind(
 		\type,\rest,
-		\list,Pseq((0..15),inf),
+		\list,Pseq((0..11)),
 		\item, Pkey(\list).collect({|x|m.bar=x}),
-		\dur, c.beatsPerBar
+		\dur, c.beatsPerBar,
 	),
 	Pbind(
 		\type,\rest,
-		\list,Pseq([[0,2,4],[0,3,5],[1,3,5],[1,3,6],[2,4,6],[0,2,5]],inf),
 		\chord, Pseq([0,3,1,6,2,5]),
 		\item, Pfunc({|e|m.fullChord=e.list;m.chord=e.chord;}),
-		\dur, Pseq([2,2,2,2,2,2]*c.beatsPerBar,inf)
+		\dur, Pseq([2,2,2,2,2,2]*c.beatsPerBar)
 	),
 	Pbind(
 		\type,\rest,
-		\list,Scale([ 0, 2, 3, 6, 7, 9, 11 ]), // lydian, but with a minor third
-		\item, Pkey(\list).collect({|x|m.scale=x}),
-		\dur, 1//Pseq([16*c.beatsPerBar],inf)
-	),
-	Pbind(
-		\type,\rest,
-		\list,1,
-		\item, Pkey(\list).collect({|x|m.ctranspose=x}),
-		\dur, 1//Pseq([16*c.beatsPerBar],inf)
+		\item, Pfunc({m.scale = Scale([ 0, 2, 3, 6, 7, 9, 11 ]); m.ctranspose = 1;}),
+		\dur, Pseq([c.beatsPerBar * 12])
 	)
-]);
+],inf);
 )
 
-f.section(\b,8)
+f.section(\a,8)
 
 (
 Pdef(\twang, p.twang.a);
