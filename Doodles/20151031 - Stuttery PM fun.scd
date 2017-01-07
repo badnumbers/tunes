@@ -12,8 +12,8 @@ SynthDef(\stutteryPmFun,
 		audio = WaveLoss.ar(audio, 40*2/k,80, 1);
 		echoes = CombN.ar(audio, 5, k / 4,3) / 5;
 		echoes = Pan2.ar(echoes, LFNoise0.kr(k)).range(-1.5,1.5).clip(-1,1);
-		audio = audio * EnvGen.kr(Env.cutoff(10),gate,amp,doneAction:2);
-		Out.ar(out, audio + echoes);
+		audio = (audio + echoes) * EnvGen.kr(Env.cutoff(10),gate,amp,doneAction:2);
+		Out.ar(out, audio);
 	}
 ).add;
 )
@@ -23,4 +23,4 @@ k.stutteryPmFun.free;
 k.stutteryPmFun = Synth(\stutteryPmFun, [\amp, 0.1]);
 )
 
-k.stutteryPmFun.set(\gate, 0);		
+k.stutteryPmFun.set(\gate, 0);
