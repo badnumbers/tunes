@@ -6,6 +6,10 @@ f = ();
 )
 
 (
+c.tempo = 2.5;
+)
+
+(
 b.funEffects = Bus.audio(s, 2);
 )
 
@@ -21,7 +25,7 @@ SynthDef(\fun,
         filtEnv = Line.kr(midicps(cutoff + filtEnvAmt), midicps(cutoff),  0.2);
 		audio = RLPFD.ar(audio, ffreq: filtEnv, res: resonance, dist: 0);
 		audio = if(decimation<25, Decimator.ar(audio, bits: decimation), audio);
-		audio = audio / 4;
+		audio = audio / 8;
         Out.ar(out, audio * env * vol ! 2);
 	}
 ).add;
