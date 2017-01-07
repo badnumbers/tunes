@@ -29,7 +29,7 @@ SynthDef(\funEffects,
 	{
 		|in, out|
 		var audio = In.ar(in, 2);
-		audio = audio + (DelayL.ar(audio, 0.2, 0.2, 1) * 0.5);
+		audio = audio + (DelayL.ar(audio, 1, 0.5 / c.tempo, 1) * 0.5);
 		Out.ar(out, audio);
 	}
 ).add;
@@ -47,7 +47,7 @@ Pdef(\fun,
 		\out, b.funEffects,
 		\octave, 2,
 		\degree, Pseq([2, 2, 2, 2, 2, 2, 1, 1], inf),
-		\dur, 0.2,
+		\dur, 0.5,
 		\cutoff, Pseq([60, 70, 90, 60, 70, 90, 90, 80], inf),
 		\filtEnvAmt, Pseq([30, 30, -30, 30, 30, -30, 30, 30], inf),
 		\resonance, Pseq([0.5, 0.7, 0.5, 0.5, 0.7, 0.5, 0.4, 0.75], inf),
