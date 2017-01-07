@@ -1,6 +1,15 @@
 (
-~effectsBus = Bus.audio(s, 2);
+w=1;h=0.5;q=0.25;e=0.125;
+c = TempoClock.default;
+b = ();
+f = ();
+)
 
+(
+b.funEffects = Bus.audio(s, 2);
+)
+
+(
 SynthDef(\fun,
 	{
 		|out, gate = 1, freq, prevFreq = -1000, amp, cutoff, resonance, filtEnvAmt, decimation|
@@ -12,35 +21,38 @@ SynthDef(\fun,
         filtEnv = Line.kr(midicps(cutoff + filtEnvAmt), midicps(cutoff),  0.2);
 		audio = RLPFD.ar(audio, ffreq: filtEnv, res: resonance, dist: 0);
 		audio = if(decimation<25, Decimator.ar(audio, bits: decimation), audio);
+		audio = audio / 4;
         Out.ar(out, audio * env * vol ! 2);
 	}
 ).add;
-
-SynthDef(\effects,
+SynthDef(\funEffects,
 	{
-		var audio;
-		audio = In.ar(~effectsBus, 2);
+		|in, out|
+		var audio = In.ar(in, 2);
 		audio = audio + (DelayL.ar(audio, 0.2, 0.2, 1) * 0.5);
-		Out.ar(0, audio);
+		Out.ar(out, audio);
 	}
 ).add;
 )
 
 (
-e = Synth(\effects);
-
-Pbind(*[
-	instrument: \fun,
-	out: ~effectsBus,
-	octave: 2,
-	degree: Pseq([2, 2, 2, 2, 2, 2, 1, 1], inf),
-	dur: 0.2,
-	cutoff: Pseq([60, 70, 90, 60, 70, 90, 90, 80], inf),
-	filtEnvAmt: Pseq([30, 30, -30, 30, 30, -30, 30, 30], inf),
-	resonance: Pseq([0.5, 0.7, 0.5, 0.5, 0.7, 0.5, 0.4, 0.75], inf),
-	decimation: Pseq([25, 25, 25, 3, 25, 25, 25, 25], inf),
-	amp: Pseq([0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5], inf),
-]).play;
+f.funEffects.free;
+f.funEffects = Synth(\funEffects, [\in, b.funEffects, \out, 0]);
 )
 
-s.scope;
+(
+Pdef(\fun,
+	Pbind(
+		\instrument, \fun,
+		\out, b.funEffects,
+		\octave, 2,
+		\degree, Pseq([2, 2, 2, 2, 2, 2, 1, 1], inf),
+		\dur, 0.2,
+		\cutoff, Pseq([60, 70, 90, 60, 70, 90, 90, 80], inf),
+		\filtEnvAmt, Pseq([30, 30, -30, 30, 30, -30, 30, 30], inf),
+		\resonance, Pseq([0.5, 0.7, 0.5, 0.5, 0.7, 0.5, 0.4, 0.75], inf),
+		\decimation, Pseq([25, 25, 25, 3, 25, 25, 25, 25], inf),
+		\amp, Pseq([0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5], inf),
+	)
+).play;
+)
