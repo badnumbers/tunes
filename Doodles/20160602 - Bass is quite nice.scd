@@ -12,6 +12,13 @@ m = (
 		Scale(self.scale.degrees.wrapAt(notes).sort);
 	}
 );
+b = ();
+f = ();
+)
+
+(
+b.reverb = Bus.audio(s, 2);
+b.echoes = Bus.audio(s, 2);
 )
 
 (
@@ -59,19 +66,10 @@ SynthDef(\echoes,
 )
 
 (
-b = (
-	reverb: Bus.audio(s, 2),
-	echoes: Bus.audio(s, 2)
-);
-)
-
-(
 f.reverb.free;
 f.echoes.free;
-f = (
-	reverb: Synth(\reverb,[\in,b.reverb,\out,0]),
-	echoes: Synth(\echoes,[\in,b.echoes,\out,0,\delaytime,1.05,\decaytime,3])
-);
+f.reverb = Synth(\reverb,[\in,b.reverb,\out,0]);
+f.echoes = Synth(\echoes,[\in,b.echoes,\out,0,\delaytime,1.05,\decaytime,3]);
 )
 
 (
@@ -139,3 +137,4 @@ Pdef(\music).stop;
 
 s.meter
 s.scope(1)
+s.reboot
