@@ -43,16 +43,19 @@ b.reverb = Bus.audio(s,2);
 
 (
 SynthDef(\help_sinegrain,
-    { arg out=0, freq=440, sustain=0.05, amp=0.1;
-        var env;
+    {
+		|out=0, freq=440, sustain=0.05, amp=0.1, pan=0|
+        var env, audio;
         env = EnvGen.kr(Env.perc(0.01, sustain, amp), doneAction:2);
-        Out.ar(out, SinOsc.ar(freq, 0, env))
+		audio = SinOsc.ar(freq, 0, env);
+		audio = Pan2.ar(audio, pan);
+        Out.ar(out, audio)
     }
 ).add;
 SynthDef(\reverb,
 	{
 		|in,out|
-		var audio = In.ar(in,1);
+		var audio = In.ar(in,2);
 		audio = FreeVerb.ar(audio,room:10);
 		Out.ar(out,audio);
 	}
@@ -68,12 +71,12 @@ f.reverb = Synth(\reverb,[\in,b.reverb,\out,0]);
 Pdef(\patterns).quant = [2 * c.beatsPerBar,0,0];
 Pdef(\structure).quant = [12 * c.beatsPerBar, 0, 0.1];
 )
-
+Pdef(\patterns,Pbind(\type,\rest)).play;
 (
 Pdef(\patterns,
 	Ppar([
 		Pchain(
-			Pbind(\amp, 0.1 * Pkey(\ampScale) * Pbrown(1.1,0.9,0.05,inf),\instrument,\help_sinegrain,\out,b.reverb),
+			Pbind(\amp, 0.3 * Pkey(\ampScale) * Pbrown(1.1,0.9,0.05,inf),\instrument,\help_sinegrain,\out,b.reverb, \pan, 0.9),
 			Pseq([
 				p.bind(q,[0,1,2,1],[9,4,7,4]),
 				Prand([
@@ -95,7 +98,7 @@ Pdef(\patterns,
 			)
 		)
 	],inf)
-).play;
+).fadeTime_(0).play;
 )
 Pdef(\patterns,Pbind(\type,\rest)).fadeTime_(40).play;
 Pdef(\patterns).stop;
