@@ -39,12 +39,6 @@ f.knocksverb = Synth(\knocksverb,[\in,b.knocksverb,\out,0,\mix,0.11,\room,0.2,\d
 )
 
 (
-f.knocksverb.set(\mix,0.11);
-f.knocksverb.set(\room,0.2);
-f.knocksverb.set(\damp,1);
-)
-
-(
 Pdef(\knocks,
 	Pbind(
 		\instrument, \knocks,
