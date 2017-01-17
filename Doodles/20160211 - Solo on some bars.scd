@@ -75,6 +75,24 @@ SynthDef(\twangboard,
 		Out.ar(out, audio);
 	}
 ).add;
+SynthDef(\growlyTuba,
+	{
+		|freq = 200, amp = 0.1, gate = 1, pan = 0, out = 0, att = 1, dec = 0.5, sus = 0.6, rel = 1, cutoff = 2000|
+		var audio, env, harmonics, boost;
+		boost = 10;
+		env = EnvGen.kr(Env.adsr(att, dec, sus, rel),gate,amp,doneAction:2);
+		harmonics = [1,3,4,6,7,9,10];
+		audio = Mix((0..6).collect({
+			|num|
+			SinOsc.ar(freq * harmonics[num], 0.5);
+		}));
+		audio = audio * env;
+		audio = (audio * boost).tanh * amp;
+		audio = LPF.ar(audio, cutoff);
+		audio = Pan2.ar(audio, pan);
+		Out.ar(out, audio);
+	}
+).add;
 )
 
 (
@@ -86,6 +104,7 @@ f.twangboard = Synth(\twangboard, [\in, b.twangboard, \out, 0]);
 p = (
 	twang: (),
 	bip: (),
+	pad: (),
 	structure: ()
 );
 f = (
@@ -152,6 +171,18 @@ p.bip.a = Pbind(
 	\timingOffset, Pbrown(-0.05,0.05,0.02),
 	\amp, 0.4
 );
+p.pad.a = Pbind(
+	\instrument, \growlyTuba,
+	\scale, Pfunc({|e| m.scaleChord((0..6))}),
+	\moo, Pfunc({m.bar / 2}).trace,
+	\degree, Pswitch([3,6,5,4,2,4,5,6],Pfunc({m.bar / 2})),
+	\ctranspose, Pfunc({m.ctranspose}),
+	\dur, w * 2 * c.beatsPerBar,
+	\timingOffset, Pbrown(-0.05,0.05,0.02),
+	\amp, 0.11,
+	\cutoff, 1000,
+	\legato, 0.98
+);
 p.twang.b = Pbindf(p.twang.a, \voicing, [0,2,4], \scale, Pfunc({|e| m.scaleChord(e.voicing)}));
 // \scale has to be redeclared in order to appear after (and therefore be able to reference) the substituted \voicing key
 p.bip.b = p.bip.a;
@@ -194,6 +225,7 @@ p.structure.b = Ppar([
 		\dur, Pseq([c.beatsPerBar * 12])
 	)
 ],inf);
+Pdef(\pad,p.pad.a);
 )
 
 f.section(\a,8)
@@ -201,21 +233,25 @@ f.section(\a,8)
 (
 Pdef(\twang, p.twang.a);
 Pdef(\bip, p.bip.a);
+Pdef(\pad, p.pad.a);
 Pdef(\structure, p.structure.a);
 )
 
 (
 Pdef(\twang).quant = [4,0,0];
 Pdef(\bip).quant = [4,0,0];
-Pdef(\structure).quant = [4,0,0.1];
+Pdef(\pad).quant = [2 * c.beatsPerBar,0,0];
+Pdef(\structure).quant = [2 * c.beatsPerBar,0,0.1];
 )
 
 Pdef(\twang).play;
 Pdef(\bip).play;
+Pdef(\pad).play;
 Pdef(\structure).play;
 
 Pdef(\twang).stop;
 Pdef(\bip).stop;
+Pdef(\pad).stop;
 Pdef(\structure).stop;
 
 Pdef(\twang, p.rests).fadeTime_(60).play;
