@@ -120,6 +120,26 @@ Pdef(\hats,
 			\dur, Pseq([h * 1.05, q * 0.95, q * 0.95],inf),
 			\timingOffset, Pbrown(-0.02,0.02,0.001,inf),
 			\hpfFreq, 3000
+		),
+		Pbind(
+			\instrument, \moth_fm,
+			\freqCoefficient, 3,
+			\carfreq, 2000 * Pgauss(1,0.01,inf) * Pkey(\freqCoefficient),
+			\mod1freq, 500 * Pgauss(1,0.02,inf) * Pkey(\freqCoefficient),
+			\mod1amt, 0.1,
+			\mod2freq, 700 * Pkey(\freqCoefficient),
+			\mod2amt, 0.2,
+			\mod3freq, 300 * Pkey(\freqCoefficient),
+			\mod3amt, 0.8,
+			\dur, Pseq([h,w,q,q, q,q,q,q, q,q,q,q],inf),
+			\amp, Pseq([5,8,7,1, 3,1,5,1, 3,1,7,1],inf) / 140,
+			\att, Pseq([1,4,1,1, 1,1,1,1, 1,1,1,1],inf) * 0.003,
+			\attCurve, 2,
+			\dec, Pseq([1,2,1,1, 1,1,1,1, 1,1,1,1],inf) * 0.3,
+			\decCurve, -7,
+			//\freq, \,
+			\timingOffset, Pseq([1,2,7,7, 6,6,5,5, 4,4,3,2],inf) / 70 + Pbrown(-0.02,0.02,0.001,inf),
+			\hpfFreq, 400
 		)
 	])
 ).play;
