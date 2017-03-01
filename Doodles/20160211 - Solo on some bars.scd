@@ -178,10 +178,9 @@ p.pad.a = Pbind(
 	\degree, Pswitch([3,6,5,4,2,4,5,6],Pfunc({m.bar / 2})),
 	\ctranspose, Pfunc({m.ctranspose}),
 	\dur, w * 2 * c.beatsPerBar,
-	\timingOffset, Pbrown(-0.05,0.05,0.02),
 	\amp, 0.11,
 	\cutoff, 1000,
-	\legato, 0.98
+	\legato, Pwhite(0.95,0.98,inf)
 );
 p.twang.b = Pbindf(p.twang.a, \voicing, [0,2,4], \scale, Pfunc({|e| m.scaleChord(e.voicing)}));
 // \scale has to be redeclared in order to appear after (and therefore be able to reference) the substituted \voicing key
