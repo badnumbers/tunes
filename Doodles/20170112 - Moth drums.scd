@@ -58,6 +58,7 @@ SynthDef(\moth_kick,
 )
 
 (
+Pdef(\hats).quant = [c.beatsPerBar];
 Pdef(\hats,
 	Ppar([
 		Pbind(
