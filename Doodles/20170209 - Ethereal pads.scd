@@ -17,7 +17,7 @@ Pdef(\pattern,
 	Pbind(
 		\instrument, \sine,
 		\octave, Pwhite(4,6,inf),
-		\degree, (Pstutter(500,Pwhite(0,6)) + [0,2,4]),
+		\degree, ((Pstutter(500,Pwhite(0,6)) + [0,2,4])) % 7,
 		\dur, 0.05,
 		\att, Pwhite(1.0,5.0,inf),
 		\dec, Pwhite(1.0,5.0,inf),
