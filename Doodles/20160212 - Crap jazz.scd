@@ -120,7 +120,8 @@ Pdef(\glorious,
 		\width, Pbrown(0.6,0.9,0.05,inf),
 		\ffreq, Pbrown(1000,20000,1000,inf),
 		\res,Pbrown(0,0.9,0.07,inf),
-		\pan,Pbrown(0.1,0.9,0.1,inf)
+		\pan,Pbrown(0.1,0.9,0.1,inf),
+		\timingOffset, Pbrown(0,1,0.1,inf).linexp(0,1,0.0001,0.1)
 	)
 ).play;
 )
