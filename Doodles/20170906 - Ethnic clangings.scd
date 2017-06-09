@@ -39,7 +39,7 @@ SynthDef(\clang,
 		tap = PMOsc.ar(freq.linlin(200,550,131.4,131.2) * tapCarFreq, tapModFreq, tapPmIndex, SinOsc.ar(130), tapEnv);
 		audio = XFade2.ar(audio, tap, tapRatio);
 		audio = (audio * boost).tanh / boost;
-		audio = LPF.ar(audio, (freq * 10).min(20000));
+		audio = LPF.ar(audio, (freq * 10).min(10000));
 		audio = Pan2.ar(audio,pan);
 		Out.ar(out,audio);
 	}
@@ -63,7 +63,7 @@ Pdef(\patterns,
 		\octave, 4,
 		\scale,Pfunc({m.scaleChord([0,2,4,6])}),
 		\degree, Pbrown(0,8,2,inf),
-		//\degree, Pseq([0,4],inf),
+		\degree, Pseq([0,4],inf),
 		[\dur,\ampScale,\type, \tapRatio], Pwrand([
 			Pseq([[q,0.1,\note, 0.2],[q,0.07,\note, 0.6]]),
 			Pseq([[t/2,0.1,\note, 0.2],[t/2,0.05,\note, 0.8],[u/2,0.07,\note, 0.6]],Pwhite(1,3,1)),
