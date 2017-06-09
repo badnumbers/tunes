@@ -17,14 +17,18 @@ f = if (f.isNil,(),f);
 t.tempo = 1.5;
 
 b.otey = Bus.audio(s,2);
+
+(
+f.otey.free;
 f.otey = Synth(\otey, [\in, b.otey, \out, 0]);
+)
 
 (
 SynthDef(\clang,
 	{
-		|freq=200,amp=0.1,gate=1,out=0,pan=0,boost=2,tapCarFreq=200,tapModFreq=200, tapPmIndex = 3, tapRatio = 0.5|
+		|freq=200,amp=0.1,gate=1,out=0,pan=0,boost=2,tapCarFreq=200,tapModFreq=200, tapPmIndex = 3, tapRatio = 0.5, releaseTime=0.6|
 		var audio, chimeEnv, chimeFreqEnv, tap, tapEnv;
-		chimeEnv = EnvGen.kr(Env([0,1,0.8,0],[0.001,0.005,0.6],[0,-2,-2]), gate, amp, doneAction:2);
+		chimeEnv = EnvGen.kr(Env([0,1,0.8,0],[0.001,0.005,releaseTime],[0,-2,-2]), gate, amp, doneAction:2);
 		chimeFreqEnv = EnvGen.kr(Env([1,1.3,1],[0.005,0.005],[2,-2]), gate);
 		audio = (1..20).collect({
 			|num|
@@ -75,7 +79,8 @@ Pdef(\patterns,
 		\tapCarFreq, 114,
 		\tapModFreq, Pwhite(754,759,inf),
 		\tapPmIndex, 1.9,
-		\pan, Pkey(\degree).linlin(0,8,-0.8,0.5) + Pgauss(0,0.1,inf)
+		\pan, Pkey(\degree).linlin(0,8,-0.8,0.5) + Pgauss(0,0.1,inf),
+		\releaseTime, Pkey(\degree).linlin(0,8,0.8,0.6)
 	)
 ).play;
 )
