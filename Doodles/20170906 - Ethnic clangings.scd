@@ -61,13 +61,13 @@ f.otey = Synth(\otey, [\in, b.otey, \out, 0]);
 )
 
 (
-Pdef(\patterns,
+Pdef(\clang,
 	Pbind(
 		\instrument, \clang,
 		\octave, 4,
 		\scale,Pfunc({m.scaleChord([0,2,4,6])}),
-		\offset, Pstutter(Pwhite(3,10,inf),Pbrown(0,6,3,inf)),
-		\degree, Pstutter(Pwrand([1,Pwhite(2,10,1)],[100,1].normalizeSum,inf),Pseq([0,1,2],inf) + Pkey(\offset)),
+		\offset, Pstutter(Pwhite(5,20,inf),Pbrown(0,6,3,inf)),
+		\degree, Pstutter(Pwrand([1,Pwhite(2,20,1)],[100,1].normalizeSum,inf),Pseq([0,1,2],inf) + Pkey(\offset)),
 		//\degree, Pseq([0,4],inf),
 		[\dur,\ampScale,\type, \tapRatio], Pwrand([
 			Pseq([[q,0.1,\note, 0.2],[q,0.07,\note, 0.6]]),
@@ -85,4 +85,4 @@ Pdef(\patterns,
 	)
 ).play;
 )
-Pdef(\patterns).stop;
+Pdef(\clang).stop;
