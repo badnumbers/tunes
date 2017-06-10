@@ -1,6 +1,6 @@
 (
 w=1;h=0.5;q=0.25;e=0.125;t=0.33;u=0.34;
-t = TempoClock.default;
+c = TempoClock.default;
 m = (
 	chord: 0,
 	scale: Scale([0,3,6,8,11,14,16],17),
@@ -14,7 +14,7 @@ b = if (b.isNil,(),b);
 f = if (f.isNil,(),f);
 )
 
-t.tempo = 1.5;
+c.tempo = 1.5;
 
 b.otey = Bus.audio(s,2);
 
