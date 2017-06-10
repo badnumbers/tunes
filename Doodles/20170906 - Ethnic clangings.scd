@@ -29,7 +29,7 @@ SynthDef(\clang,
 			|num|
 			var freqOffset, currentFreq, ampOffset, currentAmp;
 			freqOffset = ((num * freq) % (num + 1)).linlin(0,num,0.95,1.05);
-			ampOffset = ((num * freq) % (num + 2)).linlin(0,num,0.5,1) * TRand.kr(0.4,1.2,gate);
+			ampOffset = ((num * freq) % (num + 2)).linlin(0,num+1,0.5,1) * TRand.kr(0.4,1.2,gate);
 			currentFreq = num * freq * freqOffset * chimeFreqEnv;
 			SinOsc.ar(currentFreq, 0, 0.1 * ampOffset);
 		});
@@ -67,7 +67,7 @@ Pdef(\patterns,
 		\octave, 4,
 		\scale,Pfunc({m.scaleChord([0,2,4,6])}),
 		\offset, Pstutter(Pwhite(3,10,inf),Pbrown(0,6,3,inf)),
-		\degree, Pseq([0,1,2],inf) + Pkey(\offset),
+		\degree, Pstutter(Pwrand([1,Pwhite(2,10,1)],[100,1].normalizeSum,inf),Pseq([0,1,2],inf) + Pkey(\offset)),
 		//\degree, Pseq([0,4],inf),
 		[\dur,\ampScale,\type, \tapRatio], Pwrand([
 			Pseq([[q,0.1,\note, 0.2],[q,0.07,\note, 0.6]]),
