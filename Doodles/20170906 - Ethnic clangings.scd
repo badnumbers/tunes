@@ -19,11 +19,6 @@ t.tempo = 1.5;
 b.otey = Bus.audio(s,2);
 
 (
-f.otey.free;
-f.otey = Synth(\otey, [\in, b.otey, \out, 0]);
-)
-
-(
 SynthDef(\clang,
 	{
 		|freq=200,amp=0.1,gate=1,out=0,pan=0,boost=2,tapCarFreq=200,tapModFreq=200, tapPmIndex = 3, tapRatio = 0.5, releaseTime=0.6|
@@ -58,6 +53,11 @@ SynthDef(\otey,
 		Out.ar(out,audio);
 	}
 ).add;
+)
+
+(
+f.otey.free;
+f.otey = Synth(\otey, [\in, b.otey, \out, 0]);
 )
 
 (
