@@ -21,17 +21,8 @@
 		},{
 			b.states = [["",Color.black,Color.gray]];
 		});
-		b.action_({(note:i,scale:scale,latency:nil).play;});
+		b.action_({(degree:i,scale:scale,latency:nil).play;});
 	});
 }
 )
-z = Scale([0,1,4,7,10,11,14],17,name:"Moo");
-~scaleClock.(z)
-(
-Pdef(\moo,
-	Pbind(
-		\scale, z,
-		\degree, Pseq((0..7))
-	)
-).play;
-)
+~scaleClock.(m.scale)
