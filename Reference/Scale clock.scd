@@ -29,9 +29,4 @@
 	});
 }
 )
-~scaleClock.(m.scale)
-
-Scale.major.degrees
-m.scale.degrees
-
-(degree:7,scale:m.scale,latency:nil).play;
+~scaleClock.(m.scale);
