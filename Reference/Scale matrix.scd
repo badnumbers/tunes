@@ -2,7 +2,7 @@
 ~scaleMatrix = {
 	|scale,chords=#[[0,2,4]]|
 	var window, chromaticscale;
-	window = Window(scale.name, Rect(100, 100, chords.size * 50, n * 50));
+	window = Window(scale.name, Rect(100, 100, chords.size * 50, scale.pitchesPerOctave * 50));
 	window.alwaysOnTop_(true);
 	window.front;
 	window.name = scale.name;
@@ -27,4 +27,4 @@
 	});
 }
 )
-~scaleMatrix.(m.scale,[[0,4,7],[0,4,7]+1,[0,4,7]+3]);
+~scaleMatrix.(Scale.major,[[0,2,4],[1,3,5],[4,6,8]]);
