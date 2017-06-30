@@ -12,19 +12,19 @@
 		var chordnumbers = scale.degrees.wrapAt(currentchord);
 		scale.pitchesPerOctave.do({
 			|currentrow|
-			b = Button(window, Rect(50 * currentcolumn, 50 * currentrow, 40, 40));
+			btn = Button(window, Rect(50 * currentcolumn, 50 * currentrow, 40, 40));
 			if (chordnumbers.includes(currentrow.asInt),{
-				b.states = [["",Color.black,Color(1,0,0,1)]];
+				btn.states = [["",Color.black,Color(1,0,0,1)]];
 			},{
 				if (scale.degrees.includes(currentrow.asInt),{
-					b.states = [["",Color.black,Color(1,0,0,0.4)]];
+					btn.states = [["",Color.black,Color(1,0,0,0.4)]];
 				},{
-					b.states = [["",Color.black,Color(0,0,0,0.1)]];
+					btn.states = [["",Color.black,Color(0,0,0,0.1)]];
 				});
 			});
-			b.action_({(degree:currentrow,scale:chromaticscale,latency:nil).play;});
+			btn.action_({(degree:currentrow,scale:chromaticscale,latency:nil).play;});
 		});
 	});
 }
 )
-~scaleMatrix.(Scale.major,[[0,2,4],[1,3,5],[4,6,8]]);
+~scaleMatrix.(Scale.major,[[2,4,6],[6,8,10],[2,4,6],[3,7]]);
