@@ -1,0 +1,47 @@
+b = ();
+b.reverb = Bus.audio(s,2);
+
+(
+SynthDef(\sine,
+	{
+		|freq=200,amp=0.1,pan=0,out=0,att=1,dec=1,wobbleFreq=1,wobbleAmp=1|
+		var audio, env;
+		freq = freq + (freq * SinOsc.kr(wobbleFreq) * wobbleAmp * 0.05);
+		env = EnvGen.kr(Env([0,1,0],[att,dec]),1,amp,doneAction:2);
+		audio = SinOsc.ar(freq,0,env);
+		audio = Pan2.ar(audio,pan);
+		Out.ar(out,audio);
+	}
+).add;
+SynthDef(\reverb,
+	{
+		|in,out,roomsize=10,revtime=0.3,damping=0.5|
+		var audio = In.ar(in,2);
+		audio = GVerb.ar(audio,roomsize,revtime,damping);
+		Out.ar(out,audio);
+	}
+).add;
+)
+
+x.free;
+x = Synth(\reverb,[\in,b.reverb,\out,0,\roomsize,10,\revtime,10,\damping,0.2]);
+
+(
+Pdef(\sine,
+	Pbind(
+		\instrument, \sine,
+		\freq, Pwhite(200,800,inf),
+		\att, Pwhite(4,8,inf),
+		\dec, Pwhite(0,0.2,inf),
+		\dur, Pkey(\att) + Pkey(\dec),
+		\amp, 0.05,
+		\wobbleFreq, Pexprand(1,1000,inf),
+		\wobbleAmp, 10,
+		\pan, Prand([-1,1],inf),
+		\out, b.reverb
+	)
+).play;
+)
+Pdef(\sine).stop;
+
+Env([0,1,0],[1,1]).plot
