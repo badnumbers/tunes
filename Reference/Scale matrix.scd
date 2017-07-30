@@ -12,7 +12,7 @@
 		var chordnumbers = scale.degrees.wrapAt(currentchord);
 		scale.pitchesPerOctave.do({
 			|currentrow|
-			btn = Button(window, Rect(50 * currentcolumn, 50 * currentrow, 40, 40));
+			var btn = Button(window, Rect(50 * currentcolumn, 50 * currentrow, 40, 40));
 			if (chordnumbers.includes(currentrow.asInt),{
 				btn.states = [["",Color.black,Color(1,0,0,1)]];
 			},{
