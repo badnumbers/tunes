@@ -7,7 +7,7 @@ SynthDef(\sine,
 		|freq=200,amp=0.1,pan=0,out=0,att=1,dec=1,wobbleFreq=1,wobbleAmp=1|
 		var audio, env;
 		freq = freq + (freq * SinOsc.kr(wobbleFreq) * wobbleAmp * 0.05);
-		env = EnvGen.kr(Env([0,1,0],[att,dec]),1,amp,doneAction:2);
+		env = EnvGen.kr(Env([0,1,0],[att,dec],[7,-3]),1,amp,doneAction:2);
 		audio = SinOsc.ar(freq,0,env);
 		audio = Pan2.ar(audio,pan);
 		Out.ar(out,audio);
@@ -37,7 +37,7 @@ Pdef(\sine,
 		\amp, 0.05,
 		\wobbleFreq, Pexprand(1,1000,inf),
 		\wobbleAmp, 10,
-		\pan, Prand([-1,1],inf),
+		\pan, Pwhite(-3.0,3.0,inf).clip(-1,1),
 		\out, b.reverb
 	)
 ).play;
