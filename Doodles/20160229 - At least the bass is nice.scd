@@ -54,6 +54,23 @@ SynthDef(\bass,
 		Out.ar(out, audio);
 	}
 ).add;
+(
+SynthDef(\sid_lead,
+	{
+		|freq=200,amp=0.1,gate=1,out=0,pan=0,att=0.05,dec=0.1,sus=0.6,rel=0.2,cutoff=2,lagTime=0.05|
+		var audio, env, numvoices = 3;
+		freq = VarLag.kr(freq,lagTime,0,warp:\sin);
+		env = Env([0,1,sus,0],[att,dec,rel],\sin,2).kr(Done.freeSelf,gate) * amp;
+		audio = Mix(numvoices.collect({
+			VarSaw.ar((freq * LFNoise1.kr(0.2,0.002,1)),0,LFNoise1.kr(0.1).range(0.85,0.95),env * numvoices.reciprocal);
+		}));
+		audio = MoogFF.ar(audio.tanh*20.0, (freq*cutoff)+LFNoise2.ar(1, 400, 1), LFNoise2.ar(0,3.5, 0));
+		audio = MoogFF.ar(audio*4, freq*LFNoise2.kr(0.2, 6, 4), 0.5);
+		audio = Pan2.ar(audio,pan,0.2);
+		Out.ar(out,audio);
+	}
+).add;
+)
 )
 
 (
@@ -116,6 +133,27 @@ Pdef(\bass,
 ).play;
 )
 Pdef(\bass).stop;
+
+(
+Pdef(\sid_lead,
+	PmonoArtic(
+		\sid_lead,
+		\scale, Pfunc({m.scaleChord((0..6))}),
+		\dur, Pseq([
+			Pseq([4,2,1,1,4,4])
+		],inf),
+		\degree, Pseq([
+			Pseq([-2,2,1,2,3,5]),
+			Pseq([4,0,1,0,-2,-3])
+		],inf),
+		\legato, Pseq([
+			Pseq([1,0.85,1,1,1,0.85])
+		],inf),
+		\cutoff, 4
+	)
+).play(quant:c.beatsPerBar);
+)
+Pdef(\sid_lead).stop;
 
 (
 Pdef(\structure).quant = [2 * c.beatsPerBar, 0, 0.1];
