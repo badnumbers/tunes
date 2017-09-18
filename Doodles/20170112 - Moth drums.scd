@@ -1,6 +1,12 @@
 (
 w=1;h=0.5;q=0.25;e=0.125;t=0.3;u=0.4;
 c = TempoClock.default;
+b = b ?? ();
+f = f ?? ();
+)
+
+(
+b.glitchdelay = Bus.audio(s,2);
 )
 
 (
@@ -55,92 +61,113 @@ SynthDef(\moth_kick,
 		Out.ar(out,audio);
 	}
 ).add;
+SynthDef(\glitchdelay,
+	{
+		|in, out = 0, delayTime = 0, delayTimeLag = 0|
+		var audio = In.ar(in, 2);
+		delayTime = VarLag.kr(delayTime,delayTimeLag,0,\sin);
+		audio = DelayC.ar(audio, 4, delayTime);
+		Out.ar(out,audio);
+	}
+).add;
 )
 
 (
 Pdef(\hats).quant = [c.beatsPerBar];
 Pdef(\hats,
 	Ppar([
-		Pbind(
-			\instrument, \moth_kick,
-			\freq,Pseq([1,\,\,\, \,\,\,\, 1,\,\,\, \,\,\,1],inf) * 30,
-			//\freq, \,
-			\dur, q,
-			\amp, Pseq([1,\,\,\, \,\,\,\, 1,\,\,\, \,\,\,0.4],inf) * 0.1,
-			\att,0.001,
-			\dec,0.4,
-			\attCurve,2,
-			\decCurve,3,
-			\freqAtt,0.001,
-			\freqDec,0.2,
-			\freqAttCurve,2,
-			\freqDecCurve,-9,
-			\freqJump,10,
-			\boost,4
+		Pmono(\glitchdelay,
+			\in, b.glitchdelay,
+			\out, 0,
+			\delayTime, (Pbrown(-5,5,1,inf) * Place([0,[1,2,3]],inf)) * c.beatDur * 0.25,
+			\delayTimeLag,0,
+			\dur, q
 		),
-		Pbind(
-			\instrument, \moth_snare,
-			\amp, 0.1,
-			\att, 0.004,
-			\attCurve, 2,
-			\dec, 0.14,
-			\decCurve, -3,
-			\amp, 1,
-			\dur, w,
-			\freq, Pseq([\,1,\,1],inf) * 130,
-			//\freq, \,
-			\carfreq, Pseq([\,1,\,1],inf) * 130 * Pgauss(1,0.03,inf),
-			\mod1freq, 414 * Pgauss(1,0.02,inf),
-			\mod1amt, 0.6,
-			\mod2freq, 200,
-			\mod2amt, 0.7,
-			\mod3freq, 50,
-			\mod3amt, 0.8,
-			\jump, 13,
-			\timingOffset, Pbrown(-0.02,0.02,0.001,inf),
-			\noiseHpfFreq, 2000,
-			\boost, 8,
-			\overallHpfFreq,500
-		),
-		Pbind(
-			\instrument, \moth_fm,
-			\amp, 0.1,
-			\carfreq, 5000 * Pgauss(1,0.03,inf),
-			\mod1freq, 883 * Pgauss(1,0.02,inf),
-			\mod1amt, 0.6,
-			\mod2freq, 283,
-			\mod2amt, 0.7,
-			\mod3freq, 487,
-			\mod3amt, 0.8,
-			\att, 0.003,
-			\attCurve, 2,
-			\dec, 0.3,
-			\decCurve, -7,
-			//\freq, \,
-			\amp, Pseq([0.1,0.02,Pwrand([0,0.02],[9,11].normalizeSum)],inf) * Pgauss(1,0.08,inf),
-			\dur, Pseq([h * 1.05, q * 0.95, q * 0.95],inf),
-			\timingOffset, Pbrown(-0.02,0.02,0.001,inf),
-			\hpfFreq, 3000
-		),
-		Pbind(
-			\instrument, \moth_fm,
-			\freqCoefficient, 3,
-			\carfreq, 2000 * Pgauss(1,0.01,inf) * Pkey(\freqCoefficient),
-			\mod1freq, 500 * Pgauss(1,0.02,inf) * Pkey(\freqCoefficient),
-			\mod1amt, 0.1,
-			\mod2freq, 700 * Pkey(\freqCoefficient),
-			\mod2amt, 0.2,
-			\mod3freq, 300 * Pkey(\freqCoefficient),
-			\mod3amt, 0.8,
-			\dur, Pseq([h,w,q,q, q,q,q,q, q,q,q,q],inf),
-			\amp, Pseq([5,8,7,1, 3,1,5,1, 3,1,7,1],inf) / 140,
-			\att, Pseq([1,4,1,1, 1,1,1,1, 1,1,1,1],inf) * 0.003,
-			\attCurve, 2,
-			\dec, Pseq([1,2,1,1, 1,1,1,1, 1,1,1,1],inf) * 0.3,
-			\decCurve, -7,
-			//\freq, \,
-			\timingOffset, Pseq([1,2,7,7, 6,6,5,5, 4,4,3,2],inf) / 70 + Pbrown(-0.02,0.02,0.001,inf),
-			\hpfFreq, 400
+		Pchain(
+			Pbind(\out, b.glitchdelay),
+			Ppar([
+				Pbind(
+					\instrument, \moth_kick,
+					\freq,Pseq([1,\,\,\, \,\,\,\, 1,\,\,\, \,\,\,1],inf) * 30,
+					//\freq, \,
+					\dur, q,
+					\amp, Pseq([1,\,\,\, \,\,\,\, 1,\,\,\, \,\,\,0.4],inf) * 0.1,
+					\att,0.001,
+					\dec,0.4,
+					\attCurve,2,
+					\decCurve,3,
+					\freqAtt,0.001,
+					\freqDec,0.2,
+					\freqAttCurve,2,
+					\freqDecCurve,-9,
+					\freqJump,10,
+					\boost,4
+				),
+				Pbind(
+					\instrument, \moth_snare,
+					\amp, 0.1,
+					\att, 0.004,
+					\attCurve, 2,
+					\dec, 0.14,
+					\decCurve, -3,
+					\amp, 1,
+					\dur, w,
+					\freq, Pseq([\,1,\,1],inf) * 130,
+					//\freq, \,
+					\carfreq, Pseq([\,1,\,1],inf) * 130 * Pgauss(1,0.03,inf),
+					\mod1freq, 414 * Pgauss(1,0.02,inf),
+					\mod1amt, 0.6,
+					\mod2freq, 200,
+					\mod2amt, 0.7,
+					\mod3freq, 50,
+					\mod3amt, 0.8,
+					\jump, 13,
+					\timingOffset, Pbrown(-0.02,0.02,0.001,inf),
+					\noiseHpfFreq, 2000,
+					\boost, 8,
+					\overallHpfFreq,500
+				),
+				Pbind(
+					\instrument, \moth_fm,
+					\amp, 0.1,
+					\carfreq, 5000 * Pgauss(1,0.03,inf),
+					\mod1freq, 883 * Pgauss(1,0.02,inf),
+					\mod1amt, 0.6,
+					\mod2freq, 283,
+					\mod2amt, 0.7,
+					\mod3freq, 487,
+					\mod3amt, 0.8,
+					\att, 0.003,
+					\attCurve, 2,
+					\dec, 0.3,
+					\decCurve, -7,
+					//\freq, \,
+					\amp, Pseq([0.1,0.02,Pwrand([0,0.02],[9,11].normalizeSum)],inf) * Pgauss(1,0.08,inf),
+					\dur, Pseq([h * 1.05, q * 0.95, q * 0.95],inf),
+					\timingOffset, Pbrown(-0.02,0.02,0.001,inf),
+					\hpfFreq, 3000
+				),
+				Pbind(
+					\instrument, \moth_fm,
+					\freqCoefficient, 3,
+					\carfreq, 2000 * Pgauss(1,0.01,inf) * Pkey(\freqCoefficient),
+					\mod1freq, 500 * Pgauss(1,0.02,inf) * Pkey(\freqCoefficient),
+					\mod1amt, 0.1,
+					\mod2freq, 700 * Pkey(\freqCoefficient),
+					\mod2amt, 0.2,
+					\mod3freq, 300 * Pkey(\freqCoefficient),
+					\mod3amt, 0.8,
+					\dur, Pseq([h,w,q,q, q,q,q,q, q,q,q,q],inf),
+					\amp, Pseq([5,8,7,1, 3,1,5,1, 3,1,7,1],inf) / 140,
+					\att, Pseq([1,4,1,1, 1,1,1,1, 1,1,1,1],inf) * 0.003,
+					\attCurve, 2,
+					\dec, Pseq([1,2,1,1, 1,1,1,1, 1,1,1,1],inf) * 0.3,
+					\decCurve, -7,
+					//\freq, \,
+					\timingOffset, Pseq([1,2,7,7, 6,6,5,5, 4,4,3,2],inf) / 70 + Pbrown(-0.02,0.02,0.001,inf),
+					\hpfFreq, 400
+				)
+			])
 		)
 	])
 ).play;
