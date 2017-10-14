@@ -7,6 +7,7 @@ SynthDef(\exciter,
 {
 	|freq, amp, gate, out|
 	var audio, env, noiseEnv, formant1, formant2, formant3;
+		freq = freq + LFNoise1.kr(0.3,0.05,1);
 		audio = LFNoise2.ar(Line.kr(4000, 200, 0.04),amp*0.02);
 	noiseEnv = EnvGen.ar(Env([0, 1, 0], [0.008, 0.04], [3, -3]), 1);
 	audio = CombL.ar(noiseEnv * audio, 1/freq, 1/freq, 6);
@@ -19,14 +20,14 @@ SynthDef(\exciterBody,
 	{
 		|in, pan|
 		var audio, formants, formant1, formant2, formant3;
-		audio = In.ar(in, 1);
+		audio = In.ar(in, 1) * 0.5;
 		formant1 = Formlet.ar(audio, 400, 0.01, 0.06) * 0.2;
 		formant2 = Formlet.ar(audio, 750, 0.001, 0.04) * 0.5;
 		formant3 = Formlet.ar(audio, 1250, 0.007, 0.05) * 0.4;
 		formants = (audio * 0.2) + formant1 + formant2 + formant3;
 		formants = FreeVerb.ar(formants, room: 0.8, damp: 0.1);
 		audio = XFade2.ar(audio, formants, -0.5);
-		audio = Pan2.ar(audio, pan);
+		audio = Pan2.ar(audio, pan, 8);
 		Out.ar(0, audio);
 	}
 ).add;
@@ -39,6 +40,16 @@ if (~exciterBodySynth != nil, {~exciterBodySynth.free;}, {});
 Pdef(\patterns,
 	Ppar([
 		Pbind(
+			\instrument, \exciter,
+			\scale, Scale.phrygian(\just),
+			\octave, 4,
+			\degree, Pseq([0, 0, 3, 5, 3, 4],inf),
+			\amp, Pseq([0.2, 0,18, 0.18, 0.1, 0.17, 0.09], inf) * 0.03,
+			\dur, Pseq([0.75, 0.75, 0.25, 0.25, 0.25, 0.25],inf),
+			\out, ~exciterBus
+		),
+		Pbind(
+			//\type, \rest,
 			\instrument, \exciter,
 			\scale, Scale.phrygian(\just),
 			\degree, Pbrown(0, 14, 2, inf),
