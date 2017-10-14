@@ -5,11 +5,13 @@ h = 0.5;
 q = 0.25;
 e = 0.125;
 )
+
 (
 b = (
 	stringEffects: Bus.audio(s, 2);
 );
 )
+
 (
 SynthDef(\string,
 	{
@@ -23,7 +25,7 @@ SynthDef(\string,
 			var width = 0.5.rand + SinOsc.kr(1 + 0.2.rand, mul: 0.2.rand);
 			var osc = Pulse.ar(freq + (freq * index * sign * detune * 0.0005), width:width);
 			osc;
-		}) * env / 5;
+		}) * env / 2;
 		audio = LPF.ar(audio, freq * 2);
 		audio = Pan2.ar(audio, pan);
 		Out.ar(out, audio);
@@ -38,10 +40,12 @@ SynthDef(\stringEffects,
 	}
 ).add;
 )
+
 (
 x.free;
 x = Synth(\stringEffects, [in: b.stringEffects, out: 0]);
 )
+
 (
 Pdef(\strings,
 	Ppar([
@@ -52,7 +56,7 @@ Pdef(\strings,
 			\detune, 3,
 			\dur, 5,
 			\out, b.stringEffects,
-			\amp, 0.4
+			\amp, 0.8
 		),
 		Pbind(
 			\instrument, \string,
@@ -62,10 +66,8 @@ Pdef(\strings,
 			\octave, 6,
 			\dur, 15,
 			\out, b.stringEffects,
-			\amp, 0.5
+			\amp, 1
 		)
 	])
 ).play;
 )
-
-s.scope(2)
