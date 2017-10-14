@@ -14,15 +14,16 @@ SynthDef(\ping,
 ).add;
 SynthDef(\effects,
 	{
-		|in, out|
+		|in, out, delaymodfreq = 0.2, delaymodamt = 0.05|
 		var audio = In.ar(in, 2);
-		audio = (audio / 2) + (CombN.ar(audio, 1, 1, 1) /  4);
+		audio = (audio / 2) + (CombN.ar(audio, 2, LFNoise2.kr(delaymodfreq,delaymodamt,1), 1) /  4);
 		audio = FreeVerb.ar(audio, room: 2, damp: 0.2);
 		Out.ar(out, audio);
 	}
 ).add;
 )
 x = Synth(\effects, [\in, b, \out, 0]);
+x.set(\delaymodamt, 0.1);
 x.free;
 (
 Pdef(\patterns,
