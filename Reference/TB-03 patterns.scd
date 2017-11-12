@@ -66,18 +66,47 @@ m = MIDIOut.newByName("CH345", "CH345 MIDI 1").latency_(Server.default.latency);
 				15 -> ('type':'note','note':'G','transpose':0,'accent':true,'slide':false),
 				16 -> ('type':'note','note':'G','transpose':-2,'accent':false,'slide':false)
 			),
+			3 -> Dictionary.with(
+				1 -> ('type':'note','note':'G','transpose':0,'accent':false,'slide':false),
+				2 -> ('type':'note','note':'G','transpose':-1,'accent':true,'slide':true),
+				3 -> ('type':'note','note':'G','transpose':0,'accent':false,'slide':false),
+				4 -> ('type':'note','note':'D','transpose':0,'accent':true,'slide':false),
+				5 -> ('type':'note','note':'A#','transpose':0,'accent':false,'slide':true),
+				6 -> ('type':'note','note':'G','transpose':0,'accent':false,'slide':false),
+				7 -> ('type':'note','note':'C','transpose':0,'accent':false,'slide':false),
+				8 -> ('type':'note','note':'D','transpose':0,'accent':false,'slide':false)
+			),
+			4 -> Dictionary.with(
+				1 -> ('type':'note','note':'D#','transpose':-1,'accent':false,'slide':false),
+				2 -> ('type':'rest','note':nil,'transpose':-1,'accent':false,'slide':false),
+				3 -> ('type':'rest','note':nil,'transpose':-1,'accent':false,'slide':false),
+				4 -> ('type':'note','note':'D#','transpose':1,'accent':true,'slide':false),
+				5 -> ('type':'note','note':'D#','transpose':0,'accent':false,'slide':false),
+				6 -> ('type':'note','note':'A#','transpose':0,'accent':false,'slide':true),
+				7 -> ('type':'note','note':'G','transpose':0,'accent':false,'slide':false),
+				8 -> ('type':'tie','note':nil,'transpose':0,'accent':false,'slide':false),
+				9 -> ('type':'note','note':'C','transpose':0,'accent':false,'slide':false),
+				10 -> ('type':'rest','note':nil,'transpose':0,'accent':false,'slide':false),
+				11 -> ('type':'note','note':'C','transpose':2,'accent':true,'slide':true),
+				12 -> ('type':'note','note':'C','transpose':0,'accent':true,'slide':true),
+				13 -> ('type':'note','note':'C','transpose':2,'accent':true,'slide':true),
+				14 -> ('type':'note','note':'C','transpose':0,'accent':true,'slide':true),
+				15 -> ('type':'note','note':'C','transpose':2,'accent':true,'slide':true),
+				16 -> ('type':'note','note':'C','transpose':-1,'accent':false,'slide':false)
+			)
 		)
 	)
 );
 )
 
 (
-var sourcepattern = ~tb03Patterns['I']['A'][2];
-var typePat = \midi!16;
-var notePat = 0!16;
-var legatoPat = 0!16;
-var ampPat = 0!16;
-var slidePat = 0!16;
+var sourcepattern = ~tb03Patterns['I']['A'][4];
+var length = sourcepattern.size;
+var typePat = \midi!length;
+var notePat = 0!length;
+var legatoPat = 0!length;
+var ampPat = 0!length;
+var slidePat = 0!length;
 var currentLegatoIndex = 0;
 var bump = {
 	|num|
@@ -86,7 +115,7 @@ var bump = {
 	if (result == num, {result = result + 1});
 	result;
 };
-(0..15).do({
+(0..length-1).do({
 	|index|
 	var step = sourcepattern[index+1];
 	typePat[index] = if(step.type == 'note', \midi, \rest);
