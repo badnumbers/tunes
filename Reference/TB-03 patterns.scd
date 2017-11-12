@@ -72,55 +72,46 @@ m = MIDIOut.newByName("CH345", "CH345 MIDI 1").latency_(Server.default.latency);
 )
 
 (
+var sourcepattern = ~tb03Patterns['I']['A'][2];
+var typePat = \midi!16;
+var notePat = 0!16;
+var legatoPat = 0!16;
+var ampPat = 0!16;
+var slidePat = 0!16;
+var currentLegatoIndex = 0;
+var bump = {
+	|num|
+	var result;
+	result = (num-0.5).roundUp + 0.5;
+	if (result == num, {result = result + 1});
+	result;
+};
+(0..15).do({
+	|index|
+	var step = sourcepattern[index+1];
+	typePat[index] = if(step.type == 'note', \midi, \rest);
+	notePat[index] = 12 * step.transpose  + ~tb03Notes[step.note];
+	if (step.type != 'tie',
+		{
+			if (step.type == 'note', currentLegatoIndex = index);
+			legatoPat[currentLegatoIndex] = if(step.slide, 1.1, 0.5);
+		}
+	);
+	if (step.type == 'tie', {legatoPat[currentLegatoIndex] = bump.value(legatoPat[currentLegatoIndex])});
+	ampPat[index] = if(step.accent, 1, 0.5);
+	slidePat[index] = if(step.slide, 127, 0);
+});
 Pdef(\midi,
 	Ppar([
 		Pbind(
-			\type, \midi,
-			\midicmd, \noteOn,
-			\midiout, m,
-			\step, Pseq((1..16),inf),
-			\pattern, ~tb03Patterns['I']['A'][1], //Pattern group I, pattern section A, pattern 1
-			\stepdata, Pfunc({|e|e.pattern[e.step]}),
-			\stepnote, Pfunc({|e|~tb03Notes[e.stepdata['note']]}),
-			\steptranspose, Pfunc({|e|e.stepdata['transpose']}),
-			\stepaccent, Pfunc({|e|e.stepdata['accent']}),
-			\stepslide, Pfunc({|e|e.stepdata['slide']}),
-			\chan, 1,
-			\midinote, Pkey(\steptranspose) * 12 + Pkey(\stepnote),
-			\dur, q,
-			\legato, Pif(Pkey(\stepslide),g,h),
-			\amp, Pif(Pkey(\stepaccent),w,h)
-		),
-		Pbind(
-			\type, \midi,
-			\midicmd, \control,
-			\midiout, m,
-			\step, Pseq((1..16),inf),
-			\pattern, ~tb03Patterns['I']['A'][1], //Pattern group I, pattern section A, pattern 1
-			\stepdata, Pfunc({|e|e.pattern[e.step]}),
-			\stepslide, Pfunc({|e|e.stepdata['slide']}),
-			\chan, 1,
-			\ctlNum, 102,
-			\control, Pif(Pkey(\stepslide),127,0),
-			\dur, q
-		)
-	])
-).play(quant: 1);
-)
-Pdef(\midi).stop;
-
-(
-Pdef(\midi,
-	Ppar([
-		Pbind(
-			\type, \midi,
+			\type, Pseq(typePat,inf),
 			\midicmd, \noteOn,
 			\midiout, m,
 			\chan, 1,
-			\midinote, Pseq([27,42,41,39,41,40,27,39,41,40,42,42,39,42,40,41],inf),
+			\midinote, Pseq(notePat,inf),
 			\dur, q,
-			\legato, Pseq([g,g,h,g, h,h,g,g, h,g,h,g, g,h,h,h],inf),
-			\amp, 0.5
+			\legato, Pseq(legatoPat,inf),
+			\amp, Pseq(ampPat,inf)
 		),
 		Pbind(
 			\type, \midi,
@@ -128,7 +119,7 @@ Pdef(\midi,
 			\midiout, m,
 			\chan, 1,
 			\ctlNum, 102,
-			\control, Pseq([1,1,0,1, 0,0,1,1, 0,1,0,1, 1,0,0,0],inf) * 127,
+			\control, Pseq(slidePat,inf),
 			\dur, q
 		)
 	])
