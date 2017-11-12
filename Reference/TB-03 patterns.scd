@@ -62,7 +62,7 @@ m = MIDIOut.newByName("CH345", "CH345 MIDI 1").latency_(Server.default.latency);
 				11 -> ('type':'note','note':'C','transpose':0,'accent':true,'slide':false),
 				12 -> ('type':'note','note':'C','transpose':-1,'accent':false,'slide':true),
 				13 -> ('type':'note','note':'C','transpose':0,'accent':true,'slide':true),
-				14 -> ('type':'note','note':'C','transpose':+2,'accent':false,'slide':true),
+				14 -> ('type':'note','note':'C','transpose':2,'accent':false,'slide':true),
 				15 -> ('type':'note','note':'G','transpose':0,'accent':true,'slide':false),
 				16 -> ('type':'note','note':'G','transpose':-2,'accent':false,'slide':false)
 			),
