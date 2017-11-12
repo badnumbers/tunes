@@ -14,7 +14,7 @@ c.tempo = 101/60;
 MIDIClient.init;
 m = MIDIOut.newByName("CH345", "CH345 MIDI 1").latency_(Server.default.latency);
 
-~tb03Notes = Dictionary.with('C'->36,'C#'->37,'D'->38,'D#'->39,'E'->40,'F'->41,'F#'->42,'G'->43,'G#'->44,'A'->45,'A#'->46,'B'->47,'C2'->48);
+~tb03Notes = Dictionary.with('C'->36,'C#'->37,'D'->38,'D#'->39,'E'->40,'F'->41,'F#'->42,'G'->43,'G#'->44,'A'->45,'A#'->46,'B'->47,'C2'->48,nil->0);
 
 (
 // Create dictionary holding all the patterns in the TB-03.
