@@ -46,8 +46,26 @@ m = MIDIOut.newByName("CH345", "CH345 MIDI 1").latency_(Server.default.latency);
 				13 -> ('type':'note','note':'D#','transpose':0,'accent':false,'slide':true),
 				14 -> ('type':'note','note':'F#','transpose':0,'accent':false,'slide':false),
 				15 -> ('type':'note','note':'E','transpose':0,'accent':false,'slide':false),
-				16 -> ('type':'note','note':'F','transpose':0,'accent':false,'slide':false),
-			)
+				16 -> ('type':'note','note':'F','transpose':0,'accent':false,'slide':false)
+			),
+			2 -> Dictionary.with(
+				1 -> ('type':'note','note':'F#','transpose':-1,'accent':false,'slide':true),
+				2 -> ('type':'note','note':'G','transpose':0,'accent':true,'slide':false),
+				3 -> ('type':'note','note':'G','transpose':0,'accent':true,'slide':true),
+				4 -> ('type':'note','note':'G','transpose':-1,'accent':true,'slide':false),
+				5 -> ('type':'note','note':'G','transpose':0,'accent':false,'slide':false),
+				6 -> ('type':'note','note':'A#','transpose':0,'accent':true,'slide':true),
+				7 -> ('type':'note','note':'G','transpose':0,'accent':true,'slide':false),
+				8 -> ('type':'note','note':'F#','transpose':0,'accent':false,'slide':true),
+				9 -> ('type':'tie','note':nil,'transpose':0,'accent':false,'slide':false),
+				10 -> ('type':'rest','note':nil,'transpose':0,'accent':false,'slide':false),
+				11 -> ('type':'note','note':'C','transpose':0,'accent':true,'slide':false),
+				12 -> ('type':'note','note':'C','transpose':-1,'accent':false,'slide':true),
+				13 -> ('type':'note','note':'C','transpose':0,'accent':true,'slide':true),
+				14 -> ('type':'note','note':'C','transpose':+2,'accent':false,'slide':true),
+				15 -> ('type':'note','note':'G','transpose':0,'accent':true,'slide':false),
+				16 -> ('type':'note','note':'G','transpose':-2,'accent':false,'slide':false)
+			),
 		)
 	)
 );
