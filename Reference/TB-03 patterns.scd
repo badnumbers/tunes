@@ -108,13 +108,6 @@ var legatoPat = 0!length;
 var ampPat = 0!length;
 var slidePat = 0!length;
 var currentLegatoIndex = 0;
-var bump = {
-	|num|
-	var result;
-	result = (num-0.5).roundUp + 0.5;
-	if (result == num, {result = result + 1});
-	result;
-};
 (0..length-1).do({
 	|index|
 	var step = sourcepattern[index+1];
@@ -123,10 +116,10 @@ var bump = {
 	if (step.type != 'tie',
 		{
 			if (step.type == 'note', currentLegatoIndex = index);
-			legatoPat[currentLegatoIndex] = if(step.slide, 1.1, 0.5);
+			legatoPat[currentLegatoIndex] = if(step.slide, 1.01, 0.5);
 		}
 	);
-	if (step.type == 'tie', {legatoPat[currentLegatoIndex] = bump.value(legatoPat[currentLegatoIndex])});
+	if (step.type == 'tie', {legatoPat[currentLegatoIndex] = legatoPat[currentLegatoIndex] + 1});
 	ampPat[index] = if(step.accent, 1, 0.5);
 	slidePat[index] = if(step.slide, 127, 0);
 });
