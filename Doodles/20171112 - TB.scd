@@ -1,7 +1,23 @@
 (
 w=1;h=0.5;q=0.25;e=0.125;t=1/3;
 c = TempoClock.default;
-b = b ?? ();
+a = a ?? ();
+a.preset = {
+	|self,parameters|
+	var midiimp = (tuning:104,cutofffreq:74,resonance:71,envmod:12,decay:75,accent:16,overdrive:17,delaytime:18,delayfeedback:19,slide:102);
+	var offset = (tuning:5,cutofffreq:0,resonance:0,envmod:0,decay:0,accent:0,overdrive:0,delaytime:0,delayfeedback:0,slide:0);
+	var keys = parameters.keys.as(Array);
+	var ccs = keys.collect({|k| var cc = midiimp[k]; if(cc.isNil, {Error(format("'%' is not a valid parameter.\nAllowed values are %",k,midiimp.keys.as(Array))).throw;}); cc;});
+	var values = keys.collect((parameters[_]+offset[_]*12.8).roundUp.clip(0,127));
+	(
+		type: \midi,
+		midicmd: \control,
+		midiout: m,
+		chan: 1,
+		ctlNum: ccs,
+		control: values
+	).play;
+}
 )
 
 (
@@ -27,11 +43,6 @@ SynthDef(\tb03,
 	}
 ).add;
 )
-
-(tuning:0,cutoff:0,resonance:6,env:4,decay:10,accent:8,overdrive:5.5)
-(tuning:12,cutoff:0,resonance:6,env:0,decay:10,accent:8,overdrive:0)
-(tuning:0,cutoff:0,resonance:7,env:0,decay:0,accent:8,overdrive:5.5)
-(tuning:0,cutoff:0,resonance:5,env:10,decay:10,accent:10,overdrive:0)
 
 (
 Pdef(\midi,
@@ -84,6 +95,11 @@ Pdef(\midi,
 )
 Pdef(\midi).stop;
 Pdef(\drums).stop;
+
+a.preset((tuning:0,resonance:6,envmod:4,decay:10,accent:8,overdrive:5.5)); // standard
+a.preset((tuning:12,resonance:6,envmod:0,decay:10,accent:8,overdrive:0)); // metallic
+a.preset((tuning:0,resonance:7,envmod:0,decay:0,accent:8,overdrive:5.5)); // kind of quirky
+a.preset((tuning:0,resonance:5,envmod:10,decay:10,accent:10,overdrive:0)); // bassy
 
 s.recHeaderFormat = "wav";
 s.prepareForRecord;
