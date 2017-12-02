@@ -1,6 +1,10 @@
 (
-TempoClock.default.tempo = 1;
+w=1;h=0.5;q=0.25;e=0.125;t=1/3;
+c = TempoClock.default;
 )
+
+c.tempo = 1;
+
 (
 SynthDef(\formants,
 	{
@@ -32,7 +36,7 @@ Pdef(\formants,
 	Pmono(\formants,
 		\degree, Pbrown(0, 28, 2, inf),
 		\octave, 4,
-		\dur, Prand([Pseq(0.5!1), Pseq(0.25!2), Pseq(0.125!4)], inf)
+		\dur, Prand([Pseq(h!1), Pseq(q!2), Pseq(e!4)], inf)
 	)
 ).play;
 )

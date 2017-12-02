@@ -1,7 +1,12 @@
+c = TempoClock.default;
+
+c.tempo = 1;
+
 (
-TempoClock.default.tempo = 1;
-b = Bus.audio(s,  2);
+b = b ?? ();
+b.plonkeffects = Bus.audio(s,2);
 )
+
 (
 SynthDef(\plonk,
 	{
@@ -16,23 +21,24 @@ SynthDef(\plonk,
 		Out.ar(out, audio);
 	}
 ).add;
-)
-(
 SynthDef(\effects,
 	{
 		|in, out|
-		var audio = In.ar(b, 2);
+		var audio = In.ar(in, 2);
 		audio = audio + (AllpassN.ar(audio, 0.4, 0.4, 4) * 0.4);
 		Out.ar(out, audio);
 	}
 ).add;
 )
+
 (
-x.free;
-x = Synth(\effects, [\in, b]);
+f = f ?? ();
+f.plonkeffects.free;
+f.plonkeffects = Synth(\effects, [\in, b.plonkeffects]);
 )
+
 (
-p = Pbind(
+var pat = Pbind(
 	\instrument, \plonk,
 	\degree, Pbrown(0, 28, 2, inf),
 	\amp, Pbrown(0.2, 0.4, 0.05, inf),
@@ -40,10 +46,10 @@ p = Pbind(
 	\cutoff, Pbrown(1, 9, 0.4, inf),
 	\wobbleAmt, Pbrown(0, 0.5, 0.05, inf),
 	\dur, Pwrand([0.125, 0.25, 0.5], [8, 2, 1].normalizeSum, inf),
-	\out, b
+	\out, b.plonkeffects
 );
 Pdef(\patterns,
-	Ppar(p ! 2)
+	Ppar(pat ! 2)
 ).play;
 )
-s.scope(2)
+Pdef(\patterns).stop;

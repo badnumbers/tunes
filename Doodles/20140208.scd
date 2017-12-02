@@ -11,16 +11,17 @@ SynthDef(\NastyBell,
 )
 
 // Note that the instrument can produce compressed as well as stretched harmonics
-
 (
-Pbind(*[
-	instrument: \NastyBell,
-	stepsPerOctave: 17,
-	scale: [0, 1, 4, 7, 10, 11, 14],
-	octave: 6,
-	degree: Pseq([0, 3, 2, 3, 1, 4, 3, 4], inf),
-	dur: 2,
-	amp: 0.25,
-	out: 0;
-]).play;
+Pdef(\bells,
+	Pbind(*[
+		instrument: \NastyBell,
+		stepsPerOctave: 17,
+		scale: [0, 1, 4, 7, 10, 11, 14],
+		octave: 6,
+		degree: Pseq([0, 3, 2, 3, 1, 4, 3, 4], inf),
+		dur: 2,
+		amp: 0.25,
+		out: 0;
+	])
+).play;
 )

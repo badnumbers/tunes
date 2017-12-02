@@ -1,10 +1,10 @@
 (
-q = 0.25;
-e = 0.125;
-h = 0.5;
-w = 1;
-TempoClock.default.tempo = 1;
+w=1;h=0.5;q=0.25;e=0.125;t=1/3;
+c = TempoClock.default;
 )
+
+c.tempo = 1;
+
 (
 ~kicks = Array.newClear(50);
 ~snares = Array.newClear(50);
@@ -16,6 +16,7 @@ TempoClock.default.tempo = 1;
 	~hats[index] = Buffer.read(s, "/home/david/DrumSamples.org/HiHats2/hihat%.wav".format(index + 51));
 });
 )
+
 (
 SynthDef(\sampler,
 	{
@@ -26,8 +27,6 @@ SynthDef(\sampler,
 		Out.ar(out, audio);
 	}
 ).add;
-)
-(
 SynthDef(\grumblyBass,
 	{
 		|freq, amp, gate = 1, twirl, cutoff = 80, out = 0, pan = 0|
@@ -41,8 +40,6 @@ SynthDef(\grumblyBass,
 		Out.ar(out, audio);
 	}
 ).add;
-)
-(
 SynthDef(\bleep,
 	{
 		|freq, initialDegreeOffset, initialBendTime = 0.1, amp, pan, gate = 1, out = 0, wobbleFreq = 6, wobbleAmt = 0.05, wobbleDelay = 0.2, cutoff = 100, initialCutoff = 100, resonance = 0.7|
@@ -61,6 +58,7 @@ SynthDef(\bleep,
 	}
 ).add;
 )
+
 (
 Pdef(\squirpy,
 	Ppar([
@@ -112,29 +110,8 @@ Pdef(\squirpy,
 			\wobbleDelayRand, Pwhite(0.09,0.12),
 			\wobbleDelayMul, Pseq([10,1,\,\,\,\,\,\,\,\,1]),
 			\wobbleDelay, Pkey(\wobbleDelayRand)*Pkey(\wobbleDelayMul)
-		),
-		Pbind(
-			\instrument, \sampler,
-			\bufnum, ~kicks[29],
-			\amp, 0.45,
-			\degree, Pseq([1,\,\,\, 1,\,\,\, 1,\,\,\, 1,\]),
-			\dur, q
-		),
-		Pbind(
-			\instrument, \sampler,
-			\bufnum, ~snares[14],
-			\amp, 0.45,
-			\degree, Pseq([\,\,1,\, \,\,1,\, \,\,1,\, \,1]),
-			\dur, q
-		),
-		Pbind(
-			\instrument, \sampler,
-			\bufnum, ~hats[9],
-			\amp, 0.27,
-			\degree, Pseq(1!14),
-			\dur, q
 		)
 	], 111)
 ).play;
 )
-s.scope(2)
+Pdef(\squirpy).stop;

@@ -2,11 +2,10 @@
 w = 1; h = 0.5; q = 0.25; e = 0.125;
 c = TempoClock.default;
 c.tempo = 2;
-b = ();
-f = ();
 )
 
 (
+b = b ?? ();
 b.drumEffects = Bus.audio(s, 2);
 )
 
@@ -109,6 +108,7 @@ SynthDef(\drumEffects,
 )
 
 (
+f = f ?? ();
 f.drumEffects.free;
 f.drumEffects = Synth(\drumEffects,[\in,b.drumEffects,\out,0,\control,0.5,\thresh,0.125,\slopeBelow,0.1,\slopeAbove,0.1,\clampTime,0.01,\relaxTime,0.08]);
 )
@@ -164,6 +164,3 @@ Pdef(\drums,
 ).play;
 )
 Pdef(\drums).stop
-
-s.scope(2)
-s.reboot

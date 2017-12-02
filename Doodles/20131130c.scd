@@ -1,8 +1,6 @@
 (
 w=1;h=0.5;q=0.25;e=0.125;
 c = TempoClock.default;
-b = ();
-f = ();
 )
 
 (
@@ -10,6 +8,7 @@ c.tempo = 2.5;
 )
 
 (
+b = b ?? ();
 b.funEffects = Bus.audio(s, 2);
 )
 
@@ -40,6 +39,7 @@ SynthDef(\funEffects,
 )
 
 (
+f = f ?? ();
 f.funEffects.free;
 f.funEffects = Synth(\funEffects, [\in, b.funEffects, \out, 0]);
 )
