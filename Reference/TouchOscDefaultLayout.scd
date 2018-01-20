@@ -27,14 +27,19 @@ rotaryPageNumbers.do({
 // Set the keyboard on page 2 to play notes
 (
 var keyboardPageNumbers = [2];
+var panicButtonPageNumber = 3;
 var numKeyboardRows = 4;
 var numKeyboardColumns = 7;
+var group = Group();
 var synths = [
 	Array.newClear(7),
 	Array.newClear(7),
 	Array.newClear(7),
 	Array.newClear(7)
 ];
+OSCdef(format("page%row%button%",panicButtonPageNumber,1,1).asSymbol,
+	{|msg|group.freeAll;},
+	format("/pages/%/rows/%/buttons/%",panicButtonPageNumber,1,1));
 keyboardPageNumbers.do({
 	|page|
 	var pageName = format("page%", page).asSymbol;
@@ -51,7 +56,7 @@ keyboardPageNumbers.do({
 					var scale = if (m.isNil, {Scale.major;},{if (m.scale.isNil, Scale.major, m.scale);});
 					if (msg[1] == 1,
 						{
-							var ev = (type: \on, scale: scale, octave: row + 2, degree: column - 1, latency:\nolatency);
+							var ev = (type: \on, scale: scale, octave: row + 2, degree: column - 1, group: group, latency:\nolatency);
 							defaultKeyboardEvent.keys.do(
 								{
 									|key|
@@ -59,6 +64,7 @@ keyboardPageNumbers.do({
 								}
 							);
 							synths[row-1][column-1] = ev.play;
+
 
 						},
 						{synths[row-1][column-1].set(\gate,0);}
@@ -72,5 +78,6 @@ keyboardPageNumbers.do({
 )
 
 // m.instrument can provide a default event used to choose the instrument, set parameters etc
+m = m ?? ();
 m.instrument = (instrument: \brass, detunify: 0.01);
-m.scale = Scale.phrygian;
+m.scale = Scale.major;
