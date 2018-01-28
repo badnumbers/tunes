@@ -22,7 +22,7 @@ a.preset = {
 
 (
 MIDIClient.init;
-m = MIDIOut.newByName("CH345", "CH345 MIDI 1").latency_(Server.default.latency);
+d = MIDIOut.newByName("CH345", "CH345 MIDI 1").latency_(Server.default.latency);
 )
 
 c.tempo = 108/60;
@@ -50,7 +50,7 @@ Pdef(\midi,
 		Pbind(
 			\type, \midi,
 			\midicmd, \noteOn,
-			\midiout, m,
+			\midiout, d,
 			\chan, 1,
 			\scale, Scale.phrygian,
 			\octave, 3,
@@ -64,7 +64,7 @@ Pdef(\midi,
 		Pbind(
 			\type, \midi,
 			\midicmd, \control,
-			\midiout, m,
+			\midiout, d,
 			\chan, 1,
 			\ctlNum, 102,
 			\control, Pseq([1,0,0,1,0,0, 1,0,1,0,1,0, 1,1,0,0],inf),
@@ -73,7 +73,7 @@ Pdef(\midi,
 		Pbind(
 			\type, \midi,
 			\midicmd, \control,
-			\midiout, m,
+			\midiout, d,
 			\chan, 1,
 			\ctlNum, 74,
 			\control, Pseg((Pseq([60,120,60,120,60],inf) * Pgauss(1,0.1,inf)).clip(0,127),Pseq([w,w+w,h,h],inf),\sin),
@@ -82,7 +82,7 @@ Pdef(\midi,
 		),
 		Pmono(
 			\tb03,
-			\in, 1,
+			\in, 0,
 			\out, 0,
 			\pan, 0,
 			\amp, 0.7,
@@ -105,3 +105,5 @@ s.recHeaderFormat = "wav";
 s.prepareForRecord;
 s.record;
 s.stopRecording;
+
+a
