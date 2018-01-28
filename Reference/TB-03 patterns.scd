@@ -129,6 +129,42 @@ m = MIDIOut.newByName("CH345", "CH345 MIDI 1").latency_(Server.default.latency);
 				14 -> ('type':'note','note':'A#','transpose':0,'accent':true,'slide':false),
 				15 -> ('type':'tie','note':nil,'transpose':0,'accent':false,'slide':false),
 				16 -> ('type':'note','note':'G','transpose':0,'accent':false,'slide':false)
+			),
+			7 -> Dictionary.with(
+				1 -> ('type':'note','note':'C#','transpose':-1,'accent':false,'slide':true),
+				2 -> ('type':'note','note':'C','transpose':-1,'accent':false,'slide':false),
+				3 -> ('type':'note','note':'C','transpose':-1,'accent':false,'slide':true),
+				4 -> ('type':'note','note':'C','transpose':1,'accent':false,'slide':false),
+				5 -> ('type':'note','note':'C','transpose':-1,'accent':false,'slide':true),
+				6 -> ('type':'tie','note':nil,'transpose':-1,'accent':false,'slide':false),
+				7 -> ('type':'note','note':'C','transpose':-1,'accent':true,'slide':false),
+				8 -> ('type':'note','note':'C','transpose':1,'accent':false,'slide':false),
+				9 -> ('type':'note','note':'C','transpose':-1,'accent':false,'slide':false),
+				10 -> ('type':'note','note':'C','transpose':-1,'accent':true,'slide':true),
+				11 -> ('type':'note','note':'C','transpose':-1,'accent':false,'slide':false),
+				12 -> ('type':'note','note':'C#','transpose':1,'accent':false,'slide':true),
+				13 -> ('type':'note','note':'C','transpose':2,'accent':true,'slide':true),
+				14 -> ('type':'note','note':'C','transpose':-1,'accent':false,'slide':false),
+				15 -> ('type':'note','note':'C','transpose':-1,'accent':true,'slide':false),
+				16 -> ('type':'note','note':'C','transpose':-1,'accent':false,'slide':false)
+			),
+			8 -> Dictionary.with(
+				1 -> ('type':'note','note':'C#','transpose':2,'accent':false,'slide':true),
+				2 -> ('type':'note','note':'C#','transpose':2,'accent':false,'slide':true),
+				3 -> ('type':'note','note':'C#','transpose':2,'accent':false,'slide':false),
+				4 -> ('type':'note','note':'G#','transpose':2,'accent':false,'slide':false),
+				5 -> ('type':'note','note':'C#','transpose':2,'accent':false,'slide':false),
+				6 -> ('type':'note','note':'D','transpose':2,'accent':false,'slide':true),
+				7 -> ('type':'note','note':'F#','transpose':2,'accent':false,'slide':false),
+				8 -> ('type':'note','note':'D','transpose':2,'accent':false,'slide':true),
+				9 -> ('type':'note','note':'F#','transpose':2,'accent':false,'slide':false),
+				10 -> ('type':'note','note':'D','transpose':2,'accent':false,'slide':true),
+				11 -> ('type':'note','note':'A','transpose':2,'accent':false,'slide':true),
+				12 -> ('type':'note','note':'G#','transpose':2,'accent':false,'slide':false),
+				13 -> ('type':'note','note':'A','transpose':2,'accent':false,'slide':true),
+				14 -> ('type':'note','note':'A','transpose':2,'accent':false,'slide':true),
+				15 -> ('type':'note','note':'A','transpose':2,'accent':false,'slide':false),
+				16 -> ('type':'note','note':'A','transpose':2,'accent':false,'slide':false)
 			)
 		)
 	)
@@ -136,7 +172,7 @@ m = MIDIOut.newByName("CH345", "CH345 MIDI 1").latency_(Server.default.latency);
 )
 
 (
-var sourcepattern = ~tb03Patterns['I']['A'][4];
+var sourcepattern = ~tb03Patterns['I']['A'][1];
 var length = sourcepattern.size;
 var typePat = \midi!length;
 var notePat = 0!length;
@@ -162,13 +198,13 @@ var currentLegatoIndex = 0;
 Pdef(\midi,
 	Ppar([
 		Pbind(
-			\type, Pseq(typePat,inf),
+			\type, Pseq([ \midi, \rest, \rest, \midi, \midi, \midi, \midi, \midi, \midi, \midi, \midi, \midi, \midi, \rest, \rest, \midi ],inf),
 			\midicmd, \noteOn,
 			\midiout, m,
 			\chan, 1,
 			\midinote, Pseq(notePat,inf),
 			\dur, q,
-			\legato, Pseq(legatoPat,inf),
+			\legato, Pseq([ 2.5, 0, 0, 0.5, 0.5, 1.01, 0.5, 1.01, 0.5, 1.01, 1.01, 0.5, 2.5, 0, 0, 0.5 ],inf),
 			\amp, Pseq(ampPat,inf)
 		),
 		Pbind(
@@ -186,3 +222,19 @@ Pdef(\midi,
 Pdef(\midi).stop;
 
 
+1 -> ('type':'note','note':'','transpose':,'accent':,'slide':),
+				2 -> ('type':'note','note':'','transpose':,'accent':,'slide':),
+				3 -> ('type':'note','note':'','transpose':,'accent':,'slide':),
+				4 -> ('type':'note','note':'','transpose':,'accent':,'slide':),
+				5 -> ('type':'note','note':'','transpose':,'accent':,'slide':),
+				6 -> ('type':'note','note':'','transpose':,'accent':,'slide':),
+				7 -> ('type':'note','note':'','transpose':,'accent':,'slide':),
+				8 -> ('type':'note','note':'','transpose':,'accent':,'slide':),
+				9 -> ('type':'note','note':'','transpose':,'accent':,'slide':),
+				10 -> ('type':'note','note':'','transpose':,'accent':,'slide':),
+				11 -> ('type':'note','note':'','transpose':,'accent':,'slide':),
+				12 -> ('type':'note','note':'','transpose':,'accent':,'slide':),
+				13 -> ('type':'note','note':'','transpose':,'accent':,'slide':),
+				14 -> ('type':'note','note':'','transpose':,'accent':,'slide':),
+				15 -> ('type':'note','note':'','transpose':,'accent':,'slide':),
+				16 -> ('type':'note','note':'','transpose':,'accent':,'slide':)
