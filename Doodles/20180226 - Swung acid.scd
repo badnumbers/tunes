@@ -56,3 +56,4 @@ Pdef(\midi,
 	])
 ).play(quant: 1);
 )
+Pdef(\midi).stop;
