@@ -4,7 +4,7 @@ c = TempoClock.default;
 a = a ?? ();
 a.preset = {
 	|self,parameters|
-	/*var midiimp = (tuning:104,cutofffreq:74,resonance:71,envmod:12,decay:75,accent:16,overdrive:17,delaytime:18,delayfeedback:19,slide:102);
+	var midiimp = (tuning:104,cutofffreq:74,resonance:71,envmod:12,decay:75,accent:16,overdrive:17,delaytime:18,delayfeedback:19,slide:102);
 	var offset = (tuning:5,cutofffreq:0,resonance:0,envmod:0,decay:0,accent:0,overdrive:0,delaytime:0,delayfeedback:0,slide:0);
 	var keys = parameters.keys.as(Array);
 	var ccs = keys.collect({|k| var cc = midiimp[k]; if(cc.isNil, {Error(format("'%' is not a valid parameter.\nAllowed values are %",k,midiimp.keys.as(Array))).throw;}); cc;});
@@ -12,11 +12,11 @@ a.preset = {
 	(
 		type: \midi,
 		midicmd: \control,
-		midiout: m,
+		midiout: d,
 		chan: 1,
 		ctlNum: ccs,
 		control: values
-	).play;*/
+	).play;
 }
 )
 
@@ -31,25 +31,6 @@ x = {
 (
 MIDIClient.init;
 d = MIDIOut.newByName("Scarlett 6i6 USB", "Scarlett 6i6 USB MIDI 1").latency_(Server.default.latency);
-)
-
-(
-a.preset = {
-	|self,parameters|
-	var midiimp = (tuning:104,cutofffreq:74,resonance:71,envmod:12,decay:75,accent:16,overdrive:17,delaytime:18,delayfeedback:19,slide:102);
-	var offset = (tuning:5,cutofffreq:0,resonance:0,envmod:0,decay:0,accent:0,overdrive:0,delaytime:0,delayfeedback:0,slide:0);
-	var keys = parameters.keys.as(Array);
-	var ccs = keys.collect({|k| var cc = midiimp[k]; if(cc.isNil, {Error(format("'%' is not a valid parameter.\nAllowed values are %",k,midiimp.keys.as(Array))).throw;}); cc;});
-	var values = keys.collect((parameters[_]+offset[_]*12.8).roundUp.clip(0,127));
-	(
-		type: \midi,
-		midicmd: \control,
-		midiout: d,
-		chan: 1,
-		ctlNum: ccs,
-		control: values
-	).play;
-};
 )
 
 a.preset((tuning:0,cutofffreq:0,resonance:7.5,envmod:0,decay:10,accent:10,overdrive:1.2)); // standard
