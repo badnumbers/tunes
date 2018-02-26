@@ -22,7 +22,7 @@ a.preset = {
 
 (
 MIDIClient.init;
-d = MIDIOut.newByName("CH345", "CH345 MIDI 1").latency_(Server.default.latency);
+d = MIDIOut.newByName("Scarlett 6i6 USB", "Scarlett 6i6 USB MIDI 1").latency_(Server.default.latency);
 )
 
 c.tempo = 108/60;
