@@ -12,7 +12,7 @@ a.preset = {
 	(
 		type: \midi,
 		midicmd: \control,
-		midiout: m,
+		midiout: d,
 		chan: 1,
 		ctlNum: ccs,
 		control: values
