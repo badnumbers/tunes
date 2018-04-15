@@ -39,3 +39,18 @@ Pdef(\brass,
 ).play;
 )
 Pdef(\brass).stop;
+
+(
+Pdef(\eighties,
+	Pbind(
+		\instrument, \brass,
+		\scale, Scale.aeolian,
+		\octave, 5,
+		\degree, Pseq([3,-4,9,10,9,3,8,2],inf),
+		\dur, h,
+		\legato, 0.15,
+		\detunify, 0.01
+	)
+).play;
+)
+Pdef(\eighties).stop;
