@@ -2,6 +2,7 @@
 w=1;h=0.5;q=0.25;e=0.125;t=1/3;
 c = TempoClock.default;
 a = a ?? ();
+f = f ?? ();
 a.preset = {
 	|self,parameters|
 	var midiimp = (tuning:104,cutofffreq:74,resonance:71,envmod:12,decay:75,accent:16,overdrive:17,delaytime:18,delayfeedback:19,slide:102);
@@ -23,7 +24,8 @@ a.preset = {
 c.tempo = 2;
 
 (
-x = {
+f.tb.free;
+f.tb = {
 	SoundIn.ar(2).dup
 }.play;
 )
@@ -51,7 +53,7 @@ Pdef(\midi,
 			\legato, Pswitch([0.3,1.01],Pkey(\join)),
 			\accent, Pseq([0,1, 0,1, 0,1, 0,1,0],inf),
 			\amp, Pswitch([0.5,1],Pkey(\accent)),
-			\lag, Pseg(Pseq([0,0.1],inf),Pseq([0.5],inf),\sine) * c.beatDur,
+			\lag, Pseg(Pseq([0,0.15],inf),Pseq([0.5],inf),\sine) * c.beatDur,
 		)
 	])
 ).play(quant: 1);
