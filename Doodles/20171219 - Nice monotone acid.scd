@@ -6,8 +6,8 @@ x = {
 )
 
 x.free;
-a.preset((tuning:0,cutofffreq:4,resonance:6,envmod:0,decay:0,accent:0,overdrive:4,delaytime:6.8,delayfeedback:2.8)); // standard
-a.preset((tuning:0,cutofffreq:4.9,resonance:10,envmod:2.2,decay:7.8,accent:6.4,overdrive:4.7,delaytime:6.8,delayfeedback:2.8)); // squeaky
+a.preset((tuning:0,cutofffreq:4,resonance:6,envmod:0,decay:0,accent:0,overdrive:4,delaytime:6.8,delayfeedback:2.4)); // standard
+a.preset((tuning:0,cutofffreq:4.9,resonance:10,envmod:2.2,decay:7.8,accent:6.4,overdrive:4.7,delaytime:6.8,delayfeedback:2.4)); // squeaky
 
 (
 Pdef(\midi,
@@ -15,7 +15,7 @@ Pdef(\midi,
 		Pbind(
 			\type, \midi,
 			\midicmd, \noteOn,
-			\midiout, m,
+			\midiout, d,
 			\chan, 1,
 			\scale, Scale.phrygian,
 			\octave, 3,
@@ -30,7 +30,7 @@ Pdef(\midi,
 		Pbind(
 			\type, \midi,
 			\midicmd, \control,
-			\midiout, m,
+			\midiout, d,
 			\chan, 1,
 			\ctlNum, 74,
 			\control, Pwhite(45,127,inf),
