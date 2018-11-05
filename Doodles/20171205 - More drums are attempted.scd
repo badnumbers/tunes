@@ -117,14 +117,13 @@ Pdef(\kick,
 		\thumpenvsus,0.2 * Pkey(\velocity).linlin(0,1,0.5,1),
 		\thumpenvreltime,0.4,
 		\thumpenvtofreq, 5,
-		\amp, Pkey(\velocity) / 20,
+		\amp, Pkey(\velocity) / 10,
 		\trig, Pif(Pkey(\amp) > 0, 1, 0),
 		\dur, q,
 		\timingOffset, Pseg(Pseq([0,0.05],inf),Pseq([h,h],inf),\sine,inf)
 	)
-).play(quant:2);
+);
 )
-Pdef(\kick).stop;
 
 (
 Pdef(\snare,
@@ -156,14 +155,13 @@ Pdef(\snare,
 		\fm1amt, 0.9,
 		\fm2amt, 0.5,
 		\fmenvtofreq, 1.5,
-		\amp, Pkey(\velocity) / 10,
+		\amp, Pkey(\velocity) / 7,
 		\trig, Pif(Pkey(\amp) > 0, 1, 0),
 		\dur, q,
 		\timingOffset, Pseg(Pseq([0,0.05],inf),Pseq([h,h],inf),\sine,inf)
 	)
-).play(quant:2);
+);
 )
-Pdef(\snare).stop;
 
 (
 Pdef(\hat,
@@ -191,11 +189,14 @@ Pdef(\hat,
 		\fm3freq, 2392,
 		\fm1amt, 0.08,
 		\fm2amt, 0.07,
-		\amp, Pkey(\velocity) / 10,
+		\amp, Pkey(\velocity) / 8,
 		\trig, Pif(Pkey(\amp) > 0, 1, 0),
 		\dur, q,
 		\timingOffset, Pseg(Pseq([0,0.05],inf),Pseq([h,h],inf),\sine,inf)
 	)
-).play(quant:2);
+);
 )
-Pdef(\hat).stop;
+
+
+[\kick,\snare,\hat].do({|sym|Pdef(sym).play(quant:2);});
+[\kick,\snare,\hat].do({|sym|Pdef(sym).stop;});
