@@ -51,7 +51,6 @@ Pdef(\fm,
 	PmonoArtic(
 		\fm,
 		\amp, 0.02,
-		\join, Pwrand([1,0.9],[8,1].normalizeSum,inf),
 		\trig, Pseq([1,1, 1, 1,1, 0,1],inf),
 		\preset,Pseq([10,10, 17, 15,15, Prand((0..17),2)],inf),
 		\coefficient, 0.8079,
@@ -71,9 +70,3 @@ Pdef(\fm,
 )
 Pdef(\fm).stop;
 )
-
-e = 8;
-
-10
-17
-15
