@@ -14,30 +14,15 @@ SynthDef(\fm,
 		Out.ar(out,audio);
 	}
 ).add;
-
-Pdef(\fm,
-	PmonoArtic(
-		\fm,
-		\amp, 0.02,
-		\join, Pwrand([1,0.9],[8,1].normalizeSum,inf),
-		\trig, Pseq([1,1, 1, 1,1, 0,1],inf),
-		\preset,Pseq([10,10, 17, 15,15, Prand((0..17),2)],inf),
-		\coefficient, 0.8079,
-		\legato, Pseq([Pkey(\join),1, 1, Pkey(\join),0.99, \,Pkey(\join)],inf),
-		\freq, Pfunc({|e|if(e.trig == 1,p[e.preset].freq,1)}),
-		\modfreq, Pfunc({|e|p[e.preset].modfreq}),
-		\dur, Pseq(
-			[
-				w,w,
-				w*2,
-				w+h,h,
-				h,w+h
-			],inf
-		)
-	)
-).play;
 )
-Pdef(\fm).stop;
+
+x = Synth(\fm,[\freq,p[10].freq,\modfreq,p[10].modfreq,\amp,0.02]);
+x.free;
+55.9612
+38.7787
+71.1204
+83.3643
+43.6534
 
 (
 p = Array.newClear(100);
@@ -59,6 +44,32 @@ p[14] = (freq:1092.77,modfreq:87.4521); // horrible hissy engine
 p[15] = (freq:141.929,modfreq:575.824); // low engine
 p[16] = (freq:133.349,modfreq:342.115); // another lo-fi waa
 p[17] = (freq:107.7326571,modfreq:276.3947085); // spacey engine
+)
+
+(
+Pdef(\fm,
+	PmonoArtic(
+		\fm,
+		\amp, 0.02,
+		\join, Pwrand([1,0.9],[8,1].normalizeSum,inf),
+		\trig, Pseq([1,1, 1, 1,1, 0,1],inf),
+		\preset,Pseq([10,10, 17, 15,15, Prand((0..17),2)],inf),
+		\coefficient, 0.8079,
+		\legato, Pseq([Pwrand([1,0.9],[8,1].normalizeSum),1, 1, Pwrand([1,0.9],[8,1].normalizeSum),0.99, \,Pwrand([1,0.9],[8,1].normalizeSum)],inf),
+		\freq, Pfunc({|e|if(e.trig == 1,p[e.preset].freq,1)}),
+		\modfreq, Pfunc({|e|p[e.preset].modfreq}),
+		\dur, Pseq(
+			[
+				w,w,
+				w*2,
+				w+h,h,
+				h,w+h
+			],inf
+		)
+	)
+).play;
+)
+Pdef(\fm).stop;
 )
 
 e = 8;
