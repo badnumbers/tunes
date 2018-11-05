@@ -1,6 +1,7 @@
 (
 w=1;h=0.5;q=0.25;e=0.125;t=1/3;
 c = TempoClock.default;
+b = b ?? ();
 a = a ?? ();
 a.preset = {
 	|self,parameters|
@@ -82,7 +83,7 @@ Pdef(\midi,
 		),
 		Pmono(
 			\tb03,
-			\in, 0,
+			\in, 2, // TB-03 input channel number in the audio interface
 			\out, 0,
 			\pan, 0,
 			\amp, 0.7,
@@ -100,10 +101,3 @@ a.preset((tuning:0,resonance:6,envmod:4,decay:10,accent:8,overdrive:5.5)); // st
 a.preset((tuning:12,resonance:6,envmod:0,decay:10,accent:8,overdrive:0)); // metallic
 a.preset((tuning:0,resonance:7,envmod:0,decay:0,accent:8,overdrive:5.5)); // kind of quirky
 a.preset((tuning:0,resonance:5,envmod:10,decay:10,accent:10,overdrive:0)); // bassy
-
-s.recHeaderFormat = "wav";
-s.prepareForRecord;
-s.record;
-s.stopRecording;
-
-a
