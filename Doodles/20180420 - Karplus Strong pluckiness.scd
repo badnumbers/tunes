@@ -1,4 +1,8 @@
 (
+w=1;h=0.5;q=0.25;e=0.125;t=1/3;
+)
+
+(
 SynthDef(\ks,
 	{
 		|freq=200,amp=0.1,pan=0,gate=1,out=0|
