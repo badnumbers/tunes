@@ -1,4 +1,16 @@
 (
+w=1;h=0.5;q=0.25;e=0.125;t=1/3;
+c = TempoClock.default;
+)
+
+c.tempo = 2;
+
+(
+MIDIClient.init;
+d = MIDIOut.newByName("Scarlett 6i6 USB", "Scarlett 6i6 USB MIDI 1").latency_(s.latency);
+)
+
+(
 Pdef(\tb,
 	Penvir((
 		dur: [q,q,q,q, q,q,q,q, q,q,h, h,h].scramble.flat,
