@@ -123,9 +123,6 @@ Pdef(\kick,
 		\timingOffset, Pseg(Pseq([0,0.05],inf),Pseq([h,h],inf),\sine,inf)
 	)
 );
-)
-
-(
 Pdef(\snare,
 	Pmono(\snare,
 		\velocity, Pseq([
@@ -161,9 +158,6 @@ Pdef(\snare,
 		\timingOffset, Pseg(Pseq([0,0.05],inf),Pseq([h,h],inf),\sine,inf)
 	)
 );
-)
-
-(
 Pdef(\hat,
 	Pmono(\hat,
 		\velocity, Pseq([
