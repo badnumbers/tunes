@@ -161,6 +161,7 @@ Pdef(\drums,
 			\out, b.drumEffects
 		)
 	],inf)
-).play;
+);
 )
+Pdef(\drums).play;
 Pdef(\drums).stop
