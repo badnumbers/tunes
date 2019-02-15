@@ -6,25 +6,54 @@ related:: Classes/UnoSynth
 DESCRIPTION::
 Contains information about working with a TB-03, such as its controller CC numbers.
 
-INSTANCEMETHODS::
+CLASSMETHODS::
+
+METHOD:: accentCcNo
+The MIDI CC number that is used to control the TB-03's accent level.
+
+returns:: 16.
+
+METHOD:: cutoffFreqCcNo
+The MIDI CC number that is used to control the TB-03's cutoff frequency.
+
+returns:: 71.
+
+METHOD:: decayCcNo
+The MIDI CC number that is used to control the TB-03's decay time.
+
+returns:: 75.
+
+METHOD:: envModCcNo
+The MIDI CC number that is used to control the TB-03's envelope modulation depth.
+
+returns:: 12.
 
 METHOD:: midiChannel
 The MIDI channel that the TB-03 is configured to listen on.
 
 returns:: 1, unless assigned a different value.
 
-METHOD:: cutoffCcNo
-The MIDI CC number that is used to control the TB-03's cutoff frequency.
+METHOD:: overdriveCcNo
+The MIDI CC number that is used to control the TB-03's overdrive level.
+
+returns:: 17.
+
+METHOD:: resonanceCcNo
+The MIDI CC number that is used to control the TB-03's filter resonance.
 
 returns:: 71.
 
+METHOD:: tuningCcNo
+The MIDI CC number that is used to control the TB-03's tuning.
+
+returns:: 104.
+
+INSTANCEMETHODS::
 
 EXAMPLES::
 
 code::
 (
-var tb = Tb03();
-
 /*
 MIDIClient.init;
 d = MIDIOut.newByName("Scarlett 6i6 USB", "Scarlett 6i6 USB MIDI 1").latency_(Server.default.latency);
@@ -36,7 +65,7 @@ Pdef(\us,
 			\type, \midi,
 			\midicmd, \noteOn,
 			\midiout, d,
-			\chan, tb.midiChannel,
+			\chan, Tb03.midiChannel,
 			\octave, 3,
 			\scale, Scale.phrygian,
 			\degree, 0,
@@ -45,9 +74,9 @@ Pdef(\us,
 		Pbind(
 			\type, \midi,
 			\midiout, d,
-			\chan, tb.midiChannel,
+			\chan, Tb03.midiChannel,
 			\midicmd, \control,
-			\ctlNum, tb.cutoffCcNo,
+			\ctlNum, Tb03.cutoffCcNo,
 			\control, Pseg([10,120,10,120],[2,2],\sin,inf),
 			\dur, 1/64
 		)
