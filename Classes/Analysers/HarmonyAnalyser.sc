@@ -1,5 +1,5 @@
 HarmonyAnalyser {
-	findChordsInChunk { |durs,degrees|
+	*prFindChordsInChunk { |durs,degrees|
 		var melodymod = degrees.mod(7);
 		var degreedictionary = Dictionary();
 		var chords = Dictionary();
@@ -33,7 +33,7 @@ HarmonyAnalyser {
 		^winners;
 	}
 
-	splitRhythm {
+	*prSplitRhythm {
 		|durs,degrees|
 		var chunksize, currentchunk, chunks;
 		if (durs.size != degrees.size,
@@ -81,11 +81,11 @@ HarmonyAnalyser {
 		^chunks;
 	}
 
-	findChordsInMelody { |durs,degrees|
-		var splitmelody = this.splitRhythm(durs,degrees);
+	*findChordsInMelody { |durs,degrees|
+		var splitmelody = this.prSplitRhythm(durs,degrees);
 		^splitmelody.collect({
 			|chunk|
-			this.findChordsInChunk(chunk.durs,chunk.degrees);
+			this.prFindChordsInChunk(chunk.durs,chunk.degrees);
 		});
 	}
 }

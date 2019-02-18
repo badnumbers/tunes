@@ -1,0 +1,50 @@
+TITLE:: HarmonyAnalyser
+summary:: Analyses a melody and returns a set of chords which work with it.
+
+DESCRIPTION::
+HarmonyAnalyser accepts an array of scale degrees and an array of durations and uses a simple mathematical approach to return a set of chords, one per 4 beats, which fit them best
+
+
+CLASSMETHODS::
+
+METHOD:: prSplitRhythm
+Private method to split the melody into 4-beat sections
+
+ARGUMENT:: durs
+The rhythm of the melody, defined as an array of durations.
+
+ARGUMENT:: degrees
+The scale degrees of the melody, defined as an array of degrees.
+
+returns:: An array of events. Each event represents a 4-beat section of the melody. The event has a durs property which is an array of note durations, and a degrees property which is the corresponding array of degrees.
+
+METHOD:: prFindChordsInChunk
+Accepts a 4-beat chunk of melody and returns an array of 1 or more chords that fit it best. It does so by assigning a numeric score to each possible chord, and returning those that have the highest value.
+
+ARGUMENT:: durs
+The rhythm of the 4-beat melody, defined as an array of durations.
+
+ARGUMENT:: degrees
+The scale degrees of the 4-beat melody, defined as an array of degrees.
+
+returns:: An array of one or more numbers, each one representing the scale degree of the root note of a chord.
+
+METHOD:: findChordsInMelody
+Accepts a melody and returns an array of arrays. The outer array is for each 4-beat section of the melody, and each inner array is one or more chords that fit that 4-beat section best.
+
+ARGUMENT:: durs
+The rhythm of the melody, defined as an array of durations.
+
+ARGUMENT:: degrees
+The scale degrees of the melody, defined as an array of degrees.
+
+returns:: For example:
+[ [0], [3], [1,3], [4] ]
+This means that chord 0 fits the first 4-beat section best. Chord 3 fits the second, chords 1 or 3 fit the third section equally well, and chord 4 first the fourth section best.
+
+
+EXAMPLES::
+
+code::
+(some example code)
+::
