@@ -33,6 +33,16 @@ The MIDI CC number that is used to control the UnoSynth's filter cutoff frequenc
 
 returns:: 20.
 
+METHOD:: delayMixCcNo
+The MIDI CC number that is used to control the UnoSynth's delay mix.
+
+returns:: 80.
+
+METHOD:: delayTimeCcNo
+The MIDI CC number that is used to control the UnoSynth's delay time.
+
+returns:: 81.
+
 METHOD:: driveCcNo
 The MIDI CC number that is used to control the UnoSynth's filter drive.
 
@@ -63,6 +73,11 @@ The MIDI CC number that is used to control the release time of the UnoSynth's fi
 
 returns:: 47.
 
+METHOD:: filterCutoffKeytrackCcNo
+The MIDI CC number that is used to control filter keytracking.
+
+returns:: 106.
+
 METHOD:: filterModeCcNo
 The MIDI CC number that is used to control the UnoSynth's filter mode.
 table::
@@ -78,6 +93,27 @@ METHOD:: glideTimeCcNo
 The MIDI CC number that is used to control the UnoSynth's glide time (portamento).
 
 returns:: 5.
+
+METHOD:: lfoRateCcNo
+The MIDI CC number that is used to control the UnoSynth's LFO rate.
+table::
+    ## Value || Notes
+    ## 0 || No movement
+    ## 1-116 || Free running; high values are faster
+    ## 117 || Whole note
+    ## 118 || Half note
+    ## 119 || Dotted quarter note
+    ## 120 || Quarter note
+    ## 121 || Dotted 8th note
+    ## 122 || Quarter note triplet
+    ## 123 || 8th note
+    ## 124 || Dotted 16th note
+    ## 125 || 8th note triplet
+    ## 126 || 16th note
+    ## 127 || 16th note triplet
+::
+d.control(UnoSynth.midiChannel, UnoSynth.lfoRateCcNo,121);
+returns:: 67.
 
 METHOD:: midiChannel
 The MIDI channel that the UnoSynth is configured to listen on.
@@ -210,6 +246,26 @@ METHOD:: resonanceCcNo
 The MIDI CC number that is used to control the UnoSynth's filter resonance.
 
 returns:: 21.
+
+METHOD:: velocityToVolumeCcNo
+The MIDI CC number that is used to control the extent to which velocity affects volume.
+
+returns:: 102.
+
+METHOD:: velocityToFilterCutoffCcNo
+The MIDI CC number that is used to control the extent to which velocity affects filter cutoff.
+
+returns:: 103.
+
+METHOD:: velocityToFilterEnvAmtCcNo
+The MIDI CC number that is used to control the extent to which velocity affects filter envelope amount.
+
+returns:: 104.
+
+METHOD:: velocityToLfoRateCcNo
+The MIDI CC number that is used to control the extent to which velocity affects LFO rate.
+
+returns:: 105.
 
 METHOD:: volumeCcNo
 The MIDI CC number that is used to control the UnoSynth's volume.

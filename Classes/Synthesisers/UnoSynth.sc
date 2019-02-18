@@ -4,14 +4,18 @@ UnoSynth {
 	classvar <ampSustainCcNo = 26;
 	classvar <ampReleaseCcNo = 27;
 	classvar <cutoffCcNo = 20;
+	classvar <delayMixCcNo = 80;
+	classvar <delayTimeCcNo = 81;
 	classvar <driveCcNo = 22;
 	classvar <envAmtCcNo = 23;
 	classvar <filterAttackCcNo = 44;
 	classvar <filterDecayCcNo = 45;
 	classvar <filterSustainCcNo = 46;
 	classvar <filterReleaseCcNo = 47;
+	classvar <filterCutoffKeytrackCcNo = 106;
 	classvar <filterModeCcNo = 19;
 	classvar <glideTimeCcNo = 5;
+	classvar <lfoRateCcNo = 67;
 	classvar <osc1LevelCcNo = 12;
 	classvar <osc1TuneCcNo = 17;
 	classvar <osc1WaveCcNo = 15;
@@ -22,5 +26,9 @@ UnoSynth {
 	classvar <noiseLevelCcNo = 14;
 	classvar <pitchBendRangeCcNo = 101;
 	classvar <resonanceCcNo = 21;
+	classvar <velocityToVolumeCcNo = 102;
+	classvar <velocityToFilterCutoffCcNo = 103;
+	classvar <velocityToFilterEnvAmtCcNo = 104;
+	classvar <velocityToLfoRateCcNo = 105;
 	classvar <volumeCcNo = 7;
 }
