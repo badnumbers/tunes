@@ -1,6 +1,7 @@
 TITLE:: RandomAlgorithm
 summary:: Generate random sequences suitable for acid
 categories:: Live Coding
+related:: Classes/Algorithms/RhythmAlgorithm
 
 DESCRIPTION::
 RandomAlgorithm can be used to generate random sequences useful as rhythms, melodies and controller patterns in acid.
@@ -15,7 +16,7 @@ ARGUMENT:: length
 The desired sum of the generated sequence; in rhythmical terms the duration of the rhythum in beats.
 
 ARGUMENT:: durations
-The list of allowed rhythm values in beats. For example, specify [0.5,0.25] for a rhythm comprised of half notes and quarter notes. This array is permitted to be nested to one level.
+The list of allowed rhythm values in beats. For example, specify code::[0.5,0.25]:: for a rhythm comprised of half notes and quarter notes. This array is permitted to be nested to one level.
 
 ARGUMENT:: weights
 The weightings to be applied when choosing the durations from the list. The number of weightings should equal the number of values in the durations list. The weightings do not need to add up to 1.
