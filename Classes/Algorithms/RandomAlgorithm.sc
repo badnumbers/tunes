@@ -4,7 +4,7 @@ RandomAlgorithm {
 		^values;
 	}
 
-	*generateRhythm { |length=4,durations = #[1,0.5,[0.25]], weights = #[1,4,3]|
+	*generateRhythm { |length=4,durations = #[1,0.5,[0.25,0.25]], weights = #[1,4,3]|
 		var currentlength,durs,loop=true;
 
 		if (length.isInteger == false,
