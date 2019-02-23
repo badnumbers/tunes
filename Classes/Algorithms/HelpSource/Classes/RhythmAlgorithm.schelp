@@ -1,0 +1,42 @@
+TITLE:: RhythmAlgorithm
+summary:: Create rhythms for basslines and other parts.
+categories:: Live Coding
+related:: Classes/Algorithms/RandomAlgorithm
+
+DESCRIPTION::
+RhythmAlgorithm can be used to generate rhythmical sequences which comprise durations, legato values and amplitudes.
+
+
+CLASSMETHODS::
+
+METHOD:: eighthNotes
+Generates a rhythm of eighth notes.
+
+ARGUMENT:: length
+The length, in beats, of the rhythm to generate.
+
+ARGUMENT:: chunks
+An array of numbers indicating intended rhythmical repetition. For example, the argument [1.5,1.5,1] would indicate that the rhythm should repeat after 1.5 beats, then after 1.5 beats, then after 1 beat. The repetition will cycle through the logic over and over, and the sum of the chunks array does not have to fit neatly into the length of the rhythm as specified in the 'length' parameter.
+
+This rhythmical repetition is achieved through variations in the code::\legato:: and code::\amp:: keys of the generated pattern.
+
+returns:: An code::Event:: with the keys code::\dur::, code::\legato:: and code::\amp::. Each key contains an array of values to be fed into a pattern. See the code example below for more details.
+
+
+INSTANCEMETHODS::
+
+
+EXAMPLES::
+
+code::
+~rhythm = RhythmAlgorithm.eighthNotes(8);
+~degrees = {7.rand2}!~rhythm.dur.size;
+Pdef(\pattern,
+	Pbind(
+		\degree,Pseq(~degrees,inf),
+		\dur, Pseq(~rhythm.dur,inf),
+		\legato, Pseq(~rhythm.legato,inf),
+		\amp, Pseq(~rhythm.amp,inf)
+	)
+).play;
+::

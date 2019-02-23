@@ -1,0 +1,81 @@
+RhythmAlgorithmUnitTests : BNUnitTest {
+	eighthNotes {
+		|parameters, expected|
+		var actual;
+		if (parameters.isNil,
+			{
+				actual = RhythmAlgorithm.eighthNotes();
+			},
+			{
+				actual = RhythmAlgorithm.eighthNotes(parameters.length, parameters.chunks);
+			}
+		);
+
+		this.assertEquals(Event, actual.class, format("Return type: EXPECTED %, ACTUAL %.", Event, actual.class), true);
+		this.assertEquals(3, actual.keys.size, format("Returned Event should contain 3 keys."), true);
+		this.assert(actual.keys.includes(\dur), format("Returned Event should contain \dur key."), true);
+		this.assert(actual.keys.includes(\legato), format("Returned Event should contain \legato key."), true);
+		this.assert(actual.keys.includes(\amp), format("Returned Event should contain \amp key."), true);
+		this.assertEquals(expected.dur, actual.dur, format("dur values: EXPECTED %, ACTUAL %.", expected.dur, actual.dur), true);
+		this.assertEquals(expected.legato, actual.legato, format("legato values: EXPECTED %, ACTUAL %.", expected.legato, actual.legato), true);
+		this.assertEquals(expected.amp, actual.amp, format("amp values: EXPECTED %, ACTUAL %.", expected.amp, actual.amp), true);
+	}
+
+	test_eighthNotes {
+		this.eighthNotes(expected:
+			(
+				dur: 0.5!8,
+				legato: [0.6,0.2,0.2, 0.6,0.2,0.2, 0.6,0.2],
+				amp: [1,0.5,0.5, 1,0.5,0.5, 1,0.5]
+			)
+		);
+		this.eighthNotes(parameters: (length: 16, chunks: [3,3,2]), expected:
+			(
+				dur: 0.5!32,
+				legato: [0.6,0.2,0.2,0.2,0.2,0.2, 0.6,0.2,0.2,0.2,0.2,0.2, 0.6,0.2,0.2,0.2,
+					0.6,0.2,0.2,0.2,0.2,0.2, 0.6,0.2,0.2,0.2,0.2,0.2, 0.6,0.2,0.2,0.2],
+				amp: [1,0.5,0.5,0.5,0.5,0.5, 1,0.5,0.5,0.5,0.5,0.5, 1,0.5,0.5,0.5,
+					1,0.5,0.5,0.5,0.5,0.5, 1,0.5,0.5,0.5,0.5,0.5, 1,0.5,0.5,0.5]
+			)
+		);
+		this.eighthNotes(parameters: (length: 16, chunks: [3]), expected:
+			(
+				dur: 0.5!32,
+				legato: [0.6,0.2,0.2,0.2,0.2,0.2, 0.6,0.2,0.2,0.2,0.2,0.2, 0.6,0.2,0.2,0.2,0.2,0.2,
+					0.6,0.2,0.2,0.2,0.2,0.2, 0.6,0.2,0.2,0.2,0.2,0.2, 0.6,0.2],
+				amp: [1,0.5,0.5,0.5,0.5,0.5, 1,0.5,0.5,0.5,0.5,0.5, 1,0.5,0.5,0.5,0.5,0.5,
+					1,0.5,0.5,0.5,0.5,0.5, 1,0.5,0.5,0.5,0.5,0.5, 1,0.5]
+			)
+		);
+		this.eighthNotes(parameters: (length: 8, chunks: [1.5,1.5,1]), expected:
+			(
+				dur: 0.5!16,
+				legato: [0.6,0.2,0.2, 0.6,0.2,0.2, 0.6,0.2,
+					0.6,0.2,0.2, 0.6,0.2,0.2, 0.6,0.2],
+				amp: [1,0.5,0.5, 1,0.5,0.5, 1,0.5,
+					1,0.5,0.5, 1,0.5,0.5, 1,0.5]
+			)
+		);
+	}
+
+	test_parameterValidation {
+		this.assertException({
+			RhythmAlgorithm.eighthNotes(length:'moo');
+		}, Error, "Checks that RhythmAlgorithm.eighthNotes() correctly validates that the 'length' parameter is an integer.");
+		this.assertException({
+			RhythmAlgorithm.eighthNotes(length:-1);
+		}, Error, "Checks that RhythmAlgorithm.eighthNotes() correctly validates that the 'length' parameter is greater than or equal to 1 by passing it -1.");
+		this.assertException({
+			RhythmAlgorithm.eighthNotes(length:0);
+		}, Error, "Checks that RhythmAlgorithm.eighthNotes() correctly validates that the 'length' parameter is greater than or equal to 1 by passing it 0.");
+		this.assertException({
+			RhythmAlgorithm.eighthNotes(chunks: 'moo');
+		}, Error, "Checks that RhythmAlgorithm.eighthNotes() correctly validates that 'chunks' parameter is an array.");
+		this.assertException({
+			RhythmAlgorithm.eighthNotes(chunks: [1,2,'moo']);
+		}, Error, "Checks that RhythmAlgorithm.eighthNotes() correctly validates that all elements in the 'chunks' array parameter are numbers by passing it a symbol.");
+		this.assertException({
+			RhythmAlgorithm.eighthNotes(chunks: [1,2,0.125]);
+		}, Error, "Checks that RhythmAlgorithm.eighthNotes() correctly validates that all elements in the 'chunks' array parameter are of a quarter or greater by passing it 1/8.");
+	}
+}
