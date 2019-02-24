@@ -1,8 +1,9 @@
 TITLE:: HarmonyAnalyser
-summary:: Analyses a melody and returns a set of chords which work with it.
+summary:: Analyses a melody and returns a set of chords which work with it
+categories:: Live Coding
 
 DESCRIPTION::
-HarmonyAnalyser accepts an array of scale degrees and an array of durations and uses a simple mathematical approach to return a set of chords, one per 4 beats, which fit them best
+HarmonyAnalyser accepts an array of scale degrees and an array of durations and uses a simple mathematical approach to return a set of chords, one per 4 beats, which fit them best.
 
 
 CLASSMETHODS::
