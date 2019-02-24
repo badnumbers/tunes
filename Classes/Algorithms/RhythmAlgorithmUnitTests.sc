@@ -1,4 +1,48 @@
 RhythmAlgorithmUnitTests : BNUnitTest {
+	uniformRhythm {
+		|parameters, expected|
+		var actual;
+		if (parameters.isNil,
+			{
+				actual = RhythmAlgorithm.uniformRhythm();
+			},
+			{
+				actual = RhythmAlgorithm.uniformRhythm(parameters.length);
+			}
+		);
+
+		this.assertEquals(Event, actual.class, format("Return type: EXPECTED %, ACTUAL %.", Event, actual.class), true);
+		this.assertEquals(3, actual.keys.size, format("Returned Event should contain 3 keys."), true);
+		this.assert(actual.keys.includes(\dur), format("Returned Event should contain \dur key."), true);
+		this.assert(actual.keys.includes(\legato), format("Returned Event should contain \legato key."), true);
+		this.assert(actual.keys.includes(\amp), format("Returned Event should contain \amp key."), true);
+		this.assertEquals(expected.dur, actual.dur, format("dur values: EXPECTED %, ACTUAL %.", expected.dur, actual.dur), true);
+		this.assertEquals(expected.legato, actual.legato, format("legato values: EXPECTED %, ACTUAL %.", expected.legato, actual.legato), true);
+		this.assertEquals(expected.amp, actual.amp, format("amp values: EXPECTED %, ACTUAL %.", expected.amp, actual.amp), true);
+	}
+
+	test_uniformRhythm {
+		this.uniformRhythm(expected:
+			(
+				dur: 0.5!8,
+				legato: 0.5!8,
+				amp: 0.5!8
+			)
+		);
+	}
+
+	test_uniformRhythm_parameterValidation {
+		this.assertException({
+			RhythmAlgorithm.eighthNotes(length:'moo');
+		}, Error, "Checks that RhythmAlgorithm.eighthNotes() correctly validates that the 'length' parameter is an integer.");
+		this.assertException({
+			RhythmAlgorithm.eighthNotes(length:-1);
+		}, Error, "Checks that RhythmAlgorithm.eighthNotes() correctly validates that the 'length' parameter is greater than or equal to 1 by passing it -1.");
+		this.assertException({
+			RhythmAlgorithm.eighthNotes(length:0);
+		}, Error, "Checks that RhythmAlgorithm.eighthNotes() correctly validates that the 'length' parameter is greater than or equal to 1 by passing it 0.");
+	}
+
 	eighthNotes {
 		|parameters, expected|
 		var actual;
@@ -21,7 +65,7 @@ RhythmAlgorithmUnitTests : BNUnitTest {
 		this.assertEquals(expected.amp, actual.amp, format("amp values: EXPECTED %, ACTUAL %.", expected.amp, actual.amp), true);
 	}
 
-	test_eighthNotes {
+	/*test_eighthNotes {
 		this.eighthNotes(expected:
 			(
 				dur: 0.5!8,
@@ -56,9 +100,9 @@ RhythmAlgorithmUnitTests : BNUnitTest {
 					1,0.5,0.5, 1,0.5,0.5, 1,0.5]
 			)
 		);
-	}
+	}*/
 
-	test_parameterValidation {
+	/*test_parameterValidation {
 		this.assertException({
 			RhythmAlgorithm.eighthNotes(length:'moo');
 		}, Error, "Checks that RhythmAlgorithm.eighthNotes() correctly validates that the 'length' parameter is an integer.");
@@ -77,5 +121,5 @@ RhythmAlgorithmUnitTests : BNUnitTest {
 		this.assertException({
 			RhythmAlgorithm.eighthNotes(chunks: [1,2,0.125]);
 		}, Error, "Checks that RhythmAlgorithm.eighthNotes() correctly validates that all elements in the 'chunks' array parameter are of a quarter or greater by passing it 1/8.");
-	}
+	}*/
 }

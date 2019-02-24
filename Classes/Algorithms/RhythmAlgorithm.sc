@@ -1,4 +1,20 @@
 RhythmAlgorithm {
+	*uniformRhythm { | length = 4 |
+		var ev = ();
+
+		if (length.isInteger == false, {
+			Error(format("The length parameter passed to RhythmAlgorithm.eighthNotes must be an integer. The value % was received.", length)).throw;
+		});
+		if (length < 1, {
+			Error(format("The length parameter passed to RhythmAlgorithm.eighthNotes must greater than or equal to 1. The value % was received.", length)).throw;
+		});
+
+		ev.dur = 0.5!8;
+		ev.legato = 0.5!8;
+		ev.amp = 0.5!8;
+		^ev;
+	}
+
 	*eighthNotes { | length=4, chunks = #[1.5,1.5,1] |
 		var ev = ();
 		var rhythmPoints = Array(100);
