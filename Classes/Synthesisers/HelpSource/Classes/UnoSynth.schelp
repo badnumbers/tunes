@@ -175,12 +175,12 @@ The MIDI CC number that is used to control the extent to which the LFO controls 
 returns:: 69.
 
 METHOD:: lfoToOsc1PwmCcNo
-The MIDI CC number that is used to control the extent to which the LFO controls the pulse width modulation of oscillator 1. High values used with the pulse wave will produce oscillate in and out of silence.
+The MIDI CC number that is used to control the extent to which the LFO controls the pulse width modulation of oscillator 1. High values used with the pulse wave will oscillate in and out of silence.
 
 returns:: 73.
 
 METHOD:: lfoToOsc2PwmCcNo
-The MIDI CC number that is used to control the extent to which the LFO controls the pulse width modulation of oscillator 2. High values used with the pulse wave will produce oscillate in and out of silence.
+The MIDI CC number that is used to control the extent to which the LFO controls the pulse width modulation of oscillator 2. High values used with the pulse wave will oscillate in and out of silence.
 
 returns:: 74.
 
