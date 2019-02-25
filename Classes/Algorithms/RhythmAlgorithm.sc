@@ -1,5 +1,5 @@
 RhythmAlgorithm {
-	*uniformRhythm { | length = 4, noteLength = 0.5 |
+	*uniformRhythm { | length = 4, noteLength = 0.5, amp = 1 |
 		var ev = ();
 		var numberOfNotes = length / noteLength;
 
@@ -15,10 +15,45 @@ RhythmAlgorithm {
 		if (((noteLength % 0.125 == 0) || (noteLength == (1/3)) || (noteLength == (1/6))) == false, {
 			Error(format("The noteLength parameter passed to RhythmAlgorithm.uniformRhythm() must be a multiple of an eighth or a multiple of a sixth. The value % was received.", noteLength)).throw;
 		});
+		if (amp.isNumber, {
+			if (amp < 0, {
+				Error(format("The amp parameter passed to RhythmAlgorithm.uniformRhythm(), if it is a number, must be between 0 and 1 inclusive. The value % was received.", amp)).throw;
+			},{
+				if (amp > 1,
+					{
+						Error(format("The amp parameter passed to RhythmAlgorithm.uniformRhythm(), if it is a number, must be between 0 and 1 inclusive. The value % was received.", amp)).throw;
+					}
+				)
+			})
+		},{
+			if (amp.isArray,{
+				if (amp.any({|num|num.isNumber == false}),{
+					Error(format("The amp parameter passed to RhythmAlgorithm.uniformRhythm(), if it is an array, must contain only numbers. The value % was received.", amp)).throw;
+				},{
+					if (amp.any({|num|num < 0}),{
+						Error(format("The amp parameter passed to RhythmAlgorithm.uniformRhythm(), if it is an array, must contain numbers which are between 0 and 1 inclusive. The value % was received.", amp)).throw;
+					},{
+						if (amp.any({|num|num>1}),{
+							Error(format("The amp parameter passed to RhythmAlgorithm.uniformRhythm(), if it is an array, must contain numbers which are between 0 and 1 inclusive. The value % was received.", amp)).throw;
+						})
+					})
+				})
+			},{
+				Error(format("The amp parameter passed to RhythmAlgorithm.uniformRhythm() must be either a single number or an array of numbers. The value % was received.", amp)).throw;
+			})
+		}
+		);
+		if (amp.isArray == false, {
+			amp = [amp];
+		});
 
-		ev.dur = noteLength!numberOfNotes;
-		ev.legato = 0.5!numberOfNotes;
-		ev.amp = 0.5!numberOfNotes;
+		numberOfNotes.do({
+			|counter|
+			ev.dur = ev.dur.add(noteLength);
+			ev.legato = ev.legato.add(0.5);
+			ev.amp = ev.amp.add(amp.wrapAt(counter));
+		});
+
 		^ev;
 	}
 

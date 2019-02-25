@@ -7,7 +7,7 @@ RhythmAlgorithmUnitTests : BNUnitTest {
 				actual = RhythmAlgorithm.uniformRhythm();
 			},
 			{
-				actual = RhythmAlgorithm.uniformRhythm(parameters.length, parameters.noteLength);
+				actual = RhythmAlgorithm.uniformRhythm(parameters.length, parameters.noteLength, parameters.amp);
 			}
 		);
 
@@ -26,40 +26,68 @@ RhythmAlgorithmUnitTests : BNUnitTest {
 			(
 				dur: 0.5!8,
 				legato: 0.5!8,
-				amp: 0.5!8
+				amp: 1!8
 			)
 		);
-		this.uniformRhythm(parameters: (length: 4, noteLength: 0.5), expected:
+		this.uniformRhythm(parameters: (length: 4, noteLength: 0.5, amp:1), expected:
 			(
 				dur: 0.5!8,
 				legato: 0.5!8,
-				amp: 0.5!8
+				amp: 1!8
 			)
 		);
-		this.uniformRhythm(parameters: (length: 8, noteLength: 0.5), expected:
+		this.uniformRhythm(parameters: (length: 8, noteLength: 0.5, amp:1), expected:
 			(
 				dur: 0.5!16,
 				legato: 0.5!16,
-				amp: 0.5!16
+				amp: 1!16
 			)
 		);
-		this.uniformRhythm(parameters: (length: 4, noteLength: 0.5), expected:
+		this.uniformRhythm(parameters: (length: 4, noteLength: 0.5, amp:1), expected:
 			(
 				dur: 0.5!8,
 				legato: 0.5!8,
-				amp: 0.5!8
+				amp: 1!8
 			)
 		);
-		this.uniformRhythm(parameters: (length: 4, noteLength: 0.25), expected:
+		this.uniformRhythm(parameters: (length: 4, noteLength: 0.25, amp:1), expected:
 			(
 				dur: 0.25!16,
 				legato: 0.5!16,
-				amp: 0.5!16
+				amp: 1!16
+			)
+		);
+		this.uniformRhythm(parameters: (length: 4, noteLength: 0.5, amp: 0.75), expected:
+			(
+				dur: 0.5!8,
+				legato: 0.5!8,
+				amp: 0.75!8
+			)
+		);
+		this.uniformRhythm(parameters: (length: 4, noteLength: 0.5, amp: [0.75]), expected:
+			(
+				dur: 0.5!8,
+				legato: 0.5!8,
+				amp: 0.75!8
+			)
+		);
+		this.uniformRhythm(parameters: (length: 4, noteLength: 0.5, amp: [0.75,0.5,0.25]), expected:
+			(
+				dur: 0.5!8,
+				legato: 0.5!8,
+				amp: [0.75,0.5,0.25,0.75,0.5,0.25,0.75,0.5]
+			)
+		);
+		this.uniformRhythm(parameters: (length: 4, noteLength: 0.5, amp: [1,0]), expected:
+			(
+				dur: 0.5!8,
+				legato: 0.5!8,
+				amp: [1,0,1,0,1,0,1,0]
 			)
 		);
 	}
 
-	test_uniformRhythm_parameterValidation {
+	test_uniformRhythm_lengthParameterValidation {
 		this.assertException({
 			RhythmAlgorithm.uniformRhythm(length:'moo');
 		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'length' parameter is an integer.");
@@ -72,6 +100,9 @@ RhythmAlgorithmUnitTests : BNUnitTest {
 		this.assertNoException({
 			RhythmAlgorithm.uniformRhythm(length:1);
 		}, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'length' parameter is greater than or equal to 1 by passing it 1.");
+	}
+
+	test_uniformRhythm_noteLengthParameterValidation {
 		this.assertException({
 			RhythmAlgorithm.uniformRhythm(noteLength:1/16);
 		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'noteLength' parameter is a multiple of 1/8 or 1/6 by passing it 1/16.");
@@ -84,6 +115,45 @@ RhythmAlgorithmUnitTests : BNUnitTest {
 		this.assertNoException({
 			RhythmAlgorithm.uniformRhythm(noteLength:0.125);
 		}, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'noteLength' parameter is a multiple of 1/8 or 1/6 by passing it 1/8.");
+	}
+
+	test_uniformRhythm_ampParameterValidation {
+		this.assertException({
+			RhythmAlgorithm.uniformRhythm(amp:'moo');
+		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'amp' parameter is a number or an array of numbers by passing it a symbol.");
+		this.assertException({
+			RhythmAlgorithm.uniformRhythm(amp:-0.01);
+		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'amp' parameter is between 0 and 1 by passing it -0.01.");
+		this.assertException({
+			RhythmAlgorithm.uniformRhythm(amp:1.01);
+		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'amp' parameter is between 0 and 1 by passing it 1.01.");
+		this.assertNoException({
+			RhythmAlgorithm.uniformRhythm(amp:0);
+		}, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'amp' parameter is between 0 and 1 by passing it 0.");
+		this.assertNoException({
+			RhythmAlgorithm.uniformRhythm(amp:0.5);
+		}, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'amp' parameter is between 0 and 1 by passing it 0.5.");
+		this.assertNoException({
+			RhythmAlgorithm.uniformRhythm(amp:1);
+		}, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'amp' parameter is between 0 and 1 by passing it 1.");
+		this.assertException({
+			RhythmAlgorithm.uniformRhythm(amp:[0.5,0.5,'moo']);
+		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'amp' parameter is an array of numbers by passing it an array containing a symbol.");
+		this.assertException({
+			RhythmAlgorithm.uniformRhythm(amp:[0.5,0.5,-0.01]);
+		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'amp' parameter is an array of numbers between 0 and 1 by passing it an array containing -0.01.");
+		this.assertException({
+			RhythmAlgorithm.uniformRhythm(amp:[0.5,0.5,1.01]);
+		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'amp' parameter is an array of numbers between 0 and 1 by passing it an array containing 1.01.");
+		this.assertNoException({
+			RhythmAlgorithm.uniformRhythm(amp:[0.5,0.5,0]);
+		}, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'amp' parameter is an array of numbers between 0 and 1 by passing it an array containing 0.");
+		this.assertNoException({
+			RhythmAlgorithm.uniformRhythm(amp:[0.5,0.5,0.5]);
+		}, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'amp' parameter is an array of numbers between 0 and 1 by passing it an array containing 0.5.");
+		this.assertNoException({
+			RhythmAlgorithm.uniformRhythm(amp:[0.5,0.5,1]);
+		}, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'amp' parameter is an array of numbers between 0 and 1 by passing it an array containing 1.");
 	}
 
 	eighthNotes {
