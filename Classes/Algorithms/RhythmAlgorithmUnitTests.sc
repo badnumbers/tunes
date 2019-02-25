@@ -7,7 +7,7 @@ RhythmAlgorithmUnitTests : BNUnitTest {
 				actual = RhythmAlgorithm.uniformRhythm();
 			},
 			{
-				actual = RhythmAlgorithm.uniformRhythm(parameters.length);
+				actual = RhythmAlgorithm.uniformRhythm(parameters.length, parameters.noteLength);
 			}
 		);
 
@@ -29,18 +29,61 @@ RhythmAlgorithmUnitTests : BNUnitTest {
 				amp: 0.5!8
 			)
 		);
+		this.uniformRhythm(parameters: (length: 4, noteLength: 0.5), expected:
+			(
+				dur: 0.5!8,
+				legato: 0.5!8,
+				amp: 0.5!8
+			)
+		);
+		this.uniformRhythm(parameters: (length: 8, noteLength: 0.5), expected:
+			(
+				dur: 0.5!16,
+				legato: 0.5!16,
+				amp: 0.5!16
+			)
+		);
+		this.uniformRhythm(parameters: (length: 4, noteLength: 0.5), expected:
+			(
+				dur: 0.5!8,
+				legato: 0.5!8,
+				amp: 0.5!8
+			)
+		);
+		this.uniformRhythm(parameters: (length: 4, noteLength: 0.25), expected:
+			(
+				dur: 0.25!16,
+				legato: 0.5!16,
+				amp: 0.5!16
+			)
+		);
 	}
 
 	test_uniformRhythm_parameterValidation {
 		this.assertException({
-			RhythmAlgorithm.eighthNotes(length:'moo');
-		}, Error, "Checks that RhythmAlgorithm.eighthNotes() correctly validates that the 'length' parameter is an integer.");
+			RhythmAlgorithm.uniformRhythm(length:'moo');
+		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'length' parameter is an integer.");
 		this.assertException({
-			RhythmAlgorithm.eighthNotes(length:-1);
-		}, Error, "Checks that RhythmAlgorithm.eighthNotes() correctly validates that the 'length' parameter is greater than or equal to 1 by passing it -1.");
+			RhythmAlgorithm.uniformRhythm(length:-1);
+		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'length' parameter is greater than or equal to 1 by passing it -1.");
 		this.assertException({
-			RhythmAlgorithm.eighthNotes(length:0);
-		}, Error, "Checks that RhythmAlgorithm.eighthNotes() correctly validates that the 'length' parameter is greater than or equal to 1 by passing it 0.");
+			RhythmAlgorithm.uniformRhythm(length:0);
+		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'length' parameter is greater than or equal to 1 by passing it 0.");
+		this.assertNoException({
+			RhythmAlgorithm.uniformRhythm(length:1);
+		}, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'length' parameter is greater than or equal to 1 by passing it 1.");
+		this.assertException({
+			RhythmAlgorithm.uniformRhythm(noteLength:1/16);
+		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'noteLength' parameter is a multiple of 1/8 or 1/6 by passing it 1/16.");
+		this.assertException({
+			RhythmAlgorithm.uniformRhythm(noteLength:1/12);
+		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'noteLength' parameter is a multiple of 1/8 or 1/6 by passing it 1/12.");
+		this.assertNoException({
+			RhythmAlgorithm.uniformRhythm(noteLength:1/6);
+		}, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'noteLength' parameter is a multiple of 1/8 or 1/6 by passing it 1/6.");
+		this.assertNoException({
+			RhythmAlgorithm.uniformRhythm(noteLength:0.125);
+		}, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'noteLength' parameter is a multiple of 1/8 or 1/6 by passing it 1/8.");
 	}
 
 	eighthNotes {

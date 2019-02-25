@@ -1,17 +1,24 @@
 RhythmAlgorithm {
-	*uniformRhythm { | length = 4 |
+	*uniformRhythm { | length = 4, noteLength = 0.5 |
 		var ev = ();
+		var numberOfNotes = length / noteLength;
 
 		if (length.isInteger == false, {
-			Error(format("The length parameter passed to RhythmAlgorithm.eighthNotes must be an integer. The value % was received.", length)).throw;
+			Error(format("The length parameter passed to RhythmAlgorithm.uniformRhythm() must be an integer. The value % was received.", length)).throw;
 		});
 		if (length < 1, {
-			Error(format("The length parameter passed to RhythmAlgorithm.eighthNotes must greater than or equal to 1. The value % was received.", length)).throw;
+			Error(format("The length parameter passed to RhythmAlgorithm.uniformRhythm() must greater than or equal to 1. The value % was received.", length)).throw;
+		});
+		if (length.isNumber == false, {
+			Error(format("The length parameter passed to RhythmAlgorithm.uniformRhythm() must be an number. The value % was received.", length)).throw;
+		});
+		if (((noteLength % 0.125 == 0) || (noteLength == (1/3)) || (noteLength == (1/6))) == false, {
+			Error(format("The noteLength parameter passed to RhythmAlgorithm.uniformRhythm() must be a multiple of an eighth or a multiple of a sixth. The value % was received.", noteLength)).throw;
 		});
 
-		ev.dur = 0.5!8;
-		ev.legato = 0.5!8;
-		ev.amp = 0.5!8;
+		ev.dur = noteLength!numberOfNotes;
+		ev.legato = 0.5!numberOfNotes;
+		ev.amp = 0.5!numberOfNotes;
 		^ev;
 	}
 
