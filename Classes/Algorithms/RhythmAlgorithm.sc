@@ -65,10 +65,6 @@ RhythmAlgorithm {
 		}
 		);
 
-
-
-
-
 		if (amp.isArray == false, {
 			amp = [amp];
 		});
