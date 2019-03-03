@@ -7,7 +7,7 @@ RhythmAlgorithmUnitTests : BNUnitTest {
 				actual = RhythmAlgorithm.uniformRhythm();
 			},
 			{
-				actual = RhythmAlgorithm.uniformRhythm(parameters.length, parameters.noteLength, parameters.amp, parameters.legato);
+				actual = RhythmAlgorithm.uniformRhythm(parameters.length, parameters.noteLength, parameters.amp, parameters.legato, parameters.anticipation);
 			}
 		);
 
@@ -26,7 +26,8 @@ RhythmAlgorithmUnitTests : BNUnitTest {
 			(
 				dur: 0.5!8,
 				legato: 0.5!8,
-				amp: 1!8
+				amp: 1!8,
+				anticipation: nil
 			)
 		);
 
@@ -34,14 +35,16 @@ RhythmAlgorithmUnitTests : BNUnitTest {
 			(
 				dur: 0.5!8,
 				legato: 0.5!8,
-				amp: 1!8
+				amp: 1!8,
+				anticipation: nil
 			)
 		);
 		this.uniformRhythm(parameters: (length: 8, noteLength: 0.5, amp:1, legato: 0.5), expected:
 			(
 				dur: 0.5!16,
 				legato: 0.5!16,
-				amp: 1!16
+				amp: 1!16,
+				anticipation: nil
 			)
 		);
 
@@ -49,14 +52,16 @@ RhythmAlgorithmUnitTests : BNUnitTest {
 			(
 				dur: 0.5!8,
 				legato: 0.5!8,
-				amp: 1!8
+				amp: 1!8,
+				anticipation: nil
 			)
 		);
 		this.uniformRhythm(parameters: (length: 4, noteLength: 0.25, amp:1, legato: 0.5), expected:
 			(
 				dur: 0.25!16,
 				legato: 0.5!16,
-				amp: 1!16
+				amp: 1!16,
+				anticipation: nil
 			)
 		);
 
@@ -64,28 +69,32 @@ RhythmAlgorithmUnitTests : BNUnitTest {
 			(
 				dur: 0.5!8,
 				legato: 0.5!8,
-				amp: 0.75!8
+				amp: 0.75!8,
+				anticipation: nil
 			)
 		);
 		this.uniformRhythm(parameters: (length: 4, noteLength: 0.5, amp: [0.75], legato: 0.5), expected:
 			(
 				dur: 0.5!8,
 				legato: 0.5!8,
-				amp: 0.75!8
+				amp: 0.75!8,
+				anticipation: nil
 			)
 		);
 		this.uniformRhythm(parameters: (length: 4, noteLength: 0.5, amp: [0.75,0.5,0.25], legato: 0.5), expected:
 			(
 				dur: 0.5!8,
 				legato: 0.5!8,
-				amp: [0.75,0.5,0.25,0.75,0.5,0.25,0.75,0.5]
+				amp: [0.75,0.5,0.25,0.75,0.5,0.25,0.75,0.5],
+				anticipation: nil
 			)
 		);
 		this.uniformRhythm(parameters: (length: 4, noteLength: 0.5, amp: [1,0], legato: 0.5), expected:
 			(
 				dur: 0.5!8,
 				legato: 0.5!8,
-				amp: [1,0,1,0,1,0,1,0]
+				amp: [1,0,1,0,1,0,1,0],
+				anticipation: nil
 			)
 		);
 
@@ -93,28 +102,32 @@ RhythmAlgorithmUnitTests : BNUnitTest {
 			(
 				dur: 0.5!8,
 				legato: 0.1!8,
-				amp: 1!8
+				amp: 1!8,
+				anticipation: nil
 			)
 		);
 		this.uniformRhythm(parameters: (length: 4, noteLength: 0.5, amp: 1, legato: [0.1]), expected:
 			(
 				dur: 0.5!8,
 				legato: 0.1!8,
-				amp: 1!8
+				amp: 1!8,
+				anticipation: nil
 			)
 		);
 		this.uniformRhythm(parameters: (length: 4, noteLength: 0.5, amp: 1, legato: [0.2,0.1,0.1]), expected:
 			(
 				dur: 0.5!8,
 				legato: [0.2,0.1,0.1,0.2,0.1,0.1,0.2,0.1],
-				amp: 1!8
+				amp: 1!8,
+				anticipation: nil
 			)
 		);
 		this.uniformRhythm(parameters: (length: 4, noteLength: 0.5, amp: 1, legato: [2,1]), expected:
 			(
 				dur: 0.5!8,
 				legato: [2,1,2,1,2,1,2,1],
-				amp: 1!8
+				amp: 1!8,
+				anticipation: nil
 			)
 		);
 	}
@@ -197,10 +210,10 @@ RhythmAlgorithmUnitTests : BNUnitTest {
 		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'legato' parameter is a number or an array of numbers by passing it a symbol.");
 		this.assertException({
 			RhythmAlgorithm.uniformRhythm(legato:0);
-		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'legato' parameter is greater than 0 passing it 0.");
+		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'legato' parameter is greater than 0 by passing it 0.");
 		this.assertNoException({
 			RhythmAlgorithm.uniformRhythm(legato:0.01);
-		}, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'legato' parameter greater than 0 by passing it 0.");
+		}, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'legato' parameter is greater than 0 by passing it 0.01.");
 		this.assertNoException({
 			RhythmAlgorithm.uniformRhythm(legato:0.5);
 		}, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'legato' parameter is greater than 0 by passing it 0.5.");
@@ -222,5 +235,41 @@ RhythmAlgorithmUnitTests : BNUnitTest {
 		this.assertNoException({
 			RhythmAlgorithm.uniformRhythm(legato:[0.5,0.5,100]);
 		}, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'legato' parameter is an array of numbers greater than 0 by passing it an array containing 100.");
+	}
+
+	test_uniformRhythm_anticipationParameterValidation {
+		this.assertNoException({
+			RhythmAlgorithm.uniformRhythm(anticipation:nil);
+		}, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'anticipation' parameter is permitted to be nil.");
+		this.assertException({
+			RhythmAlgorithm.uniformRhythm(anticipation:'moo');
+		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'anticipation' parameter is a number or an array of numbers by passing it a symbol.");
+		this.assertException({
+			RhythmAlgorithm.uniformRhythm(anticipation:-0.01);
+		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'anticipation' parameter is greater than or equal to 0 by passing it -0.01.");
+		this.assertNoException({
+			RhythmAlgorithm.uniformRhythm(anticipation:0);
+		}, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'anticipation' parameter is greater than or equal to 0 by passing it 0.");
+		this.assertNoException({
+			RhythmAlgorithm.uniformRhythm(anticipation:0.5);
+		}, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'anticipation' parameter is greater than 0 by passing it 0.5.");
+		this.assertNoException({
+			RhythmAlgorithm.uniformRhythm(anticipation:100);
+		}, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'anticipation' parameter is greater than 0 by passing it 100.");
+		this.assertException({
+			RhythmAlgorithm.uniformRhythm(anticipation:[0.5,0.5,'moo']);
+		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'anticipation' parameter is an array of numbers by passing it an array containing a symbol.");
+		this.assertException({
+			RhythmAlgorithm.uniformRhythm(anticipation:[0.5,0.5,-0.01]);
+		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'anticipation' parameter is an array of numbers greater than or equal to 0 by passing it an array containing -0.01.");
+		this.assertNoException({
+			RhythmAlgorithm.uniformRhythm(anticipation:[0.5,0.5,0]);
+		}, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'anticipation' parameter is an array of numbers greater than or equal to 0 by passing it an array containing 0.");
+		this.assertNoException({
+			RhythmAlgorithm.uniformRhythm(anticipation:[0.5,0.5,0.5]);
+		}, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'anticipation' parameter is an array of numbers greater than or equal to 0 by passing it an array containing 0.5.");
+		this.assertNoException({
+			RhythmAlgorithm.uniformRhythm(anticipation:[0.5,0.5,100]);
+		}, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'anticipation' parameter is an array of numbers greater than or equal to 0 by passing it an array containing 100.");
 	}
 }

@@ -1,5 +1,5 @@
 RhythmAlgorithm {
-	*uniformRhythm { | length = 4, noteLength = 0.5, amp = 1, legato = 0.5 |
+	*uniformRhythm { | length = 4, noteLength = 0.5, amp = 1, legato = 0.5, anticipation = nil |
 		var ev = ();
 		var numberOfNotes = length / noteLength;
 
@@ -64,6 +64,28 @@ RhythmAlgorithm {
 			})
 		}
 		);
+
+		if (anticipation.isNil == false,
+			{
+				if (anticipation.isNumber, {
+					if (anticipation < 0, {
+						Error(format("The anticipation parameter passed to RhythmAlgorithm.uniformRhythm(), if it is a number, must be greater than or equal to 0. The value % was received.", anticipation)).throw;
+					})
+				},{
+					if (anticipation.isArray,{
+						if (anticipation.any({|num|num.isNumber == false}),{
+							Error(format("The anticipation parameter passed to RhythmAlgorithm.uniformRhythm(), if it is an array, must contain only numbers. The value % was received.", anticipation)).throw;
+						},{
+							if (anticipation.any({|num|num < 0}),{
+								Error(format("The anticipation parameter passed to RhythmAlgorithm.uniformRhythm(), if it is an array, must contain numbers which are greater than or equal to 0. The value % was received.", anticipation)).throw;
+							})
+						})
+					},{
+						Error(format("The anticipation parameter passed to RhythmAlgorithm.uniformRhythm() must be either a single number or an array of numbers. The value % was received.", anticipation)).throw;
+					})
+				}
+				)
+		});
 
 		if (amp.isArray == false, {
 			amp = [amp];
