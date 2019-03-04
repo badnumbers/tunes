@@ -243,7 +243,7 @@ RhythmAlgorithmUnitTests : BNUnitTest {
 		}, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'anticipation' parameter is permitted to be nil.");
 		this.assertException({
 			RhythmAlgorithm.uniformRhythm(anticipation:'moo');
-		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'anticipation' parameter is a number or an array of numbers by passing it a symbol.");
+		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'anticipation' parameter is a number or an array by passing it a symbol.");
 		this.assertException({
 			RhythmAlgorithm.uniformRhythm(anticipation:-0.01);
 		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'anticipation' parameter is greater than or equal to 0 by passing it -0.01.");
@@ -261,15 +261,18 @@ RhythmAlgorithmUnitTests : BNUnitTest {
 		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'anticipation' parameter is an array of numbers by passing it an array containing a symbol.");
 		this.assertException({
 			RhythmAlgorithm.uniformRhythm(anticipation:[0.5,0.5,-0.01]);
-		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'anticipation' parameter is an array of numbers greater than or equal to 0 by passing it an array containing -0.01.");
+		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'anticipation' parameter is an array of nils or numbers greater than or equal to 0 by passing it an array containing -0.01.");
 		this.assertNoException({
 			RhythmAlgorithm.uniformRhythm(anticipation:[0.5,0.5,0]);
-		}, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'anticipation' parameter is an array of numbers greater than or equal to 0 by passing it an array containing 0.");
+		}, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'anticipation' parameter is an array of nils or numbers greater than or equal to 0 by passing it an array containing 0.");
 		this.assertNoException({
 			RhythmAlgorithm.uniformRhythm(anticipation:[0.5,0.5,0.5]);
-		}, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'anticipation' parameter is an array of numbers greater than or equal to 0 by passing it an array containing 0.5.");
+		}, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'anticipation' parameter is an array of nils or numbers greater than or equal to 0 by passing it an array containing 0.5.");
 		this.assertNoException({
 			RhythmAlgorithm.uniformRhythm(anticipation:[0.5,0.5,100]);
-		}, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'anticipation' parameter is an array of numbers greater than or equal to 0 by passing it an array containing 100.");
+		}, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'anticipation' parameter is an array of nils or numbers greater than or equal to 0 by passing it an array containing 100.");
+		this.assertNoException({
+			RhythmAlgorithm.uniformRhythm(anticipation:[0.5,0.5,nil]);
+		}, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'anticipation' parameter is an array of nils or numbers greater than or equal to 0 by passing it an array containing nil.");
 	}
 }

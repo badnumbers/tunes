@@ -73,11 +73,23 @@ RhythmAlgorithm {
 					})
 				},{
 					if (anticipation.isArray,{
-						if (anticipation.any({|num|num.isNumber == false}),{
-							Error(format("The anticipation parameter passed to RhythmAlgorithm.uniformRhythm(), if it is an array, must contain only numbers. The value % was received.", anticipation)).throw;
+						if (anticipation.any({|num|(num.isNumber || num.isNil) == false}),{
+							Error(format("The anticipation parameter passed to RhythmAlgorithm.uniformRhythm(), if it is an array, must contain only numbers or nils. The value % was received.", anticipation)).throw;
 						},{
-							if (anticipation.any({|num|num < 0}),{
-								Error(format("The anticipation parameter passed to RhythmAlgorithm.uniformRhythm(), if it is an array, must contain numbers which are greater than or equal to 0. The value % was received.", anticipation)).throw;
+							if (anticipation.any({
+								|num|
+								var ret = true;
+								if (num.isNil,
+									{
+										ret = false;
+									},
+									{
+										ret = num < 0;
+									}
+								);
+								ret;
+							}),{
+								Error(format("The anticipation parameter passed to RhythmAlgorithm.uniformRhythm(), if it is an array, must contain nils or numbers which are greater than or equal to 0. The value % was received.", anticipation)).throw;
 							})
 						})
 					},{
