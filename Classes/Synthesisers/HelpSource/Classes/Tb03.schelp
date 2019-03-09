@@ -1,7 +1,7 @@
 TITLE:: Tb03
 summary:: Representation of the TB-03 desktop synthesiser by Roland, itself a digital replica of the Roland TB-303
 categories:: External Control
-related:: Classes/UnoSynth
+related:: Classes/Microvolt, Classes/UnoSynth
 
 DESCRIPTION::
 Contains information about working with a TB-03, such as its controller CC numbers.
@@ -59,7 +59,7 @@ MIDIClient.init;
 d = MIDIOut.newByName("Scarlett 6i6 USB", "Scarlett 6i6 USB MIDI 1").latency_(Server.default.latency);
 */
 
-Pdef(\us,
+Pdef(\tb,
 	Ppar([
 		Pbind(
 			\type, \midi,
@@ -82,6 +82,6 @@ Pdef(\us,
 		)
 	])
 );
-Pdef(\us).play;
+Pdef(\tb).play;
 )
 ::
