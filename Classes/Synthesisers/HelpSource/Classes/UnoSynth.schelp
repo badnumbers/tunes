@@ -231,7 +231,7 @@ returns:: 66.
 METHOD:: midiChannel
 The MIDI channel that the UnoSynth is configured to listen on.
 
-returns:: 0, unless assigned a different value.
+returns:: 15, unless assigned a different value.
 
 METHOD:: noiseLevelCcNo
 The MIDI CC number that is used to control the UnoSynth's noise level.
