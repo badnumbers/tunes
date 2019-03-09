@@ -1,0 +1,55 @@
+TITLE:: Microvolt
+summary:: Representation of the Microvolt 3900 desktop synthesiser by Pittsburgh Modular Synthesizers
+categories:: External Control
+related:: Classes/Tb03, Classes/UnoSynth
+
+DESCRIPTION::
+Contains information about working with a Microvolt 3900, such as its controller CC numbers.
+
+CLASSMETHODS::
+
+METHOD:: midiChannel
+The MIDI channel that the UnoSynth is configured to listen on.
+
+returns:: 15, unless assigned a different value.
+
+METHOD:: modCcNo
+The MIDI CC number that is used to control the UnoSynth's mod input.
+
+returns:: 1.
+
+EXAMPLES::
+
+code::
+(
+/*
+MIDIClient.init;
+d = MIDIOut.newByName("Scarlett 6i6 USB", "Scarlett 6i6 USB MIDI 1").latency_(Server.default.latency);
+*/
+
+Pdef(\mv,
+	Ppar([
+		Pbind(
+			\type, \midi,
+			\midicmd, \noteOn,
+			\midiout, d,
+			\chan, Microvolt.midiChannel,
+			\octave, 3,
+			\scale, Scale.phrygian,
+			\degree, 0,
+			\dur, q
+		),
+		Pbind(
+			\type, \midi,
+			\midiout, d,
+			\chan, Microvolt.midiChannel,
+			\midicmd, \control,
+			\ctlNum, Microvolt.modCcNo,
+			\control, Pseg([10,120,10,120],[2,2],\sin,inf),
+			\dur, 1/64
+		)
+	])
+);
+Pdef(\mv).play;
+)
+::
