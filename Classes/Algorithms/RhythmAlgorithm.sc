@@ -105,12 +105,26 @@ RhythmAlgorithm {
 		if (legato.isArray == false, {
 			legato = [legato];
 		});
+		if (anticipation.isArray == false, {
+			anticipation = [anticipation];
+		});
 
 		numberOfNotes.do({
 			|counter|
+			var currentanticipation = anticipation.wrapAt(counter);
+			var anticipationdur = noteLength * 0.5;
 			ev.dur = ev.dur.add(noteLength);
 			ev.legato = ev.legato.add(legato.wrapAt(counter));
 			ev.amp = ev.amp.add(amp.wrapAt(counter));
+			if ((currentanticipation.isNil) || (currentanticipation == 0),
+				{},
+				{
+					ev.dur[ev.dur.size -1] = ev.dur[ev.dur.size -1] - anticipationdur;
+					ev.dur = ev.dur.add(anticipationdur);
+					ev.legato = ev.legato.add(0.5);
+					ev.amp = ev.amp.add(currentanticipation);
+				}
+			);
 		});
 
 		^ev;
