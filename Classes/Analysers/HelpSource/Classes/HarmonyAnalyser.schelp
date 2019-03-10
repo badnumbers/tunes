@@ -20,7 +20,10 @@ The scale degrees of the melody, defined as an array of degrees.
 returns:: An array of events. Each event represents a 4-beat section of the melody. The event has a durs property which is an array of note durations, and a degrees property which is the corresponding array of degrees.
 
 METHOD:: prFindChordsInChunk
-Accepts a 4-beat chunk of melody and returns an array of 1 or more chords that fit it best. It does so by assigning a numeric score to each possible chord, and returning those that have the highest value.
+Accepts a 4-beat chunk of melody and returns an array of 1 or more chords that fit it best. It does so by assigning a numeric score to each possible chord, and returning those that have the highest value. Each chord in the array is represented as an Event with the keys code::tonic:: (the zero-based number meaning the which degree of the scale is the chord tonic) and code::triad:: (an array of three zero-based numbers meaning the degrees of the scale that are in the chord), for example:
+code::
+(tonic:2,triad:[2,4,6])
+::
 
 ARGUMENT:: durs
 The rhythm of the 4-beat melody, defined as an array of durations.
@@ -31,7 +34,10 @@ The scale degrees of the 4-beat melody, defined as an array of degrees.
 returns:: An array of one or more numbers, each one representing the scale degree of the root note of a chord.
 
 METHOD:: findChordsInMelody
-Accepts a melody and returns an array of arrays. The outer array is for each 4-beat section of the melody, and each inner array is one or more chords that fit that 4-beat section best.
+Accepts a melody and returns an array of arrays. The outer array is for each 4-beat section of the melody, and each inner array is one or more chords that fit that 4-beat section best. Each chord in the inner array is represented as an Event with the keys code::tonic:: (the zero-based number meaning the which degree of the scale is the chord tonic) and code::triad:: (an array of three zero-based numbers meaning the degrees of the scale that are in the chord), for example:
+code::
+(tonic:2,triad:[2,4,6])
+::
 
 ARGUMENT:: durs
 The rhythm of the melody, defined as an array of durations.

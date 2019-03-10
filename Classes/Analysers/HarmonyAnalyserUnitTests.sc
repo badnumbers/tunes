@@ -1,8 +1,7 @@
 HarmonyAnalyserUnitTests : BNUnitTest {
 	findChordsInMelody {
 		|testdata|
-		var analyser = HarmonyAnalyser();
-		var chords = analyser.findChordsInMelody(testdata.durs, testdata.degrees);
+		var chords = HarmonyAnalyser.findChordsInMelody(testdata.durs, testdata.degrees);
 		var expected = testdata.expected;
 
 		this.assert(chords.size == expected.size, format("Bars of chords: EXPECTED %, ACTUAL %.", expected.size, chords.size), true);
@@ -18,6 +17,6 @@ HarmonyAnalyserUnitTests : BNUnitTest {
 	}
 
 	test_findChordsInMelody {
-		this.findChordsInMelody((durs: [1,1,1,1, 1,1,1,1], degrees: [0,2,4,0, 4,6,8,4], expected: [[0],[4]]));
+		this.findChordsInMelody((durs: [1,1,1,1, 1,1,1,1], degrees: [0,2,4,0, 4,6,8,4], expected: [[(tonic:0,triad:[0,2,4])],[(tonic:4,triad:[4,6,1])]]));
 	}
 }

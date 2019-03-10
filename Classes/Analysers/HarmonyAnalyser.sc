@@ -20,17 +20,25 @@ HarmonyAnalyser {
 				degreedictionary[(num+offset).mod(7)];
 			}).reject({|bad|bad.isNil}).sum;
 			chords[num] = chord;
-			if (chord > highestchord,
-				{
-					highestchord = chord;
-					winners = Array(7);winners.add(num);
-				},
-				{
-					if (chord == highestchord, {winners.add(num)});
-				}
+			if (chord > highestchord, {
+				highestchord = chord;
+				winners = Array(7);
+				winners = winners.add((tonic:num,triad:this.prGetWrappedTriad(num)));
+			},
+			{
+				if (chord == highestchord, {
+					winners = winners.add((tonic:num,triad:this.prGetWrappedTriad(num)));
+				});
+			}
 			);
 		});
 		^winners;
+	}
+
+	*prGetWrappedTriad {
+		|degree|
+		var degrees = (0..6);
+		^[degree,degrees.wrapAt(degree+2),degrees.wrapAt(degree+4)];
 	}
 
 	*prSplitRhythm {
