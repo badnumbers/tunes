@@ -34,6 +34,9 @@ MelodyAlgorithmUnitTests : BNUnitTest {
 			MelodyAlgorithm.tonic(chords:\moo,rhythm:validRhythm);
 		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'chords' parameter is an array by passing it a symbol.");
 		this.assertException({
+			MelodyAlgorithm.tonic(chords:[],rhythm:validRhythm);
+		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'chords' parameter is an array of size greater than 0 by passing it an array of size 0.");
+		this.assertException({
 			MelodyAlgorithm.tonic(chords:[(tonic:0,triad:[0,2,4]),\moo],rhythm:validRhythm);
 		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'chords' parameter is an array of Events by passing it an array containing a symbol.");
 		this.assertException({
