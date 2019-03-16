@@ -1,0 +1,146 @@
+TITLE:: Sh01a
+summary:: Representation of the SH-01A desktop synthesiser by Roland, itself a digital replica of the Roland SH-101
+categories:: External Control
+related:: Classes/Microvolt, Classes/Tb03, Classes/UnoSynth
+
+DESCRIPTION::
+Contains information about working with a SH-01A, such as its controller CC numbers.
+
+CLASSMETHODS::
+
+METHOD:: bendDepthCcNo
+The MIDI CC number that is used to control the SH-01A's expression pedal amount.
+## Value || Notes
+## 0 || No bend
+## 127 || One octave in each direction
+::
+
+returns:: 18.
+
+METHOD:: expressionPedalCcNo
+The MIDI CC number that is used to control the SH-01A's expression pedal amount.
+
+returns:: 11.
+
+METHOD:: lfoRateCcNo
+The MIDI CC number that is used to control the SH-01A's LFO rate.
+
+returns:: 3.
+
+METHOD:: lfoWaveformCcNo
+The MIDI CC number that is used to control the SH-01A's LFO waveform.
+table::
+## Value || Notes
+## 0 || Ascending ramp
+## 1 || Descending ramp
+## 2 || Triangle
+## 3 || Square
+## 4 || Random
+## 5 || Noise
+::
+
+returns:: 12.
+
+METHOD:: midiChannel
+The MIDI channel that the TB-03 is configured to listen on.
+
+returns:: 2, unless assigned a different value.
+
+METHOD:: modCcNo
+The MIDI CC number that is used to control the SH-01A's modulation amount.
+
+returns:: 1.
+
+METHOD:: portamentoCcNo
+The MIDI CC number that is used to control the SH-01A's portamento time.
+
+returns:: 5.
+
+METHOD:: pulseWidthCcNo
+The MIDI CC number that is used to control the SH-01A's oscillator pulse width.
+
+returns:: 15.
+
+METHOD:: pwmSourceCcNo
+The MIDI CC number that is used to control the SH-01A's pulse width modulation source.
+table::
+## Value || Notes
+## 0 || Envelope
+## 1 || Manual
+## 2 || LFO
+::
+The pulse width modulation from the LFO is always triangular, regardless of the LFO waveform.
+
+returns:: 16.
+
+METHOD:: vcfFreqCcNo
+The MIDI CC number that is used to control the SH-01A's filter frequency.
+
+returns:: 74.
+
+METHOD:: vcfResCcNo
+The MIDI CC number that is used to control the SH-01A's filter resonance.
+
+returns:: 74.
+
+METHOD:: vcfModCcNo
+The MIDI CC number that is used to control the SH-01A's VCO modulation depth.
+
+returns:: 13.
+
+METHOD:: vcfModRibbonSensitivityCcNo
+The MIDI CC number that is used to control the sensitivity of the SH-01A's VCO modulation to the modulation ribbon. This modulation has the same speed as the LFO, but is always triangular, regardless of the LFO waveform. It also appears to be positive rather than bipolar.
+
+returns:: 17.
+
+METHOD:: vcfRangeCcNo
+The MIDI CC number that is used to control the SH-01A's VCO modulation depth.
+table::
+## Value || Notes
+## 0 || 64'
+## 1 || 32'
+## 2 || 16'
+## 3 || 8'
+## 4 || 4'
+## 5 || 2'
+::
+
+returns:: 14.
+
+INSTANCEMETHODS::
+
+EXAMPLES::
+
+code::
+(
+/*
+MIDIClient.init;
+d = MIDIOut.newByName("Scarlett 6i6 USB", "Scarlett 6i6 USB MIDI 1").latency_(Server.default.latency);
+*/
+
+Pdef(\sh,
+	Ppar([
+		Pbind(
+			\type, \midi,
+			\midicmd, \noteOn,
+			\midiout, d,
+			\chan, Sh01a.midiChannel,
+			\octave, 3,
+			\scale, Scale.phrygian,
+			\degree, 0,
+			\dur, q
+		),
+		Pbind(
+			\type, \midi,
+			\midiout, d,
+			\chan, Sh01a.midiChannel,
+			\midicmd, \control,
+			\ctlNum, Sh01a.vcfFreqCcNo,
+			\control, Pseg([10,120,10,120],[2,2],\sin,inf),
+			\dur, 1/64
+		)
+	])
+);
+Pdef(\sh).play;
+)
+::
