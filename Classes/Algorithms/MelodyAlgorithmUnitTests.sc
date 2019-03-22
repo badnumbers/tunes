@@ -3,25 +3,119 @@ MelodyAlgorithmUnitTests : BNUnitTest {
 		|parameters, expected|
 		var actual = MelodyAlgorithm.tonic(parameters.chords, parameters.rhythm);
 
-		this.assertEquals(Event, actual.class, format("Return type: EXPECTED %, ACTUAL %.", Event, actual.class), true);
-		this.assertEquals(3, actual.keys.size, format("Returned Event should contain 3 keys."), true);
-		this.assert(actual.keys.includes(\dur), format("Returned Event should contain \dur key."), true);
-		this.assert(actual.keys.includes(\legato), format("Returned Event should contain \legato key."), true);
-		this.assert(actual.keys.includes(\amp), format("Returned Event should contain \amp key."), true);
-		this.assertEquals(expected.dur, actual.dur, format("dur values: EXPECTED %, ACTUAL %.", expected.dur, actual.dur), true);
-		this.assertEquals(expected.legato, actual.legato, format("legato values: EXPECTED %, ACTUAL %.", expected.legato, actual.legato), true);
-		this.assertEquals(expected.amp, actual.amp, format("amp values: EXPECTED %, ACTUAL %.", expected.amp, actual.amp), true);
+		this.assertEquals(Array, actual.class, format("Return type: EXPECTED %, ACTUAL %.", Array, actual.class), true);
+		this.assertEquals(expected.size, actual.size, format("Array size: EXPECTED %, ACTUAL %.", expected.size, actual.size), true);
+		this.assertEquals(expected, actual, format("Melody: EXPECTED %, ACTUAL %.", expected, actual), true);
 	}
 
 	test_tonic {
-		/*this.tonic(parameters: (length: 4, noteLength: 0.5, amp:1, legato: 0.5), expected:
-			(
-				dur: 0.5!8,
-				legato: 0.5!8,
-				amp: 1!8,
-				anticipation: nil
-			)
-		);*/
+		// Simple quarter notes
+		this.tonic(parameters: (chords:[
+			(tonic:0,triad:[0,2,4]),
+			(tonic:1,triad:[1,3,5]),
+			(tonic:2,triad:[2,4,6]),
+			(tonic:3,triad:[3,5,0]),
+		], rhythm:(
+			amp:[1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1],
+			dur: [1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1],
+			legato: [0.5,0.5,0.5,0.5, 0.5,0.5,0.5,0.5, 0.5,0.5,0.5,0.5, 0.5,0.5,0.5,0.5]
+		)), expected: [0,0,0,0, 1,1,1,1, 2,2,2,2, 3,3,3,3]
+		);
+		// Quarter notes with only three bars of chords
+		this.tonic(parameters: (chords:[
+			(tonic:0,triad:[0,2,4]),
+			(tonic:1,triad:[1,3,5]),
+			(tonic:2,triad:[2,4,6])
+		], rhythm:(
+			amp:[1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1],
+			dur: [1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1],
+			legato: [0.5,0.5,0.5,0.5, 0.5,0.5,0.5,0.5, 0.5,0.5,0.5,0.5, 0.5,0.5,0.5,0.5]
+		)), expected: [0,0,0,0, 1,1,1,1, 2,2,2,2, 0,0,0,0]
+		);
+		// Quarter notes with only a three bar rhythm
+		this.tonic(parameters: (chords:[
+			(tonic:0,triad:[0,2,4]),
+			(tonic:1,triad:[1,3,5]),
+			(tonic:2,triad:[2,4,6]),
+			(tonic:3,triad:[3,5,0]),
+		], rhythm:(
+			amp:[1,1,1,1, 1,1,1,1, 1,1,1,1],
+			dur: [1,1,1,1, 1,1,1,1, 1,1,1,1],
+			legato: [0.5,0.5,0.5,0.5, 0.5,0.5,0.5,0.5, 0.5,0.5,0.5,0.5]
+		)), expected: [0,0,0,0, 1,1,1,1, 2,2,2,2]
+		);
+		// Eighth notes
+		this.tonic(parameters: (chords:[
+			(tonic:0,triad:[0,2,4]),
+			(tonic:1,triad:[1,3,5]),
+			(tonic:2,triad:[2,4,6]),
+			(tonic:3,triad:[3,5,0]),
+		], rhythm:(
+			amp:[1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1],
+			dur: [0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5, 0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5, 0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5, 0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5],
+			legato: [0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5, 0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5, 0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5, 0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5]
+		)), expected: [0,0,0,0,0,0,0,0, 1,1,1,1,1,1,1,1, 2,2,2,2,2,2,2,2, 3,3,3,3,3,3,3,3]
+		);
+		// Sixteenth notes
+		this.tonic(parameters: (chords:[
+			(tonic:0,triad:[0,2,4]),
+			(tonic:1,triad:[1,3,5]),
+			(tonic:2,triad:[2,4,6]),
+			(tonic:3,triad:[3,5,0]),
+		], rhythm:(
+			amp:[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+				1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+			dur: [0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,
+				0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,
+				0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,
+				0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25],
+			legato: [0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5, 0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,
+				0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5, 0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5],
+		)), expected: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+			2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2, 3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3]
+		);
+		// Quarter notes that extend into the following bar - the melody should 'anticipate' the following bar
+		this.tonic(parameters: (chords:[
+			(tonic:0,triad:[0,2,4]),
+			(tonic:1,triad:[1,3,5]),
+			(tonic:2,triad:[2,4,6]),
+			(tonic:3,triad:[3,5,0]),
+		], rhythm:(
+			amp:[1,1,1,1, 1,1,1, 1,1,1, 1,1,1],
+			dur: [1,1,1,2, 1,1,2, 1,1,2, 1,1,1],
+			legato: [0.5,0.5,0.5,0.5, 0.5,0.5,0.5, 0.5,0.5,0.5, 0.5,0.5,0.5]
+		)), expected: [0,0,0,1, 1,1,2, 2,2,3, 3,3,3]
+		);
+		// Eighth notes that extend into the following bar - the melody should 'anticipate' the following bar
+		this.tonic(parameters: (chords:[
+			(tonic:0,triad:[0,2,4]),
+			(tonic:1,triad:[1,3,5]),
+			(tonic:2,triad:[2,4,6]),
+			(tonic:3,triad:[3,5,0]),
+		], rhythm:(
+			amp:[1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1, 1,1,1,1,1,1,1, 1,1,1,1,1,1,1],
+			dur: [0.5,0.5,0.5,0.5,0.5,0.5,0.5,1, 0.5,0.5,0.5,0.5,0.5,0.5,1, 0.5,0.5,0.5,0.5,0.5,0.5,1, 0.5,0.5,0.5,0.5,0.5,0.5,0.5],
+			legato: [0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5, 0.5,0.5,0.5,0.5,0.5,0.5,0.5, 0.5,0.5,0.5,0.5,0.5,0.5,0.5, 0.5,0.5,0.5,0.5,0.5,0.5,0.5]
+		)), expected: [0,0,0,0,0,0,0,1, 1,1,1,1,1,1,2, 2,2,2,2,2,2,3, 3,3,3,3,3,3,3]
+		);
+		// Sixteenth notes that extend into the following bar - the melody should 'anticipate' the following bar
+		this.tonic(parameters: (chords:[
+			(tonic:0,triad:[0,2,4]),
+			(tonic:1,triad:[1,3,5]),
+			(tonic:2,triad:[2,4,6]),
+			(tonic:3,triad:[3,5,0]),
+		], rhythm:(
+			amp:[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+				1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+			dur: [0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.5,
+				0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.5,
+				0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.5,
+				0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25],
+			legato: [0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5, 0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,
+				0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5, 0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5],
+		)), expected: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,
+			2,2,2,2,2,2,2,2,2,2,2,2,2,2,3, 3,3,3,3,3,3,3,3,3,3,3,3,3,3,3]
+		);
 	}
 
 	test_tonic_chordsParameterValidation {
@@ -150,6 +244,15 @@ MelodyAlgorithmUnitTests : BNUnitTest {
 		this.assertException({
 			MelodyAlgorithm.tonic(chords:validChords,rhythm:(amp:[1,1,1,1, 1,1,1,1], dur:[1,1,1,1, 1,1,1,1],legato:[1,1,1,1, 1,1,1,0]));
 		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'rhythm' parameter is an Event with a key called legato which is an array with no values less than or equal to 0 by passing it an Event where the key legato is an array containing 0.");
+		this.assertException({
+			MelodyAlgorithm.tonic(chords:validChords,rhythm:(amp:[1,1,1,1, 1,1,1,1,1], dur:[1,1,1,1, 1,1,1,1],legato:[1,1,1,1, 1,1,1,1]));
+		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'rhythm' parameter is an Event with a keys called amp, dur and legato which are Arrays of equal length by passing it an Event where the amp key has one more item then dur or legato.");
+		this.assertException({
+			MelodyAlgorithm.tonic(chords:validChords,rhythm:(amp:[1,1,1,1, 1,1,1,1], dur:[1,1,1,1, 1,1,1,1,1],legato:[1,1,1,1, 1,1,1,1]));
+		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'rhythm' parameter is an Event with a keys called amp, dur and legato which are Arrays of equal length by passing it an Event where the dur key has one more item then amp or legato.");
+		this.assertException({
+			MelodyAlgorithm.tonic(chords:validChords,rhythm:(amp:[1,1,1,1, 1,1,1,1], dur:[1,1,1,1, 1,1,1,1],legato:[1,1,1,1, 1,1,1,1,1]));
+		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'rhythm' parameter is an Event with a keys called amp, dur and legato which are Arrays of equal length by passing it an Event where the legato key has one more item then amp or dur.");
 	}
 
 	test_tonic_acceptsValidParameters {

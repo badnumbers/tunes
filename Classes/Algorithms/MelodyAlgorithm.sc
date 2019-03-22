@@ -1,5 +1,13 @@
 MelodyAlgorithm {
 	*tonic { | chords, rhythm |
+		var melody = Array(10);
+		var currentNote;
+		var currentChordDuration;
+		var currentNoteStartBeat = 0;
+		var currentNoteEndBeat = 0;
+		var currentChord = 0;
+		var currentChordPositionInBeats = 0;
+
 		if (chords.isNil,
 			{
 				Error("The chords parameter passed to MelodyAlgorithm.tonic() cannot be nil.").throw;
@@ -229,6 +237,20 @@ MelodyAlgorithm {
 								Error(format("The rhythm parameter passed to MelodyAlgorithm.tonic() must be an Event containing a key called 'legato'. The value % was received.", rhythm)).throw;
 							}
 						);
+						if (rhythm.keys.includes('amp') && rhythm.keys.includes('dur') && rhythm.keys.includes('legato')
+							&& rhythm.amp.isArray && rhythm.dur.isArray && rhythm.legato.isArray,
+							{
+								if ((rhythm.amp.size == rhythm.dur.size) && (rhythm.dur.size == rhythm.legato.size),
+									{},
+									{
+										Error(format("The rhythm parameter passed to MelodyAlgorithm.tonic() must be an Event containing keys called 'amp', 'dur' and 'legato' which are Arrays of the same length. The value % was received.", rhythm)).throw;
+									}
+								);
+							},
+							{
+
+							}
+						);
 					},
 					{
 						Error("The rhythm parameter passed to MelodyAlgorithm.tonic() must be an Event.").throw;
@@ -236,5 +258,25 @@ MelodyAlgorithm {
 				);
 			}
 		);
+
+		currentChordDuration = 4;
+		currentChordPositionInBeats = 0;
+		rhythm.dur.do({
+			|currentNoteDuration|
+			postln(format("currentNoteEndBeat (start): %", currentNoteEndBeat));
+			currentNoteEndBeat = currentNoteEndBeat + currentNoteDuration;
+			postln(format("currentNoteEndBeat (end): %", currentNoteEndBeat));
+			postln(format("currentChordPositionInBeats + currentChordDuration: %", currentChordPositionInBeats + currentChordDuration));
+			if (currentNoteEndBeat > (currentChordPositionInBeats + currentChordDuration),
+				{
+					currentChordPositionInBeats = currentChordPositionInBeats + currentChordDuration;
+					currentChord = currentChord + 1; // Not quite right, because the length of the current note might actually mean we should skip a chord
+				}
+			);
+			currentNote = chords.wrapAt(currentChord).tonic;
+			melody = melody.add(currentNote);
+			postln(format("note written: %", currentNote));
+		});
+		^melody;
 	}
 }
