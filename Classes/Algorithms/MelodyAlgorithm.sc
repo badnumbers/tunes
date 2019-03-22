@@ -263,10 +263,7 @@ MelodyAlgorithm {
 		currentChordPositionInBeats = 0;
 		rhythm.dur.do({
 			|currentNoteDuration|
-			postln(format("currentNoteEndBeat (start): %", currentNoteEndBeat));
 			currentNoteEndBeat = currentNoteEndBeat + currentNoteDuration;
-			postln(format("currentNoteEndBeat (end): %", currentNoteEndBeat));
-			postln(format("currentChordPositionInBeats + currentChordDuration: %", currentChordPositionInBeats + currentChordDuration));
 			if (currentNoteEndBeat > (currentChordPositionInBeats + currentChordDuration),
 				{
 					currentChordPositionInBeats = currentChordPositionInBeats + currentChordDuration;
@@ -275,7 +272,6 @@ MelodyAlgorithm {
 			);
 			currentNote = chords.wrapAt(currentChord).tonic;
 			melody = melody.add(currentNote);
-			postln(format("note written: %", currentNote));
 		});
 		^melody;
 	}
