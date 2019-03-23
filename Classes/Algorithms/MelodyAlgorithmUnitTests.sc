@@ -11,10 +11,10 @@ MelodyAlgorithmUnitTests : BNUnitTest {
 	test_tonic {
 		// Simple quarter notes
 		this.tonic(parameters: (chords:[
-			(tonic:0,triad:[0,2,4]),
-			(tonic:1,triad:[1,3,5]),
-			(tonic:2,triad:[2,4,6]),
-			(tonic:3,triad:[3,5,0]),
+			[(tonic:0,triad:[0,2,4])],
+			[(tonic:1,triad:[1,3,5])],
+			[(tonic:2,triad:[2,4,6])],
+			[(tonic:3,triad:[3,5,0])],
 		], rhythm:(
 			amp:[1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1],
 			dur: [1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1],
@@ -23,9 +23,9 @@ MelodyAlgorithmUnitTests : BNUnitTest {
 		);
 		// Quarter notes with only three bars of chords
 		this.tonic(parameters: (chords:[
-			(tonic:0,triad:[0,2,4]),
-			(tonic:1,triad:[1,3,5]),
-			(tonic:2,triad:[2,4,6])
+			[(tonic:0,triad:[0,2,4])],
+			[(tonic:1,triad:[1,3,5])],
+			[(tonic:2,triad:[2,4,6])]
 		], rhythm:(
 			amp:[1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1],
 			dur: [1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1],
@@ -34,10 +34,10 @@ MelodyAlgorithmUnitTests : BNUnitTest {
 		);
 		// Quarter notes with only a three bar rhythm
 		this.tonic(parameters: (chords:[
-			(tonic:0,triad:[0,2,4]),
-			(tonic:1,triad:[1,3,5]),
-			(tonic:2,triad:[2,4,6]),
-			(tonic:3,triad:[3,5,0]),
+			[(tonic:0,triad:[0,2,4])],
+			[(tonic:1,triad:[1,3,5])],
+			[(tonic:2,triad:[2,4,6])],
+			[(tonic:3,triad:[3,5,0])],
 		], rhythm:(
 			amp:[1,1,1,1, 1,1,1,1, 1,1,1,1],
 			dur: [1,1,1,1, 1,1,1,1, 1,1,1,1],
@@ -46,10 +46,10 @@ MelodyAlgorithmUnitTests : BNUnitTest {
 		);
 		// Eighth notes
 		this.tonic(parameters: (chords:[
-			(tonic:0,triad:[0,2,4]),
-			(tonic:1,triad:[1,3,5]),
-			(tonic:2,triad:[2,4,6]),
-			(tonic:3,triad:[3,5,0]),
+			[(tonic:0,triad:[0,2,4])],
+			[(tonic:1,triad:[1,3,5])],
+			[(tonic:2,triad:[2,4,6])],
+			[(tonic:3,triad:[3,5,0])],
 		], rhythm:(
 			amp:[1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1],
 			dur: [0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5, 0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5, 0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5, 0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5],
@@ -58,10 +58,10 @@ MelodyAlgorithmUnitTests : BNUnitTest {
 		);
 		// Sixteenth notes
 		this.tonic(parameters: (chords:[
-			(tonic:0,triad:[0,2,4]),
-			(tonic:1,triad:[1,3,5]),
-			(tonic:2,triad:[2,4,6]),
-			(tonic:3,triad:[3,5,0]),
+			[(tonic:0,triad:[0,2,4])],
+			[(tonic:1,triad:[1,3,5])],
+			[(tonic:2,triad:[2,4,6])],
+			[(tonic:3,triad:[3,5,0])],
 		], rhythm:(
 			amp:[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 				1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
@@ -76,10 +76,10 @@ MelodyAlgorithmUnitTests : BNUnitTest {
 		);
 		// Quarter notes that extend into the following bar - the melody should 'anticipate' the following bar
 		this.tonic(parameters: (chords:[
-			(tonic:0,triad:[0,2,4]),
-			(tonic:1,triad:[1,3,5]),
-			(tonic:2,triad:[2,4,6]),
-			(tonic:3,triad:[3,5,0]),
+			[(tonic:0,triad:[0,2,4])],
+			[(tonic:1,triad:[1,3,5])],
+			[(tonic:2,triad:[2,4,6])],
+			[(tonic:3,triad:[3,5,0])],
 		], rhythm:(
 			amp:[1,1,1,1, 1,1,1, 1,1,1, 1,1,1],
 			dur: [1,1,1,2, 1,1,2, 1,1,2, 1,1,1],
@@ -88,10 +88,10 @@ MelodyAlgorithmUnitTests : BNUnitTest {
 		);
 		// Eighth notes that extend into the following bar - the melody should 'anticipate' the following bar
 		this.tonic(parameters: (chords:[
-			(tonic:0,triad:[0,2,4]),
-			(tonic:1,triad:[1,3,5]),
-			(tonic:2,triad:[2,4,6]),
-			(tonic:3,triad:[3,5,0]),
+			[(tonic:0,triad:[0,2,4])],
+			[(tonic:1,triad:[1,3,5])],
+			[(tonic:2,triad:[2,4,6])],
+			[(tonic:3,triad:[3,5,0])],
 		], rhythm:(
 			amp:[1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1, 1,1,1,1,1,1,1, 1,1,1,1,1,1,1],
 			dur: [0.5,0.5,0.5,0.5,0.5,0.5,0.5,1, 0.5,0.5,0.5,0.5,0.5,0.5,1, 0.5,0.5,0.5,0.5,0.5,0.5,1, 0.5,0.5,0.5,0.5,0.5,0.5,0.5],
@@ -100,10 +100,10 @@ MelodyAlgorithmUnitTests : BNUnitTest {
 		);
 		// Sixteenth notes that extend into the following bar - the melody should 'anticipate' the following bar
 		this.tonic(parameters: (chords:[
-			(tonic:0,triad:[0,2,4]),
-			(tonic:1,triad:[1,3,5]),
-			(tonic:2,triad:[2,4,6]),
-			(tonic:3,triad:[3,5,0]),
+			[(tonic:0,triad:[0,2,4])],
+			[(tonic:1,triad:[1,3,5])],
+			[(tonic:2,triad:[2,4,6])],
+			[(tonic:3,triad:[3,5,0])],
 		], rhythm:(
 			amp:[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 				1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
@@ -126,60 +126,63 @@ MelodyAlgorithmUnitTests : BNUnitTest {
 		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'chords' parameter is not nil.");
 		this.assertException({
 			MelodyAlgorithm.tonic(chords:\moo,rhythm:validRhythm);
-		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'chords' parameter is an array by passing it a symbol.");
+		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'chords' parameter is an Array by passing it a symbol.");
 		this.assertException({
 			MelodyAlgorithm.tonic(chords:[],rhythm:validRhythm);
-		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'chords' parameter is an array of size greater than 0 by passing it an array of size 0.");
+		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'chords' parameter is an Array of size greater than 0 by passing it an array of size 0.");
 		this.assertException({
-			MelodyAlgorithm.tonic(chords:[(tonic:0,triad:[0,2,4]),\moo],rhythm:validRhythm);
-		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'chords' parameter is an array of Events by passing it an array containing a symbol.");
+			MelodyAlgorithm.tonic(chords:[[(tonic:0,triad:[0,2,4])],(tonic:0,triad:[0,2,4])],rhythm:validRhythm);
+		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'chords' parameter is an Array of Arrays by passing it an Array containing an Event.");
+				this.assertException({
+			MelodyAlgorithm.tonic(chords:[[(tonic:0,triad:[0,2,4])],[\moo]],rhythm:validRhythm);
+		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'chords' parameter is an Array of Arrays of Events by passing it an Array containing an Array containing a symbol.");
 		this.assertException({
-			MelodyAlgorithm.tonic(chords:[(tonic:0,triad:[0,2,4]),(triad:[0,2,4])],rhythm:validRhythm);
-		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'chords' parameter is an array of Events containing a key called 'tonic' by passing it an Event without a key called 'tonic'.");
+			MelodyAlgorithm.tonic(chords:[[(tonic:0,triad:[0,2,4])],[(triad:[0,2,4])]],rhythm:validRhythm);
+		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'chords' parameter is an Array of Arrays of Events containing a key called 'tonic' by passing it an Event without a key called 'tonic'.");
 		this.assertException({
-			MelodyAlgorithm.tonic(chords:[(tonic:0,triad:[0,2,4]),(tonic:nil,triad:[0,2,4])],rhythm:validRhythm);
-		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'chords' parameter is an array of Events containing a key called 'tonic' which is not nil by passing it an Event with a key called 'tonic' which is nil.");
+			MelodyAlgorithm.tonic(chords:[[(tonic:0,triad:[0,2,4])],[(tonic:nil,triad:[0,2,4])]],rhythm:validRhythm);
+		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'chords' parameter is an Array of Arrays of Events containing a key called 'tonic' which is not nil by passing it an Event with a key called 'tonic' which is nil.");
 		this.assertException({
-			MelodyAlgorithm.tonic(chords:[(tonic:0,triad:[0,2,4]),(tonic:\moo,triad:[0,2,4])],rhythm:validRhythm);
-		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'chords' parameter is an array of Events containing a key called 'tonic' which is a number by passing it an Event with a key called 'tonic' which is a symbol.");
+			MelodyAlgorithm.tonic(chords:[[(tonic:0,triad:[0,2,4])],[(tonic:\moo,triad:[0,2,4])]],rhythm:validRhythm);
+		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'chords' parameter is an Array of Arrays of Events containing a key called 'tonic' which is a number by passing it an Event with a key called 'tonic' which is a symbol.");
 		this.assertException({
-			MelodyAlgorithm.tonic(chords:[(tonic:0,triad:[0,2,4]),(tonic:1.5,triad:[0,2,4])],rhythm:validRhythm);
-		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'chords' parameter is an array of Events containing a key called 'tonic' which is an integer by passing it an Event with a key called 'tonic' which has a value of 1.5.");
+			MelodyAlgorithm.tonic(chords:[[(tonic:0,triad:[0,2,4])],[(tonic:1.5,triad:[0,2,4])]],rhythm:validRhythm);
+		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'chords' parameter is an Array of Arrays of Events containing a key called 'tonic' which is an integer by passing it an Event with a key called 'tonic' which has a value of 1.5.");
 		this.assertException({
-			MelodyAlgorithm.tonic(chords:[(tonic:0,triad:[0,2,4]),(tonic:-1,triad:[0,2,4])],rhythm:validRhythm);
-		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'chords' parameter is an array of Events containing a key called 'tonic' which is an integer greater than or equal to 0 by passing it an Event with a key called 'tonic' which has a value of -1.");
+			MelodyAlgorithm.tonic(chords:[[(tonic:0,triad:[0,2,4])],[(tonic:-1,triad:[0,2,4])]],rhythm:validRhythm);
+		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'chords' parameter is an Array of Arrays of Events containing a key called 'tonic' which is an integer greater than or equal to 0 by passing it an Event with a key called 'tonic' which has a value of -1.");
 		this.assertException({
-			MelodyAlgorithm.tonic(chords:[(tonic:0,triad:[0,2,4]),(tonic:7,triad:[0,2,4])],rhythm:validRhythm);
-		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'chords' parameter is an array of Events containing a key called 'tonic' which is an integer less than or equal to 6 by passing it an Event with a key called 'tonic' which has a value of 7.");
+			MelodyAlgorithm.tonic(chords:[[(tonic:0,triad:[0,2,4])],[(tonic:7,triad:[0,2,4])]],rhythm:validRhythm);
+		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'chords' parameter is an Array of Arrays of Events containing a key called 'tonic' which is an integer less than or equal to 6 by passing it an Event with a key called 'tonic' which has a value of 7.");
 
 		this.assertException({
-			MelodyAlgorithm.tonic(chords:[(tonic:0,triad:[0,2,4]),(tonic:0,triad:nil)],rhythm:validRhythm);
-		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'chords' parameter is an array of Events containing a key called 'triad' which is not nil by passing it an Event with a key called 'triad' which is nil.");
+			MelodyAlgorithm.tonic(chords:[[(tonic:0,triad:[0,2,4])],[(tonic:0,triad:nil)]],rhythm:validRhythm);
+		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'chords' parameter is an Array of Arrays of Events containing a key called 'triad' which is not nil by passing it an Event with a key called 'triad' which is nil.");
 		this.assertException({
-			MelodyAlgorithm.tonic(chords:[(tonic:0,triad:[0,2,4]),(tonic:0,triad:[0,2])],rhythm:validRhythm);
-		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'chords' parameter is an array of Events containing a key called 'triad' which is an array containing 3 elements by passing it an Event with a key called 'triad' which is an array containing 2 elements.");
+			MelodyAlgorithm.tonic(chords:[[(tonic:0,triad:[0,2,4])],[(tonic:0,triad:[0,2])]],rhythm:validRhythm);
+		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'chords' parameter is an Array of Arrays of Events containing a key called 'triad' which is an Array containing 3 elements by passing it an Event with a key called 'triad' which is an Array containing 2 elements.");
 		this.assertException({
-			MelodyAlgorithm.tonic(chords:[(tonic:0,triad:[0,2,4]),(tonic:0,triad:[0,2,4,6])],rhythm:validRhythm);
-		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'chords' parameter is an array of Events containing a key called 'triad' which is an array containing 3 elements by passing it an Event with a key called 'triad' which is an array containing 4 elements.");
+			MelodyAlgorithm.tonic(chords:[[(tonic:0,triad:[0,2,4])],[(tonic:0,triad:[0,2,4,6])]],rhythm:validRhythm);
+		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'chords' parameter is an Array of Arrays of Events containing a key called 'triad' which is an Array containing 3 elements by passing it an Event with a key called 'triad' which is an Array containing 4 elements.");
 		this.assertException({
-			MelodyAlgorithm.tonic(chords:[(tonic:0,triad:[0,2,4]),(tonic:0,triad:[0,2,nil])],rhythm:validRhythm);
-		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'chords' parameter is an array of Events containing a key called 'triad' which is an array of numbers by passing it an Event with a key called 'triad' which is an array containing a nil.");
+			MelodyAlgorithm.tonic(chords:[[(tonic:0,triad:[0,2,4])],[(tonic:0,triad:[0,2,nil])]],rhythm:validRhythm);
+		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'chords' parameter is an Array of Arrays of Events containing a key called 'triad' which is an Array of numbers by passing it an Event with a key called 'triad' which is an Array containing a nil.");
 		this.assertException({
-			MelodyAlgorithm.tonic(chords:[(tonic:0,triad:[0,2,4]),(tonic:0,triad:[0,2,\moo])],rhythm:validRhythm);
-		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'chords' parameter is an array of Events containing a key called 'triad' which is an array of numbers by passing it an Event with a key called 'triad' which is an array containing a symbol.");
+			MelodyAlgorithm.tonic(chords:[[(tonic:0,triad:[0,2,4])],[(tonic:0,triad:[0,2,\moo])]],rhythm:validRhythm);
+		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'chords' parameter is an Array of Arrays of Events containing a key called 'triad' which is an Arra of numbers by passing it an Event with a key called 'triad' which is an Array containing a symbol.");
 		this.assertException({
-			MelodyAlgorithm.tonic(chords:[(tonic:0,triad:[0,2,4]),(tonic:0,triad:[0,2,1.5])],rhythm:validRhythm);
-		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'chords' parameter is an array of Events containing a key called 'triad' which is an array of integers by passing it an Event with a key called 'triad' which is an array containing 1.5.");
+			MelodyAlgorithm.tonic(chords:[[(tonic:0,triad:[0,2,4])],[(tonic:0,triad:[0,2,1.5])]],rhythm:validRhythm);
+		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'chords' parameter is an Array of Arrays of Events containing a key called 'triad' which is an Array of integers by passing it an Event with a key called 'triad' which is an Array containing 1.5.");
 		this.assertException({
-			MelodyAlgorithm.tonic(chords:[(tonic:0,triad:[0,2,4]),(tonic:0,triad:[0,2,-1])],rhythm:validRhythm);
-		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'chords' parameter is an array of Events containing a key called 'triad' which is an array of integers greater than or equal to 0 by passing it an Event with a key called 'triad' which is an array containing -1.");
+			MelodyAlgorithm.tonic(chords:[[(tonic:0,triad:[0,2,4])],[(tonic:0,triad:[0,2,-1])]],rhythm:validRhythm);
+		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'chords' parameter is an Array of Arrays of Events containing a key called 'triad' which is an Array of integers greater than or equal to 0 by passing it an Event with a key called 'triad' which is an Array containing -1.");
 		this.assertException({
-			MelodyAlgorithm.tonic(chords:[(tonic:0,triad:[0,2,4]),(tonic:0,triad:[0,2,7])],rhythm:validRhythm);
-		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'chords' parameter is an array of Events containing a key called 'triad' which is an array of integers less than or equal to 0 by passing it an Event with a key called 'triad' which is an array containing 7.");
+			MelodyAlgorithm.tonic(chords:[[(tonic:0,triad:[0,2,4])],[(tonic:0,triad:[0,2,7])]],rhythm:validRhythm);
+		}, Error, "Checks that RhythmAlgorithm.uniformRhythm() correctly validates that the 'chords' parameter is an Array of Arrays of Events containing a key called 'triad' which is an Arrays of integers less than or equal to 0 by passing it an Event with a key called 'triad' which is an Array containing 7.");
 	}
 
 	test_tonic_rhythmParameterValidation {
-		var validChords = [(tonic:0,triad:[0,2,4]),(tonic:0,triad:[0,2,4])];
+		var validChords = [[(tonic:0,triad:[0,2,4])],[(tonic:0,triad:[0,2,4])]];
 
 		this.assertException({
 			MelodyAlgorithm.tonic(chords:validChords,rhythm:nil);
@@ -257,7 +260,7 @@ MelodyAlgorithmUnitTests : BNUnitTest {
 
 	test_tonic_acceptsValidParameters {
 		var validRhythm = (amp:[1,1,1,1, 1,1,1,1],dur:[1,1,1,1, 1,1,1,1],legato:[0.5,0.5,0.5,0.5, 0.5,0.5,0.5,0.5]);
-		var validChords = [(tonic:0,triad:[0,2,4]),(tonic:0,triad:[0,2,4])];
+		var validChords = [[(tonic:0,triad:[0,2,4]),(tonic:2,triad:[2,4,6])],[(tonic:1,triad:[1,3,5]),(tonic:3,triad:[3,5,0])]];
 
 		this.assertNoException({MelodyAlgorithm.tonic(chords:validChords,rhythm:validRhythm);},
 			"Checks that MelodyAlgorithm.tonic() accepts valid parameters.");
