@@ -1,4 +1,69 @@
 RhythmAlgorithm {
+	*nestedRhythm { | coreRhythm = 1.5, nesting = 4 |
+
+		if (coreRhythm.isNil, {
+			Error(format("The 'coreRhythm' parameter passed to RhythmAlgorithm.nestedRhythm() must be an integer or an array of integers. The value % was received.", coreRhythm)).throw;
+		});
+		if ((coreRhythm.isInteger == false) && (coreRhythm.isArray == false), {
+			Error(format("The 'coreRhythm' parameter passed to RhythmAlgorithm.nestedRhythm() must be an integer or an array of integers. The value % was received.", coreRhythm)).throw;
+		});
+		if (coreRhythm.isInteger, {
+			if (coreRhythm <= 0, {
+				Error(format("The 'coreRhythm' parameter passed to RhythmAlgorithm.nestedRhythm(), if it is an integer, must be greater than 0. The value % was received.", coreRhythm)).throw;
+			});
+		});
+		if (coreRhythm.isArray, {
+			if (coreRhythm.size == 0, {
+				Error(format("The 'coreRhythm' parameter passed to RhythmAlgorithm.nestedRhythm(), if it is an array, must have at least 1 element. The value % was received.", coreRhythm)).throw;
+			});
+			if (coreRhythm.any({|element|element.isNil}), {
+				Error(format("The 'coreRhythm' parameter passed to RhythmAlgorithm.nestedRhythm(), if it is an array, must be an array of integers. The value % was received.", coreRhythm)).throw;
+			});
+			if (coreRhythm.any({|element|element.isInteger == false}), {
+				Error(format("The 'coreRhythm' parameter passed to RhythmAlgorithm.nestedRhythm(), if it is an array, must be an array of integers. The value % was received.", coreRhythm)).throw;
+			});
+			if (coreRhythm.any({|element|element <= 0}), {
+				Error(format("The 'coreRhythm' parameter passed to RhythmAlgorithm.nestedRhythm(), if it is an array, must be an array of integers greater than 0. The value % was received.", coreRhythm)).throw;
+			});
+		});
+
+		if (nesting.isNil, {
+			Error(format("The 'nesting' parameter passed to RhythmAlgorithm.nestedRhythm() must be an integer or an array of integers. The value % was received.", nesting)).throw;
+		});
+		if ((nesting.isInteger == false) && (nesting.isArray == false), {
+			Error(format("The 'nesting' parameter passed to RhythmAlgorithm.nestedRhythm() must be an integer or an array of integers. The value % was received.", nesting)).throw;
+		});
+		if (nesting.isInteger, {
+			if (nesting <= 0, {
+				Error(format("The 'nesting' parameter passed to RhythmAlgorithm.nestedRhythm(), if it is an integer, must be greater than 0. The value % was received.", nesting)).throw;
+			});
+		});
+		if (nesting.isArray, {
+			if (nesting.size == 0, {
+				Error(format("The 'nesting' parameter passed to RhythmAlgorithm.nestedRhythm(), if it is an array, must have at least 1 element. The value % was received.", nesting)).throw;
+			});
+			if (nesting.any({|element|element.isNil}), {
+				Error(format("The 'nesting' parameter passed to RhythmAlgorithm.nestedRhythm(), if it is an array, must be an array of integers. The value % was received.", nesting)).throw;
+			});
+			if (nesting.any({|element|element.isInteger == false}), {
+				Error(format("The 'nesting' parameter passed to RhythmAlgorithm.nestedRhythm(), if it is an array, must be an array of integers. The value % was received.", nesting)).throw;
+			});
+			if (nesting.any({|element|element <= 0}), {
+				Error(format("The 'nesting' parameter passed to RhythmAlgorithm.nestedRhythm(), if it is an array, must be an array of integers greater than 0. The value % was received.", nesting)).throw;
+			});
+			if (nesting.size > 1, {
+				(1..nesting.size-1).do({
+					|index|
+					if (nesting[index] <= nesting[index-1], {
+						Error(format("The 'nesting' parameter passed to RhythmAlgorithm.nestedRhythm(), if it is an array, must be an array of integers which increase in size. The value % was received.", nesting)).throw;
+					});
+				});
+			});
+		});
+
+		^(amp: [1,1,1,1], dur: [1,1,1,1], legato: [0.5,0.5,0.5,0.5], );
+	}
+
 	*uniformRhythm { | length = 4, noteLength = 0.5, amp = 1, legato = 0.5, anticipation = nil |
 		var ev = ();
 		var numberOfNotes = length / noteLength;

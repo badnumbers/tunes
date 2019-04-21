@@ -1,4 +1,84 @@
 RhythmAlgorithmUnitTests : BNUnitTest {
+	test_nestedRhythm_coreRhythmParameterValidation {
+		this.assertException({
+			RhythmAlgorithm.nestedRhythm(coreRhythm:nil);
+		}, Error, "Checks that RhythmAlgorithm.nestedRhythm() correctly validates that the 'coreRhythm' parameter is a number or an array of numbers by passing it nil.");
+		this.assertException({
+			RhythmAlgorithm.nestedRhythm(coreRhythm:\moo);
+		}, Error, "Checks that RhythmAlgorithm.nestedRhythm() correctly validates that the 'coreRhythm' parameter is a number or an array of numbers by passing it a symbol.");
+		this.assertException({
+			RhythmAlgorithm.nestedRhythm(coreRhythm:-1);
+		}, Error, "Checks that RhythmAlgorithm.nestedRhythm() correctly validates that the 'coreRhythm' parameter is a number greater than 0 by passing it -1.");
+		this.assertException({
+			RhythmAlgorithm.nestedRhythm(coreRhythm:0);
+		}, Error, "Checks that RhythmAlgorithm.nestedRhythm() correctly validates that the 'coreRhythm' parameter is a number greater than 0 by passing it 0.");
+		this.assertException({
+			RhythmAlgorithm.nestedRhythm(coreRhythm:[]);
+		}, Error, "Checks that RhythmAlgorithm.nestedRhythm() correctly validates that the 'coreRhythm' parameter is an array with at least 1 element by passing it an array of 0 elements.");
+		this.assertException({
+			RhythmAlgorithm.nestedRhythm(coreRhythm:[1,1,nil]);
+		}, Error, "Checks that RhythmAlgorithm.nestedRhythm() correctly validates that the 'coreRhythm' parameter is an array of numbers greater than 0 by passing it an array including nil.");
+		this.assertException({
+			RhythmAlgorithm.nestedRhythm(coreRhythm:[1,1,\moo]);
+		}, Error, "Checks that RhythmAlgorithm.nestedRhythm() correctly validates that the 'coreRhythm' parameter is an array of numbers greater than 0 by passing it an array including a symbol.");
+		this.assertException({
+			RhythmAlgorithm.nestedRhythm(coreRhythm:[1,1,-1]);
+		}, Error, "Checks that RhythmAlgorithm.nestedRhythm() correctly validates that the 'coreRhythm' parameter is an array of numbers greater than 0 by passing it an array of numbers including -1.");
+		this.assertException({
+			RhythmAlgorithm.nestedRhythm(coreRhythm:[1,1,0]);
+		}, Error, "Checks that RhythmAlgorithm.nestedRhythm() correctly validates that the 'coreRhythm' parameter is an array of numbers greater than 0 by passing it an array of numbers including 0.");
+		this.assertNoException({
+			RhythmAlgorithm.nestedRhythm(coreRhythm:1);
+		}, "Checks that RhythmAlgorithm.nestedRhythm() allows the 'coreRhythm' parameter to be 1.");
+		this.assertNoException({
+			RhythmAlgorithm.nestedRhythm(coreRhythm:[1,1]);
+		}, "Checks that RhythmAlgorithm.nestedRhythm() allows the 'coreRhythm' parameter to be an array of integers greater than 0.");
+
+		this.assertException({
+			RhythmAlgorithm.nestedRhythm(nesting:nil);
+		}, Error, "Checks that RhythmAlgorithm.nestedRhythm() correctly validates that the 'nesting' parameter is a number or an array of numbers by passing it nil.");
+		this.assertException({
+			RhythmAlgorithm.nestedRhythm(nesting:\moo);
+		}, Error, "Checks that RhythmAlgorithm.nestedRhythm() correctly validates that the 'nesting' parameter is a number or an array of numbers by passing it a symbol.");
+		this.assertException({
+			RhythmAlgorithm.nestedRhythm(nesting:-1);
+		}, Error, "Checks that RhythmAlgorithm.nestedRhythm() correctly validates that the 'nesting' parameter is a number greater than 0 by passing it -1.");
+		this.assertException({
+			RhythmAlgorithm.nestedRhythm(nesting:0);
+		}, Error, "Checks that RhythmAlgorithm.nestedRhythm() correctly validates that the 'nesting' parameter is a number greater than 0 by passing it 0.");
+		this.assertException({
+			RhythmAlgorithm.nestedRhythm(nesting:[]);
+		}, Error, "Checks that RhythmAlgorithm.nestedRhythm() correctly validates that the 'nesting' parameter is an array with at least 1 element by passing it an array of 0 elements.");
+		this.assertException({
+			RhythmAlgorithm.nestedRhythm(nesting:[1,2,nil]);
+		}, Error, "Checks that RhythmAlgorithm.nestedRhythm() correctly validates that the 'nesting' parameter is an array of numbers greater than 0 by passing it an array including nil.");
+		this.assertException({
+			RhythmAlgorithm.nestedRhythm(nesting:[1,2,\moo]);
+		}, Error, "Checks that RhythmAlgorithm.nestedRhythm() correctly validates that the 'nesting' parameter is an array of numbers greater than 0 by passing it an array including a symbol.");
+		this.assertException({
+			RhythmAlgorithm.nestedRhythm(nesting:[1,1,-1]);
+		}, Error, "Checks that RhythmAlgorithm.nestedRhythm() correctly validates that the 'nesting' parameter is an array of numbers greater than 0 by passing it an array of numbers including -1.");
+		this.assertException({
+			RhythmAlgorithm.nestedRhythm(nesting:[1,1,0]);
+		}, Error, "Checks that RhythmAlgorithm.nestedRhythm() correctly validates that the 'nesting' parameter is an array of numbers greater than 0 by passing it an array of numbers including 0.");
+		this.assertException({
+			RhythmAlgorithm.nestedRhythm(nesting:[1,2,3,5,5]);
+		}, Error, "Checks that RhythmAlgorithm.nestedRhythm() correctly validates that the 'nesting' parameter is an array of numbers which increase in size by passing it an array of numbers where one element is the same size as the element preceding it.");
+		this.assertException({
+			RhythmAlgorithm.nestedRhythm(nesting:[1,2,3,5,4]);
+		}, Error, "Checks that RhythmAlgorithm.nestedRhythm() correctly validates that the 'nesting' parameter is an array of numbers which increase in size by passing it an array of numbers where one element is smaller than the element preceding it.");
+		this.assertNoException({
+			RhythmAlgorithm.nestedRhythm(nesting:1);
+		}, "Checks that RhythmAlgorithm.nestedRhythm() allows the 'nesting' parameter to be 1.");
+		this.assertNoException({
+			RhythmAlgorithm.nestedRhythm(nesting:[1]);
+		}, "Checks that RhythmAlgorithm.nestedRhythm() allows the 'nesting' parameter to be an array with 1 element.");
+		this.assertNoException({
+			RhythmAlgorithm.nestedRhythm(nesting:[1,2,3,4]);
+		}, "Checks that RhythmAlgorithm.nestedRhythm() allows the 'coreRhythm' parameter to be an array of ascending integers greater than 0.");
+	}
+
+
 	uniformRhythm {
 		|parameters, expected|
 		var actual;
