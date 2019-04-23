@@ -40,7 +40,7 @@
 		var arraysum;
 		var difference;
 		var totalsizeremoved;
-		var counter;
+		var index;
 		var numberremoved;
 		var newarray;
 		if (this.size == 0,{
@@ -67,13 +67,19 @@
 
 		totalsizeremoved = 0;
 		difference = arraysum - newLength; // We have previously validated that newLength must be equal to or less than the array sum
-		counter = this.size - 1;
+		index = this.size - 1;
 		while ({totalsizeremoved < difference},{
-			totalsizeremoved = totalsizeremoved + this[counter];
-			counter = counter - 1;
+			totalsizeremoved = totalsizeremoved + this[index];
+			index = index - 1;
 		});
 
-		newarray = this.at((0..counter));
+		// index will be -1 if the first item in the array is larger than newLength
+		if (index < 0,{
+			newarray = [];
+		},{
+			newarray = this.at((0..index));
+		});
+
 		if (newarray.sum == newLength,{
 			^newarray;
 		});

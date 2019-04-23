@@ -62,6 +62,13 @@ ArrayedCollectionUnitTests : UnitTest {
 			),
 			expected: [2,2.5,3,2,2.5,3,2,2.5,3,0.5]
 		);
+		this.repeatUntilSum(parameters:
+			(
+				arrayedCollection: [1.5],
+				sumparam: 1 // Doesn't like the name 'sum'
+			),
+			expected: [1]
+		);
 	}
 
 	test_repeatUntilSum_arrayedCollectionParameterValidation {
@@ -241,6 +248,13 @@ ArrayedCollectionUnitTests : UnitTest {
 				newLength: 8
 			),
 			expected: [0.5,1.5,2.5,3.5]
+		);
+		this.shave(parameters:
+			(
+				arrayedCollection: [2,1],
+				newLength: 1
+			),
+			expected: [1]
 		);
 	}
 
