@@ -1,0 +1,51 @@
+INSTANCEMETHODS::
+
+method::repeatUntilSum
+Returns a new Array created by repeating the receiver. The repeating ends when the sum of the Array's elements equals the code::sum:: argument. If necessary, the final element in the Array is made smaller.
+
+If the sum of the receiver's elemennts is greater than the code::sum:: argument then the new Array is created by truncating the receiver. Again, the final element in the Array will be made smaller if necessary.
+
+This is useful for repeating sequences until they reach a certain length (for example, for rhythms).
+note::
+This method will throw an Error if:
+
+* the receiver has 0 elements
+
+* any element in the receiver is not a number
+::
+argument::sum
+The final sum of the elements of the Array to be returned by this method.
+note::
+This method will throw an Error if the code::sum:: argument is not a number greater than 0.
+::
+returns::
+An Array created by repeating the receiver until the sum of its elements is equal to the code::sum:: argument.
+code::
+[1,2,3].repeatUntilSum(10);
+[1,2,3].repeatUntilSum(2);
+::
+
+method::shave
+Returns a new Array created by truncating the receiver so that the sum of the Array's elements equals the code::newLength:: argument.
+note::
+This method will throw an Error if:
+
+* the receiver has 0 elements
+
+* any element in the receiver is not a number
+::
+argument::newLength
+The final sum of the elements of the Array to be returned by this method.
+note::
+This method will throw an Error if:
+
+* the code::sum:: newLength is not a number greater than 0
+
+* the sum of the receiver's elements is smaller than the code::sum:: argument
+::
+returns::
+An Array created by truncating the receiver so that the sum of its elements is equal to the code::newLength:: argument.
+code::
+[1,2,3].shave(1);
+[1,2,3].shave(5);
+::
