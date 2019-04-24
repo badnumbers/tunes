@@ -1,4 +1,84 @@
 RhythmAlgorithmUnitTests : BNUnitTest {
+	nestedRhythm {
+		|parameters, expected|
+		var actual;
+		if (parameters.isNil,
+			{
+				actual = RhythmAlgorithm.nestedRhythm();
+			},
+			{
+				actual = RhythmAlgorithm.nestedRhythm(parameters.coreRhythm, parameters.nesting);
+			}
+		);
+
+		this.assertEquals(Event, actual.class, format("Return type: EXPECTED %, ACTUAL %.", Event, actual.class), true);
+		this.assertEquals(3, actual.keys.size, format("Returned Event should contain 3 keys."), true);
+		this.assert(actual.keys.includes(\dur), format("Returned Event should contain \dur key."), true);
+		this.assert(actual.keys.includes(\legato), format("Returned Event should contain \legato key."), true);
+		this.assert(actual.keys.includes(\amp), format("Returned Event should contain \amp key."), true);
+		this.assertEquals(expected.dur, actual.dur, format("dur values: EXPECTED %, ACTUAL %.", expected.dur, actual.dur), true);
+		this.assertEquals(expected.legato, actual.legato, format("legato values: EXPECTED %, ACTUAL %.", expected.legato, actual.legato), true);
+		this.assertEquals(expected.amp, actual.amp, format("amp values: EXPECTED %, ACTUAL %.", expected.amp, actual.amp), true);
+	}
+
+	test_nestedRhythm {
+		this.nestedRhythm(expected:
+			(
+				dur: [1.5,1.5,1],
+				legato: 0.5!3,
+				amp: 1!3
+			)
+		);
+		this.nestedRhythm(parameters:
+			(
+				coreRhythm: [1.5,1.5,1],
+				nesting: 6.5
+			),
+			expected:
+			(
+				dur: [1.5,1.5,1,1.5,1],
+				legato: 0.5!5,
+				amp: 1!5
+			)
+		);
+		this.nestedRhythm(parameters:
+			(
+				coreRhythm: [4,4],
+				nesting: 1.5
+			),
+			expected:
+			(
+				dur: [1.5],
+				legato: 0.5!1,
+				amp: 1!1
+			)
+		);
+		this.nestedRhythm(parameters:
+			(
+				coreRhythm: [0.5,1,2],
+				nesting: [4]
+			),
+			expected:
+			(
+				dur: [0.5,1,2,0.5],
+				legato: 0.5!4,
+				amp: 1!4
+			)
+		);
+		this.nestedRhythm(parameters:
+			(
+				coreRhythm: [0.5,1,2],
+				nesting: [4,10]
+			),
+			expected:
+			(
+				dur: [0.5,1,2,0.5, 0.5,1,2,0.5, 0.5,1,0.5],
+				legato: 0.5!11,
+				amp: 1!11
+			)
+		);
+	}
+
 	test_nestedRhythm_coreRhythmParameterValidation {
 		this.assertException({
 			RhythmAlgorithm.nestedRhythm(coreRhythm:nil);
@@ -31,8 +111,14 @@ RhythmAlgorithmUnitTests : BNUnitTest {
 			RhythmAlgorithm.nestedRhythm(coreRhythm:1);
 		}, "Checks that RhythmAlgorithm.nestedRhythm() allows the 'coreRhythm' parameter to be 1.");
 		this.assertNoException({
+			RhythmAlgorithm.nestedRhythm(coreRhythm:1.5);
+		}, "Checks that RhythmAlgorithm.nestedRhythm() allows the 'coreRhythm' parameter to be 1.5.");
+		this.assertNoException({
 			RhythmAlgorithm.nestedRhythm(coreRhythm:[1,1]);
-		}, "Checks that RhythmAlgorithm.nestedRhythm() allows the 'coreRhythm' parameter to be an array of integers greater than 0.");
+		}, "Checks that RhythmAlgorithm.nestedRhythm() allows the 'coreRhythm' parameter to be an array of numbers greater than 0.");
+		this.assertNoException({
+			RhythmAlgorithm.nestedRhythm(coreRhythm:[1,1.5]);
+		}, "Checks that RhythmAlgorithm.nestedRhythm() allows the 'coreRhythm' parameter to be an array of numbers which don't have to be integers.");
 
 		this.assertException({
 			RhythmAlgorithm.nestedRhythm(nesting:nil);
@@ -71,11 +157,17 @@ RhythmAlgorithmUnitTests : BNUnitTest {
 			RhythmAlgorithm.nestedRhythm(nesting:1);
 		}, "Checks that RhythmAlgorithm.nestedRhythm() allows the 'nesting' parameter to be 1.");
 		this.assertNoException({
+			RhythmAlgorithm.nestedRhythm(nesting:1.5);
+		}, "Checks that RhythmAlgorithm.nestedRhythm() allows the 'nesting' parameter to be 1.5.");
+		this.assertNoException({
 			RhythmAlgorithm.nestedRhythm(nesting:[1]);
 		}, "Checks that RhythmAlgorithm.nestedRhythm() allows the 'nesting' parameter to be an array with 1 element.");
 		this.assertNoException({
 			RhythmAlgorithm.nestedRhythm(nesting:[1,2,3,4]);
-		}, "Checks that RhythmAlgorithm.nestedRhythm() allows the 'coreRhythm' parameter to be an array of ascending integers greater than 0.");
+		}, "Checks that RhythmAlgorithm.nestedRhythm() allows the 'coreRhythm' parameter to be an array of ascending numbers greater than 0.");
+		this.assertNoException({
+			RhythmAlgorithm.nestedRhythm(nesting:[1,2,3,4.5]);
+		}, "Checks that RhythmAlgorithm.nestedRhythm() allows the 'coreRhythm' parameter to be an array of numbers which don't have to be integers.");
 	}
 
 

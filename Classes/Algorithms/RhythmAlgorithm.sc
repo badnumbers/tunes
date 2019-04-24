@@ -1,15 +1,16 @@
 RhythmAlgorithm {
 	*nestedRhythm { | coreRhythm = 1.5, nesting = 4 |
+		var fragment;
 
 		if (coreRhythm.isNil, {
-			Error(format("The 'coreRhythm' parameter passed to RhythmAlgorithm.nestedRhythm() must be an integer or an array of integers. The value % was received.", coreRhythm)).throw;
+			Error(format("The 'coreRhythm' parameter passed to RhythmAlgorithm.nestedRhythm() must be a number or an array of numbers. The value % was received.", coreRhythm)).throw;
 		});
-		if ((coreRhythm.isInteger == false) && (coreRhythm.isArray == false), {
-			Error(format("The 'coreRhythm' parameter passed to RhythmAlgorithm.nestedRhythm() must be an integer or an array of integers. The value % was received.", coreRhythm)).throw;
+		if ((coreRhythm.isNumber == false) && (coreRhythm.isArray == false), {
+			Error(format("The 'coreRhythm' parameter passed to RhythmAlgorithm.nestedRhythm() must be a number or an array of numbers. The value % was received.", coreRhythm)).throw;
 		});
-		if (coreRhythm.isInteger, {
+		if (coreRhythm.isNumber, {
 			if (coreRhythm <= 0, {
-				Error(format("The 'coreRhythm' parameter passed to RhythmAlgorithm.nestedRhythm(), if it is an integer, must be greater than 0. The value % was received.", coreRhythm)).throw;
+				Error(format("The 'coreRhythm' parameter passed to RhythmAlgorithm.nestedRhythm(), if it is a number, must be greater than 0. The value % was received.", coreRhythm)).throw;
 			});
 		});
 		if (coreRhythm.isArray, {
@@ -17,25 +18,25 @@ RhythmAlgorithm {
 				Error(format("The 'coreRhythm' parameter passed to RhythmAlgorithm.nestedRhythm(), if it is an array, must have at least 1 element. The value % was received.", coreRhythm)).throw;
 			});
 			if (coreRhythm.any({|element|element.isNil}), {
-				Error(format("The 'coreRhythm' parameter passed to RhythmAlgorithm.nestedRhythm(), if it is an array, must be an array of integers. The value % was received.", coreRhythm)).throw;
+				Error(format("The 'coreRhythm' parameter passed to RhythmAlgorithm.nestedRhythm(), if it is an array, must be an array of numbers. The value % was received.", coreRhythm)).throw;
 			});
-			if (coreRhythm.any({|element|element.isInteger == false}), {
-				Error(format("The 'coreRhythm' parameter passed to RhythmAlgorithm.nestedRhythm(), if it is an array, must be an array of integers. The value % was received.", coreRhythm)).throw;
+			if (coreRhythm.any({|element|element.isNumber == false}), {
+				Error(format("The 'coreRhythm' parameter passed to RhythmAlgorithm.nestedRhythm(), if it is an array, must be an array of numbers. The value % was received.", coreRhythm)).throw;
 			});
 			if (coreRhythm.any({|element|element <= 0}), {
-				Error(format("The 'coreRhythm' parameter passed to RhythmAlgorithm.nestedRhythm(), if it is an array, must be an array of integers greater than 0. The value % was received.", coreRhythm)).throw;
+				Error(format("The 'coreRhythm' parameter passed to RhythmAlgorithm.nestedRhythm(), if it is an array, must be an array of numbers greater than 0. The value % was received.", coreRhythm)).throw;
 			});
 		});
 
 		if (nesting.isNil, {
-			Error(format("The 'nesting' parameter passed to RhythmAlgorithm.nestedRhythm() must be an integer or an array of integers. The value % was received.", nesting)).throw;
+			Error(format("The 'nesting' parameter passed to RhythmAlgorithm.nestedRhythm() must be a number or an array of numbers. The value % was received.", nesting)).throw;
 		});
-		if ((nesting.isInteger == false) && (nesting.isArray == false), {
-			Error(format("The 'nesting' parameter passed to RhythmAlgorithm.nestedRhythm() must be an integer or an array of integers. The value % was received.", nesting)).throw;
+		if ((nesting.isNumber == false) && (nesting.isArray == false), {
+			Error(format("The 'nesting' parameter passed to RhythmAlgorithm.nestedRhythm() must be a number or an array of numbers. The value % was received.", nesting)).throw;
 		});
-		if (nesting.isInteger, {
+		if (nesting.isNumber, {
 			if (nesting <= 0, {
-				Error(format("The 'nesting' parameter passed to RhythmAlgorithm.nestedRhythm(), if it is an integer, must be greater than 0. The value % was received.", nesting)).throw;
+				Error(format("The 'nesting' parameter passed to RhythmAlgorithm.nestedRhythm(), if it is a number, must be greater than 0. The value % was received.", nesting)).throw;
 			});
 		});
 		if (nesting.isArray, {
@@ -43,25 +44,40 @@ RhythmAlgorithm {
 				Error(format("The 'nesting' parameter passed to RhythmAlgorithm.nestedRhythm(), if it is an array, must have at least 1 element. The value % was received.", nesting)).throw;
 			});
 			if (nesting.any({|element|element.isNil}), {
-				Error(format("The 'nesting' parameter passed to RhythmAlgorithm.nestedRhythm(), if it is an array, must be an array of integers. The value % was received.", nesting)).throw;
+				Error(format("The 'nesting' parameter passed to RhythmAlgorithm.nestedRhythm(), if it is an array, must be an array of numbers. The value % was received.", nesting)).throw;
 			});
-			if (nesting.any({|element|element.isInteger == false}), {
-				Error(format("The 'nesting' parameter passed to RhythmAlgorithm.nestedRhythm(), if it is an array, must be an array of integers. The value % was received.", nesting)).throw;
+			if (nesting.any({|element|element.isNumber == false}), {
+				Error(format("The 'nesting' parameter passed to RhythmAlgorithm.nestedRhythm(), if it is an array, must be an array of numbers. The value % was received.", nesting)).throw;
 			});
 			if (nesting.any({|element|element <= 0}), {
-				Error(format("The 'nesting' parameter passed to RhythmAlgorithm.nestedRhythm(), if it is an array, must be an array of integers greater than 0. The value % was received.", nesting)).throw;
+				Error(format("The 'nesting' parameter passed to RhythmAlgorithm.nestedRhythm(), if it is an array, must be an array of numbers greater than 0. The value % was received.", nesting)).throw;
 			});
 			if (nesting.size > 1, {
 				(1..nesting.size-1).do({
 					|index|
 					if (nesting[index] <= nesting[index-1], {
-						Error(format("The 'nesting' parameter passed to RhythmAlgorithm.nestedRhythm(), if it is an array, must be an array of integers which increase in size. The value % was received.", nesting)).throw;
+						Error(format("The 'nesting' parameter passed to RhythmAlgorithm.nestedRhythm(), if it is an array, must be an array of numbers which increase in size. The value % was received.", nesting)).throw;
 					});
 				});
 			});
 		});
 
-		^(amp: [1,1,1,1], dur: [1,1,1,1], legato: [0.5,0.5,0.5,0.5], );
+		if (coreRhythm.isNumber, {
+			coreRhythm = [coreRhythm];
+		});
+
+		if (nesting.isNumber, {
+			nesting = [nesting];
+		});
+
+		fragment = coreRhythm;
+
+		nesting.do({
+			|currentnesting|
+			fragment = fragment.repeatUntilSum(currentnesting);
+		});
+
+		^(amp: 1!fragment.size, dur: fragment, legato: 0.5!fragment.size );
 	}
 
 	*uniformRhythm { | length = 4, noteLength = 0.5, amp = 1, legato = 0.5, anticipation = nil |
@@ -76,7 +92,7 @@ RhythmAlgorithm {
 		});
 
 		if (length.isNumber == false, {
-			Error(format("The noteLength parameter passed to RhythmAlgorithm.uniformRhythm() must be an number. The value % was received.", noteLength)).throw;
+			Error(format("The noteLength parameter passed to RhythmAlgorithm.uniformRhythm() must be a number. The value % was received.", noteLength)).throw;
 		});
 		if (((noteLength % 0.125 == 0) || (noteLength == (1/3)) || (noteLength == (1/6))) == false, {
 			Error(format("The noteLength parameter passed to RhythmAlgorithm.uniformRhythm() must be a multiple of an eighth or a multiple of a sixth. The value % was received.", noteLength)).throw;
