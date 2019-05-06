@@ -5,39 +5,10 @@ categories:: Live Coding
 DESCRIPTION::
 HarmonyAnalyser accepts an array of scale degrees and an array of durations and uses a simple mathematical approach to return a set of chords, one per 4 beats, which fit them best.
 
-
 CLASSMETHODS::
 
-METHOD:: prSplitRhythm
-Private method to split the melody into 4-beat sections
-
-ARGUMENT:: durs
-The rhythm of the melody, defined as an array of durations.
-
-ARGUMENT:: degrees
-The scale degrees of the melody, defined as an array of degrees.
-
-returns:: An array of events. Each event represents a 4-beat section of the melody. The event has a durs property which is an array of note durations, and a degrees property which is the corresponding array of degrees.
-
-METHOD:: prFindChordsInChunk
-Accepts a 4-beat chunk of melody and returns an array of 1 or more chords that fit it best. It does so by assigning a numeric score to each possible chord, and returning those that have the highest value. Each chord in the array is represented as an Event with the keys code::tonic:: (the zero-based number meaning the which degree of the scale is the chord tonic) and code::triad:: (an array of three zero-based numbers meaning the degrees of the scale that are in the chord), for example:
-code::
-(tonic:2,triad:[2,4,6])
-::
-
-ARGUMENT:: durs
-The rhythm of the 4-beat melody, defined as an array of durations.
-
-ARGUMENT:: degrees
-The scale degrees of the 4-beat melody, defined as an array of degrees.
-
-returns:: An array of one or more numbers, each one representing the scale degree of the root note of a chord.
-
 METHOD:: findChordsInMelody
-Accepts a melody and returns an array of arrays. The outer array is for each 4-beat section of the melody, and each inner array is one or more chords that fit that 4-beat section best. Each chord in the inner array is represented as an Event with the keys code::tonic:: (the zero-based number meaning the which degree of the scale is the chord tonic) and code::triad:: (an array of three zero-based numbers meaning the degrees of the scale that are in the chord), for example:
-code::
-(tonic:2,triad:[2,4,6])
-::
+Accepts a melody and figures out a chord or chords that work with each 4-bar chunk of the melody. Returns an array of arrays. The outer array is for each 4-beat section of the melody, and each inner array is one or more chords that fit that 4-beat section best. Each chord in the inner array is represented as an Event with the keys code::tonic:: (the zero-based number meaning the which degree of the scale is the chord tonic) and code::triad:: (an array of three zero-based numbers meaning the degrees of the scale that are in the chord).
 
 ARGUMENT:: durs
 The rhythm of the melody, defined as an array of durations.
@@ -45,10 +16,21 @@ The rhythm of the melody, defined as an array of durations.
 ARGUMENT:: degrees
 The scale degrees of the melody, defined as an array of degrees.
 
-returns:: For example:
-[ [0], [3], [1,3], [4] ]
-This means that chord 0 fits the first 4-beat section best. Chord 3 fits the second, chords 1 or 3 fit the third section equally well, and chord 4 first the fourth section best.
-
+returns::
+An array containing, for each 4-bar chunk of the melody, an array of possible chords defined as code::Events::. Each chord has a code::tonic:: and a code::triad::, for example:
+code::
+[
+	[
+		// First 4-bar chunk, two possible chords
+		( 'triad': [ 1, 3, 5 ], 'tonic': 1 ),
+		( 'triad': [ 3, 5, 0 ], 'tonic': 3 )
+	],
+	// Second 4-bar chunk, one possible chord
+	[
+		( 'triad': [ 2, 4, 6 ], 'tonic': 2 )
+	]
+]
+::
 
 EXAMPLES::
 
