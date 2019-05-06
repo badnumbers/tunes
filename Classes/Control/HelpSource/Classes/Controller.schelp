@@ -1,0 +1,69 @@
+TITLE:: Controller
+summary:: Control playback of patterns.
+categories:: Live Coding
+
+DESCRIPTION::
+Allows scheduled control of which patterns are currently playing.
+
+CLASSMETHODS::
+
+METHOD:: controlPattern
+Gets a value pattern, to be used by the code::\type:: key of an event pattern, which allows the pattern to be controlled by code::Controller::.
+
+ARGUMENT:: patternName
+A code::Symbol:: which is the name of the pattern itself. See the code example at the bottom of this file.
+
+ARGUMENT:: playingEventType
+A code::Symbol:: describing the event type which should be used when the pattern is playing, for example code::\midi:: or code::\note::. The default is code::\midi::.
+
+METHOD:: suspend
+Immediately stops the playback of a pattern or patterns, scheduling them to begin playing again in the future.
+
+ARGUMENT:: tempoClock
+The code::TempoClock:: being used by the code::Pdef::.
+
+ARGUMENT:: patterns
+A code::Symbol:: or an code::Array:: of code::Symbols:: designating the names of patterns to stop playing.
+
+ARGUMENT:: reinstateQuant
+A number describing when to start playing the patterns again. Used as the code::quant:: parameter of code::Quant::, so describes the start of a phrase to begin playing again. For example, a code::reinstateQuant:: of 16 means 'begin playing again at the start of the next 16 beat phrase'.
+
+ARGUMENT:: reinstatePhase
+A number describing an offset to the code::reinstateQuant:: described above. If you specify a code::reinstateQuant:: of 16 and a code::reinstatePhase:: of -1 the patterns will begin playing again 1 bar before the start of the next 16 beat phrase.
+A negative code::reinstatePhase:: will begin playback before the next phrase begins, and a positive code::reinstatePhase:: will begin playback after the next phrase begins.
+
+INSTANCEMETHODS::
+
+
+EXAMPLES::
+
+code::
+// Create and play two parallel patterns
+// Note the reset of the TempoClock
+(
+Pdef(\part1,
+	Pbind(
+		\type,Controller.controlPattern(\part1,\note),
+		\octave, 5,
+		\degree, Pseq((0..7).mirror2,inf),
+		\dur, 0.25
+	)
+);
+Pdef(\part2,
+	Pbind(
+		\type,Controller.controlPattern(\part2,\note),
+		\octave, 3,
+		\degree, Pseq((0..7).mirror2,inf),
+		\dur, 0.5
+	)
+);
+TempoClock.default.beats = 0;
+[\part1,\part2].do({|pat|Pdef(pat).play;});
+)
+
+// Temporarily turn off the top part
+Controller.suspend(TempoClock.default,\part1,4,0);
+
+// When you can stand it no more
+[\part1,\part2].do({|pat|Pdef(pat).stop;});
+::
