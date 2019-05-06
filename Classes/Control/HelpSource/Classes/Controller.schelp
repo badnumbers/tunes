@@ -14,7 +14,7 @@ ARGUMENT:: patternName
 A code::Symbol:: which is the name of the pattern itself. See the code example at the bottom of this file.
 
 ARGUMENT:: playingEventType
-A code::Symbol:: describing the event type which should be used when the pattern is playing, for example code::\midi:: or code::\note::. The default is code::\midi::.
+A code::Symbol:: describing the event type which should be used when the pattern is playing, for example code::\midi::, code::\note:: or code::monoSet::. The default is code::\midi::.
 
 METHOD:: suspend
 Immediately stops the playback of a pattern or patterns, scheduling them to begin playing again in the future.
