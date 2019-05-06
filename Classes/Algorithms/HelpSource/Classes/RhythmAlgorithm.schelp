@@ -6,40 +6,30 @@ related:: Classes/Algorithms/RandomAlgorithm
 DESCRIPTION::
 RhythmAlgorithm can be used to generate rhythmical sequences which comprise durations, legato values and amplitudes.
 
-
 CLASSMETHODS::
 
 METHOD:: nestedRhythm
 Generates a rhythm created by taking a short rhythm and repeating it in a series of nested boundaries.
 
-ARGUMENT:: length
-The length, in beats, of the rhythm to generate.
-
-ARGUMENT:: noteLength
-The length of the notes in the rhythm. Must be a 1/8 or a multiple thereof, or 1/6 or 1/3.
-
-ARGUMENT:: amp
-The amplitude to use for the notes. This can be either a single number, or an array of numbers. If it is an array, the array is cycled through repeatedly, each current value in the array being used as the amplitude of the current note in the rhythm.
-
-The single value, or each value in the array, must be greater than or equal to 0 and less than or equal to 1.
-
-ARGUMENT:: legato
-The legato to use for the notes. This can be either a single number, or an array of numbers. If it is an array, the array is cycled through repeatedly, each current value in the array being used as the legato of the current note in the rhythm.
-
-The single value, or each value in the array, must be greater than 0.
-
-ARGUMENT:: anticipation
-Whether to include an 'anticipation note' before the current note. An anticipation note appears a sixteenth note before the current note.
-This argument can take a number of forms:
-table::
-## Value || Notes
-## code::nil:: || Don't create any anticipation notes
-## 0 || Don't create any anticipation notes
-## A single number > 0 || Create an anticipation note for every note in the rhythm, with an amp value of the specified amount
-## An array of numbers || The array is cycled through repeatedly, each current value in the array being used as the amp value for a anticipation note for the current note in the rhythm. If the array value is 0 or nil, no anticipation note is created for the current note.
+ARGUMENT:: coreRhythm
+A short snippet of rhythm which is repeated to generate the overall rhythm. This parameter can be a single value:
+code::
+1.5
+::
+... or an code::Array:::
+code::
+[1, 0.5]
 ::
 
-returns:: An code::Event:: with the keys code::\dur::, code::\legato:: and code::\amp::. Each key contains an array of values to be fed into a pattern. See the code example below for more details.
+ARGUMENT:: nesting
+The boundaries for repeating the core rhythm. When the core rhythm reaches a boundary, it is truncated if necessary. For example, if code::coreRhythm:: is code::1.5:: and code::nesting:: is code::4::, then the final rhythmical value will be truncated to ensure the final rhythm is 4 beats in length:
+code::
+[1.5,1.5,1]
+::
+code::nesting:: can be a single number or an code::Array:: of numbers. If it is an code::Array::, then the process is repeated for each level of nesting in the code::Array::.
+
+returns::
+A rhythm defined as an code::Array:: of numbers.
 
 METHOD:: uniformRhythm
 Generates a rhythm comprising a series of notes of the same duration, for example eight half notes or sixteen quarter notes.
@@ -82,6 +72,19 @@ EXAMPLES::
 code::
 ~rhythm = RhythmAlgorithm.uniformRhythm(8);
 ~degrees = {7.rand2}!~rhythm.dur.size;
+Pdef(\pattern,
+	Pbind(
+		\degree,Pseq(~degrees,inf),
+		\dur, Pseq(~rhythm.dur,inf),
+		\legato, Pseq(~rhythm.legato,inf),
+		\amp, Pseq(~rhythm.amp,inf)
+	)
+).play;
+::
+
+code::
+~rhythm = RhythmAlgorithm.nestedRhythm([1,0.5],[4,8]);
+~degrees = [0,4,3,0,4, 0,4,3,0,4];
 Pdef(\pattern,
 	Pbind(
 		\degree,Pseq(~degrees,inf),
