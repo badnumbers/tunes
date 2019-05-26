@@ -22,6 +22,16 @@ The MIDI CC number that is used to control the SH-01A's expression pedal amount.
 
 returns:: 11.
 
+METHOD:: lfoModeCcNo
+The MIDI CC number that is used to control the SH-01A's LFO mode.
+table::
+## Value || Notes
+## 0 || Original
+## 1 || Advanced
+::
+
+returns:: 79.
+
 METHOD:: lfoRateCcNo
 The MIDI CC number that is used to control the SH-01A's LFO rate.
 
@@ -51,8 +61,20 @@ The MIDI CC number that is used to control the SH-01A's modulation amount.
 
 returns:: 1.
 
+METHOD:: polyphonyModeCcNo
+The MIDI CC number that is used to control the SH-01A's polyphony mode.
+## Value || Notes
+## 0 || Monophonic
+## 1 || Unison
+## 2 || Polyphonic
+## 3 || Chord
+::
+
+returns:: 80.
+
 METHOD:: portamentoCcNo
 The MIDI CC number that is used to control the SH-01A's portamento time.
+table::
 
 returns:: 5.
 
