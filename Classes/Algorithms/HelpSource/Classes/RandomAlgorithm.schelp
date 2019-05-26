@@ -13,7 +13,7 @@ METHOD:: generateRhythm
 Generates a sequence of values chosen from a list according to some weightings, but will stop when the sum of the values reaches a specified amount. Useful for generating rhythmical values that add up to a specified number of beats.
 
 ARGUMENT:: length
-The desired sum of the generated sequence; in rhythmical terms the duration of the rhythum in beats.
+The desired sum of the generated sequence; in rhythmical terms the duration of the rhythm in beats.
 
 ARGUMENT:: durations
 The list of allowed rhythm values in beats. For example, specify code::[0.5,0.25]:: for a rhythm comprised of half notes and quarter notes. This array is permitted to be nested to one level.
