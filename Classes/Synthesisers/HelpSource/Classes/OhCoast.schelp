@@ -1,0 +1,66 @@
+TITLE:: OhCoast
+summary:: Representation of the 0-Coast desktop synthesiser by MakeNoise
+categories:: External Control
+related:: Classes/Microvolt, Classes/Sh01a, Classes/Tb03, Classes/UnoSynth
+
+DESCRIPTION::
+Contains information about working with an 0-Coast, such as MIDI parameters.
+
+CLASSMETHODS::
+
+METHOD:: midiAChannel
+The primary MIDI channel that the 0-Coast is configured to listen on.
+
+returns:: 3, unless assigned a different value.
+
+METHOD:: midiBChannel
+The secondary MIDI channel that the 0-Coast is configured to listen on.
+
+returns:: 4, unless assigned a different value.
+
+METHOD:: portamentoCcNo
+The MIDI CC number that is used to control the 0-Coast's portamento time. 10 is a good value.
+
+A value of 0 turns portamento off.
+
+Note that you may need to use code::portamentoOnOrOffCcNo:: to turn portamento on first.
+
+returns:: 5.
+
+METHOD:: portamentoOnOrOffCcNo
+The MIDI CC number that is used to switch portamento on or off.
+table::
+## Value || Notes
+## 0 || Off
+## 1-127 || On
+::
+
+returns:: 65.
+
+EXAMPLES::
+
+code::
+(
+/*
+MIDIClient.init;
+d = MIDIOut.newByName("Scarlett 6i6 USB", "Scarlett 6i6 USB MIDI 1").latency_(Server.default.latency);
+*/
+
+Pdef(\oc,
+    Ppar([
+        Pbind(
+            \type, \midi,
+            \midicmd, \noteOn,
+            \midiout, d,
+            \chan, OhCoast.midiAChannel,
+            \degree, Pseq({7.rand2}!16,inf),
+			\multiply, Pseq({127.rand}!16,inf),
+			\multiply, Pfunc({|e|d.noteOn(OhCoast.midiBChannel,e.multiply);}),
+            \dur, 0.25
+        )
+    ])
+);
+Pdef(\oc).play;
+)
+Pdef(\oc).stop;
+::
