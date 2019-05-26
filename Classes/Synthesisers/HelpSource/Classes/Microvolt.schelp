@@ -1,7 +1,7 @@
 TITLE:: Microvolt
 summary:: Representation of the Microvolt 3900 desktop synthesiser by Pittsburgh Modular Synthesizers
 categories:: External Control
-related:: Classes/Tb03, Classes/UnoSynth
+related:: Classes/OhCoast, Classes/Sh01a, Classes/Tb03, Classes/UnoSynth
 
 DESCRIPTION::
 Contains information about working with a Microvolt 3900, such as its controller CC numbers.
