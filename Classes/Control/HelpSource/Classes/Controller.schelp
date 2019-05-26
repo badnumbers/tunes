@@ -16,21 +16,81 @@ A code::Symbol:: which is the name of the pattern itself. See the code example a
 ARGUMENT:: playingEventType
 A code::Symbol:: describing the event type which should be used when the pattern is playing, for example code::\midi::, code::\note:: or code::monoSet::. The default is code::\midi::.
 
-METHOD:: suspend
-Immediately stops the playback of a pattern or patterns, scheduling them to begin playing again in the future.
+METHOD:: execute
+Executes the supplied code::Function:: at the time specified by the code::quant:: argument.
 
 ARGUMENT:: tempoClock
-The code::TempoClock:: being used by the code::Pdef::.
+The code::TempoClock:: to schedule against.
+
+ARGUMENT:: quant
+The code::Quant:: describing when to execute the code::Function::. This can be supplied as a number, an code::Array:: or a code::Quant:::
+table::
+## Type || How it's used || Example parameter value || Resulting Quant
+## Number || Used as the code::quant:: parameter of the resulting Quant || 4 || Quant(4, 0, 0)
+## Array || Elements of the Array are used as the parameters of the resulting Quant || [4,-1,0] || Quant(4,-1,0)
+## Quant || Used directly as the Quant || Quant(4,-1,0) || Quant(4,-1,0)
+::
+
+ARGUMENT:: func
+The code::Function:: to run.
+
+METHOD:: play
+Starts playing the supplied patterns at a time specified by the supplied code::Quant::.
+
+ARGUMENT:: tempoClock
+The code::TempoClock:: to schedule against.
+
+ARGUMENT:: startQuant
+The code::Quant:: describing when to start playing the patterns. This can be supplied as a number, an code::Array:: or a code::Quant:::
+table::
+## Type || How it's used || Example parameter value || Resulting Quant
+## Number || Used as the code::quant:: parameter of the resulting Quant || 4 || Quant(4, 0, 0)
+## Array || Elements of the Array are used as the parameters of the resulting Quant || [4,-1,0] || Quant(4,-1,0)
+## Quant || Used directly as the Quant || Quant(4,-1,0) || Quant(4,-1,0)
+::
+Specify code::nil:: to start playing the patterns immediately. The default value is code::nil::.
 
 ARGUMENT:: patterns
-A code::Symbol:: or an code::Array:: of code::Symbols:: designating the names of patterns to stop playing.
+A code::Symbol:: or an code::Array:: of code::Symbols:: designating the names of patterns (i.e. their key in the code::Pdef:: dictionary) to start playing.
 
-ARGUMENT:: reinstateQuant
-A number describing when to start playing the patterns again. Used as the code::quant:: parameter of code::Quant::, so describes the start of a phrase to begin playing again. For example, a code::reinstateQuant:: of 16 means 'begin playing again at the start of the next 16 beat phrase'.
+ARGUMENT:: stopQuant
+The code::Quant:: describing when to stop playing the patterns again. This can be supplied as a number, an code::Array:: or a code::Quant:::
+table::
+## Type || How it's used || Example parameter value || Resulting Quant
+## Number || Used as the code::quant:: parameter of the resulting Quant || 4 || Quant(4, 0, 0)
+## Array || Elements of the Array are used as the parameters of the resulting Quant || [4,-1,0] || Quant(4,-1,0)
+## Quant || Used directly as the Quant || Quant(4,-1,0) || Quant(4,-1,0)
+::
+Specify code::nil:: to not schedule to stop playing the patterns again, i.e. to leave them playing until stopped by another command. The default is code::nil::.
 
-ARGUMENT:: reinstatePhase
-A number describing an offset to the code::reinstateQuant:: described above. If you specify a code::reinstateQuant:: of 16 and a code::reinstatePhase:: of -1 the patterns will begin playing again 1 bar before the start of the next 16 beat phrase.
-A negative code::reinstatePhase:: will begin playback before the next phrase begins, and a positive code::reinstatePhase:: will begin playback after the next phrase begins.
+METHOD:: stop
+Stops playing the supplied patterns at a time specified by the supplied code::Quant::.
+
+ARGUMENT:: tempoClock
+The code::TempoClock:: to schedule against.
+
+ARGUMENT:: startQuant
+The code::Quant:: describing when to stop playing the patterns. This can be supplied as a number, an code::Array:: or a code::Quant:::
+table::
+## Type || How it's used || Example parameter value || Resulting Quant
+## Number || Used as the code::quant:: parameter of the resulting Quant || 4 || Quant(4, 0, 0)
+## Array || Elements of the Array are used as the parameters of the resulting Quant || [4,-1,0] || Quant(4,-1,0)
+## Quant || Used directly as the Quant || Quant(4,-1,0) || Quant(4,-1,0)
+::
+Specify code::nil:: to stop playing the patterns immediately. The default value is code::nil::.
+
+ARGUMENT:: patterns
+A code::Symbol:: or an code::Array:: of code::Symbols:: designating the names of patterns (i.e. their key in the code::Pdef:: dictionary) to stop playing.
+
+ARGUMENT:: stopQuant
+The code::Quant:: describing when to start playing the patterns again. This can be supplied as a number, an code::Array:: or a code::Quant:::
+table::
+## Type || How it's used || Example parameter value || Resulting Quant
+## Number || Used as the code::quant:: parameter of the resulting Quant || 4 || Quant(4, 0, 0)
+## Array || Elements of the Array are used as the parameters of the resulting Quant || [4,-1,0] || Quant(4,-1,0)
+## Quant || Used directly as the Quant || Quant(4,-1,0) || Quant(4,-1,0)
+::
+Specify code::nil:: to not schedule to start playing the patterns again, i.e. to leave them stopped until started by another command. The default is code::nil::.
 
 INSTANCEMETHODS::
 
@@ -61,8 +121,8 @@ TempoClock.default.beats = 0;
 [\part1,\part2].do({|pat|Pdef(pat).play;});
 )
 
-// Temporarily turn off the top part
-Controller.suspend(TempoClock.default,\part1,4,0);
+// Immediately turn off the top part. It will beginning playing again at the start of the next 8-bar section.
+Controller.stop(TempoClock.default,nil,\part1,8);
 
 // When you can stand it no more
 [\part1,\part2].do({|pat|Pdef(pat).stop;});

@@ -10,39 +10,105 @@ Controller {
         ^prPlayingList;
     }
 
-	*suspend {
-		|tempoClock, patterns,reinstateQuant=16,reinstatePhase=0|
+	*execute {
+		|tempoClock, quant, func|
+		var methodName = "execute";
 		if (tempoClock.isNil,{
-			Error(format("The 'tempoClock' parameter passed to Controller.suspend() must not be nil. The value % was received.", tempoClock)).throw;
+			Error(format("The 'tempoClock' parameter passed to Controller.%() must not be nil. The value % was received.", tempoClock, methodName)).throw;
 		});
 		if (tempoClock.class != TempoClock,{
-			Error(format("The 'tempoClock' parameter passed to Controller.suspend() must be a TempoClock. The value % was received.", tempoClock)).throw;
+			Error(format("The 'tempoClock' parameter passed to Controller.%() must be a TempoClock. The value % was received.", tempoClock, methodName)).throw;
+		});
+		if (quant != nil,{
+			if ((quant.isNumber == false) && (quant.isArray == false) && (quant.class != Quant),{
+				Error(format("The 'quant' parameter passed to Controller.%() must be a number, Array or Quant. The value % was received.", quant, methodName)).throw;
+			});
+		});
+		if ((func.class != Function),{
+			Error(format("The 'func' parameter passed to Controller.%() must be a Function. The value % was received.", func.class, methodName)).throw;
+		});
+
+		if (quant.isNumber,{
+			quant = Quant(quant);
+		},{
+			if (quant.isArray,{
+				quant = Quant(quant[0],quant[1],quant[2]);
+			});
+		});
+
+		tempoClock.play(func,quant);
+	}
+
+	*play {
+		|tempoClock, startQuant, patterns, stopQuant|
+		^this.prPlayOrStop(tempoClock,startQuant,patterns,stopQuant,true,"play");
+	}
+
+	*stop {
+		|tempoClock, startQuant, patterns, stopQuant|
+		this.prPlayOrStop(tempoClock,startQuant,patterns,stopQuant,false,"stop");
+	}
+
+	*prPlayOrStop {
+		|tempoClock, startQuant, patterns, stopQuant, shouldStartPlaying, methodName|
+		if (tempoClock.isNil,{
+			Error(format("The 'tempoClock' parameter passed to Controller.%() must not be nil. The value % was received.", tempoClock, methodName)).throw;
+		});
+		if (tempoClock.class != TempoClock,{
+			Error(format("The 'tempoClock' parameter passed to Controller.%() must be a TempoClock. The value % was received.", tempoClock, methodName)).throw;
+		});
+		if (startQuant != nil,{
+			if ((startQuant.isNumber == false) && (startQuant.isArray == false) && (startQuant.class != Quant),{
+				Error(format("The 'startQuant' parameter passed to Controller.%() must be a number, Array or Quant. The value % was received.", startQuant, methodName)).throw;
+			});
+		});
+		if (stopQuant != nil,{
+			if ((stopQuant.isNumber == false) && (stopQuant.isArray == false) && (stopQuant.class != Quant),{
+				Error(format("The 'stopQuant' parameter passed to Controller.%() must be a number, Array or Quant. The value % was received.", stopQuant, methodName)).throw;
+			});
 		});
 		if ((patterns.class != Symbol) && (patterns.class != Array),{
-			Error(format("The 'patterns' parameter passed to Controller.suspend() must be a Symbol or an Array. The value % was received.", patterns.class)).throw;
+			Error(format("The 'patterns' parameter passed to Controller.%() must be a Symbol or an Array. The value % was received.", patterns.class, methodName)).throw;
+		});
+
+		if (startQuant.isNumber,{
+			startQuant = Quant(startQuant);
+		},{
+			if (startQuant.isArray,{
+				startQuant = Quant(startQuant[0],startQuant[1],startQuant[2]);
+			});
 		});
 		if (patterns.isArray == false,
 			{
 				patterns = [patterns];
 		});
-		if (reinstateQuant.isArray == false,
-			{
-				reinstateQuant = [reinstateQuant];
-		});
-		if (reinstatePhase.isArray == false,
-			{
-				reinstatePhase = [reinstatePhase];
+		if (stopQuant.isNumber,{
+			stopQuant = Quant(stopQuant);
+		},{
+			if (stopQuant.isArray,{
+				stopQuant = Quant(stopQuant[0],stopQuant[1],stopQuant[2]);
+			});
 		});
 
 		patterns.do({
 			|pattern,counter|
-			postln(format("Counter: %, reinstateQuant.wrapAt(counter): %, reinstatePhase.wrapAt(counter): %",counter,reinstateQuant.wrapAt(counter),reinstatePhase.wrapAt(counter)));
-			this.playingList[pattern] = false;
-			tempoClock.play({
-				this.playingList[pattern] = true;
-			},
-			Quant(reinstateQuant.wrapAt(counter),reinstatePhase.wrapAt(counter),0.1));
+			if (startQuant.isNil,{
+				this.playingList[pattern] = shouldStartPlaying;
+				if (stopQuant.isNil,{
+				},{
+					tempoClock.play({this.playingList[pattern] = (shouldStartPlaying == false);},stopQuant);
+				});
+			},{
+				tempoClock.play({
+					this.playingList[pattern] = shouldStartPlaying;
+				if (stopQuant.isNil,{
+					},{
+						tempoClock.play({this.playingList[pattern] = (shouldStartPlaying == false);},stopQuant);
+				});
+				},startQuant);
+			});
 		});
+		^Controller;
 	}
 
 	*controlPattern {
