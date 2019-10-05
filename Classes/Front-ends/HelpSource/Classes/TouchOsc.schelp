@@ -1,0 +1,94 @@
+TITLE:: TouchOsc
+summary:: Helper methods for working with TouchOSC
+categories:: External Control
+related:: Classes/TouchOscControlSpec, Classes/TouchOscSynth
+
+DESCRIPTION::
+Helper methods for working with TouchOSC.
+
+
+CLASSMETHODS::
+
+METHOD:: configureControl
+Configures a control in TouchOSC. This involves:
+LIST::
+## Making the control visible
+## Setting its label
+## Setting the callback function to be called when the control's value is updated
+::
+The method must be passed an code::Array:: which contains the path of the control, the code::Function:: to run when an OSC message is received from the control, and optionally a label to give the control.
+
+ARGUMENT:: spec
+An code::Array:: containing the following two or three elements:
+NUMBEREDLIST::
+## The OSC path of the control (a code::Symbol::)
+## The code::Function:: to run when an OSC message is received from the control
+## (Optional) a label to give the control (a code::String::)
+::
+DISCUSSION::
+code::
+// Output the control's value to the post window and give it the label "My Rotary"
+TouchOsc.configureControl(['/pages/1/rows/1/rotaries/1', {|msg|msg[1].postln;}, "My rotary"]);
+::
+
+METHOD:: hideControl
+Sets the visibility of the control with the specified OSC path to false.
+
+ARGUMENT:: oscPath
+The OSC path of the control which is to be hidden
+
+METHOD:: scNetAddress
+The IP address of the device running SuperCollider. This doesn't determine the IP address for you; you have to find it out and set it.
+On Ubuntu Linux, you can find it out as follows:
+LIST::
+## Open a terminal
+## Run code::sudo apt-get install net-tools:: (if necessary)
+## Run code::ifconfig::
+## Will probably be code::192.168.0.something::
+::
+
+ARGUMENT:: netAddress
+Can be specified as a code::NetAddr::, a code::String:: (e.g. "192.168.0.11") or an code::Integer::, in which case it will be used as the last digit in the IP address "192.168.0.x". In either of the latter two cases, a port number of 57120 is used.
+
+METHOD:: startTrace
+Starts outputting external OSC to the post window.
+
+METHOD:: setControlValue
+Sets the value of the control with the specified OSC path.
+
+ARGUMENT:: oscPath
+The OSC path of the control whose value is to be set.
+
+ARGUMENT:: value
+The value to set the control to.
+
+METHOD:: stopTrace
+Stops outputting external OSC to the post window.
+
+METHOD:: touchOscNetAddress
+The IP address of the device running TouchOSC. This doesn't determine the IP address for you; you have to find it out and set it.
+You can find it out as follows:
+LIST::
+## Open TouchOSC
+## In 'Settings' tap 'OSC' under 'Connections'
+## Host: (enter SuperCollider's IP address)
+## Port (outgoing): code::57120::
+## Port (incoming): code::9000::
+## Note the value of 'Local IP Address' - will probably be code::192.168.0.something::
+::
+
+ARGUMENT:: netAddress
+Can be specified as a code::NetAddr::, a code::String:: (e.g. "192.168.0.11") or an code::Integer::, in which case it will be used as the last digit in the IP address "192.168.0.x". In either of the latter two cases, a port number of 9000 is used.
+
+
+INSTANCEMETHODS::
+
+
+EXAMPLES::
+
+code::
+TouchOsc.scIpAddress_(11);
+TouchOsc.touchOscIpAddress_(22);
+TouchOsc.startTrace;
+TouchOsc.stopTrace;
+::
