@@ -1,0 +1,67 @@
+TITLE:: TouchOscControlSpec
+summary:: Subclass of ControlSpec for working with Touch OSC
+categories:: External Control
+related:: Classes/TouchOsc, Classes/TouchOscSynth
+
+DESCRIPTION::
+code::TouchOscControlSpec:: is a subclass of code::ControlSpec:: intended for providing information about controls intended for display in Touch OSC.
+
+
+CLASSMETHODS::
+
+METHOD:: new
+Creates a new instance of code::TouchOscControlSpec::.
+
+ARGUMENT:: parametername
+A code::Symbol:: denoting the name of the code::SynthDef:: parameter being controlled by this control. This must be unique to the code::SynthDef::.
+
+ARGUMENT:: label
+A code::String:: denoting the label to display next to the control in Touch OSC.
+
+ARGUMENT:: oscPath
+A code::Symbol:: denoting the OSC path of the control in Touch OSC.
+
+ARGUMENT:: minval
+The minimum value of the range.
+
+ARGUMENT:: maxval
+The maximium value of the range.
+
+ARGUMENT:: warp
+A code::Warp::, a symbol (e.g. code::\lin:: or code::\exponential::: Default value is code::\lin::), or something else that returns a code::Warp:: when sent the message code::.asWarp::. A code::CurveWarp:: is defined by a number.
+
+ARGUMENT:: step
+The smallest possible increment.
+
+ARGUMENT:: default
+The default value.
+
+ARGUMENT:: units
+The units, e.g. "hz". Used by some gui's as a unit label.
+
+ARGUMENT:: grid
+
+
+INSTANCEMETHODS::
+
+METHOD:: parametername
+A code::Symbol:: denoting the name of the code::SynthDef:: parameter being controlled by this control. This must be unique to the code::SynthDef::.
+
+returns:: A code::Symbol::.
+
+METHOD:: oscPath
+A code::Symbol:: denoting the OSC path of the control in Touch OSC.
+
+returns:: A code::Symbol::.
+
+METHOD:: label
+A code::String:: denoting the label to display next to the control in Touch OSC.
+
+returns:: A code::String::.
+
+
+EXAMPLES::
+
+code::
+var fmlevelcontrol = TouchOscControlSpec(\fmlevel, "FM Level", '/pages/1/rows/1/rotaries/1', 0, 1);
+::
