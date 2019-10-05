@@ -1,0 +1,23 @@
+TITLE:: FmHat1
+summary:: A hi-hat drum synthesizer using FM synthesis.
+categories:: External Control
+related:: Classes/FmKick1, Classes/FmSnare1
+
+DESCRIPTION::
+A hi-hat drum synthesizer using FM synthesis.
+
+
+CLASSMETHODS::
+
+METHOD:: new
+Creates a new instance of code::FmHat1::.
+
+
+INSTANCEMETHODS::
+
+
+EXAMPLES::
+
+code::
+(some example code)
+::

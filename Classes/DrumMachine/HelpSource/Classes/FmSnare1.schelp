@@ -1,0 +1,23 @@
+TITLE:: FmSnare1
+summary:: A snare synthesizer using FM synthesis.
+categories:: External Control
+related:: Classes/FmHat1, Reference/FmKick1
+
+DESCRIPTION::
+A snare drum synthesizer using FM synthesis.
+
+
+CLASSMETHODS::
+
+METHOD:: new
+Creates a new instance of code::FmSnare1::.
+
+
+INSTANCEMETHODS::
+
+
+EXAMPLES::
+
+code::
+(some example code)
+::
