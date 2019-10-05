@@ -1,0 +1,152 @@
+TITLE:: TouchOscSynth
+summary:: Similar to a SynthDef, but with information about the current patch and how it should be displayed in Touch OSC
+categories:: External Control
+related:: Classes/TouchOsc, Classes/TouchOscControlSpec
+
+DESCRIPTION::
+This class composes a code::SynthDef::, the parameter values to be used when playing it, and code::TouchOscControlSpec:: instances which describe how the code::SynthDef:: should be displayed in Touch OSC.
+
+
+CLASSMETHODS::
+
+METHOD:: new
+Creates a new instance of code::TouchOscSynth::.
+
+ARGUMENT:: name
+A code::String:: or code::Symbol:: (i.e. "name" or code::\name::). This name will be used to refer to the code::SynthDef:: when creating a code::Synth:: based upon it, and should be unique.
+
+ARGUMENT:: ugenGraphFunc
+An instance of code::Function:: specifying how the def's UGens are interconnected.
+
+ARGUMENT:: specs
+An code::Array:: of code::TouchOscControlSpec:: instances describing the controls used to control the code::SynthDef:: in Touch OSC.
+
+ARGUMENT:: presets
+An code::Event:: containing presets for the synth. The code::Event::'s keys should be the names of the presets. The code::Event::'s values should be code::Event::s whose keys are the code::SynthDef:: parameters names and whose values are the values of those parameters.
+
+So the presets should look something like this:
+code::
+(
+  'Preset1': (
+	'cutoff': 200,
+	'wibbliness': 14,
+  ),
+  'Preset2': (
+	'cutoff': 1500,
+	'wibbliness: 0
+  )
+)
+::
+
+ARGUMENT:: defaultPatch
+The name of the preset (see above) which is loaded by default.
+
+
+INSTANCEMETHODS::
+
+METHOD:: drawControls
+Pushes the control names for the synth to Touch OSC and hides those that are not valid for the synth.
+
+ARGUMENT:: pagenumber
+An code::Integer:: denoting the number of the page in Touch OSC that the controls should be written to.
+
+METHOD:: drawPatch
+Writes the values of the current patch to the controls in Touch OSC.
+
+ARGUMENT:: pagenumber
+An code::Integer:: denoting the number of the page in Touch OSC that the controls should be written to.
+
+METHOD:: loadPatch
+Loads the preset with the specified key into the synth. See the code::presets:: constructor parameter for more information.
+
+note::
+The loaded patch is not automatically written to the controls in Touch OSC. You must call code::drawPatch():: to do that.
+::
+
+METHOD:: patch
+An code::Event:: whose key / value pairs describe the parameters to be used when playing the code::SynthDef::. This code::Event:: is used as the code::protoEvent:: parameter for patterns using this code::TouchOscSynth::.
+
+returns:: An code::Event::.
+
+METHOD:: postPatch
+Writes a representation of the code::patch:: to the output window.
+
+METHOD:: randomisePatch
+Generates a random patch by randomising all parameters of the synth according to ranges defined in the code::specs:: (see the code::specs:: constructor parameter for more information).
+
+note::
+The loaded patch is not automatically written to the controls in Touch OSC. You must call code::drawPatch():: to do that.
+::
+
+PRIVATE:: specs
+
+
+EXAMPLES::
+
+code::
+// Set IP of Touch OSC device
+TouchOsc.touchOscNetAddress_(47);
+
+// Create TouchOscSynth called ~simplesub
+(
+~simplesub = TouchOscSynth(\simplesub,
+    {
+        |gate=1,freq=200,amp=0.1,pan=0,cutoff=500,resonance=0.5,out=0|
+        var audio, env;
+        env = Env.cutoff.kr(Done.freeSelf,gate);
+        audio = Saw.ar(freq, env);
+        audio = RLPFD.ar(audio, cutoff, resonance);
+        audio = Pan2.ar(audio, pan, amp);
+        Out.ar(out,audio);
+    },
+    [
+        TouchOscControlSpec(\amp, "Amplitude", '/pages/%/rows/1/rotaries/1', 0, 1),
+        TouchOscControlSpec(\pan, "Pan", '/pages/%/rows/1/rotaries/2', -1, 1),
+        TouchOscControlSpec(\cutoff, "Cutoff", '/pages/%/rows/1/rotaries/3', 100, 1000, \exp),
+        TouchOscControlSpec(\resonance, "Resonance", '/pages/%/rows/1/rotaries/4', 0.0, 0.9)
+    ],
+	(
+		'straight': (
+			cutoff: 1000.0,
+			resonance: 0.0,
+			amp: 0.34650218486786,
+			pan: 0.073218584060669
+		),
+		'rezzy': (
+			cutoff: 353.52504873448,
+			resonance: 0.9,
+			amp: 0.805200278759,
+			pan: 0.073218584060669
+		)
+	),
+	'straight'
+);
+)
+
+// Draw the controls and the path in Touch OSC
+~simplesub.drawControls(1);
+~simplesub.drawPatch(1);
+
+// Play a pattern using the synth
+(
+Pdef(\sub,
+	Pbind(
+		\instrument,\simplesub,
+		\degree, Pwhite(0,14,inf),
+		\dur, 0.25
+	)
+).play(protoEvent: ~simplesub.patch);
+)
+
+// Load a patch from the presets
+~simplesub.loadPatch(\rezzy).drawPatch(1);
+
+// Create a random patch
+~simplesub.randomisePatch.drawPatch(1);
+
+// Write the values of the random patch to the post window - maybe this could be a new preset!
+~simplesub.postPatch;
+
+// Make it stop
+Pdef(\sub).stop;
+::
