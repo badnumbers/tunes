@@ -5,6 +5,7 @@ DrumMachine {
 	var kickpatternname = \kick;
 	var snarepatternname = \snare;
 	var hatpatternname = \hat;
+	var swingAmount = 0.05;
 
     kick {
         ^kick;
@@ -39,6 +40,18 @@ DrumMachine {
         hat = newValue;
     }
 
+	swingAmount {
+		^swingAmount;
+	}
+
+	swingAmount_ {
+		|newValue|
+		if ((newValue < 0) || (newValue > 0.3), {
+			Error(format("The 'swingAmount' property must not be less than 0 or more than 0.3. The argument passed was %.", newValue)).throw;
+		});
+		swingAmount = newValue;
+	}
+
 	play {
 		|tempoClock|
 		if (tempoClock.class != TempoClock, {
@@ -50,7 +63,8 @@ DrumMachine {
 				kick.name,
 				\type, Controller.controlPattern(kickpatternname, \monoSet),
 				\trig, Pseq([1,0,1,0],inf),
-				\dur, 1
+				\dur, 1,
+				\timingOffset, Pseg(Pseq([0,swingAmount],inf),Pseq([0.5,0.5],inf),\sine,inf)
 			)
 		).play(protoEvent: kick.patch);
 		Pdef(snarepatternname,
@@ -58,7 +72,8 @@ DrumMachine {
 				snare.name,
 				\type, Controller.controlPattern(snarepatternname, \monoSet),
 				\trig, Pseq([0,1,0,1],inf),
-				\dur, 1
+				\dur, 1,
+				\timingOffset, Pseg(Pseq([0,swingAmount],inf),Pseq([0.5,0.5],inf),\sine,inf)
 			)
 		).play(protoEvent: snare.patch);
 		Pdef(hatpatternname,
@@ -66,7 +81,8 @@ DrumMachine {
 				hat.name,
 				\type, Controller.controlPattern(hatpatternname, \monoSet),
 				\trig, Pseq(1!8,inf),
-				\dur, 0.5
+				\dur, 0.5,
+				\timingOffset, Pseg(Pseq([0,swingAmount],inf),Pseq([0.5,0.5],inf),\sine,inf)
 			)
 		).play(protoEvent: hat.patch);
 	}
