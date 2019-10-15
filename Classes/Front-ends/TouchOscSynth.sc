@@ -1,6 +1,7 @@
 TouchOscSynth {
 	var <specs;
 	var <patch;
+	var <name;
 	var specs;
 	var presets;
 
@@ -8,9 +9,10 @@ TouchOscSynth {
         ^super.new.init(name, ugenGraphFunc, specs, presets, defaultPatch);
     }
 
-	init { | name, ugenGraphFunc, specsb, presetsb, defaultPatchb |
+	init { | nameb, ugenGraphFunc, specsb, presetsb, defaultPatchb |
 		patch = ();
-		SynthDef(name,
+		name = nameb;
+		SynthDef(nameb,
 			ugenGraphFunc
 		).add;
 		specs = specsb;

@@ -63,6 +63,11 @@ note::
 The loaded patch is not automatically written to the controls in Touch OSC. You must call code::drawPatch():: to do that.
 ::
 
+METHOD:: name
+A code::Symbol: which is the name of the SynthDef composed by this code::TouchOscSynth::.
+
+returns:: A code::Symbol::.
+
 METHOD:: patch
 An code::Event:: whose key / value pairs describe the parameters to be used when playing the code::SynthDef::. This code::Event:: is used as the code::protoEvent:: parameter for patterns using this code::TouchOscSynth::.
 
