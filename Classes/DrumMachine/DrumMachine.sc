@@ -48,6 +48,7 @@ DrumMachine {
 		Pdef(kickpatternname,
 			Pmono(
 				kick.name,
+				\type, Controller.controlPattern(kickpatternname, \monoSet),
 				\trig, Pseq([1,0,1,0],inf),
 				\dur, 1
 			)
@@ -55,6 +56,7 @@ DrumMachine {
 		Pdef(snarepatternname,
 			Pmono(
 				snare.name,
+				\type, Controller.controlPattern(snarepatternname, \monoSet),
 				\trig, Pseq([0,1,0,1],inf),
 				\dur, 1
 			)
@@ -62,6 +64,7 @@ DrumMachine {
 		Pdef(hatpatternname,
 			Pmono(
 				hat.name,
+				\type, Controller.controlPattern(hatpatternname, \monoSet),
 				\trig, Pseq(1!8,inf),
 				\dur, 0.5
 			)
@@ -69,6 +72,6 @@ DrumMachine {
 	}
 
 	stop {
-		[kickpatternname].do({|patternname|Pdef(patternname).stop;});
+		[kickpatternname,snarepatternname,hatpatternname].do({|patternname|Pdef(patternname).stop;});
 	}
 }
