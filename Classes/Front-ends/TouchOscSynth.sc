@@ -32,7 +32,7 @@ TouchOscSynth {
 		});
 		specs.do({
 			|spec|
-			validcontrolpaths.add(spec.oscPath);
+			validcontrolpaths.add(spec.oscPath.asString.format(pagenumber).asSymbol);
 			TouchOsc.configureControl([format(spec.oscPath.asString,pagenumber).asSymbol,{|msg|patch[spec.parametername]=spec.map(msg[1]);},spec.label]);
 		});
 		(1..8).do({
