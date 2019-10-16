@@ -26,7 +26,7 @@ TouchOsc {
 			Error(format("The third element of the 'spec' parameter passed to TouchOSC.configureControl should be a String to be used as the control's label. The argument passed was %.", spec[2])).throw;
 		});
 		prTouchOscNetAddress.sendMsg(format("%/visible",spec[0]), 1);
-		prTouchOscNetAddress.sendMsg(format("%/visible/label",spec[0]), 1);
+		prTouchOscNetAddress.sendMsg(format("%/label/visible",spec[0]), 1);
 		labelAddress = (spec[0] ++ '/label').asSymbol;
 		if (spec[2] != nil, {
 			prTouchOscNetAddress.sendMsg(labelAddress, spec[2]);
