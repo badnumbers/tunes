@@ -1,0 +1,71 @@
+TITLE:: DrumMachine
+summary:: A drum machine encapsulating the drum instruments themselves (as instances as TouchOscSynth) and the rhythms to play.
+categories:: External Control
+related:: Classes/FmKick1, Classes/FmSnare1, Classes/FmHat1
+
+DESCRIPTION::
+DrumMachine plays rhythms on instances of TouchOscSynth passed to it as the kick, snare and hat.
+
+
+CLASSMETHODS::
+
+
+INSTANCEMETHODS::
+
+METHOD:: hat
+An instance of code::TouchOscSynth:: which is the synth to make the hi-hat drum sound.
+
+ARGUMENT:: newValue
+An instance of code::TouchOscSynth::.
+
+returns:: An instance of code::TouchOscSynth::
+
+METHOD:: kick
+An instance of code::TouchOscSynth:: which is the synth to make the kick drum sound.
+
+ARGUMENT:: newValue
+An instance of code::TouchOscSynth::.
+
+returns:: An instance of code::TouchOscSynth::
+
+METHOD:: snare
+An instance of code::TouchOscSynth:: which is the synth to make the snare drum sound.
+
+ARGUMENT:: newValue
+An instance of code::TouchOscSynth::.
+
+returns:: An instance of code::TouchOscSynth::
+
+METHOD:: play
+Plays the drum pattern.
+
+ARGUMENT:: tempoClock
+An instance of code::TempoClock:: used to schedule the drum pattern.
+
+METHOD:: stop
+Stops the drum pattern.
+
+METHOD:: swingAmount
+The amount of swing to apply to the drum pattern. The default value is 0.05, which represents a subtle swing. 0.1 is a much more noticeable triplet-feel swing.
+NOTE:: The pattern must be stopped and started again to hear a change in the code::swingAmount:: value.::
+
+ARGUMENT:: newValue
+An code::Integer:: or code::Float:: value which must be between 0 and 0.3 inclusive.
+
+returns:: An code::Integer:: or code::Float::.
+
+
+EXAMPLES::
+
+code::
+(
+c = TempoClock.default;
+c.tempo = 2;
+~drumMachine = DrumMachine();
+~drumMachine.kick = FmKick1();
+~drumMachine.snare = FmSnare1();
+~drumMachine.hat = FmHat1();
+)
+~drumMachine.play(c);
+~drumMachine.stop;
+::
