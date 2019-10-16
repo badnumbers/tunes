@@ -1,7 +1,7 @@
 TITLE:: FmSnare1
 summary:: A snare synthesizer using FM synthesis.
 categories:: External Control
-related:: Classes/FmHat1, Reference/FmKick1
+related:: Classes/FmHat1, Classes/FmKick1
 
 DESCRIPTION::
 A snare drum synthesizer using FM synthesis.
