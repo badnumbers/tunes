@@ -46,6 +46,9 @@ DrumMachine {
 
 	swingAmount_ {
 		|newValue|
+		if ((newValue.class != Integer) && (newValue.class != Float), {
+			Error(format("The 'swingAmount' property must be either an Integer or a Float. The argument passed was %.", newValue)).throw;
+		});
 		if ((newValue < 0) || (newValue > 0.3), {
 			Error(format("The 'swingAmount' property must not be less than 0 or more than 0.3. The argument passed was %.", newValue)).throw;
 		});
