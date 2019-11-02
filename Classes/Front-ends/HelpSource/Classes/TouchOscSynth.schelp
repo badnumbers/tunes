@@ -64,7 +64,7 @@ The loaded patch is not automatically written to the controls in Touch OSC. You 
 ::
 
 METHOD:: name
-A code::Symbol: which is the name of the SynthDef composed by this code::TouchOscSynth::.
+A code::Symbol:: which is the name of the SynthDef composed by this code::TouchOscSynth::.
 
 returns:: A code::Symbol::.
 
