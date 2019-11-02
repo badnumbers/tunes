@@ -7,6 +7,40 @@ DrumMachine {
 	var hatpatternname = \hat;
 	var swingAmount = 0.05;
 
+	*new { | kick = nil, snare = nil, hat = nil |
+        ^super.new.init(kick, snare, hat);
+    }
+
+	init { | kickb, snareb, hatb |
+		if (kickb.isNil, {
+			kickb = FmKick1();
+		},{
+			if (kickb.isKindOf(TouchOscSynth) == false, {
+				Error(format("The 'kick' argument must be an instance of TouchOscSynth. The argument passed was %.", kickb)).throw;
+			});
+		});
+
+		if (snareb.isNil, {
+			snareb = FmSnare1();
+		},{
+			if (snareb.isKindOf(TouchOscSynth) == false, {
+				Error(format("The 'snare' argument must be an instance of TouchOscSynth. The argument passed was %.", snareb)).throw;
+			});
+		});
+
+		if (hatb.isNil, {
+			hatb = FmHat1();
+		},{
+			if (hatb.isKindOf(TouchOscSynth) == false, {
+				Error(format("The 'hat' argument must be an instance of TouchOscSynth. The argument passed was %.", hatb)).throw;
+			});
+		});
+
+		kick = kickb;
+		snare = snareb;
+		hat = hatb;
+    }
+
     kick {
         ^kick;
     }
@@ -58,7 +92,7 @@ DrumMachine {
 	play {
 		|tempoClock|
 		if (tempoClock.class != TempoClock, {
-			Error(format("The 'tempoClock' property must be an instance of TempoClock. The argument passed was %.", tempoClock)).throw;
+			Error(format("The 'tempoClock' argument must be an instance of TempoClock. The argument passed was %.", tempoClock)).throw;
 		});
 
 		Pdef(kickpatternname,
