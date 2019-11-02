@@ -90,12 +90,32 @@ DrumMachine {
 	}
 
 	play {
-		|tempoClock|
+		|tempoClock,drumsequence|
+		var sequence, kickpattern, snarepattern, hatpattern;
 		if (tempoClock.class != TempoClock, {
 			Error(format("The 'tempoClock' argument must be an instance of TempoClock. The argument passed was %.", tempoClock)).throw;
 		});
 
-		Pdef(kickpatternname,
+		sequence = drumsequence.createPattern(kick.name,snare.name,hat.name);
+		kickpattern = sequence.list.select({|item|item.synthName == kick.name})[0];
+		snarepattern = sequence.list.select({|item|item.synthName == snare.name})[0];
+		hatpattern = sequence.list.select({|item|item.synthName == hat.name})[0];
+		kickpattern.patternpairs = kickpattern.patternpairs.add(\type);
+		kickpattern.patternpairs = kickpattern.patternpairs.add(Controller.controlPattern(kickpatternname, \monoSet));
+		kickpattern.patternpairs = kickpattern.patternpairs.add(\timingOffset);
+		kickpattern.patternpairs = kickpattern.patternpairs.add(Pseg(Pseq([0,swingAmount],inf),Pseq([0.5,0.5],inf),\sine,inf));
+		snarepattern.patternpairs = snarepattern.patternpairs.add(\type);
+		snarepattern.patternpairs = snarepattern.patternpairs.add(Controller.controlPattern(snarepatternname, \monoSet));
+		snarepattern.patternpairs = snarepattern.patternpairs.add(\timingOffset);
+		snarepattern.patternpairs = snarepattern.patternpairs.add(Pseg(Pseq([0,swingAmount],inf),Pseq([0.5,0.5],inf),\sine,inf));
+		hatpattern.patternpairs = hatpattern.patternpairs.add(\type);
+		hatpattern.patternpairs = hatpattern.patternpairs.add(Controller.controlPattern(hatpatternname, \monoSet));
+		hatpattern.patternpairs = hatpattern.patternpairs.add(\timingOffset);
+		hatpattern.patternpairs = hatpattern.patternpairs.add(Pseg(Pseq([0,swingAmount],inf),Pseq([0.5,0.5],inf),\sine,inf));
+
+		hatpattern.patternpairs.postln;
+
+		/*Pdef(kickpatternname,
 			Pmono(
 				kick.name,
 				\type, Controller.controlPattern(kickpatternname, \monoSet),
@@ -121,7 +141,11 @@ DrumMachine {
 				\dur, 0.5,
 				\timingOffset, Pseg(Pseq([0,swingAmount],inf),Pseq([0.5,0.5],inf),\sine,inf)
 			)
-		).play(protoEvent: hat.patch);
+		).play(protoEvent: hat.patch);*/
+
+		Pdef(kickpatternname,kickpattern).play(protoEvent: kick.patch);
+		Pdef(snarepatternname,snarepattern).play(protoEvent: snare.patch);
+		Pdef(hatpatternname,hatpattern).play(protoEvent: hat.patch);
 	}
 
 	stop {
