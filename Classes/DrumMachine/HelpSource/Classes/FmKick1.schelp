@@ -1,10 +1,16 @@
 TITLE:: FmKick1
 summary:: A kick drum synthesizer using FM synthesis.
 categories:: External Control
-related:: Reference/FmHat1, Classes/FmSnare1
+related:: Classes/FmHat1, Classes/FmSnare1
 
 DESCRIPTION::
 A kick drum synthesizer using FM synthesis.
+
+This synthesizer has the following presets:
+LIST::
+## Flup
+## Bwom
+::
 
 
 CLASSMETHODS::

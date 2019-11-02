@@ -12,6 +12,12 @@ CLASSMETHODS::
 METHOD:: new
 Creates a new instance of code::FmSnare1::.
 
+This synthesizer has the following presets:
+LIST::
+## Dumf
+## Chunk
+::
+
 
 INSTANCEMETHODS::
 

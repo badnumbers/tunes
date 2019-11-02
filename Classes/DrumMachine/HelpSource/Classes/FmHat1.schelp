@@ -6,6 +6,12 @@ related:: Classes/FmKick1, Classes/FmSnare1
 DESCRIPTION::
 A hi-hat drum synthesizer using FM synthesis.
 
+This synthesizer has the following presets:
+LIST::
+## Tiptip
+## Clack
+::
+
 
 CLASSMETHODS::
 
