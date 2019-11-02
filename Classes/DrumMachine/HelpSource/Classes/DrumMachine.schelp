@@ -4,37 +4,48 @@ categories:: External Control
 related:: Classes/FmKick1, Classes/FmSnare1, Classes/FmHat1
 
 DESCRIPTION::
-DrumMachine plays rhythms on instances of TouchOscSynth passed to it as the kick, snare and hat.
+DrumMachine plays rhythms on instances of link::Classes/TouchOscSynth:: passed to it as the kick, snare and hat.
 
 
 CLASSMETHODS::
 
+METHOD:: new
+Creates a new instance of code::DrumMachine::.
+
+ARGUMENT:: kick
+An instance of link::Classes/TouchOscSynth:: which is the synth to make the kick drum sound. If not specified, then an instance of link::Classes/FmKick1:: is used.
+
+ARGUMENT:: snare
+An instance of link::Classes/TouchOscSynth:: which is the synth to make the snare drum sound. If not specified, then an instance of link::Classes/FmSnare1:: is used.
+
+ARGUMENT:: hat
+An instance of link::Classes/TouchOscSynth:: which is the synth to make the hi-hat drum sound. If not specified, then an instance of link::Classes/FmHat1:: is used.
 
 INSTANCEMETHODS::
 
 METHOD:: hat
-An instance of code::TouchOscSynth:: which is the synth to make the hi-hat drum sound.
+An instance of link::Classes/TouchOscSynth:: which is the synth to make the hi-hat drum sound.
 
 ARGUMENT:: newValue
-An instance of code::TouchOscSynth::.
+An instance of link::Classes/TouchOscSynth::.
 
-returns:: An instance of code::TouchOscSynth::
+returns:: An instance of link::Classes/TouchOscSynth::
 
 METHOD:: kick
-An instance of code::TouchOscSynth:: which is the synth to make the kick drum sound.
+An instance of link::Classes/TouchOscSynth:: which is the synth to make the kick drum sound.
 
 ARGUMENT:: newValue
-An instance of code::TouchOscSynth::.
+An instance of link::Classes/TouchOscSynth::.
 
-returns:: An instance of code::TouchOscSynth::
+returns:: An instance of link::Classes/TouchOscSynth::
 
 METHOD:: snare
-An instance of code::TouchOscSynth:: which is the synth to make the snare drum sound.
+An instance of link::Classes/TouchOscSynth:: which is the synth to make the snare drum sound.
 
 ARGUMENT:: newValue
-An instance of code::TouchOscSynth::.
+An instance of link::Classes/TouchOscSynth::.
 
-returns:: An instance of code::TouchOscSynth::
+returns:: An instance of link::Classes/TouchOscSynth::
 
 METHOD:: play
 Plays the drum pattern.

@@ -4,13 +4,13 @@ categories:: External Control
 related:: Classes/TouchOsc, Classes/TouchOscControlSpec
 
 DESCRIPTION::
-This class composes a code::SynthDef::, the parameter values to be used when playing it, and code::TouchOscControlSpec:: instances which describe how the code::SynthDef:: should be displayed in Touch OSC.
+This class composes a code::SynthDef::, the parameter values to be used when playing it, and link::Classes/TouchOscControlSpec:: instances which describe how the code::SynthDef:: should be displayed in Touch OSC.
 
 
 CLASSMETHODS::
 
 METHOD:: new
-Creates a new instance of code::TouchOscSynth::.
+Creates a new instance of link::Classes/TouchOscSynth::.
 
 ARGUMENT:: name
 A code::String:: or code::Symbol:: (i.e. "name" or code::\name::). This name will be used to refer to the code::SynthDef:: when creating a code::Synth:: based upon it, and should be unique.
@@ -19,7 +19,7 @@ ARGUMENT:: ugenGraphFunc
 An instance of code::Function:: specifying how the def's UGens are interconnected.
 
 ARGUMENT:: specs
-An code::Array:: of code::TouchOscControlSpec:: instances describing the controls used to control the code::SynthDef:: in Touch OSC.
+An code::Array:: of link::Classes/TouchOscControlSpec:: instances describing the controls used to control the code::SynthDef:: in Touch OSC.
 
 ARGUMENT:: presets
 An code::Event:: containing presets for the synth. The code::Event::'s keys should be the names of the presets. The code::Event::'s values should be code::Event::s whose keys are the code::SynthDef:: parameters names and whose values are the values of those parameters.
@@ -64,12 +64,12 @@ The loaded patch is not automatically written to the controls in Touch OSC. You 
 ::
 
 METHOD:: name
-A code::Symbol:: which is the name of the SynthDef composed by this code::TouchOscSynth::.
+A code::Symbol:: which is the name of the SynthDef composed by this link::Classes/TouchOscSynth::.
 
 returns:: A code::Symbol::.
 
 METHOD:: patch
-An code::Event:: whose key / value pairs describe the parameters to be used when playing the code::SynthDef::. This code::Event:: is used as the code::protoEvent:: parameter for patterns using this code::TouchOscSynth::.
+An code::Event:: whose key / value pairs describe the parameters to be used when playing the code::SynthDef::. This code::Event:: is used as the code::protoEvent:: parameter for patterns using this link::Classes/TouchOscSynth::.
 
 returns:: An code::Event::.
 
