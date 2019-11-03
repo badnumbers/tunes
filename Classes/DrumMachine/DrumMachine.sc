@@ -6,6 +6,7 @@ DrumMachine {
 	var snarepatternname = \snare;
 	var hatpatternname = \hat;
 	var swingAmount = 0.05;
+	var isPlaying = true;
 
 	*new { | kick = nil, snare = nil, hat = nil |
         ^super.new.init(kick, snare, hat);
@@ -96,7 +97,8 @@ DrumMachine {
 			Error(format("The 'tempoClock' argument must be an instance of TempoClock. The argument passed was %.", tempoClock)).throw;
 		});
 
-		sequence = drumsequence.createPattern(kick.name,snare.name,hat.name);
+		isPlaying = true;
+		sequence = drumsequence.createPattern(kick.name,snare.name,hat.name,0.5);
 		kickpattern = sequence.list.select({|item|item.synthName == kick.name})[0];
 		snarepattern = sequence.list.select({|item|item.synthName == snare.name})[0];
 		hatpattern = sequence.list.select({|item|item.synthName == hat.name})[0];
@@ -112,8 +114,6 @@ DrumMachine {
 		hatpattern.patternpairs = hatpattern.patternpairs.add(Controller.controlPattern(hatpatternname, \monoSet));
 		hatpattern.patternpairs = hatpattern.patternpairs.add(\timingOffset);
 		hatpattern.patternpairs = hatpattern.patternpairs.add(Pseg(Pseq([0,swingAmount],inf),Pseq([0.5,0.5],inf),\sine,inf));
-
-		hatpattern.patternpairs.postln;
 
 		/*Pdef(kickpatternname,
 			Pmono(
@@ -146,9 +146,17 @@ DrumMachine {
 		Pdef(kickpatternname,kickpattern).play(protoEvent: kick.patch);
 		Pdef(snarepatternname,snarepattern).play(protoEvent: snare.patch);
 		Pdef(hatpatternname,hatpattern).play(protoEvent: hat.patch);
+		if (isPlaying, {
+			tempoClock.sched(4,{
+				if (isPlaying,{
+					this.play(tempoClock,drumsequence);
+				});
+			});
+		});
 	}
 
 	stop {
+		isPlaying = false;
 		[kickpatternname,snarepatternname,hatpatternname].do({|patternname|Pdef(patternname).stop;});
 	}
 }
