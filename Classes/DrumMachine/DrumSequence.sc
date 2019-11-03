@@ -16,7 +16,7 @@ DrumSequence {
 				hatsynthdefname,
 				\trig, Pseq(1!8,inf),
 				\dur, 0.5
-			),
+			)
 		]);
 	}
 }
