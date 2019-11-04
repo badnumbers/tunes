@@ -83,7 +83,7 @@ TouchOscSynth {
 
 	postPatch {
 		postln("(");
-		patch.keys.do({
+		patch.keys.asArray.sort.do({
 			|key|
 			postln(format("\t%: %,",key,patch[key]));
 		});
