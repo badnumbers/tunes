@@ -14,21 +14,21 @@ TwoStepDrumSequence1 : DrumSequence {
 			Pmono(
 				kicksynthdefname,
 				\velocity, Pseq(kickvelocity),
-				\amp, Pkey(\velocity).lincurve(0,9,0,1,0),
+				\amp, Pkey(\velocity).lincurve(0,9,0,1,Pkey(\velocitycurve)),
 				\trig, Pif(Pkey(\amp) > 0, 1, 0),
 				\dur, 0.25
 			),
 			Pmono(
 				snaresynthdefname,
 				\velocity, Pseq(snarevelocity),
-				\amp, Pkey(\velocity).lincurve(0,9,0,1,0),
+				\amp, Pkey(\velocity).lincurve(0,9,0,1,Pkey(\velocitycurve)),
 				\trig, Pif(Pkey(\amp) > 0, 1, 0),
 				\dur, 0.25
 			),
 			Pmono(
 				hatsynthdefname,
 				\velocity, Pseq(hatvelocity),
-				\amp, Pkey(\velocity).lincurve(0,9,0,1,0),
+				\amp, Pkey(\velocity).lincurve(0,9,0,1,Pkey(\velocitycurve)),
 				\trig, Pif(Pkey(\amp) > 0, 1, 0),
 				\dur, 0.25
 			)

@@ -97,7 +97,8 @@ FmKick1 : TouchOscSynth {
 					thumpenvtofreq: 0.66234208917665,
 					thumpfreqmultiplier: 19.783316850662,
 					thumpfreqoffset: 10.603728294373,
-					thumplevel: 0.68209940195084
+					thumplevel: 0.68209940195084,
+					velocitycurve: 3
 				),
 				'Bwom': (
 					attenuation: 0.673,
@@ -130,7 +131,8 @@ FmKick1 : TouchOscSynth {
 					thumpenvtofreq: 0.76785851593791,
 					thumpfreqmultiplier: 22.157863378525,
 					thumpfreqoffset: -12.21564412117,
-					thumplevel: 1.0
+					thumplevel: 1.0,
+					velocitycurve: 3
 				)
 			),
 			\Flup

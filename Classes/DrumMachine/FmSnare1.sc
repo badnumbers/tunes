@@ -101,7 +101,8 @@ FmSnare1 : TouchOscSynth {
 					noiselpf: 5982.6825037192,
 					revdamping: 0.62858611345291,
 					revlevel: 0.25108739733696,
-					revroomsize: 0.5787867307663
+					revroomsize: 0.5787867307663,
+					velocitycurve: 3
 				),
 				'Chunk': (
 					attenuation: 0.6,
@@ -135,7 +136,8 @@ FmSnare1 : TouchOscSynth {
 					noiselpf: 2407.8783889364,
 					revdamping: 0.9044189453125,
 					revlevel: 0.42390492558479,
-					revroomsize: 0.50630915164948
+					revroomsize: 0.50630915164948,
+					velocitycurve: 3
 				),
 				'Phut': (
 					attenuation: 0.69,
@@ -169,7 +171,8 @@ FmSnare1 : TouchOscSynth {
 					noiselpf: 18176.41408586,
 					revdamping: 0.10411763191223,
 					revlevel: 0.33972865343094,
-					revroomsize: 0.80965089797974
+					revroomsize: 0.80965089797974,
+					velocitycurve: 3
 				)
 			),
 			\Dumf
