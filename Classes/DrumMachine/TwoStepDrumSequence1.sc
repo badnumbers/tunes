@@ -2,14 +2,14 @@ TwoStepDrumSequence1 : DrumSequence {
 	createPattern {
 		|kicksynthdefname, snaresynthdefname, hatsynthdefname, ornamentation|
 		var kickvelocity, snarevelocity, hatvelocity;
-		kickvelocity = [9,0,0,0, 0,0,0,[0,3].wchoose([ornamentation,1-ornamentation]), 9,0,0,0, 0,0,0,[0,2].wchoose([ornamentation,1-ornamentation])];
+		kickvelocity = [9,0,0,0, 0,0,0,[0,3].wchoose([ornamentation,1-ornamentation]), 9,0,0,0, 0,0,0,[0,3].wchoose([ornamentation,1-ornamentation])];
 		snarevelocity;
 		if (ornamentation.coin,{
 			snarevelocity = [0,0,0,0, 9,0,0,0, 0,0,0,0, 9,0,0,0];
 		},{
 			snarevelocity = [0,0,0,0, 9,0,0,0, 0,0,0,0, 9,0,3,0];
 		});
-		hatvelocity = [3,0,4,0, 3,0,4,0, 3,0,4,0, 3,0,4,0];
+		hatvelocity = [[6,7],{ [0,3].wchoose([1 - (ornamentation / 2), ornamentation / 2]) }!8].lace(16);
 		^Ppar([
 			Pmono(
 				kicksynthdefname,
