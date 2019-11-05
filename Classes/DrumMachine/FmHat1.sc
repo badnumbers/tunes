@@ -70,7 +70,8 @@ FmHat1 : TouchOscSynth {
 					noiselpf: 20000.0,
 					revdamping: 0.71325391530991,
 					revlevel: 0.15580302476883,
-					revroomsize: 0.19304300844669
+					revroomsize: 0.19304300844669,
+					velocitycurve: 3
 				),
 				'Clack':(
 					attenuation: 0.91,
@@ -93,7 +94,8 @@ FmHat1 : TouchOscSynth {
 					noiselpf: 5841.0046811486,
 					revdamping: 0.29999697208405,
 					revlevel: 0.34221491217613,
-					revroomsize: 0.30708563327789
+					revroomsize: 0.30708563327789,
+					velocitycurve: 3
 				)
 			),
 			\Tiptip
