@@ -283,7 +283,7 @@ MelodyAlgorithm {
 		^melody;
 	}
 
-	*arpeggio { | chords, rhythm, notes |
+	*arpeggio { | chords, rhythm, notes, resetNoteSequenceWithEachChord = true |
 		var melody = Array(10);
 		var currentNote;
 		var currentChordDuration;
@@ -291,20 +291,25 @@ MelodyAlgorithm {
 		var currentNoteEndBeat = 0;
 		var currentChord = 0;
 		var currentChordPositionInBeats = 0;
+		var counter = 0;
 
 		currentChordDuration = 4;
 		currentChordPositionInBeats = 0;
 		rhythm.dur.do({
-			|currentNoteDuration, counter|
+			|currentNoteDuration|
 			currentNoteEndBeat = currentNoteEndBeat + currentNoteDuration;
 			if (currentNoteEndBeat > (currentChordPositionInBeats + currentChordDuration),
 				{
 					currentChordPositionInBeats = currentChordPositionInBeats + currentChordDuration;
 					currentChord = currentChord + 1; // Not quite right, because the length of the current note might actually mean we should skip a chord
+					if (resetNoteSequenceWithEachChord == true, {
+						counter = 0;
+					});
 				}
 			);
-			currentNote = chords.wrapAt(currentChord)[0].triad.wrapAt(counter);
+			currentNote = chords.wrapAt(currentChord)[0].tonic + notes.wrapAt(counter);
 			melody = melody.add(currentNote);
+			counter = counter + 1;
 		});
 		^melody;
 	}

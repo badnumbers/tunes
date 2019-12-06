@@ -267,4 +267,72 @@ MelodyAlgorithmUnitTests : BNUnitTest {
 		this.assertNoException({MelodyAlgorithm.tonic(chords:validChords,rhythm:(amp:[1,1,1,1, 1,1,1,0],dur:[1,1,1,1, 1,1,1,1],legato:[0.5,0.5,0.5,0.5, 0.5,0.5,0.5,0.5]));},
 			"Checks that MelodyAlgorithm.tonic() accepts valid parameters includes a rhythm parameter with zeroes in the amp key.");
 	}
+
+	arpeggio {
+		|parameters, expected|
+		var actual = MelodyAlgorithm.arpeggio(parameters.chords, parameters.rhythm, parameters.notes, parameters.resetNoteSequenceWithEachChord);
+
+		this.assertEquals(Array, actual.class, format("Return type: EXPECTED %, ACTUAL %.", Array, actual.class), true);
+		this.assertEquals(expected.size, actual.size, format("Array size: EXPECTED %, ACTUAL %.", expected.size, actual.size), true);
+		this.assertEquals(expected, actual, format("Melody: EXPECTED %, ACTUAL %.", expected, actual), true);
+	}
+
+	test_arpeggio {
+		// Simple four-note arpeggio
+		this.arpeggio(parameters: (chords:[
+			[(tonic:0,triad:[0,2,4])],
+			[(tonic:1,triad:[1,3,5])],
+			[(tonic:2,triad:[2,4,6])],
+			[(tonic:3,triad:[3,5,0])],
+		], rhythm:(
+			amp:[1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1],
+			dur: [1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1],
+			legato: [0.5,0.5,0.5,0.5, 0.5,0.5,0.5,0.5, 0.5,0.5,0.5,0.5, 0.5,0.5,0.5,0.5]
+		), notes:
+		[0,2,4,2], resetNoteSequenceWithEachChord: true
+		), expected: [0,2,4,2, 1,3,5,3, 2,4,6,4, 3,5,7,5]
+		);
+		// Eight-note arpeggio
+		this.arpeggio(parameters: (chords:[
+			[(tonic:0,triad:[0,2,4])],
+			[(tonic:1,triad:[1,3,5])],
+			[(tonic:2,triad:[2,4,6])],
+			[(tonic:3,triad:[3,5,0])],
+		], rhythm:(
+			amp:[1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1],
+			dur: [0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5, 0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5, 0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5, 0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5],
+			legato: [0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5, 0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5, 0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5, 0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5]
+		), notes:
+		[0,2,4,2, 7,9,11,9], resetNoteSequenceWithEachChord: true
+		), expected: [0,2,4,2,7,9,11,9, 1,3,5,3,8,10,12,10, 2,4,6,4,9,11,13,11, 3,5,7,5,10,12,14,12]
+		);
+		// Note sequence which repeats within the bar
+		this.arpeggio(parameters: (chords:[
+			[(tonic:0,triad:[0,2,4])],
+			[(tonic:1,triad:[1,3,5])],
+			[(tonic:2,triad:[2,4,6])],
+			[(tonic:3,triad:[3,5,0])],
+		], rhythm:(
+			amp:[1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1],
+			dur: [0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5, 0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5, 0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5, 0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5],
+			legato: [0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5, 0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5, 0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5, 0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5]
+		), notes:
+		[0,2,4], resetNoteSequenceWithEachChord: true
+		), expected: [0,2,4,0,2,4,0,2, 1,3,5,1,3,5,1,3, 2,4,6,2,4,6,2,4, 3,5,7,3,5,7,3,5]
+		);
+		// Note sequence which repeats within the bar, should not reset at the beginning of each bar
+		this.arpeggio(parameters: (chords:[
+			[(tonic:0,triad:[0,2,4])],
+			[(tonic:1,triad:[1,3,5])],
+			[(tonic:2,triad:[2,4,6])],
+			[(tonic:3,triad:[3,5,0])],
+		], rhythm:(
+			amp:[1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1],
+			dur: [0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5, 0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5, 0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5, 0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5],
+			legato: [0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5, 0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5, 0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5, 0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5]
+		), notes:
+		[0,2,4], resetNoteSequenceWithEachChord: false
+		), expected: [0,2,4,0,2,4,0,2, 5,1,3,5,1,3,5,1, 4,6,2,4,6,2,4,6, 3,5,7,3,5,7,3,5]
+		);
+	}
 }
