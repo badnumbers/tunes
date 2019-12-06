@@ -10,6 +10,7 @@ CLASSMETHODS::
 
 METHOD:: bendDepthCcNo
 The MIDI CC number that is used to control the SH-01A's expression pedal amount.
+table::
 ## Value || Notes
 ## 0 || No bend
 ## 127 || One octave in each direction
@@ -63,6 +64,7 @@ returns:: 1.
 
 METHOD:: polyphonyModeCcNo
 The MIDI CC number that is used to control the SH-01A's polyphony mode.
+table::
 ## Value || Notes
 ## 0 || Monophonic
 ## 1 || Unison
@@ -74,7 +76,6 @@ returns:: 80.
 
 METHOD:: portamentoCcNo
 The MIDI CC number that is used to control the SH-01A's portamento time.
-table::
 
 returns:: 5.
 
@@ -105,18 +106,18 @@ The MIDI CC number that is used to control the SH-01A's filter resonance.
 
 returns:: 74.
 
-METHOD:: vcfModCcNo
+METHOD:: vcoModCcNo
 The MIDI CC number that is used to control the SH-01A's VCO modulation depth.
 
 returns:: 13.
 
-METHOD:: vcfModRibbonSensitivityCcNo
+METHOD:: vcoModSensitivityCcNo
 The MIDI CC number that is used to control the sensitivity of the SH-01A's VCO modulation to the modulation ribbon. This modulation has the same speed as the LFO, but is always triangular, regardless of the LFO waveform. It also appears to be positive rather than bipolar.
 
 returns:: 17.
 
-METHOD:: vcfRangeCcNo
-The MIDI CC number that is used to control the SH-01A's VCO modulation depth.
+METHOD:: vcoRangeCcNo
+The MIDI CC number that is used to control the SH-01A's VCO range.
 table::
 ## Value || Notes
 ## 0 || 64'
