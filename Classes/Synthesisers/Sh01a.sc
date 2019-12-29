@@ -1,5 +1,9 @@
 Sh01a {
 	classvar <bendDepthCcNo = 18;
+	classvar <envelopeAttack = 73;
+	classvar <envelopeDecay = 75;
+	classvar <envelopeRelease = 72;
+	classvar <envelopeSustain = 30;
 	classvar <expressionPedalCcNo = 11;
 	classvar <lfoModeCcNo = 79;
 	classvar <lfoRateCcNo = 3;

@@ -18,6 +18,26 @@ table::
 
 returns:: 18.
 
+METHOD:: envelopeAttack
+The MIDI CC number that is used to control the SH-01A's envelope attack.
+
+returns:: 73.
+
+METHOD:: envelopeDecay
+The MIDI CC number that is used to control the SH-01A's envelope decay.
+
+returns:: 75.
+
+METHOD:: envelopeRelease
+The MIDI CC number that is used to control the SH-01A's envelope release.
+
+returns:: 72.
+
+METHOD:: envelopeSustain
+The MIDI CC number that is used to control the SH-01A's envelope sustain.
+
+returns:: 30.
+
 METHOD:: expressionPedalCcNo
 The MIDI CC number that is used to control the SH-01A's expression pedal amount.
 
