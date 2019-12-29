@@ -1,0 +1,52 @@
+TITLE:: Synthesiser
+summary:: A base class for other classes which describe a particular hardware synthesiser
+categories:: External control
+related:: Classes/Microvolt, Classes/OhCoast, Classes/Sh01a, Classes/Tb03, Classes/UnoSynth
+
+DESCRIPTION::
+A base class for other classes which describe a hardware synthesiser.
+
+
+CLASSMETHODS::
+
+METHOD:: reportParameterValue
+Optionally writes a parameter name and value to the post window.
+
+ARGUMENT:: writeToPostWindow
+Whether the value should be written to the post window. Defaults to false.
+
+ARGUMENT:: parameterName
+The name of the parameter.
+
+ARGUMENT:: parameterVame
+The value of the parameter.
+
+METHOD:: sendRandomParameterValue
+Creates a random value and sends it as a MIDI CC value to the synthesiser.
+
+ARGUMENT:: midiout
+An instance of code::MIDIOut:: used for sending the CC value to the synthesiser.
+
+ARGUMENT:: ccNo
+The CC parameter number.
+
+ARGUMENT:: lo
+The lower value for the range from which the the random value will be generated. Note that this can be lower than the actual minimum allowed by the synthesiser (i.e. 0) if you want to skew the probability such that 0 is returned more often. The code::clipMin:: parameter specifies that actual minimum value to send to the synthesiser.
+
+ARGUMENT:: hi
+The higher value for the range from which the the random value will be generated. Note that this can be higher than the actual maximum allowed by the synthesiser (i.e. 127) if you want to skew the probability such that 127 is returned more often. The code::clipMax:: parameter specifies that actual minimum value to send to the synthesiser.
+
+ARGUMENT:: curve
+A curve value to skew the randomisation one way or the other. Use a emphasis::negative:: curve to skew towards emphasis::higher values:: and a emphasis::positive:: curve to skew towards emphasis::lower:: values. 0 results in an equal distribution.
+
+ARGUMENT:: clipMin
+The minimum value that should be sent to the synthesiser. Defaults to 0.
+
+ARGUMENT:: clipMax
+The maximum value that should be sent to the synthesiser. Defaults to 127.
+
+ARGUMENT:: writeToPostWindow
+Whether the new value should be written to the post window. Defaults to false.
+
+ARGUMENT:: parameterName
+The name of the parameter being set. Only relevant if code::writeToPostWindow:: is true.

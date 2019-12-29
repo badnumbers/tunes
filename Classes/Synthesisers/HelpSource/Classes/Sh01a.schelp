@@ -116,17 +116,70 @@ The pulse width modulation from the LFO is always triangular, regardless of the 
 
 returns:: 16.
 
+METHOD:: randomise
+Randomises the following parameters of the SH-01A:
+table::
+## Parameter || Skewed?
+## Envelope Attack || Heavily towards lower values
+## Envelope Decay || No
+## Envelope Release || Heavily towards lower values
+## Envelope Sustain || No
+## LFO Rate || Heavily towards lower values
+## LFO Waveform || Heavily prefers triangle and random
+## Portamento || Heavily towards lower values
+## VCA Env Switch || Weighted towards using gate as opposed to envelope
+## VCF Env Depth || No
+## VCF Cutoff || No
+## VCF Key Follow || No
+## VCF Mod Depth || Heavily towards lower values
+## VCF Resonance || Towards lower values
+## VCO Mod Depth || Heavily towards lower values
+## VCO Pulse Width || Towards lower values
+## VCO Waveform || Prefers pulse and saw to sub. Noise is heavily weighted against
+::
+
+ARGUMENT:: midiout
+An instance of code::MIDIOut:: used for sending each CC value to the TB-03.
+
+ARGUMENT:: writeToPostWindow
+Whether the new value should be written to the post window. Defaults to false.
+
+METHOD:: vcaEnvSw
+The MIDI CC number that is used to control whether the SH-01A's envelope controls the amplitude, as opposed to just the gate signals.
+table::
+## Value || Notes
+## 0 || The gate alone is used to control amplitude
+## 1 || The envelope is used to control amplitude
+::
+
+returns:: 28.
+
+METHOD:: vcfEnvDepthCcNo
+The MIDI CC number that is used to control the SH-01A's filter envelope depth.
+
+returns:: 24.
+
 METHOD:: vcfFreqCcNo
 The MIDI CC number that is used to control the SH-01A's filter frequency.
 
 returns:: 74.
+
+METHOD:: vcfKeyFollowCcNo
+The MIDI CC number that is used to control the SH-01A's filter key follow amount.
+
+returns:: 26.
+
+METHOD:: vcfModDepthCcNo
+The MIDI CC number that is used to control the SH-01A's filter modulation depth.
+
+returns:: 25.
 
 METHOD:: vcfResCcNo
 The MIDI CC number that is used to control the SH-01A's filter resonance.
 
 returns:: 74.
 
-METHOD:: vcoModCcNo
+METHOD:: vcoModDepthCcNo
 The MIDI CC number that is used to control the SH-01A's VCO modulation depth.
 
 returns:: 13.
@@ -135,6 +188,31 @@ METHOD:: vcoModSensitivityCcNo
 The MIDI CC number that is used to control the sensitivity of the SH-01A's VCO modulation to the modulation ribbon. This modulation has the same speed as the LFO, but is always triangular, regardless of the LFO waveform. It also appears to be positive rather than bipolar.
 
 returns:: 17.
+
+METHOD:: vcoNoiseLevelCcNo
+The MIDI CC number that is used to control the level of the SH-01A's noise oscillator.
+
+returns:: 23.
+
+METHOD:: vcoPulseWidthCcNo
+The MIDI CC number that is used to control the level of the SH-01A's pulse width.
+
+returns:: 15.
+
+METHOD:: vcoPwmLevelCcNo
+The MIDI CC number that is used to control the level of the SH-01A's pulse oscillator.
+
+returns:: 19.
+
+METHOD:: vcoSawLevelCcNo
+The MIDI CC number that is used to control the level of the SH-01A's saw oscillator.
+
+returns:: 20.
+
+METHOD:: vcoSubLevelCcNo
+The MIDI CC number that is used to control the level of the SH-01A's sub oscillator.
+
+returns:: 21.
 
 METHOD:: vcoRangeCcNo
 The MIDI CC number that is used to control the SH-01A's VCO range.
