@@ -74,7 +74,7 @@ code::
 (
 /*
 MIDIClient.init;
-d = MIDIOut.newByName("Scarlett 6i6 USB", "Scarlett 6i6 USB MIDI 1").latency_(Server.default.latency);
+d = MIDIOut.newByName("Scarlett 18i8 USB", "Scarlett 18i8 USB MIDI 1").latency_(Server.default.latency);
 */
 
 Pdef(\tb,
