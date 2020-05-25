@@ -1,7 +1,7 @@
 TITLE:: OhCoast
 summary:: Representation of the 0-Coast desktop synthesiser by MakeNoise
 categories:: External Control
-related:: Classes/Microvolt, Classes/Sh01a, Classes/Tb03, Classes/UnoSynth
+related:: Classes/Hydrasynth, Classes/Jx03, Classes/Microvolt, Classes/Sh01a, Classes/Tb03, Classes/Td3, Classes/UnoSynth
 
 DESCRIPTION::
 Contains information about working with an 0-Coast, such as MIDI parameters.
