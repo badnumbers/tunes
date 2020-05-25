@@ -55,7 +55,7 @@ Pdef(\oc,
             \chan, OhCoast.midiAChannel,
             \degree, Pseq({7.rand2}!16,inf),
 			\multiply, Pseq({127.rand}!16,inf),
-			\multiply, Pfunc({|e|d.noteOn(OhCoast.midiBChannel,e.multiply);}),
+			\multiply, Pfunc({|e|d.noteOn(OhCoast.midiBChannel,e.multiply);}), // Depends on the corresponding patching being done on the 0-Coast
             \dur, 0.25
         )
     ])

@@ -13,6 +13,16 @@ The MIDI channel that the Hydrasynth is configured to listen on.
 
 returns:: 6, unless assigned a different value.
 
+METHOD:: expressionCcNo
+The MIDI CC number that is used to control the Hydrasynth's expression amount.
+
+returns:: 11.
+
+METHOD:: modCcNo
+The MIDI CC number that is used to control the Hydrasynth's mod input.
+
+returns:: 1.
+
 EXAMPLES::
 
 code::
@@ -33,6 +43,15 @@ Pdef(\hy,
 			\scale, Scale.phrygian,
 			\degree, 0,
 			\dur, q
+		),
+		Pbind(
+			\type, \midi,
+			\midiout, d,
+			\chan, Hydrasynth.midiChannel,
+			\midicmd, \control,
+			\ctlNum, Hydrasynth.modCcNo, // Depends on the corresponding patching being done in the Hydrasynth's mod matrix
+			\control, Pseg([10,120,10,120],[2,2],\sin,inf),
+			\dur, 1/64
 		)
 	])
 );

@@ -44,7 +44,7 @@ Pdef(\mv,
 			\midiout, d,
 			\chan, Microvolt.midiChannel,
 			\midicmd, \control,
-			\ctlNum, Microvolt.modCcNo,
+			\ctlNum, Microvolt.modCcNo, // Depends on the corresponding patching being done on the Microvolt
 			\control, Pseg([10,120,10,120],[2,2],\sin,inf),
 			\dur, 1/64
 		)
