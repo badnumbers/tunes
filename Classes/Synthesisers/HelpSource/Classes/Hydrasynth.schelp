@@ -6,6 +6,14 @@ related:: Classes/Jx03, Classes/Microvolt, Classes/OhCoast, Classes/Sh01a, Class
 DESCRIPTION::
 Contains information about working with an Hydrasynth, such as its NRPN numbers.
 
+NOTE::
+The Hydrasynth does not use MIDI CCs to control its internal parameters. Instead it uses NRPNs.
+
+However, it can accept MIDI CCs and use them as sources in its mod matrix. For parameter automation in the Hydrasynth, it is recommended to use CCs and patch them in the mod matrix.
+
+You can use any CC, however those listed below are reserved for other things and should be avoided. Numbers 0, 2, 3, 4, 5, 6, 7, 8, 9 and 10 are recommended.
+::
+
 CLASSMETHODS::
 
 METHOD:: midiChannel
@@ -18,10 +26,27 @@ The MIDI CC number that is used to control the Hydrasynth's expression amount.
 
 returns:: 11.
 
+NOTE::
+The expression controller doesn't appear to do anything! Perhaps it is intended for use just as a modulation source.
+::
+
 METHOD:: modCcNo
 The MIDI CC number that is used to control the Hydrasynth's mod input.
 
 returns:: 1.
+
+NOTE::
+The mod wheel controller appears to add a vibrato effect to any patch, and any mod wheel setting persists even after changing patch.
+If you wish to reset the mod wheel back to zero you can use the following code (where d is the code::MIDIOut::):
+CODE::
+d.control(Hydrasynth.midiChannel,Hydrasynth.modCcNo,0);
+::
+::
+
+METHOD:: sustainPedal
+The MIDI CC number that is used to control the Hydrasynth's sustain pedal input.
+
+returns:: 64.
 
 EXAMPLES::
 
@@ -49,7 +74,7 @@ Pdef(\hy,
 			\midiout, d,
 			\chan, Hydrasynth.midiChannel,
 			\midicmd, \control,
-			\ctlNum, Hydrasynth.modCcNo, // Depends on the corresponding patching being done in the Hydrasynth's mod matrix
+			\ctlNum, 0, // Depends on the corresponding patching being done in the Hydrasynth's mod matrix
 			\control, Pseg([10,120,10,120],[2,2],\sin,inf),
 			\dur, 1/64
 		)
