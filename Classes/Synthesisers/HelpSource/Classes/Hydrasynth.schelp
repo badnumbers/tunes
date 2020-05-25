@@ -11,7 +11,7 @@ The Hydrasynth does not use MIDI CCs to control its internal parameters. Instead
 
 However, it can accept MIDI CCs and use them as sources in its mod matrix. For parameter automation in the Hydrasynth, it is recommended to use CCs and patch them in the mod matrix.
 
-You can use any CC, however those listed below are reserved for other things and should be avoided. Numbers 0, 2, 3, 4, 5, 6, 7, 8, 9 and 10 are recommended.
+You can use any CC, however those listed below under 'Class Methods' are reserved for other things and should be avoided. Numbers 0, 2, 3, 4, 5, 6, 7, 8, 9 and 10 are recommended.
 ::
 
 CLASSMETHODS::
