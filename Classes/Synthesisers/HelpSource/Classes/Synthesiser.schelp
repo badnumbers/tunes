@@ -9,11 +9,23 @@ A base class for other classes which describe a hardware synthesiser.
 
 CLASSMETHODS::
 
+METHOD:: randomise
+Provides a base method, intended for overriding, for generating a random patch for the synthesiser. Simply validates its inputs.
+
+ARGUMENT:: midiout
+An instance of code::MIDIOut:: used for sending the random patch parameters to the synthesiser.
+
+ARGUMENT:: patchType
+The type of patch to generate.
+
+ARGUMENT:: writeToPostWindow
+Whether the randomly generated values should be written to the post window. Defaults to teletype::false::.
+
 METHOD:: reportParameterValue
 Optionally writes a parameter name and value to the post window.
 
 ARGUMENT:: writeToPostWindow
-Whether the value should be written to the post window. Defaults to false.
+Whether the value should be written to the post window. Defaults to teletype::false::.
 
 ARGUMENT:: parameterName
 The name of the parameter.
@@ -46,7 +58,7 @@ ARGUMENT:: clipMax
 The maximum value that should be sent to the synthesiser. Defaults to 127.
 
 ARGUMENT:: writeToPostWindow
-Whether the new value should be written to the post window. Defaults to false.
+Whether the new value should be written to the post window. Defaults to teletype::false::.
 
 ARGUMENT:: parameterName
-The name of the parameter being set. Only relevant if code::writeToPostWindow:: is true.
+The name of the parameter being set. Only relevant if code::writeToPostWindow:: is teletype::false::.
