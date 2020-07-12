@@ -1,5 +1,8 @@
 Jx03 : Synthesiser {
 	classvar <chorusCcNo = 93;
+	classvar <delayFeedbackCcNo = 83;
+	classvar <delayLevelCcNo = 91;
+	classvar <delayTimeCcNo = 82;
 	classvar <>midiChannel = 5;
 
 	*randomise {

@@ -24,6 +24,21 @@ Changing chorus via CC number doesn't work unless you have installed firmware 1.
 
 returns:: 93.
 
+METHOD:: delayFeedbackCcNo
+The MIDI CC number that is used to control the JX-03's delay feedback.
+
+returns:: 83.
+
+METHOD:: delayLevelCcNo
+The MIDI CC number that is used to control the JX-03's delay level.
+
+returns:: 91.
+
+METHOD:: delayTimeCcNo
+The MIDI CC number that is used to control the JX-03's delay time.
+
+returns:: 82.
+
 METHOD:: midiChannel
 The MIDI channel that the JX-03 is configured to listen on.
 
