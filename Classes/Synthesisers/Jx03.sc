@@ -1,5 +1,5 @@
 Jx03 : Synthesiser {
-	classvar <accentCcNo = 16;
+	classvar <chorusCcNo = 93;
 	classvar <>midiChannel = 5;
 
 	*randomise {
@@ -11,4 +11,24 @@ Jx03 : Synthesiser {
 		this.sendRandomParameterValue(midiout,this.overdriveCcNo,-10,127,6,0,127,writeToPostWindow,"Overdrive");
 		this.sendRandomParameterValue(midiout,this.resonanceCcNo,0,127,-3,0,127,writeToPostWindow,"Resonance");
     }
+
+	*setChorus {
+		|midiout, algorithm|
+		if (midiout.class != MIDIOut, {
+			Error("The midiout parameter passed to Jx03.setChorus() must be an instance of MIDIOut.").throw;
+		});
+
+		if (algorithm.isNil, {
+			midiout.control(this.midiChannel, this.chorusCcNo, 0);
+			^this;
+		});
+		if (algorithm.isInteger == false, {
+			Error("The algorithm parameter passed to Jx03.setChorus() must be nil or a digit between 0 and 3 inclusive.").throw;
+		});
+		if (algorithm < 0 || algorithm > 3, {
+			Error("The algorithm parameter passed to Jx03.setChorus() must be nil or a digit between 0 and 3 inclusive.").throw;
+		});
+
+		midiout.control(this.midiChannel, this.chorusCcNo, algorithm);
+	}
 }

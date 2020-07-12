@@ -8,15 +8,39 @@ Contains information about working with a JX-03, such as its controller CC numbe
 
 CLASSMETHODS::
 
-METHOD:: accentCcNo
-The MIDI CC number that is used to control the TB-03's accent level.
+METHOD:: chorusCcNo
+The MIDI CC number that is used to control which chorus algorithm to use.
+table::
+    ## Value || Notes
+    ## 0 || Off
+    ## 1 || Chorus 1
+    ## 2 || Chorus 2
+    ## 3 || Chorus 3
+::
 
-returns:: 16.
+note::
+Changing chorus via CC number doesn't work unless you have installed firmware 1.10 by following the instructions here: http://eg.roland.com/support/by_product/jx-03/updates_drivers/352051
+::
+
+returns:: 93.
 
 METHOD:: midiChannel
 The MIDI channel that the JX-03 is configured to listen on.
 
 returns:: 5, unless assigned a different value.
+
+METHOD:: setChorus
+Sets the chorus algorithm used by the JX-03. This is a wrapper around using MIDI CC 99.
+
+ARGUMENT:: midiout
+The code::midiout:: to use to send the MIDI message to the JX-03.
+
+ARGUMENT:: algorithm
+The chorus algorithm. Set code::nil:: or 0 to turn chorus off, or 1-3 to choose between the three chorus algorithms.
+
+note::
+Changing chorus via CC number doesn't work unless you have installed firmware 1.10 by following the instructions here: http://eg.roland.com/support/by_product/jx-03/updates_drivers/352051
+::
 
 INSTANCEMETHODS::
 
