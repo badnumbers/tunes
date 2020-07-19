@@ -190,4 +190,10 @@ Jx03Patch : Patch {
 			5, { "Noise" }
 		);
 	}
+
+	set {
+		|controlKey, controlValue|
+		sysex[controlKey] = controlValue;
+		^controlValue;
+	}
 }

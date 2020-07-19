@@ -35,53 +35,49 @@ Jx03 : Synthesiser {
 
 	*randomise {
         |midiout,patchType,writeToPostWindow=false|
+		var patch = Jx03Patch();
 		var crossMod = 6.rand;
 		var sourceMix, envModDepth, cutoff, lfoWaveform, lfoToDcoProbabilities, dco1Waveform, lfoToDcoProbabilityBoost = 1;
 		var envToPitchFunction, lfoToPitchFunction,envToDcoPitchProbability=0.2,allowDc01PitchModulation=true;
 		super.randomise(midiout,patchType,writeToPostWindow);
 
-		sourceMix = this.sendRandomParameterValue(midiout,this.vcfSourceMixCcNo,0,127,0,0,127,writeToPostWindow,"VCF Source Mix");
+		sourceMix = patch.set(Jx03Sysex.vcfSourceMix, this.generateRandomValue(0,255,0,0,255));
 
 		// Choose the cross-mod option
-		crossMod = this.sendChosenParameterValue(midiout,this.dco2CrossModCcNo,[0,1,2,3],[1,1,1,1],writeToPostWindow,"DCO2 Cross Mod");
+		crossMod = patch.set(Jx03Sysex.dco2CrossMod, this.chooseRandomValue([0,1,2,3],[1,1,1,1]));
 		// The cross mod affects how we can set the pitch of DCO2. Here we'll set some values based on that.
 
 		if (crossMod == 0, {
-			this.sendParameterValue(midiout,this.dco2RangeCcNo,3,writeToPostWindow,"DC02 Range");
-			this.sendParameterValue(midiout,this.dco2TuneCcNo,64,writeToPostWindow,"DC02 Tune");
+			patch.set(Jx03Sysex.dco2Range, 3);
 			if (sourceMix < 64,{
 				if (0.2.coin,{
-					this.sendParameterValue(midiout,this.dco2TuneCcNo,127,writeToPostWindow,"DC02 Tune"); // DCO2 an octave higher
-				}, {
-					this.sendParameterValue(midiout,this.dco2TuneCcNo,64,writeToPostWindow,"DC02 Tune"); // DCO2 same as DCO1
+					patch.set(Jx03Sysex.dco2Tune, 255); // DCO2 an octave higher
 				});
 				if (0.5.coin,{
-					this.sendParameterValue(midiout,this.dco2FineTuneCcNo,64,writeToPostWindow,"DC02 Fine Tune"); // No detune
-				},{
-					this.sendRandomParameterValue(midiout,this.dco2FineTuneCcNo,54,90,0,0,127,writeToPostWindow,"DC02 Fine Tune"); // Detune
+					patch.set(Jx03Sysex.dco2FineTune, this.generateRandomValue(98,158,0,0,255)); // Detune
 				});
 			});
 
-			envToPitchFunction = { this.sendChosenParameterValue(midiout,this.dcoEnvDepthCcNo,[1,2,3],[6,3,1],writeToPostWindow,"DCO Env Depth"); };
-			lfoToPitchFunction = { this.sendRandomParameterValue(midiout,this.dcoLfoDepthCcNo,0,25,5,0,127,writeToPostWindow,"DCO LFO Mod Depth"); };
+			envToPitchFunction = { patch.set(Jx03Sysex.dcoFreqEnvMod, this.chooseRandomValue([1,2,3],[6,3,1])); };
+			lfoToPitchFunction = { patch.set(Jx03Sysex.dcoFreqLfoMod, this.generateRandomValue(0,50,5,0,127)); };
 		});
 
 		if (crossMod == 1, {
 			// Altering the pitch of DCO2 alters the timbre rather than the pitch of the sound
-			this.sendRandomParameterValue(midiout,this.dco2RangeCcNo,0,5,0,0,127,writeToPostWindow,"DC02 Range");
-			this.sendRandomParameterValue(midiout,this.dco2TuneCcNo,0,127,0,0,127,writeToPostWindow,"DC02 Tune");
-			this.sendRandomParameterValue(midiout,this.dco2FineTuneCcNo,0,127,0,0,127,writeToPostWindow,"DC02 Fine Tune");
+			patch.set(Jx03Sysex.dco2Range, this.generateRandomValue(0,5,0,0,127));
+			patch.set(Jx03Sysex.dco2Tune, this.generateRandomValue(0,255,0,0,255));
+			patch.set(Jx03Sysex.dco2FineTune, this.generateRandomValue(0,255,0,0,255));
 
 			if (0.75.coin,{
 				// Big modulation of pitch for DC02 but none for DC01
 				envToDcoPitchProbability = 0.7;
-				envToPitchFunction = { this.sendRandomParameterValue(midiout,this.dcoEnvDepthCcNo,0,127,0,0,127,writeToPostWindow,"DCO Env Depth"); };
-				lfoToPitchFunction = { this.sendRandomParameterValue(midiout,this.dcoLfoDepthCcNo,0,127,0,0,127,writeToPostWindow,"DCO LFO Mod Depth"); };
+				envToPitchFunction = { patch.set(Jx03Sysex.dcoFreqEnvMod, this.generateRandomValue(0,255,0,0,255)); };
+				lfoToPitchFunction = { patch.set(Jx03Sysex.dcoFreqLfoMod, this.generateRandomValue(0,255,0,0,255)); };
 				lfoToDcoProbabilityBoost = 1.8;
 				allowDc01PitchModulation = false;
 			},{
-				envToPitchFunction = { this.sendChosenParameterValue(midiout,this.dcoEnvDepthCcNo,[1,2,3],[6,3,1],writeToPostWindow,"DCO Env Depth"); };
-				lfoToPitchFunction = { this.sendRandomParameterValue(midiout,this.dcoLfoDepthCcNo,0,25,5,0,127,writeToPostWindow,"DCO LFO Mod Depth"); };
+				envToPitchFunction = { patch.set(Jx03Sysex.dcoFreqEnvMod, this.chooseRandomValue([1,2,3],[6,3,1])); };
+				lfoToPitchFunction = { patch.set(Jx03Sysex.dcoFreqLfoMod, this.generateRandomValue(0,50,5,0,127)); };
 				allowDc01PitchModulation = true;
 			});
 		});
@@ -90,23 +86,21 @@ Jx03 : Synthesiser {
 			// Keeping either DCO at 8' seems to keep the pitch of the sound. The other can be set to any pitch range up to 8' without altering the overall pitch
 			if (0.5.coin,{
 				// Hold DC01 at 8' and allow DC02 to be different
-				this.sendParameterValue(midiout,this.dco1RangeCcNo,3,writeToPostWindow,"DCO1 Range");
-				this.sendRandomParameterValue(midiout,this.dco2RangeCcNo,0,3,0,0,127,writeToPostWindow,"DCO2 Range");
+				patch.set(Jx03Sysex.dco1Range, 3);
+				patch.set(Jx03Sysex.dco2Range, this.chooseRandomValue([0,1,2,3],[1,1,1,1]));
 			},{
 				// Hold DC02 at 8' and allow DC01 to be different
-				this.sendRandomParameterValue(midiout,this.dco1RangeCcNo,0,3,0,0,127,writeToPostWindow,"DCO1 Range");
-				this.sendParameterValue(midiout,this.dco2RangeCcNo,3,writeToPostWindow,"DCO2 Range");
+				patch.set(Jx03Sysex.dco1Range, this.chooseRandomValue([0,1,2,3],[1,1,1,1]));
+				patch.set(Jx03Sysex.dco2Range, 3);
 			});
 			if (sourceMix < 64,{
 				if (0.5.coin,{
-					this.sendParameterValue(midiout,this.dco2FineTuneCcNo,64,writeToPostWindow,"DC02 Fine Tune"); // No detune
-				},{
-					this.sendRandomParameterValue(midiout,this.dco2FineTuneCcNo,54,90,0,0,127,writeToPostWindow,"DC02 Fine Tune"); // Detune
+					patch.set(Jx03Sysex.dco2FineTune, this.generateRandomValue(98,158,0,0,255)); // Detune
 				});
 			});
 
-			envToPitchFunction = { this.sendChosenParameterValue(midiout,this.dcoEnvDepthCcNo,[1,2,3],[6,3,1],writeToPostWindow,"DCO Env Depth"); };
-			lfoToPitchFunction = { this.sendRandomParameterValue(midiout,this.dcoLfoDepthCcNo,0,25,5,0,127,writeToPostWindow,"DCO LFO Mod Depth"); };
+			envToPitchFunction = { patch.set(Jx03Sysex.dcoFreqEnvMod, this.chooseRandomValue([1,2,3],[6,3,1])); };
+			lfoToPitchFunction = { patch.set(Jx03Sysex.dcoFreqLfoMod, this.generateRandomValue(0,50,5,0,127)); };
 		});
 
 		if (crossMod == 3, {
@@ -116,7 +110,7 @@ Jx03 : Synthesiser {
 			// Same with setting DC02 to 2' and DCO1 down to 32', but now sounds very whiny
 			// Setting DCO2 tune to max is not quite the same as increasing DCO2 range to 4' - there's additional movement
 			// Same with setting DCO2 tune to min not being the same as decreasing DCO2 range to 16'
-			// Lastly, there is a sweet spot with DCO2 at 85 where it becomes more musical, but a bit noisy
+			// Lastly, there is a sweet spot with DCO2 at 85 (sysex 170) where it becomes more musical, but a bit noisy
 			// Take one of two approaches: either where things 'line up' exactly and you can add a bit of detune for some movement:
 			// DCO1 32' / DCO2 2'
 			// DCO1 16' / DCO2 4'
@@ -129,125 +123,109 @@ Jx03 : Synthesiser {
 			// DCO1 8' / DCO2 16' / DCO 2 Tune min, max or 85
 			// DCO1 8' / DCO2 32' / DCO 2 Tune min, max or 85
 			// DCO1 8' / DCO2 64' / DCO 2 Tune min, max or 85
-			this.sendParameterValue(midiout,this.dco2RangeCcNo,3,writeToPostWindow,"DC02 Range");
-			this.sendParameterValue(midiout,this.dco2TuneCcNo,64,writeToPostWindow,"DC02 Tune");
 			if (0.5.coin,
 				{ // 'Lined up' settings
 					if (0.2.coin,
 						{ // DCO1 32' / DCO2 2'
-							this.sendParameterValue(midiout,this.dco1RangeCcNo,1,writeToPostWindow,"DC01 Range");
-							this.sendParameterValue(midiout,this.dco2RangeCcNo,5,writeToPostWindow,"DC02 Range");
+							patch.set(Jx03Sysex.dco1Range, 1);
+							patch.set(Jx03Sysex.dco2Range, 5);
 						},
 						{
 						 if (0.4.coin,
 								{ // DCO1 16' / DCO2 4'
-									this.sendParameterValue(midiout,this.dco1RangeCcNo,2,writeToPostWindow,"DC01 Range");
-									this.sendParameterValue(midiout,this.dco2RangeCcNo,4,writeToPostWindow,"DC02 Range");
+									patch.set(Jx03Sysex.dco1Range, 2);
+									patch.set(Jx03Sysex.dco2Range, 4);
 								},
 								{ // DCO1 8'
-									this.sendParameterValue(midiout,this.dco1RangeCcNo,3,writeToPostWindow,"DC01 Range");
-									this.sendParameterValue(midiout,this.dco2RangeCcNo,(0..3)[[1,1,1,1].normalizeSum.windex],writeToPostWindow,"DC02 Range");
+									patch.set(Jx03Sysex.dco1Range, 3);
+									patch.set(Jx03Sysex.dco2Range, this.chooseRandomValue([0,1,2,3],[1,1,1,1]));
 								}
 							);
 						}
 					);
 					if (0.5.coin,
 						{ // Add detune
-							this.sendRandomParameterValue(midiout,this.dco2FineTuneCcNo,62,66,0,0,127,writeToPostWindow,"DC02 Fine Tune"); // Detune
-						},
-						{ // Don't add detune
-							this.sendParameterValue(midiout,this.dco2FineTuneCcNo,64,writeToPostWindow,"DC02 Fine Tune"); // Detune
+							patch.set(Jx03Sysex.dco2FineTune, this.generateRandomValue(124,132,0,0,255)); // Detune
 						}
 					);
 				},
 				{
 					// 'Not lined up' settings
-					this.sendParameterValue(midiout,this.dco1RangeCcNo,3,writeToPostWindow,"DC01 Range");
-					this.sendParameterValue(midiout,this.dco2RangeCcNo,(0..3)[[1,1,1,1].normalizeSum.windex],writeToPostWindow,"DC02 Range");
-					this.sendParameterValue(midiout,this.dco2TuneCcNo,[0,85,127][[1,1,1].normalizeSum.windex],writeToPostWindow,"DC02 Tune");
-					this.sendParameterValue(midiout,this.dco2FineTuneCcNo,64,writeToPostWindow,"DC02 Fine Tune");
+					patch.set(Jx03Sysex.dco1Range, 3);
+					patch.set(Jx03Sysex.dco2Range, this.chooseRandomValue([0,1,2,3],[1,1,1,1]));
+					patch.set(Jx03Sysex.dco2Tune, this.chooseRandomValue([0,170,255],[1,1,1]));
 				}
 			);
 
-			envToPitchFunction = { this.sendChosenParameterValue(midiout,this.dcoEnvDepthCcNo,[1,2,3],[6,3,1],writeToPostWindow,"DCO Env Depth"); };
-			lfoToPitchFunction = { this.sendRandomParameterValue(midiout,this.dcoLfoDepthCcNo,0,25,5,0,127,writeToPostWindow,"DCO LFO Mod Depth"); };
+			envToPitchFunction = { patch.set(Jx03Sysex.dcoFreqEnvMod, this.chooseRandomValue([1,2,3],[6,3,1])); };
+			lfoToPitchFunction = { patch.set(Jx03Sysex.dcoFreqLfoMod, this.generateRandomValue(0,50,5,0,127)); };
 		});
 
 		if (patchType == PatchType.pad,{
 			if (crossMod == 1,{
 				// Don't allow noise for DCO1, otherwise modulation of DC02 will result in audible pitch changes
-				dco1Waveform = this.sendRandomParameterValue(midiout,this.dco1WaveformCcNo,0,4,0,0,127,writeToPostWindow,"DC01 Waveform");
+				dco1Waveform = patch.set(Jx03Sysex.dco1Waveform, this.chooseRandomValue([0,1,2,3,4],[1,1,1,1,1]));
 			},{
-				dco1Waveform = this.sendRandomParameterValue(midiout,this.dco1WaveformCcNo,0,5,0,0,127,writeToPostWindow,"DC01 Waveform");
+				dco1Waveform = patch.set(Jx03Sysex.dco1Waveform, this.chooseRandomValue([0,1,2,3,4,5],[1,1,1,1,1,1]));
 			});
 			if (dco1Waveform == 5,{
 				// Don't allow noise for DCO2 as well
-				this.sendRandomParameterValue(midiout,this.dco2WaveformCcNo,0,4,0,0,127,writeToPostWindow,"DC02 Waveform");
+				patch.set(Jx03Sysex.dco2Waveform, this.chooseRandomValue([0,1,2,3,4],[1,1,1,1,1]));
 			},{
-				this.sendRandomParameterValue(midiout,this.dco2WaveformCcNo,0,5,0,0,127,writeToPostWindow,"DC02 Waveform");
+				patch.set(Jx03Sysex.dco2Waveform, this.chooseRandomValue([0,1,2,3,4,5],[1,1,1,1,1,1]));
 			});
-			this.sendRandomParameterValue(midiout,this.envAttackCcNo,20,110,-2,0,127,writeToPostWindow,"Envelope Attack");
-			this.sendRandomParameterValue(midiout,this.envDecayCcNo,20,100,-2,0,127,writeToPostWindow,"Envelope Decay");
-			this.sendRandomParameterValue(midiout,this.envSustainCcNo,40,100,0,0,127,writeToPostWindow,"Envelope Sustain");
-			this.sendRandomParameterValue(midiout,this.envReleaseCcNo,40,100,2,0,127,writeToPostWindow,"Envelope Release");
-			this.sendRandomParameterValue(midiout,this.lfoDelayTimeCcNo,-50,127,0,0,127,writeToPostWindow,"LFO Delay Time");
+			patch.set(Jx03Sysex.envelopeAttack, this.generateRandomValue(40,220,-2,0,255));
+			patch.set(Jx03Sysex.envelopeDecay, this.generateRandomValue(40,200,-2,0,255));
+			patch.set(Jx03Sysex.envelopeSustain, this.generateRandomValue(80,200,0,0,255));
+			patch.set(Jx03Sysex.envelopeRelease, this.generateRandomValue(80,200,0,0,255));
+			patch.set(Jx03Sysex.lfoDelayTime, this.generateRandomValue(-100,255,0,0,255));
 
-			envModDepth = this.sendRandomParameterValue(midiout,this.vcfEnvModDepthCcNo,0,100,3,0,127,writeToPostWindow,"VCF Env Mod Depth");
-			cutoff = ((100-envModDepth / 2 + 100.exprand(1)).clip(0,127)).round;
-			this.sendParameterValue(midiout,this.vcfCutoffCcNo,cutoff,writeToPostWindow,"VCF Cutoff");
-			this.sendRandomParameterValue(midiout,this.vcfResonanceCcNo,0,100,3,0,127,writeToPostWindow,"VCF Resonance");
+			envModDepth = patch.set(Jx03Sysex.vcfEnvMod, this.generateRandomValue(0,200,3,0,255));
+			cutoff = ((200-envModDepth / 2 + 200.exprand(1)).clip(0,255)).round;
+			patch.set(Jx03Sysex.vcfCutoffFreq, cutoff);
+			envModDepth = patch.set(Jx03Sysex.vcfResonance, this.generateRandomValue(0,200,3,0,255));
 
-			lfoWaveform = this.sendChosenParameterValue(midiout,this.lfoWaveformCcNo,[0,1,2,3,4,5],[10,1,1,1,1,1],writeToPostWindow,"LFO Waveform");
+			lfoWaveform = patch.set(Jx03Sysex.lfoWaveform, this.chooseRandomValue([0,1,2,3,4,5],[10,1,1,1,1,1]));
 			if (lfoWaveform == 0, {
 				// Sine wave, allow lower rates
-				this.sendRandomParameterValue(midiout,this.lfoRateCcNo,0,60,0,0,127,writeToPostWindow,"LFO Rate");
+				patch.set(Jx03Sysex.lfoRate, this.generateRandomValue(0,120,0,0,255));
 			},{
 				// More jarring waveform, only allow faster rates
-				this.sendRandomParameterValue(midiout,this.lfoRateCcNo,30,60,0,0,127,writeToPostWindow,"LFO Rate");
+				patch.set(Jx03Sysex.lfoRate, this.generateRandomValue(60,120,0,0,255));
+
 			});
 
 			lfoToDcoProbabilities = Array.with(0.5,0.1,0.1,0.05,0.25,0.5) * lfoToDcoProbabilityBoost; // Probability for each waveform type that we'll modulate the DCO pitch
 			if (lfoToDcoProbabilities[lfoWaveform].coin,{
 				lfoToPitchFunction.value();
 				if (0.75.coin && allowDc01PitchModulation,{
-					this.sendParameterValue(midiout,this.dco1FreqModLfoSwitchCcNo,1,writeToPostWindow,"DCO1 Freq LFO Mod Switch");
-				},{
-					this.sendParameterValue(midiout,this.dco1FreqModLfoSwitchCcNo,0,writeToPostWindow,"DCO1 Freq LFO Mod Switch");
+					patch.set(Jx03Sysex.dco1FreqModLfoSwitch, 1);
 				});
 				if (0.75.coin,{
-					this.sendParameterValue(midiout,this.dco2FreqModLfoSwitchCcNo,1,writeToPostWindow,"DCO2 Freq LFO Mod Switch");
-				},{
-					this.sendParameterValue(midiout,this.dco2FreqModLfoSwitchCcNo,0,writeToPostWindow,"DCO2 Freq LFO Mod Switch");
+					patch.set(Jx03Sysex.dco2FreqModLfoSwitch, 1);
 				});
-			},{
-				this.sendParameterValue(midiout,this.dco1FreqModLfoSwitchCcNo,0,writeToPostWindow,"DCO1 Freq LFO Mod Switch");
-				this.sendParameterValue(midiout,this.dco2FreqModLfoSwitchCcNo,0,writeToPostWindow,"DCO2 Freq LFO Mod Switch");
 			});
 
-			this.sendRandomParameterValue(midiout,this.vcfLfoModDepthCcNo,-5,120,5,0,127,writeToPostWindow,"VCF LFO Mod Depth");
+			patch.set(Jx03Sysex.vcfLfoMod, this.generateRandomValue(-10,240,5,0,255));
 		});
 
 		// Env -> DCO freq
 		if (envToDcoPitchProbability.coin,{
 			envToPitchFunction.value();
-			this.sendChosenParameterValue(midiout,this.dcoEnvPolarityCcNo,[0,1],[1,1],writeToPostWindow,"DCO Env Polarity");
+			patch.set(Jx03Sysex.dcoFreqEnvPolarity, this.chooseRandomValue([0,1],[1,1]));
 			if (0.75.coin && allowDc01PitchModulation,{
-				this.sendParameterValue(midiout,this.dco1FreqModEnvSwitchCcNo,1,writeToPostWindow,"DCO1 Freq Env Mod Switch");
-			},{
-				this.sendParameterValue(midiout,this.dco1FreqModEnvSwitchCcNo,0,writeToPostWindow,"DCO1 Freq Env Mod Switch");
+				patch.set(Jx03Sysex.dco1FreqModEnvSwitch, 1);
 			});
 			if (0.75.coin,{
-				this.sendParameterValue(midiout,this.dco2FreqModEnvSwitchCcNo,1,writeToPostWindow,"DCO2 Freq Env Mod Switch");
-			},{
-				this.sendParameterValue(midiout,this.dco2FreqModEnvSwitchCcNo,0,writeToPostWindow,"DCO2 Freq Env Mod Switch");
+				patch.set(Jx03Sysex.dco2FreqModEnvSwitch, 1);
 			});
-		},{
-			this.sendParameterValue(midiout,this.dco1FreqModEnvSwitchCcNo,0,writeToPostWindow,"DCO1 Freq Env Mod Switch");
-			this.sendParameterValue(midiout,this.dco2FreqModEnvSwitchCcNo,0,writeToPostWindow,"DCO2 Freq Env Mod Switch");
 		});
 
-		this.sendChosenParameterValue(midiout,this.chorusCcNo,[0,1,2,3],[6,1,1,1],writeToPostWindow,"Chorus Algorithm");
-		this.sendChosenParameterValue(midiout,this.vcfEnvPolarityCcNo,[0,1],[1,6],writeToPostWindow,"VCF Env Polarity");
+		patch.set(Jx03Sysex.chorusAlgorithm, this.chooseRandomValue([0,1,2,3],[7,2,2,1]));
+		patch.set(Jx03Sysex.vcfEnvPolarity, this.chooseRandomValue([0,1],[1,4]));
+
+		this.sendPatch(midiout,patch);
+		patch.describe();
     }
 
 	*sendPatch {

@@ -1,14 +1,16 @@
 Synthesiser {
 	*chooseRandomValue
 	{
-		|lo,hi,curve=0,clipMin=0,clipMax=127|
-		var randomValue = 1.0.rand.lincurve(0,1,lo,hi,curve).clip(clipMin,clipMax).round;
+		|possibleValues,weights|
+		var choice = possibleValues[weights.normalizeSum.windex];
+		^choice;
 	}
 
 	*generateRandomValue
 	{
 		|lo,hi,curve=0,clipMin=0,clipMax=127|
 		var randomValue = 1.0.rand.lincurve(0,1,lo,hi,curve).clip(clipMin,clipMax).round;
+		^randomValue;
 	}
 
 	*randomise {
@@ -24,29 +26,6 @@ Synthesiser {
 		});
     }
 
-	*reportParameterValue
-	{
-		|writeToPostWindow, parameterName, parameterValue|
-		if (writeToPostWindow,{
-			postln(format("%: %: %", this.name, parameterName, parameterValue));
-		});
-	}
-
-	*sendChosenParameterValue
-	{
-		|midiout,ccNo,possibleValues,weights,writeToPostWindow,parameterName|
-		var choice = possibleValues[weights.normalizeSum.windex];
-		^this.sendParameterValue(midiout,ccNo,choice,writeToPostWindow,parameterName);
-	}
-
-	*sendParameterValue
-	{
-		|midiout,ccNo,parameterValue,writeToPostWindow,parameterName|
-		midiout.control(this.midiChannel,ccNo,parameterValue);
-		this.reportParameterValue(writeToPostWindow,parameterName, parameterValue);
-		^parameterValue;
-	}
-
 	*sendPatch {
 		|midiout,patch|
 		if (midiout.class != MIDIOut,{
@@ -55,12 +34,5 @@ Synthesiser {
 		if (patch.isKindOf(Patch) != true,{
 			Error(format("The patch parameter passed to %.sendPatch() must be an instance of Patch.", this.class)).throw;
 		});
-	}
-
-	*sendRandomParameterValue
-	{
-		|midiout,ccNo,lo,hi,curve=0,clipMin=0,clipMax=127,writeToPostWindow,parameterName|
-		var randomValue = 1.0.rand.lincurve(0,1,lo,hi,curve).clip(clipMin,clipMax).round;
-		^this.sendParameterValue(midiout,ccNo,randomValue,writeToPostWindow,parameterName);
 	}
 }
