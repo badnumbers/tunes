@@ -250,6 +250,21 @@ Jx03 : Synthesiser {
 		this.sendChosenParameterValue(midiout,this.vcfEnvPolarityCcNo,[0,1],[1,6],writeToPostWindow,"VCF Env Polarity");
     }
 
+	*sendPatch {
+		|midiout,patch|
+		super.sendPatch(midiout,patch);
+		patch.sysex.keys.do({
+			|key|
+			var val = patch.sysex[key];
+			var address1 = (key/100).asInteger;
+			var address2 = key%100;
+			var hi = (val/16).asInteger;
+			var lo = val%16;
+			var checksum = 125-address1-address2-hi-lo;
+			midiout.sysex(Int8Array[-16, 65, 16, 0, 0, 0, 30, 18, 3, 0, address1, address2, hi, lo, checksum, -9]);
+		});
+	}
+
 	*setChorus {
 		|midiout, algorithm|
 		if (midiout.class != MIDIOut, {

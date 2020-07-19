@@ -35,6 +35,16 @@ Synthesiser {
 		^parameterValue;
 	}
 
+	*sendPatch {
+		|midiout,patch|
+		if (midiout.class != MIDIOut,{
+			Error(format("The midiout parameter passed to %.sendPatch() must be an instance of MIDIOut.", this.class)).throw;
+		});
+		if (patch.isKindOf(Patch) != true,{
+			Error(format("The patch parameter passed to %.sendPatch() must be an instance of Patch.", this.class)).throw;
+		});
+	}
+
 	*sendRandomParameterValue
 	{
 		|midiout,ccNo,lo,hi,curve=0,clipMin=0,clipMax=127,writeToPostWindow,parameterName|
