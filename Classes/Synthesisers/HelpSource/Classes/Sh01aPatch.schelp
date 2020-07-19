@@ -1,0 +1,27 @@
+TITLE:: Sh01aPatch
+summary:: A patch for the SH-01A synthesiser.
+categories:: External Control
+
+DESCRIPTION::
+This is a set of control settings etc used to define a synthesiser patch.
+
+CLASSMETHODS::
+
+	classvar <bass = 1;
+	classvar <lead = 2;
+	classvar <pad = 3;
+
+METHOD:: bass
+A bass patch.
+
+returns:: 1.
+
+METHOD:: lead
+A lead patch.
+
+returns:: 2.
+
+METHOD:: pad
+A pad patch.
+
+returns:: 3.
