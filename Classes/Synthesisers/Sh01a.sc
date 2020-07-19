@@ -5,6 +5,7 @@ Sh01a : Synthesiser {
 	classvar <envelopeRelease = 72;
 	classvar <envelopeSustain = 30;
 	classvar <expressionPedalCcNo = 11;
+	classvar <vcoNoiseModeCcNo = 78;
 	classvar <lfoModeCcNo = 79;
 	classvar <lfoRateCcNo = 3;
 	classvar <lfoWaveformCcNo = 12;
@@ -12,13 +13,14 @@ Sh01a : Synthesiser {
 	classvar <modCcNo = 1;
 	classvar <polyphonyModeCcNo = 80;
 	classvar <portamentoCcNo = 5;
-	classvar <pulseWidthCcNo = 15;
 	classvar <pwmSourceCcNo = 16;
 	classvar <vcaEnvSw = 28;
+	classvar <vcaEnvMode = 29;
 	classvar <vcfEnvDepthCcNo = 24;
 	classvar <vcfFreqCcNo = 74;
 	classvar <vcfKeyFollowCcNo = 26;
 	classvar <vcfModDepthCcNo = 25;
+	classvar <vcoRangeCcNo = 14;
 	classvar <vcfResCcNo = 71;
 	classvar <vcoModDepthCcNo = 13;
 	classvar <vcoModSensitivityCcNo = 17;
@@ -27,7 +29,7 @@ Sh01a : Synthesiser {
 	classvar <vcoPwmLevelCcNo = 19;
 	classvar <vcoSawLevelCcNo = 20;
 	classvar <vcoSubLevelCcNo = 21;
-	classvar <vcoRangeCcNo = 14;
+	classvar <vcoSubTypeCcNo = 22;
 
 	*randomise {
         |midiout,writeToPostWindow=false|
