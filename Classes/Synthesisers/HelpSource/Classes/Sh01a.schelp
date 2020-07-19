@@ -9,12 +9,7 @@ Contains information about working with a SH-01A, such as its controller CC numb
 CLASSMETHODS::
 
 METHOD:: bendDepthCcNo
-The MIDI CC number that is used to control the SH-01A's expression pedal amount.
-table::
-## Value || Notes
-## 0 || No bend
-## 127 || One octave in each direction
-::
+The MIDI CC number that is used to control the SH-01A's expression pedal amount. 5 per semitone, so 60 for a full octave in each direction.
 
 returns:: 18.
 
