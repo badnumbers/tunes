@@ -1,4 +1,5 @@
 Patch {
+	var <>name;
 	describe {
 
 	}
