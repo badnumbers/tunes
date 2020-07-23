@@ -31,83 +31,107 @@ Sh01a : Synthesiser {
 	classvar <vcoSubLevelCcNo = 21;
 	classvar <vcoSubTypeCcNo = 22;
 
+	*applyMidiParameterToPatch {
+		|args|
+		currentPatch.kvps[args[1]] = args[0];
+	}
+
+	*getPatchType {
+		^Sh01aPatch;
+	}
+
+	*getMidiMessageType {
+		^\control;
+	}
+
 	*randomise {
-        |midiout,writeToPostWindow=false|
-		var oscShape = [\pulse,\saw,\sub].wchoose([0.45,0.45,0.1]);
-		var lfoWaveform = [\ascendingRamp,\descendingRamp,\triangle,\square,\random,\noise].wchoose([5,5,30,1,20,5].normalizeSum);
-		var vcaEnvSwitch = if (0.2.coin, 1, 0);
+        |midiout,patchType,writeToPostWindow=false|
+		var patch = Sh01aPatch();
+		var lfoMode, lfoRate, lfoSpeed;
+		var subLevel, pwmLevel, sawLevel, oscLevelTotal, oscLevelScaleFunction, subType;
+		super.randomise(midiout,patchType,writeToPostWindow);
 
-		this.sendRandomParameterValue(midiout,this.envelopeAttack,-10,127,4,0,127,writeToPostWindow,"Envelope Attack");
-		this.sendRandomParameterValue(midiout,this.envelopeDecay,0,127,0,0,127,writeToPostWindow,"Envelope Decay");
-		this.sendRandomParameterValue(midiout,this.envelopeRelease,0,127,0,5,127,writeToPostWindow,"Envelope Release");
-		this.sendRandomParameterValue(midiout,this.envelopeRelease,0,127,0,0,127,writeToPostWindow,"Envelope Sustain");
+		// LFO
+		lfoMode = patch.set(Sh01a.lfoModeCcNo,this.chooseRandomValue([0,1],[4,1]));
+		lfoRate = patch.set(Sh01a.lfoRateCcNo,this.generateRandomValue(0,127,0,5,127));
 
-		if (lfoWaveform == \ascendingRamp, {
-			this.reportParameterValue(writeToPostWindow,"LFO Waveform", "Ascending ramp");
-			midiout.control(this.midiChannel,this.lfoWaveformCcNo,0);
+		// For normal LFO speed, we consider anything below 75 'slow'
+		// For advanced LFO speed, it's anything below 70
+		lfoSpeed = if (((lfoMode == 0) && (lfoRate < 75)) || ((lfoMode == 1) && (lfoRate < 70)), \slow, \fast);
+		if (lfoSpeed == \slow, {
+			// Only triangle is used for slow speeds
+			patch.set(Sh01a.lfoWaveformCcNo, 2); // ascendingRamp,descendingRamp,triangle,square,random,noise
+		},{
+			// For faster LFOs, use any waveform
+			patch.set(Sh01a.lfoWaveformCcNo, this.chooseRandomValue((0..5),[5,5,30,1,20,5])); // ascendingRamp,descendingRamp,triangle,square,random,noise
 		});
 
-		if (lfoWaveform == \descendingRamp, {
-			this.reportParameterValue(writeToPostWindow,"LFO Waveform", "Descending ramp");
-			midiout.control(this.midiChannel,this.lfoWaveformCcNo,1);
+		// VCO
+		patch.set(Sh01a.vcoModDepthCcNo, this.generateRandomValue(-3,30,5,0,40));
+		patch.set(Sh01a.vcoRangeCcNo, 4); // 4'
+		patch.set(Sh01a.vcoPulseWidthCcNo, this.generateRandomValue(20,127,2,0,127));
+		patch.set(Sh01a.pwmSourceCcNo, this.chooseRandomValue([0,1,2],[1,3,1])); // envelope, manual, lfo
+
+		// SOURCE MIXER
+		subLevel = 1.0.rand.lincurve(0,1,-10,127,9).clip(0,127).round;
+		pwmLevel = 1.0.rand.lincurve(0,1,-10,127,6).clip(0,127).round;
+		oscLevelScaleFunction = { |input| if (input> 0, { input = input * (127 / oscLevelTotal); input.lincurve(0,127,0,127,-1).round; }, { 0 } ); };
+		if (pwmLevel <= 0,{
+			sawLevel = 127;
+		},{
+			sawLevel = 1.0.rand.lincurve(0,1,-10,127,7).clip(0,127).round;
 		});
 
-		if (lfoWaveform == \triangle, {
-			this.reportParameterValue(writeToPostWindow,"LFO Waveform", "Triangle");
-			midiout.control(this.midiChannel,this.lfoWaveformCcNo,2);
+		oscLevelTotal = pwmLevel + sawLevel + subLevel;
+
+		pwmLevel = oscLevelScaleFunction.value(pwmLevel);
+		sawLevel = oscLevelScaleFunction.value(sawLevel);
+		subLevel = oscLevelScaleFunction.value(subLevel);
+
+		patch.set(Sh01a.vcoPwmLevelCcNo,pwmLevel);
+		patch.set(Sh01a.vcoSawLevelCcNo,sawLevel);
+		patch.set(Sh01a.vcoSubLevelCcNo,subLevel);
+		subType = patch.set(Sh01a.vcoSubTypeCcNo, this.chooseRandomValue([0,1,2],[1,1,5])); // 2 Octaves Down (Pulse Width)", 2 Octaves Down (Square), 1 Octave Down (Square)
+
+		if (subLevel > (pwmLevel + sawLevel), {
+			patch.set(Sh01a.vcoRangeCcNo, 5); // 2'
+			// Note that even if the sub is two octaves down, we don't have any higher range to set the osc range to
+			// Consider using the tuning knob for this
 		});
 
-		if (lfoWaveform == \square, {
-			this.reportParameterValue(writeToPostWindow,"LFO Waveform", "Square");
-			midiout.control(this.midiChannel,this.lfoWaveformCcNo,3);
-		});
+		patch.set(Sh01a.vcoNoiseLevelCcNo, this.generateRandomValue(-5,80,5,0,80));
+		patch.set(Sh01a.vcoNoiseModeCcNo, this.chooseRandomValue([0,1],[4,1])); // original, variation
 
-		if (lfoWaveform == \random, {
-			this.reportParameterValue(writeToPostWindow,"LFO Waveform", "Random");
-			midiout.control(this.midiChannel,this.lfoWaveformCcNo,4);
-		});
+		// VCF
+		patch.set(Sh01a.vcfFreqCcNo, this.generateRandomValue(0,127,0,0,127));
+		patch.set(Sh01a.vcfResCcNo, this.generateRandomValue(0,127,0,3,127));
+		patch.set(Sh01a.vcfEnvDepthCcNo, this.generateRandomValue(0,127,0,0,127));
+		patch.set(Sh01a.vcfModDepthCcNo, this.generateRandomValue(-2,127,8,0,127));
+		patch.set(Sh01a.vcfKeyFollowCcNo, this.generateRandomValue(0,127,0,0,127));
 
-		if (lfoWaveform == \noise, {
-			this.reportParameterValue(writeToPostWindow,"LFO Waveform", "Noise");
-			midiout.control(this.midiChannel,this.lfoWaveformCcNo,5);
-		});
+		patch.set(Sh01a.vcaEnvSw,this.chooseRandomValue([0,1],[4,1]));
 
-		this.sendRandomParameterValue(midiout,this.lfoRateCcNo,0,127,0,5,127,writeToPostWindow,"LFO Rate");
+		// ENV
+		patch.set(Sh01a.envelopeAttack, this.generateRandomValue(-10,127,4,0,127));
+		patch.set(Sh01a.envelopeDecay, this.generateRandomValue(0,127,0,0,127));
+		patch.set(Sh01a.envelopeSustain, this.generateRandomValue(0,127,0,0,127));
+		patch.set(Sh01a.envelopeRelease, this.generateRandomValue(0,127,0,5,127));
 
-		this.sendRandomParameterValue(midiout,this.portamentoCcNo,0,60,4,0,60,writeToPostWindow,"Portamento");
+		// SUNDRIES
+		patch.set(Sh01a.portamentoCcNo,this.generateRandomValue(-10,60,3,0,60));
 
-		this.reportParameterValue(writeToPostWindow,"VCA Env Sw", if (vcaEnvSwitch == 0, "Gate", "Envelope"));
-		midiout.control(this.midiChannel,this.vcaEnvSw,vcaEnvSwitch);
-
-		this.sendRandomParameterValue(midiout,this.vcfEnvDepthCcNo,0,127,0,0,127,writeToPostWindow,"VCF Env Depth");
-		this.sendRandomParameterValue(midiout,this.vcfFreqCcNo,0,127,0,0,127,writeToPostWindow,"VCF Cutoff");
-		this.sendRandomParameterValue(midiout,this.vcfKeyFollowCcNo,0,127,0,0,127,writeToPostWindow,"VCF Key Follow");
-		this.sendRandomParameterValue(midiout,this.vcfModDepthCcNo,-2,127,8,0,127,writeToPostWindow,"VCF Mod Depth");
-		this.sendRandomParameterValue(midiout,this.vcfResCcNo,0,127,0,3,127,writeToPostWindow,"VCF Resonance");
-
-		this.sendRandomParameterValue(midiout,this.vcoNoiseLevelCcNo,-5,80,5,0,80,writeToPostWindow,"VCO Noise Level");
-		this.sendRandomParameterValue(midiout,this.vcoPulseWidthCcNo,-20,127,2,0,127,writeToPostWindow,"VCO Pulse Width");
-		if (oscShape == \pulse, {
-			this.reportParameterValue(writeToPostWindow,"VCO PWM Level", 127);
-			midiout.control(this.midiChannel,this.vcoPwmLevelCcNo,127);
-			this.sendRandomParameterValue(midiout,this.vcoSawLevelCcNo,-10,60,3,0,60,writeToPostWindow,"VCO Saw Level");
-			this.sendRandomParameterValue(midiout,this.vcoSubLevelCcNo,-10,60,3,0,60,writeToPostWindow,"VCO Sub Level");
-		});
-
-		if (oscShape == \saw, {
-			this.reportParameterValue(writeToPostWindow,"VCO Saw Level", 127);
-			midiout.control(this.midiChannel,this.vcoSawLevelCcNo,127);
-			this.sendRandomParameterValue(midiout,this.vcoPwmLevelCcNo,-10,60,3,0,60,writeToPostWindow,"VCO PWM Level");
-			this.sendRandomParameterValue(midiout,this.vcoSubLevelCcNo,-10,60,3,0,60,writeToPostWindow,"VCO Sub Level");
-		});
-
-		if (oscShape == \sub, {
-			this.reportParameterValue(writeToPostWindow,"VCO Sub Level", 127);
-			midiout.control(this.midiChannel,this.vcoSubLevelCcNo,127);
-			this.sendRandomParameterValue(midiout,this.vcoPwmLevelCcNo,-10,60,3,0,60,writeToPostWindow,"VCO PWM Level");
-			this.sendRandomParameterValue(midiout,this.vcoSawLevelCcNo,-10,60,3,0,60,writeToPostWindow,"VCO Saw Level");
-		});
-
-		this.sendRandomParameterValue(midiout,this.vcoModDepthCcNo,0,40,5,0,40,writeToPostWindow,"VCO Mod Depth");
+		this.sendPatch(midiout,patch);
+		currentPatch = patch;
+		patch.describe();
     }
+
+	*sendPatch {
+		|midiout,patch|
+		super.sendPatch(midiout,patch);
+		patch.kvps.keys.do({
+			|key|
+			var val = patch.kvps[key];
+			midiout.control(this.midiChannel,key,val);
+		});
+	}
 }
