@@ -53,6 +53,7 @@ Synthesiser {
 
 		currentPatch = patches[currentPatchIndex];
 		this.sendPatch(midiout,currentPatch);
+		postln(format("Changed patch to %", if (currentPatch.name.isNil, "Unnamed patch", currentPatch.name)));
 		^currentPatch;
 	}
 
@@ -73,6 +74,7 @@ Synthesiser {
 
 		currentPatch = patches[currentPatchIndex];
 		this.sendPatch(midiout,currentPatch);
+		postln(format("Changed patch to %", if (currentPatch.name.isNil, "Unnamed patch", currentPatch.name)));
 		^currentPatch;
 	}
 
