@@ -32,78 +32,13 @@ Jx03 : Synthesiser {
 	classvar <vcfLfoModDepthCcNo = 28;
 	classvar <vcfResonanceCcNo = 71;
 	classvar <vcfSourceMixCcNo = 27;
-	classvar <>currentPatch;
-	classvar <>patches;
-	classvar <>currentPatchIndex = 0;
 
-	*keepPatch {
-		|patch|
-		if (patch.isNil,{
-			if (this.currentPatch.isNil,{
-				postln("There is no patch to keep!");
-			},{
-				patches = patches.add(currentPatch);
-			});
-		},{
-			if (patch.class != Jx03Patch, {
-			Error(format("The patch parameter passed to %.keepPatch() must be an instance of Jx03Patch.", this.class)).throw;
-			},{
-patches = patches.add(patch);
-			});
-		});
-
+	*getPatchType {
+		^Jx03Patch;
 	}
 
-	*nextPatch {
-		|midiout|
-		if (patches.class != Array, {
-			postln("There are no kept patches!");
-		});
-		if (patches.size == 0, {
-			postln("There are no kept patches!");
-		});
-
-		currentPatchIndex = currentPatchIndex + 1;
-
-		if (currentPatchIndex > (patches.size - 1), {
-			currentPatchIndex = 0;
-		});
-
-		currentPatch = patches[currentPatchIndex];
-		this.sendPatch(midiout,currentPatch);
-		^currentPatch;
-	}
-
-	*previousPatch {
-		|midiout|
-		if (patches.class != Array, {
-			postln("There are no kept patches!");
-		});
-		if (patches.size == 0, {
-			postln("There are no kept patches!");
-		});
-
-		currentPatchIndex = currentPatchIndex - 1;
-
-		if (currentPatchIndex < 0, {
-			currentPatchIndex = patches.size - 1;
-		});
-
-		currentPatch = patches[currentPatchIndex];
-		this.sendPatch(midiout,currentPatch);
-		^currentPatch;
-	}
-
-	*prWritePatch {
-		|patch|
-		if (patch.class != Jx03Patch, {
-			Error(format("The patch parameter passed to %.keepPatch() must be an instance of Jx03Patch.", this.class)).throw;
-		});
-		patch.kvps.keys.do({
-			|key|
-			var val = patch.kvps[key];
-			postln(format("patch.kvps[%]=%;",key,val));
-		});
+	*getMidiMessageType {
+		^\sysex;
 	}
 
 	*randomise {
@@ -335,26 +270,5 @@ patches = patches.add(patch);
 		});
 
 		midiout.control(this.midiChannel, this.chorusCcNo, algorithm);
-	}
-
-	*writeCurrentPatch {
-		postln("(");
-		postln("var patch = Jx03Patch();");
-		this.prWritePatch(this.currentPatch);
-		postln("Jx03.keepPatch(patch);");
-		postln(")");
-	}
-
-	*writeKeptPatches {
-		postln("(");
-		postln("var patch;");
-		this.patches.do({
-			|patch|
-			postln("patch = Jx03Patch();");
-			this.prWritePatch(patch);
-			postln("Jx03.keepPatch(patch);");
-		});
-		postln("Jx03.keepPatch(patch);");
-		postln(")");
 	}
 }
