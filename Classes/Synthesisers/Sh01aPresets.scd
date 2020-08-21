@@ -22,3 +22,9 @@ patch.name = "Farty raver";
 patch.kvps[14]=4;patch.kvps[15]=115;patch.kvps[75]=108;patch.kvps[79]=0;patch.kvps[24]=80;patch.kvps[5]=0;patch.kvps[73]=9;patch.kvps[19]=0;patch.kvps[13]=2;patch.kvps[16]=2;patch.kvps[26]=36;patch.kvps[28]=1;patch.kvps[21]=0;patch.kvps[25]=15;patch.kvps[29]=1;patch.kvps[74]=65;patch.kvps[72]=34;patch.kvps[78]=0;patch.kvps[80]=0;patch.kvps[30]=14;patch.kvps[3]=103;patch.kvps[23]=2;patch.kvps[71]=18;patch.kvps[20]=127;patch.kvps[12]=4;patch.kvps[22]=1;
 Sh01a.keepPatch(patch);
 )
+(
+var patch = Sh01aPatch();
+patch.name = "Noisy acid";
+patch.kvps[14]=4;patch.kvps[15]=22.0;patch.kvps[75]=101.0;patch.kvps[79]=0;patch.kvps[24]=110.0;patch.kvps[5]=0.0;patch.kvps[73]=11.0;patch.kvps[19]=0;patch.kvps[13]=0.0;patch.kvps[16]=1;patch.kvps[26]=108.0;patch.kvps[28]=0;patch.kvps[21]=0;patch.kvps[25]=0.0;patch.kvps[29]=1;patch.kvps[74]=19.0;patch.kvps[72]=41.0;patch.kvps[78]=0;patch.kvps[80]=0;patch.kvps[30]=98.0;patch.kvps[3]=78.0;patch.kvps[23]=7.0;patch.kvps[71]=124.0;patch.kvps[20]=127.0;patch.kvps[12]=5;patch.kvps[22]=2;
+Sh01a.keepPatch(patch);
+)
