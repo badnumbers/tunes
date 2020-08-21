@@ -1,4 +1,4 @@
-UnoSynth {
+UnoSynth : Synthesiser {
 	classvar <ampAttackCcNo = 24;
 	classvar <ampDecayCcNo = 25;
 	classvar <ampSustainCcNo = 26;
@@ -55,4 +55,47 @@ UnoSynth {
 	classvar <vibratoOnOffCcNo = 77;
 	classvar <volumeCcNo = 7;
 	classvar <wahOnOffCcNo = 78;
+
+	*applyMidiParameterToPatch {
+		|args|
+		currentPatch[this.getPatchType].kvps[args[1]] = args[0];
+	}
+
+	*getPatchType {
+		^UnoSynthPatch;
+	}
+
+	*getMidiMessageType {
+		^\control;
+	}
+
+	*randomise {
+        |midiout,patchType,writeToPostWindow=false|
+		var patch = UnoSynthPatch();
+		var osc1Level;
+
+		if (false,{
+			// We'll go single oscillator
+			patch.set(UnoSynth.osc1LevelCcNo, 127);
+			patch.set(UnoSynth.osc2LevelCcNo, 0);
+		},{
+			// We'll mix the oscillators
+			osc1Level = patch.set(UnoSynth.osc1LevelCcNo, this.generateRandomValue(121,127,0,120,127));
+			postln(format("FLOO: %", patch.set(UnoSynth.osc2LevelCcNo, osc1Level.lincurve(120,127,120,0,4).round)));
+		});
+
+		this.sendPatch(midiout,patch);
+		this.setCurrentPatch(patch);
+		patch.describe();
+    }
+
+	*sendPatch {
+		|midiout,patch|
+		super.sendPatch(midiout,patch);
+		patch.kvps.keys.do({
+			|key|
+			var val = patch.kvps[key];
+			midiout.control(this.midiChannel,key,val);
+		});
+	}
 }
