@@ -1,6 +1,4 @@
 Tb03Patch : Patch {
-	var <kvps;
-
 	*new {
         ^super.new.init();
     }
@@ -30,11 +28,5 @@ Tb03Patch : Patch {
 		postln(format("Overdrive: %", kvps[Tb03.overdriveCcNo]));
 		postln(format("Delay Time: %", kvps[Tb03.delayTimeCcNo]));
 		postln(format("Delay Feedback: %", kvps[Tb03.delayFeedbackCcNo]));
-	}
-
-	set {
-		|controlKey, controlValue|
-		kvps[controlKey] = controlValue;
-		^controlValue;
 	}
 }

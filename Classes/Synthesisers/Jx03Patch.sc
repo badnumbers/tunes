@@ -1,6 +1,4 @@
 Jx03Patch : Patch {
-	var <kvps;
-
 	*new {
         ^super.new.init();
     }
@@ -189,11 +187,5 @@ Jx03Patch : Patch {
 			4, { "Random" },
 			5, { "Noise" }
 		);
-	}
-
-	set {
-		|controlKey, controlValue|
-		kvps[controlKey] = controlValue;
-		^controlValue;
 	}
 }

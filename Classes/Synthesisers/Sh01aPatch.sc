@@ -1,6 +1,4 @@
 Sh01aPatch : Patch {
-	var <kvps;
-
 	*new {
         ^super.new.init();
     }
@@ -173,11 +171,5 @@ Sh01aPatch : Patch {
 			4, { "4'" },
 			5, { "2'" }
 		);
-	}
-
-	set {
-		|controlKey, controlValue|
-		kvps[controlKey] = controlValue;
-		^controlValue;
 	}
 }
