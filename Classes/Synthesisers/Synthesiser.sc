@@ -1,7 +1,7 @@
 Synthesiser {
 	classvar <>currentPatch;
 	classvar <>patches;
-	classvar <>currentPatchIndex = 0;
+	classvar <>currentPatchIndices;
 
 	*chooseRandomValue
 	{
@@ -19,63 +19,88 @@ Synthesiser {
 
 	*keepPatch {
 		|patch|
+		this.preparePatchDictionary();
+
 		if (patch.isNil,{
-			if (this.currentPatch.isNil,{
+			if (this.currentPatch[this.getPatchType].isNil,{
 				postln("There is no patch to keep!");
 				^nil;
 			},{
-				patches = patches.add(currentPatch);
+				patch = this.currentPatch[this.getPatchType];
+				patches[this.getPatchType] = patches[this.getPatchType].add(patch);
 			});
 		},{
 			if (this.getPatchType != patch.class, {
 				Error(format("The patch parameter passed to %.keepPatch() must be an instance of %.", this.class, this.getPatchType)).throw;
 			},{
-				patches = patches.add(patch);
+				patches[this.getPatchType] = patches[this.getPatchType].add(patch);
 			});
 		});
-		this.currentPatch = patch;
+		this.currentPatch[this.getPatchType] = patch;
 	}
 
 	*nextPatch {
 		|midiout|
-		if (patches.class != Array, {
+		this.preparePatchDictionary();
+
+		if (patches[this.getPatchType].class != Array, {
 			postln("There are no kept patches!");
 		});
-		if (patches.size == 0, {
+		if (patches[this.getPatchType].size == 0, {
 			postln("There are no kept patches!");
 		});
 
-		currentPatchIndex = currentPatchIndex + 1;
+		currentPatchIndices[this.getPatchType] = currentPatchIndices[this.getPatchType] + 1;
 
-		if (currentPatchIndex > (patches.size - 1), {
-			currentPatchIndex = 0;
+		if (currentPatchIndices[this.getPatchType] > (patches[this.getPatchType].size - 1), {
+			currentPatchIndices[this.getPatchType] = 0;
 		});
 
-		currentPatch = patches[currentPatchIndex];
-		this.sendPatch(midiout,currentPatch);
-		postln(format("Changed patch to %", if (currentPatch.name.isNil, "Unnamed patch", currentPatch.name)));
-		^currentPatch;
+		currentPatch[this.getPatchType] = patches[this.getPatchType][currentPatchIndices[this.getPatchType]];
+		this.sendPatch(midiout,currentPatch[this.getPatchType]);
+		postln(format("Changed patch to %", if (currentPatch[this.getPatchType].name.isNil, "Unnamed patch", currentPatch[this.getPatchType].name)));
+		^currentPatch[this.getPatchType];
+	}
+
+	*preparePatchDictionary {
+		if (patches.isNil,{
+			patches = Dictionary();
+		});
+
+		if (currentPatch.isNil,{
+			currentPatch = Dictionary();
+		});
+
+		if (currentPatchIndices.isNil,{
+			currentPatchIndices = Dictionary();
+		});
+
+		if (currentPatchIndices[this.getPatchType].isNil,{
+			currentPatchIndices[this.getPatchType] = 0;
+		});
 	}
 
 	*previousPatch {
 		|midiout|
-		if (patches.class != Array, {
+
+		this.preparePatchDictionary();
+		if (patches[this.getPatchType].class != Array, {
 			postln("There are no kept patches!");
 		});
-		if (patches.size == 0, {
+		if (patches[this.getPatchType].size == 0, {
 			postln("There are no kept patches!");
 		});
 
-		currentPatchIndex = currentPatchIndex - 1;
+		currentPatchIndices[this.getPatchType] = currentPatchIndices[this.getPatchType] - 1;
 
-		if (currentPatchIndex < 0, {
-			currentPatchIndex = patches.size - 1;
+		if (currentPatchIndices[this.getPatchType] < 0, {
+			currentPatchIndices[this.getPatchType] = patches[this.getPatchType].size - 1;
 		});
 
-		currentPatch = patches[currentPatchIndex];
-		this.sendPatch(midiout,currentPatch);
-		postln(format("Changed patch to %", if (currentPatch.name.isNil, "Unnamed patch", currentPatch.name)));
-		^currentPatch;
+		currentPatch[this.getPatchType] = patches[currentPatchIndices[this.getPatchType]];
+		this.sendPatch(midiout,currentPatch[this.getPatchType]);
+		postln(format("Changed patch to %", if (currentPatch[this.getPatchType].name.isNil, "Unnamed patch", currentPatch[this.getPatchType].name)));
+		^currentPatch[this.getPatchType];
 	}
 
 	*prWritePatch {
@@ -122,22 +147,39 @@ Synthesiser {
 		});
 	}
 
+	*setCurrentPatch {
+		|patch|
+		postln('setCurrentPatch');
+		if (this.getPatchType != patch.class, {
+			Error(format("The patch parameter passed to Synthesiser.setCurrentPatch() must be an instance of %.", this.getPatchType)).throw;
+		});
+
+		this.preparePatchDictionary();
+		postln(format("this.currentPatch: %", this.currentPatch));
+		postln(format("this.currentPatch[this.getPatchType]: %", this.currentPatch[this.getPatchType]));
+		this.currentPatch[this.getPatchType] = patch;
+	}
+
 	*writeCurrentPatch {
-		if (this.currentPatch.isNil,{
+		this.preparePatchDictionary();
+
+		if (this.currentPatch[this.getPatchType].isNil,{
 			postln("There is no patch to write!");
 			^nil;
 		});
 		postln("(");
 		postln(format("var patch = %();", this.getPatchType()));
-		this.prWritePatch(this.currentPatch);
+		this.prWritePatch(this.currentPatch[this.getPatchType]);
 		postln(format("%.keepPatch(patch);", this.name));
 		postln(")");
 	}
 
 	*writeKeptPatches {
+		this.preparePatchDictionary();
+
 		postln("(");
 		postln("var patch;");
-		this.patches.do({
+		this.patches[this.getPatchType].do({
 			|patch|
 			postln(format("patch = %();", this.getPatchType()));
 			this.prWritePatch(patch);

@@ -12,7 +12,7 @@ Tb03 : Synthesiser {
 
 	*applyMidiParameterToPatch {
 		|args|
-		currentPatch.kvps[args[1]] = args[0];
+		currentPatch[this.getPatchType].kvps[args[1]] = args[0];
 	}
 
 	*getPatchType {
@@ -35,7 +35,7 @@ Tb03 : Synthesiser {
 		patch.set(Tb03.resonanceCcNo,this.generateRandomValue(0,127,-3,0,127));
 
 		this.sendPatch(midiout,patch);
-		currentPatch = patch;
+		this.setCurrentPatch(patch);
 		patch.describe();
     }
 

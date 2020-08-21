@@ -33,7 +33,7 @@ Sh01a : Synthesiser {
 
 	*applyMidiParameterToPatch {
 		|args|
-		currentPatch.kvps[args[1]] = args[0];
+		currentPatch[this.getPatchType].kvps[args[1]] = args[0];
 	}
 
 	*getPatchType {
@@ -121,7 +121,7 @@ Sh01a : Synthesiser {
 		patch.set(Sh01a.portamentoCcNo,this.generateRandomValue(-10,60,3,0,60));
 
 		this.sendPatch(midiout,patch);
-		currentPatch = patch;
+		this.setCurrentPatch(patch);
 		patch.describe();
     }
 
