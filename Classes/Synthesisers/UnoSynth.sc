@@ -72,17 +72,31 @@ UnoSynth : Synthesiser {
 	*randomise {
         |midiout,patchType,writeToPostWindow=false|
 		var patch = UnoSynthPatch();
-		var osc1Level;
+		var osc1Level = 127;
+		var detuneAmount;
 
-		if (false,{
+		// Oscillators
+		if (0.5.coin,{
 			// We'll go single oscillator
 			patch.set(UnoSynth.osc1LevelCcNo, 127);
 			patch.set(UnoSynth.osc2LevelCcNo, 0);
 		},{
 			// We'll mix the oscillators
 			osc1Level = patch.set(UnoSynth.osc1LevelCcNo, this.generateRandomValue(121,127,0,120,127));
-			postln(format("FLOO: %", patch.set(UnoSynth.osc2LevelCcNo, osc1Level.lincurve(120,127,120,0,4).round)));
+			patch.set(UnoSynth.osc2LevelCcNo, osc1Level.lincurve(120,127,120,0,4).round);
 		});
+
+		patch.set(UnoSynth.osc1WaveCcNo, this.generateRandomValue(0,127,0,0,127));
+		patch.set(UnoSynth.osc2WaveCcNo, this.generateRandomValue(0,127,0,0,127));
+
+		if (osc1Level < 127,{
+			// We'll allow some detune between the oscillators
+			detuneAmount = this.generateRandomValue(1,15,8,1,15);
+			patch.set(UnoSynth.osc1TuneCcNo, 64 + detuneAmount);
+			patch.set(UnoSynth.osc2TuneCcNo, 64 - detuneAmount);
+		});
+
+		patch.set(UnoSynth.noiseLevelCcNo, this.generateRandomValue(-5,120,6,0,120));
 
 		this.sendPatch(midiout,patch);
 		this.setCurrentPatch(patch);

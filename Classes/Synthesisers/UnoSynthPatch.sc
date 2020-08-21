@@ -25,13 +25,13 @@ UnoSynthPatch : Patch {
 
 	describe {
 		postln("OSC:");
-		/*postln(format("  Wave 1: %", this.prGetWaveDescription(kvps[UnoSynth.osc1WaveCcNo])));
+		postln(format("  Wave 1: %", this.prGetWaveDescription(kvps[UnoSynth.osc1WaveCcNo])));
 		postln(format("  Wave 2: %", this.prGetWaveDescription(kvps[UnoSynth.osc2WaveCcNo])));
 		postln(format("  Tune 1: %", kvps[UnoSynth.osc1TuneCcNo]));
-		postln(format("  Tune 2: %", kvps[UnoSynth.osc2TuneCcNo]));*/
+		postln(format("  Tune 2: %", kvps[UnoSynth.osc2TuneCcNo]));
 		postln(format("  Level 1: %", kvps[UnoSynth.osc1LevelCcNo]));
 		postln(format("  Level 2: %", kvps[UnoSynth.osc2LevelCcNo]));
-		//postln(format("  Level 2: %", kvps[UnoSynth.noiseLevelCcNo]));
+		postln(format("  Noise: %", kvps[UnoSynth.noiseLevelCcNo]));
 
 /*		postln("Filter:");
 		postln(format("  Mode: %", this.prGetFilterModeDescription(kvps[UnoSynth.filterModeCcNo])));
