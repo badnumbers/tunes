@@ -149,14 +149,11 @@ Synthesiser {
 
 	*setCurrentPatch {
 		|patch|
-		postln('setCurrentPatch');
 		if (this.getPatchType != patch.class, {
 			Error(format("The patch parameter passed to Synthesiser.setCurrentPatch() must be an instance of %.", this.getPatchType)).throw;
 		});
 
 		this.preparePatchDictionary();
-		postln(format("this.currentPatch: %", this.currentPatch));
-		postln(format("this.currentPatch[this.getPatchType]: %", this.currentPatch[this.getPatchType]));
 		this.currentPatch[this.getPatchType] = patch;
 	}
 

@@ -233,7 +233,7 @@ Jx03 : Synthesiser {
 		patch.set(Jx03Sysex.vcfEnvPolarity, this.chooseRandomValue([0,1],[1,4]));
 
 		this.sendPatch(midiout,patch);
-		currentPatch = patch;
+		this.setCurrentPatch(patch);
 		patch.describe();
     }
 
