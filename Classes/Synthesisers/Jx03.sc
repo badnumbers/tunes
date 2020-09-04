@@ -33,6 +33,13 @@ Jx03 : Synthesiser {
 	classvar <vcfResonanceCcNo = 71;
 	classvar <vcfSourceMixCcNo = 27;
 
+	*applyMidiParameterToPatch {
+		|args|
+		var controlNumber = args[0][10] * 100 + args[0][11];
+		var controlValue = args[0][12] * 16 + args[0][13];
+		currentPatch[this.getPatchType].kvps[controlNumber] = controlValue;
+	}
+
 	*getPatchType {
 		^Jx03Patch;
 	}
