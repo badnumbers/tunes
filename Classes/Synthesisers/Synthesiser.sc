@@ -10,6 +10,18 @@ Synthesiser {
 		^choice;
 	}
 
+	*describeCurrentPatch
+	{
+		this.preparePatchDictionary();
+
+		if (this.currentPatch[this.getPatchType].isNil,{
+			postln("There is no current patch to describe!");
+			^nil;
+		});
+
+		this.currentPatch[this.getPatchType].describe;
+	}
+
 	*generateRandomValue
 	{
 		|lo,hi,curve=0,clipMin=0,clipMax=127|
