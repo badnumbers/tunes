@@ -98,6 +98,25 @@ UnoSynth : Synthesiser {
 
 		patch.set(UnoSynth.noiseLevelCcNo, this.generateRandomValue(-5,120,6,0,120));
 
+		// Filter
+		patch.set(UnoSynth.filterModeCcNo, this.chooseRandomValue([0,60,127],[6,1,2]));
+		patch.set(UnoSynth.cutoffCcNo, this.generateRandomValue(0,127,0,0,127));
+		patch.set(UnoSynth.resonanceCcNo, this.generateRandomValue(0,127,0,0,127));
+		patch.set(UnoSynth.driveCcNo, this.generateRandomValue(0,127,0,0,127));
+		patch.set(UnoSynth.envAmtCcNo, this.generateRandomValue(0,127,0,0,127));
+
+		// Amplitude envelope
+		patch.set(UnoSynth.ampAttackCcNo, this.generateRandomValue(0,5,0,0,5));
+		patch.set(UnoSynth.ampDecayCcNo, this.generateRandomValue(0,127,8,0,127));
+		patch.set(UnoSynth.ampSustainCcNo, this.generateRandomValue(60,127,0,60,127));
+		patch.set(UnoSynth.ampReleaseCcNo, this.generateRandomValue(0,127,8,0,127));
+
+		// Filter envelope
+		patch.set(UnoSynth.filterAttackCcNo, this.generateRandomValue(0,5,0,0,5));
+		patch.set(UnoSynth.filterDecayCcNo, this.generateRandomValue(0,127,8,0,127));
+		patch.set(UnoSynth.filterSustainCcNo, this.generateRandomValue(-50,127,0,0,127));
+		patch.set(UnoSynth.filterReleaseCcNo, this.generateRandomValue(0,127,8,0,127));
+
 		this.sendPatch(midiout,patch);
 		this.setCurrentPatch(patch);
 		patch.describe();
