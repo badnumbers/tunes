@@ -11,7 +11,7 @@ CLASSMETHODS::
 METHOD:: midiChannel
 The MIDI channel that the UnoSynth is configured to listen on.
 
-returns:: 15, unless assigned a different value.
+returns:: 7, unless assigned a different value.
 
 METHOD:: modCcNo
 The MIDI CC number that is used to control the UnoSynth's mod input.

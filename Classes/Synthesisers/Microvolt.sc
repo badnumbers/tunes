@@ -1,4 +1,4 @@
 Microvolt {
-	classvar <>midiChannel = 0;
+	classvar <>midiChannel = 7;
 	classvar <modCcNo = 1;
 }
