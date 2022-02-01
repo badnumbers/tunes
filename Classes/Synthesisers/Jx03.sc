@@ -48,7 +48,7 @@ Jx03 : Synthesiser {
 		^\sysex;
 	}
 
-	*randomise {
+	*randomisePatch {
         |midiout,patchType,writeToPostWindow=false|
 		var patch = Jx03Patch();
 		var crossMod = 6.rand;

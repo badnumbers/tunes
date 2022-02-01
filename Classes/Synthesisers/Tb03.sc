@@ -18,7 +18,7 @@ Tb03 : Synthesiser {
 		^\control;
 	}
 
-	*randomise {
+	*randomisePatch {
         |midiout,patchType,writeToPostWindow=false|
 		var patch = Tb03Patch();
 		super.randomise(midiout,patchType,writeToPostWindow);

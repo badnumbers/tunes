@@ -33,7 +33,7 @@ Moves to the previous patch in the list and sends it to the hardware synth.
 ARGUMENT:: midiout
 An instance of code::MIDIOut:: used for sending the patch parameters to the hardware synth.
 
-METHOD:: randomise
+METHOD:: randomisePatch
 Provides a base method, intended for overriding, for generating a random patch for the synthesiser. Unless overridden, this method simply validates its inputs.
 
 ARGUMENT:: midiout

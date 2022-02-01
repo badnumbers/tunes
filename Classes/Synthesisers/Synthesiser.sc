@@ -158,7 +158,7 @@ Synthesiser {
 		postln("");
 	}
 
-	*randomise {
+	*randomisePatch {
         |midiout,patchType,writeToPostWindow=false|
 		if (midiout.class != MIDIOut,{
 			Error(format("The midiout parameter passed to %.randomise() must be an instance of MIDIOut.", this.class)).throw;

@@ -106,7 +106,7 @@ The pulse width modulation from the LFO is always triangular, regardless of the 
 
 returns:: 16.
 
-METHOD:: randomise
+METHOD:: randomisePatch
 Randomises the following parameters of the SH-01A:
 table::
 ## Parameter || Skewed?

@@ -64,7 +64,7 @@ UnoSynth : Synthesiser {
 		^\control;
 	}
 
-	*randomise {
+	*randomisePatch {
         |midiout,patchType,writeToPostWindow=false|
 		var patch = UnoSynthPatch();
 		var osc1Level = 127;

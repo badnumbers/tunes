@@ -39,7 +39,7 @@ Sh01a : Synthesiser {
 		^\control;
 	}
 
-	*randomise {
+	*randomisePatch {
         |midiout,patchType,writeToPostWindow=false|
 		var patch = Sh01aPatch();
 		var lfoMode, lfoRate, lfoSpeed;
