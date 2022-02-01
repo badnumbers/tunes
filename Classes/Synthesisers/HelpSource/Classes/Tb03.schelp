@@ -16,7 +16,7 @@ returns:: 16.
 METHOD:: cutoffFreqCcNo
 The MIDI CC number that is used to control the TB-03's cutoff frequency.
 
-returns:: 71.
+returns:: 74.
 
 METHOD:: decayCcNo
 The MIDI CC number that is used to control the TB-03's decay time.
