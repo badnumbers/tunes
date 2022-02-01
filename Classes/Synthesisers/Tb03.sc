@@ -10,11 +10,6 @@ Tb03 : Synthesiser {
 	classvar <tuningCcNo = 104;
 	classvar <>midiChannel = 1;
 
-	*applyMidiParameterToPatch {
-		|args|
-		currentPatch[this.getPatchType].kvps[args[1]] = args[0];
-	}
-
 	*getPatchType {
 		^Tb03Patch;
 	}

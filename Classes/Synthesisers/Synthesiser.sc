@@ -3,6 +3,13 @@ Synthesiser {
 	classvar <>patches;
 	classvar <>currentPatchIndices;
 
+	// Modifies the current patch by updating the value of the parameter (e.g. a CC) with the supplied parameterNumber to the new value parameterValue.
+	// E.g. applyMidiParameterToPatch(71,127)
+	*applyMidiParameterToPatch {
+		|parameterNumber,parameterValue|
+		currentPatch[this.getPatchType].kvps[parameterNumber] = parameterValue;
+		postln(format("The parameter number % now has the value %.", parameterNumber, currentPatch[this.getPatchType].kvps[parameterNumber]));
+	}
 	*chooseRandomValue
 	{
 		|possibleValues,weights|
@@ -33,6 +40,17 @@ Synthesiser {
 		|lo,hi,curve=0,clipMin=0,clipMax=127|
 		var randomValue = 1.0.rand.lincurve(0,1,lo,hi,curve).clip(clipMin,clipMax).round;
 		^randomValue;
+	}
+
+	*getMidiParametersFromMididef {
+		|args|
+		^[args[1],args[0]]
+	}
+
+	*initialisePatch {
+		|midiout|
+		this.createBlankPatch();
+		this.sendPatch(midiout,this.currentPatch[this.getPatchType]);
 	}
 
 	*keepPatch {

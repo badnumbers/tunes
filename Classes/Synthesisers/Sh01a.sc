@@ -31,11 +31,6 @@ Sh01a : Synthesiser {
 	classvar <vcoSubLevelCcNo = 21;
 	classvar <vcoSubTypeCcNo = 22;
 
-	*applyMidiParameterToPatch {
-		|args|
-		currentPatch[this.getPatchType].kvps[args[1]] = args[0];
-	}
-
 	*getPatchType {
 		^Sh01aPatch;
 	}
