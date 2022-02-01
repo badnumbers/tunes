@@ -10,8 +10,10 @@ Synthesiser {
 		^choice;
 	}
 
+	// Creates a blank patch for when there are no patches yet. Does not send the init patch values to the hardware synth.
 	*createBlankPatch {
-		Error(format("createBlankPatch() has not been implemented for the Synthesiser %!", this.class)).throw;
+		this.preparePatchDictionary();
+		this.currentPatch[this.getPatchType] = this.getPatchType().new;
 	}
 
 	*describeCurrentPatch
