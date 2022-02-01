@@ -10,6 +10,10 @@ Synthesiser {
 		^choice;
 	}
 
+	*createBlankPatch {
+		Error(format("createBlankPatch() has not been implemented for the Synthesiser %!", this.class)).throw;
+	}
+
 	*describeCurrentPatch
 	{
 		this.preparePatchDictionary();
@@ -143,8 +147,16 @@ Synthesiser {
     }
 
 	*recordMidiParameters {
+		this.preparePatchDictionary();
+
+		if (this.currentPatch[this.getPatchType].isNil,{
+			postln("Creating blank patch.");
+			this.createBlankPatch();
+		});
+
 		MIDIdef(format("%-%",this.class,"record-midi-parameters").asSymbol, {
 			|... args|
+			args.postln;
 			this.applyMidiParameterToPatch(args);
 		},nil,nil,this.getMidiMessageType,nil,nil,nil);
 	}
