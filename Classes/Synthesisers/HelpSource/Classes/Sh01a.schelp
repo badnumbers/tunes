@@ -68,7 +68,7 @@ table::
 returns:: 12.
 
 METHOD:: midiChannel
-The MIDI channel that the TB-03 is configured to listen on.
+The MIDI channel that the SH-01A is configured to listen on.
 
 returns:: 2, unless assigned a different value.
 
@@ -93,11 +93,6 @@ METHOD:: portamentoCcNo
 The MIDI CC number that is used to control the SH-01A's portamento time.
 
 returns:: 5.
-
-METHOD:: pulseWidthCcNo
-The MIDI CC number that is used to control the SH-01A's oscillator pulse width.
-
-returns:: 15.
 
 METHOD:: pwmSourceCcNo
 The MIDI CC number that is used to control the SH-01A's pulse width modulation source.
@@ -134,7 +129,7 @@ table::
 ::
 
 ARGUMENT:: midiout
-An instance of code::MIDIOut:: used for sending each CC value to the TB-03.
+An instance of code::MIDIOut:: used for sending each CC value to the SH-01A.
 
 ARGUMENT:: writeToPostWindow
 Whether the new value should be written to the post window. Defaults to false.
