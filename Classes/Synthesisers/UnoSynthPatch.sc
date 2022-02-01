@@ -9,8 +9,8 @@ UnoSynthPatch : Patch {
 		// Oscillators
 		kvps.add(UnoSynth.osc1WaveCcNo -> 64); // Mid
 		kvps.add(UnoSynth.osc2WaveCcNo -> 64); // Mid
-		kvps.add(UnoSynth.osc1LevelCcNo -> 100);
-		kvps.add(UnoSynth.osc2LevelCcNo -> 100);
+		kvps.add(UnoSynth.osc1LevelCcNo -> 127); // Max
+		kvps.add(UnoSynth.osc2LevelCcNo -> 127); // Max
 		kvps.add(UnoSynth.osc1TuneCcNo -> 64); // Centred
 		kvps.add(UnoSynth.osc2TuneCcNo -> 64); // Centred
 		kvps.add(UnoSynth.noiseLevelCcNo -> 0); // Min
