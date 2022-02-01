@@ -61,6 +61,10 @@ UnoSynth : Synthesiser {
 		currentPatch[this.getPatchType].kvps[args[1]] = args[0];
 	}
 
+	*createBlankPatch {
+		this.currentPatch[this.getPatchType] = UnoSynthPatch();
+	}
+
 	*getPatchType {
 		^UnoSynthPatch;
 	}
