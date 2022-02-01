@@ -28,3 +28,10 @@ patch.name = "Noisy acid";
 patch.kvps[14]=4;patch.kvps[15]=22.0;patch.kvps[75]=101.0;patch.kvps[79]=0;patch.kvps[24]=110.0;patch.kvps[5]=0.0;patch.kvps[73]=11.0;patch.kvps[19]=0;patch.kvps[13]=0.0;patch.kvps[16]=1;patch.kvps[26]=108.0;patch.kvps[28]=0;patch.kvps[21]=0;patch.kvps[25]=0.0;patch.kvps[29]=1;patch.kvps[74]=19.0;patch.kvps[72]=41.0;patch.kvps[78]=0;patch.kvps[80]=0;patch.kvps[30]=98.0;patch.kvps[3]=78.0;patch.kvps[23]=7.0;patch.kvps[71]=124.0;patch.kvps[20]=127.0;patch.kvps[12]=5;patch.kvps[22]=2;
 Sh01a.keepPatch(patch);
 )
+
+(
+var patch = Sh01aPatch();
+patch.name = "Beautiful lead";
+patch.kvps[14]=4;patch.kvps[15]=127;patch.kvps[75]=69;patch.kvps[79]=0;patch.kvps[24]=24;patch.kvps[5]=0;patch.kvps[73]=33;patch.kvps[19]=127;patch.kvps[13]=6;patch.kvps[16]=1;patch.kvps[26]=23;patch.kvps[28]=0;patch.kvps[21]=98;patch.kvps[25]=0;patch.kvps[29]=2;patch.kvps[74]=75;patch.kvps[72]=127;patch.kvps[78]=0;patch.kvps[80]=0;patch.kvps[30]=123;patch.kvps[3]=0;patch.kvps[23]=0;patch.kvps[71]=33;patch.kvps[20]=127;patch.kvps[12]=2;patch.kvps[22]=2;
+Sh01a.keepPatch(patch);
+)
