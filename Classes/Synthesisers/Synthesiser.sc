@@ -2,6 +2,8 @@ Synthesiser {
 	classvar <>currentPatch;
 	classvar <>patches;
 	classvar <>currentPatchIndices;
+	classvar <noCurrentPatchMessage = "To create a patch, call initialisePatch(), randomisePatch() or recordMidiParameters().";
+	classvar <noKeptPatchesMessage = "To keep a patch, call keepCurrentPatch().";
 
 	// Modifies the current patch by updating the value of the parameter (e.g. a CC) with the supplied parameterNumber to the new value parameterValue.
 	// E.g. applyMidiParameterToPatch(71,127)
@@ -32,6 +34,7 @@ Synthesiser {
 
 		if (this.currentPatch[this.getPatchType].isNil,{
 			postln("There is no current patch to describe!");
+			postln(this.noCurrentPatchMessage);
 			^nil;
 		});
 
@@ -54,41 +57,85 @@ Synthesiser {
 
 	*initialisePatch {
 		|midiout|
+
+		if (midiout.class != MIDIOut,{
+			Error(format("The midiout parameter passed to %.sendPatch() must be an instance of MIDIOut.", this.class)).throw;
+		});
+
 		this.createBlankPatch();
 		this.sendPatch(midiout,this.currentPatch[this.getPatchType]);
 	}
 
-	*keepPatch {
+	*keepCurrentPatch {
+		|patchname|
+
+		if ((patchname.isNil) || (patchname == ""), {
+			postln("You must give your patch a name when you keep it.");
+			^nil;
+		});
+
+		this.preparePatchDictionary();
+
+		if (this.currentPatch[this.getPatchType].isNil,{
+			postln("There is no patch to keep!");
+			postln(this.noCurrentPatchMessage);
+			^nil;
+		});
+
+		this.currentPatch[this.getPatchType].name = patchname;
+		this.keepSpecificPatch(this.currentPatch[this.getPatchType]);
+	}
+
+	// Keeps the supplied patch in the list of patches. Only used in the output of WriteCurrentPatch() and WriteKeptPatches().
+	*keepSpecificPatch {
 		|patch|
 		this.preparePatchDictionary();
 
-		if (patch.isNil,{
-			if (this.currentPatch[this.getPatchType].isNil,{
-				postln("There is no patch to keep!");
-				^nil;
-			},{
-				patch = this.currentPatch[this.getPatchType];
-				patches[this.getPatchType] = patches[this.getPatchType].add(patch);
-			});
+		if (this.getPatchType != patch.class, {
+				Error(format("The patch parameter passed to %.keepSpecificPatch() must be an instance of %.", this.class, this.getPatchType)).throw;
 		},{
-			if (this.getPatchType != patch.class, {
-				Error(format("The patch parameter passed to %.keepPatch() must be an instance of %.", this.class, this.getPatchType)).throw;
-			},{
-				patches[this.getPatchType] = patches[this.getPatchType].add(patch);
-			});
+			patches[this.getPatchType] = patches[this.getPatchType].add(patch);
 		});
 		this.currentPatch[this.getPatchType] = patch;
 	}
 
+	*modifyCurrentPatch {
+		|midiout, parameterNumber, parameterValue|
+
+		if (midiout.class != MIDIOut,{
+			Error(format("The midiout parameter passed to %.sendPatch() must be an instance of MIDIOut.", this.class)).throw;
+		});
+
+		this.preparePatchDictionary();
+
+		if (this.currentPatch[this.getPatchType].isNil,{
+			postln("There is no current patch to modify!");
+			postln(this.noCurrentPatchMessage);
+			^nil;
+		});
+
+		this.applyMidiParameterToPatch(parameterNumber,parameterValue);
+		midiout.control(this.midiChannel,parameterNumber,parameterValue);
+	}
+
 	*nextPatch {
 		|midiout|
+
+		if (midiout.class != MIDIOut,{
+			Error(format("The midiout parameter passed to %.sendPatch() must be an instance of MIDIOut.", this.class)).throw;
+		});
+
 		this.preparePatchDictionary();
 
 		if (patches[this.getPatchType].class != Array, {
-			postln("There are no kept patches!");
+			postln("There are no kept patches to move between...");
+			postln(this.noKeptPatchesMessage);
+			^nil;
 		});
 		if (patches[this.getPatchType].size == 0, {
-			postln("There are no kept patches!");
+			postln("There are no kept patches to move between...");
+			postln(this.noKeptPatchesMessage);
+			^nil;
 		});
 
 		currentPatchIndices[this.getPatchType] = currentPatchIndices[this.getPatchType] + 1;
@@ -124,12 +171,20 @@ Synthesiser {
 	*previousPatch {
 		|midiout|
 
+		if (midiout.class != MIDIOut,{
+			Error(format("The midiout parameter passed to %.sendPatch() must be an instance of MIDIOut.", this.class)).throw;
+		});
+
 		this.preparePatchDictionary();
 		if (patches[this.getPatchType].class != Array, {
-			postln("There are no kept patches!");
+			postln("There are no kept patches to move between.");
+			postln(this.noKeptPatchesMessage);
+			^nil;
 		});
 		if (patches[this.getPatchType].size == 0, {
-			postln("There are no kept patches!");
+			postln("There are no kept patches to move between...");
+			postln(this.noKeptPatchesMessage);
+			^nil;
 		});
 
 		currentPatchIndices[this.getPatchType] = currentPatchIndices[this.getPatchType] - 1;
@@ -144,6 +199,9 @@ Synthesiser {
 		^currentPatch[this.getPatchType];
 	}
 
+	// Writes code describing the supplied patch to the post window.
+	// Running this code will recreate the patch.
+	// Used by writeCurrentPatch() and writeKeptPatches().
 	*prWritePatch {
 		|patch|
 		if (this.getPatchType != patch.class, {
@@ -196,6 +254,8 @@ Synthesiser {
 		});
 	}
 
+	// Takes an instance of a patch and sets it to be the current patch.
+	// Used by randomisePatch().
 	*setCurrentPatch {
 		|patch|
 		if (this.getPatchType != patch.class, {
@@ -206,28 +266,35 @@ Synthesiser {
 		this.currentPatch[this.getPatchType] = patch;
 	}
 
-	*setPatchParameter {
-		|midiout, parameterNumber, parameterValue|
-		this.applyMidiParameterToPatch(parameterNumber,parameterValue);
-		midiout.control(this.midiChannel,parameterNumber,parameterValue);
-	}
-
 	*writeCurrentPatch {
 		this.preparePatchDictionary();
 
 		if (this.currentPatch[this.getPatchType].isNil,{
 			postln("There is no patch to write!");
+			postln(this.noCurrentPatchMessage);
 			^nil;
 		});
 		postln("(");
 		postln(format("var patch = %();", this.getPatchType()));
 		this.prWritePatch(this.currentPatch[this.getPatchType]);
-		postln(format("%.keepPatch(patch);", this.name));
+		postln(format("%.keepSpecificPatch(patch);", this.name));
 		postln(")");
 	}
 
 	*writeKeptPatches {
 		this.preparePatchDictionary();
+
+		this.preparePatchDictionary();
+		if (patches[this.getPatchType].class != Array, {
+			postln("There are no kept patches to write.");
+			postln(this.noKeptPatchesMessage);
+			^nil;
+		});
+		if (patches[this.getPatchType].size == 0, {
+			postln("There are no kept patches to write.");
+			postln(this.noKeptPatchesMessage);
+			^nil;
+		});
 
 		postln("(");
 		postln("var patch;");
@@ -235,7 +302,7 @@ Synthesiser {
 			|patch|
 			postln(format("patch = %();", this.getPatchType()));
 			this.prWritePatch(patch);
-			postln(format("%.keepPatch(patch);", this.name));
+			postln(format("%.keepSpecificPatch(patch);", this.name));
 		});
 		postln(")");
 	}
