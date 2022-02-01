@@ -10,6 +10,9 @@ Synthesiser {
 		currentPatch[this.getPatchType].kvps[parameterNumber] = parameterValue;
 		postln(format("The parameter number % now has the value %.", parameterNumber, currentPatch[this.getPatchType].kvps[parameterNumber]));
 	}
+
+	// Chooses between an array of values with a specified weighting.
+	// E.g. this.chooseRandomValue([0,1,2],[1,3,1])
 	*chooseRandomValue
 	{
 		|possibleValues,weights|
@@ -35,6 +38,8 @@ Synthesiser {
 		this.currentPatch[this.getPatchType].describe;
 	}
 
+	// Chooses between a range of values with a specified curve, low clip and high clip.
+	// E.g. this.generateRandomValue(20,127,2,0,127)
 	*generateRandomValue
 	{
 		|lo,hi,curve=0,clipMin=0,clipMax=127|
@@ -170,14 +175,14 @@ Synthesiser {
 		this.preparePatchDictionary();
 
 		if (this.currentPatch[this.getPatchType].isNil,{
-			postln("Creating blank patch.");
 			this.createBlankPatch();
 		});
 
 		MIDIdef(format("%-%",this.class,"record-midi-parameters").asSymbol, {
 			|... args|
-			args.postln;
-			this.applyMidiParameterToPatch(args);
+			var midiParameterValues;
+			midiParameterValues = this.getMidiParametersFromMididef(args);
+			this.applyMidiParameterToPatch(midiParameterValues[0],midiParameterValues[1]);
 		},nil,nil,this.getMidiMessageType,nil,nil,nil);
 	}
 
@@ -199,6 +204,12 @@ Synthesiser {
 
 		this.preparePatchDictionary();
 		this.currentPatch[this.getPatchType] = patch;
+	}
+
+	*setPatchParameter {
+		|midiout, parameterNumber, parameterValue|
+		this.applyMidiParameterToPatch(parameterNumber,parameterValue);
+		midiout.control(this.midiChannel,parameterNumber,parameterValue);
 	}
 
 	*writeCurrentPatch {
