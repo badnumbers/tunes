@@ -23,6 +23,16 @@ The MIDI CC number that is used to control the TB-03's decay time.
 
 returns:: 75.
 
+METHOD:: delayFeedbackCcNo
+The MIDI CC number that is used to control the TB-03's delay feedback.
+
+returns:: 19.
+
+METHOD:: delayTimeCcNo
+The MIDI CC number that is used to control the TB-03's delay time.
+
+returns:: 18.
+
 METHOD:: envModCcNo
 The MIDI CC number that is used to control the TB-03's envelope modulation depth.
 
