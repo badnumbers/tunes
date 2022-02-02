@@ -34,7 +34,7 @@ Synthesiser {
 
 		if (this.workingPatch[this.getPatchType].isNil,{
 			postln("There is no current patch to describe!");
-			postln(this.noworkingPatchMessage);
+			postln(this.noWorkingPatchMessage);
 			^nil;
 		});
 
@@ -239,7 +239,7 @@ Synthesiser {
 
 		if (this.workingPatch[this.getPatchType].isNil,{
 			postln("There is no patch to save!");
-			postln(this.noworkingPatchMessage);
+			postln(this.noWorkingPatchMessage);
 			^nil;
 		});
 
