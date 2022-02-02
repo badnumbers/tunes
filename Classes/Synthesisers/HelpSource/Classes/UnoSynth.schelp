@@ -439,7 +439,7 @@ MIDIClient.init;
 d = MIDIOut.newByName("Scarlett 18i8 USB", "Scarlett 18i8 USB MIDI 1").latency_(Server.default.latency);
 */
 
-Pdef(\us,
+Pdef(\unosynth,
 	Ppar([
 		Pbind(
 			\type, \midi,
@@ -447,9 +447,9 @@ Pdef(\us,
 			\midiout, d,
 			\chan, UnoSynth.midiChannel,
 			\octave, 3,
-			\scale, Scale.phrygian,
 			\degree, 0,
-			\dur, q
+			\dur, 1/4,
+			\amp, 1
 		),
 		Pbind(
 			\type, \midi,
@@ -462,6 +462,7 @@ Pdef(\us,
 		)
 	])
 );
-Pdef(\us).play;
+Pdef(\unosynth).play;
 )
+Pdef(\unosynth).stop;
 ::

@@ -77,29 +77,30 @@ MIDIClient.init;
 d = MIDIOut.newByName("Scarlett 18i8 USB", "Scarlett 18i8 USB MIDI 1").latency_(Server.default.latency);
 */
 
-Pdef(\tb,
-	Ppar([
-		Pbind(
-			\type, \midi,
-			\midicmd, \noteOn,
-			\midiout, d,
-			\chan, Tb03.midiChannel,
-			\octave, 3,
-			\scale, Scale.phrygian,
-			\degree, 0,
-			\dur, q
-		),
-		Pbind(
-			\type, \midi,
-			\midiout, d,
-			\chan, Tb03.midiChannel,
-			\midicmd, \control,
-			\ctlNum, Tb03.cutoffCcNo,
-			\control, Pseg([10,120,10,120],[2,2],\sin,inf),
-			\dur, 1/64
-		)
-	])
+Pdef(\tb03,
+    Ppar([
+        Pbind(
+            \type, \midi,
+            \midicmd, \noteOn,
+            \midiout, d,
+            \chan, Tb03.midiChannel,
+            \octave, 3,
+            \degree, 0,
+            \dur, 1/4,
+			\amp, Pseq([0.5,1],inf)
+        ),
+        Pbind(
+            \type, \midi,
+            \midiout, d,
+            \chan, Tb03.midiChannel,
+            \midicmd, \control,
+            \ctlNum, Tb03.cutoffFreqCcNo,
+            \control, Pseg([10,120,10,120],[2,2],\sin,inf),
+            \dur, 1/64
+        )
+    ])
 );
-Pdef(\tb).play;
+Pdef(\tb03).play;
 )
+Pdef(\tb03).stop;
 ::
