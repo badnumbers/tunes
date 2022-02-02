@@ -94,9 +94,8 @@ Synthesiser {
 		if (this.getPatchType != patch.class, {
 				Error(format("The patch parameter passed to %.keepSpecificPatch() must be an instance of %.", this.class, this.getPatchType)).throw;
 		},{
-			patches[this.getPatchType] = patches[this.getPatchType].add(patch);
+			patches[this.getPatchType] = patches[this.getPatchType].add(patch.deepCopy); // shallowCopy doesn't seem to create an independent copy, for reasons I don't understand
 		});
-		this.currentPatch[this.getPatchType] = patch;
 	}
 
 	*listKeptPatches {
