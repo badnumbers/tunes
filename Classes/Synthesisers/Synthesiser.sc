@@ -3,7 +3,7 @@ Synthesiser {
 	classvar <>patches;
 	classvar <>workingPatchIndices;
 	classvar <noWorkingPatchMessage = "To create a working patch, call initialisePatch(), randomisePatch() or recordMidiParameters().";
-	classvar <noKeptPatchesMessage = "To keep the working patch, call keepWorkingPatch().";
+	classvar <noSavedPatchesMessage = "To save the working patch, call saveWorkingPatch().";
 
 	// Modifies the current patch by updating the value of the parameter (e.g. a CC) with the supplied parameterNumber to the new value parameterValue.
 	// E.g. applyMidiParameterToPatch(71,127)
@@ -67,44 +67,44 @@ Synthesiser {
 		this.sendPatch(midiout,this.workingPatch[this.getPatchType]);
 	}
 
-	*keepWorkingPatch {
+	*saveWorkingPatch {
 		|patchname|
 
 		if ((patchname.isNil) || (patchname == ""), {
-			postln("You must give your patch a name when you keep it.");
+			postln("You must give your patch a name when you save it.");
 			^nil;
 		});
 
 		this.preparePatchDictionary();
 
 		if (this.workingPatch[this.getPatchType].isNil,{
-			postln("There is no patch to keep!");
+			postln("There is no patch to save!");
 			postln(this.noworkingPatchMessage);
 			^nil;
 		});
 
 		this.workingPatch[this.getPatchType].name = patchname;
-		this.keepSpecificPatch(this.workingPatch[this.getPatchType]);
+		this.saveSpecificPatch(this.workingPatch[this.getPatchType]);
 	}
 
-	// Keeps the supplied patch in the list of patches. Only used in the output of writeworkingPatch() and writeKeptPatches().
-	*keepSpecificPatch {
+	// Saves the supplied patch in the list of patches. Only used in the output of writeworkingPatch() and writeSavedPatches().
+	*saveSpecificPatch {
 		|patch|
 		this.preparePatchDictionary();
 
 		if (this.getPatchType != patch.class, {
-				Error(format("The patch parameter passed to %.keepSpecificPatch() must be an instance of %.", this.class, this.getPatchType)).throw;
+				Error(format("The patch parameter passed to %.saveSpecificPatch() must be an instance of %.", this.class, this.getPatchType)).throw;
 		},{
 			patches[this.getPatchType] = patches[this.getPatchType].add(patch.deepCopy); // shallowCopy doesn't seem to create an independent copy, for reasons I don't understand
 		});
 	}
 
-	*listKeptPatches {
+	*listSavedPatches {
 		this.preparePatchDictionary();
 
 		if ((patches[this.getPatchType].class != Array) || (patches[this.getPatchType].size == 0), {
-			postln("There are no kept patches to list.");
-			postln(this.noKeptPatchesMessage);
+			postln("There are no saved patches to list.");
+			postln(this.noSavedPatchesMessage);
 			^nil;
 		});
 
@@ -143,13 +143,13 @@ Synthesiser {
 		this.preparePatchDictionary();
 
 		if (patches[this.getPatchType].class != Array, {
-			postln("There are no kept patches to move between...");
-			postln(this.noKeptPatchesMessage);
+			postln("There are no saved patches to move between...");
+			postln(this.noSavedPatchesMessage);
 			^nil;
 		});
 		if (patches[this.getPatchType].size == 0, {
-			postln("There are no kept patches to move between...");
-			postln(this.noKeptPatchesMessage);
+			postln("There are no saved patches to move between...");
+			postln(this.noSavedPatchesMessage);
 			^nil;
 		});
 
@@ -161,7 +161,7 @@ Synthesiser {
 
 		workingPatch[this.getPatchType] = patches[this.getPatchType][workingPatchIndices[this.getPatchType]].deepCopy;
 		this.sendPatch(midiout,workingPatch[this.getPatchType]);
-		postln(format("Changed patch to %: (% of % kept patches).", if (workingPatch[this.getPatchType].name.isNil, "Unnamed patch", workingPatch[this.getPatchType].name), workingPatchIndices[this.getPatchType] + 1, patches[this.getPatchType].size));
+		postln(format("Changed patch to %: (% of % saved patches).", if (workingPatch[this.getPatchType].name.isNil, "Unnamed patch", workingPatch[this.getPatchType].name), workingPatchIndices[this.getPatchType] + 1, patches[this.getPatchType].size));
 		^workingPatch[this.getPatchType];
 	}
 
@@ -192,13 +192,13 @@ Synthesiser {
 
 		this.preparePatchDictionary();
 		if (patches[this.getPatchType].class != Array, {
-			postln("There are no kept patches to move between.");
-			postln(this.noKeptPatchesMessage);
+			postln("There are no saved patches to move between.");
+			postln(this.noSavedPatchesMessage);
 			^nil;
 		});
 		if (patches[this.getPatchType].size == 0, {
-			postln("There are no kept patches to move between...");
-			postln(this.noKeptPatchesMessage);
+			postln("There are no saved patches to move between...");
+			postln(this.noSavedPatchesMessage);
 			^nil;
 		});
 
@@ -210,13 +210,13 @@ Synthesiser {
 
 		workingPatch[this.getPatchType] = patches[this.getPatchType][workingPatchIndices[this.getPatchType]].deepCopy;
 		this.sendPatch(midiout,workingPatch[this.getPatchType]);
-		postln(format("Changed patch to %: (% of % kept patches).", if (workingPatch[this.getPatchType].name.isNil, "Unnamed patch", workingPatch[this.getPatchType].name), workingPatchIndices[this.getPatchType] + 1, patches[this.getPatchType].size));
+		postln(format("Changed patch to %: (% of % saved patches).", if (workingPatch[this.getPatchType].name.isNil, "Unnamed patch", workingPatch[this.getPatchType].name), workingPatchIndices[this.getPatchType] + 1, patches[this.getPatchType].size));
 		^workingPatch[this.getPatchType];
 	}
 
 	// Writes code describing the supplied patch to the post window.
 	// Running this code will recreate the patch.
-	// Used by writeWorkingPatch() and writeKeptPatches().
+	// Used by writeWorkingPatch() and writeSavedPatches().
 	*prWritePatch {
 		|patch|
 		if (this.getPatchType != patch.class, {
@@ -292,16 +292,16 @@ Synthesiser {
 		postln("(");
 		postln(format("var patch = %();", this.getPatchType()));
 		this.prWritePatch(this.workingPatch[this.getPatchType]);
-		postln(format("%.keepSpecificPatch(patch);", this.name));
+		postln(format("%.saveSpecificPatch(patch);", this.name));
 		postln(")");
 	}
 
-	*writeKeptPatches {
+	*writeSavedPatches {
 		this.preparePatchDictionary();
 
 		if ((patches[this.getPatchType].class != Array) || (patches[this.getPatchType].size == 0), {
-			postln("There are no kept patches to write.");
-			postln(this.noKeptPatchesMessage);
+			postln("There are no saved patches to write.");
+			postln(this.noSavedPatchesMessage);
 			^nil;
 		});
 
@@ -311,7 +311,7 @@ Synthesiser {
 			|patch|
 			postln(format("patch = %();", this.getPatchType()));
 			this.prWritePatch(patch);
-			postln(format("%.keepSpecificPatch(patch);", this.name));
+			postln(format("%.saveSpecificPatch(patch);", this.name));
 		});
 		postln(")");
 	}

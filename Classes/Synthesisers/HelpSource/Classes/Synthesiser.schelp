@@ -6,7 +6,7 @@ related:: Classes/Microvolt, Classes/OhCoast, Classes/Sh01a, Classes/Tb03, Class
 DESCRIPTION::
 A base class for other classes which describe a hardware synthesiser.
 
-A key concept is the TELETYPE::patch::, which is a stored set of parameters describing a patch which is kept in memory. The patch you are actively working with is called the TELETYPE::working patch::. At any point you can save the working patch by calling CODE::saveWorkingPatch::. You can then cycle between saved patches using by calling CODE::nextPatch:: or CODE::previousPatch::, which will overwrite the working patch with the saved patch.
+A key concept is the TELETYPE::patch::, which is a stored set of parameters describing a patch which is saved in memory. The patch you are actively working with is called the TELETYPE::working patch::. At any point you can save the working patch by calling CODE::saveWorkingPatch::. You can then cycle between saved patches using by calling CODE::nextPatch:: or CODE::previousPatch::, which will overwrite the working patch with the saved patch.
 
 You will first need to create a working patch by calling CODE::initialisePatch::, CODE::randomisePatch:: or CODE::recordMidiParameters::.
 
@@ -37,13 +37,13 @@ Creates or updates the working patch with default parameter values and sends it 
 ARGUMENT:: midiout
 An instance of code::MIDIOut:: used for sending the patch parameters to the hardware synth.
 
-METHOD:: keepWorkingPatch
-Stores the working patch in memory to enable you to create other patches without losing this one. To keep the patch permanently, call CODE::writeWorkingPatch():: and save the code written to the output window.
+METHOD:: saveWorkingPatch
+Stores the working patch in memory to enable you to create other patches without losing this one. To save the patch permanently, call CODE::writeWorkingPatch():: and save the code written to the output window.
 
 ARGUMENT:: patchname
 The name to give the patch.
 
-METHOD:: listKeptPatches
+METHOD:: listSavedPatches
 Writes the names of saved patches to the post window.
 
 METHOD:: nextPatch
@@ -97,8 +97,8 @@ CODE::
 var patch = Tb03Patch();
 patch.name = "Unnamed patch";
 patch.kvps[74]=126.0;patch.kvps[104]=64;patch.kvps[12]=64;patch.kvps[71]=119.0;patch.kvps[16]=59.0;patch.kvps[18]=0;patch.kvps[75]=70.0;patch.kvps[17]=17.0;
-Tb03.keepSpecificPatch(patch);
+Tb03.saveSpecificPatch(patch);
 )
 ::
 
-PRIVATE::applyMidiParameterToPatch,chooseRandomValue,createBlankPatch,workingPatch,workingPatchIndices,generateRandomValue,getMidiParametersFromMididef,keepSpecificPatch,patches,prWritePatch,preparePatchDictionary,sendPatch,setWorkingPatch
+PRIVATE::applyMidiParameterToPatch,chooseRandomValue,createBlankPatch,workingPatch,workingPatchIndices,generateRandomValue,getMidiParametersFromMididef,saveSpecificPatch,patches,prWritePatch,preparePatchDictionary,sendPatch,setWorkingPatch
