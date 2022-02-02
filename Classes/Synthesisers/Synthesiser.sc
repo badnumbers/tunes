@@ -67,38 +67,6 @@ Synthesiser {
 		this.sendPatch(midiout,this.workingPatch[this.getPatchType]);
 	}
 
-	*saveWorkingPatch {
-		|patchname|
-
-		if ((patchname.isNil) || (patchname == ""), {
-			postln("You must give your patch a name when you save it.");
-			^nil;
-		});
-
-		this.preparePatchDictionary();
-
-		if (this.workingPatch[this.getPatchType].isNil,{
-			postln("There is no patch to save!");
-			postln(this.noworkingPatchMessage);
-			^nil;
-		});
-
-		this.workingPatch[this.getPatchType].name = patchname;
-		this.saveSpecificPatch(this.workingPatch[this.getPatchType]);
-	}
-
-	// Saves the supplied patch in the list of patches. Only used in the output of writeworkingPatch() and writeSavedPatches().
-	*saveSpecificPatch {
-		|patch|
-		this.preparePatchDictionary();
-
-		if (this.getPatchType != patch.class, {
-				Error(format("The patch parameter passed to %.saveSpecificPatch() must be an instance of %.", this.class, this.getPatchType)).throw;
-		},{
-			patches[this.getPatchType] = patches[this.getPatchType].add(patch.deepCopy); // shallowCopy doesn't seem to create an independent copy, for reasons I don't understand
-		});
-	}
-
 	*listSavedPatches {
 		this.preparePatchDictionary();
 
@@ -257,6 +225,38 @@ Synthesiser {
 			midiParameterValues = this.getMidiParametersFromMididef(args);
 			this.applyMidiParameterToPatch(midiParameterValues[0],midiParameterValues[1]);
 		},nil,nil,this.getMidiMessageType,nil,nil,nil);
+	}
+
+	*saveWorkingPatch {
+		|patchname|
+
+		if ((patchname.isNil) || (patchname == ""), {
+			postln("You must give your patch a name when you save it.");
+			^nil;
+		});
+
+		this.preparePatchDictionary();
+
+		if (this.workingPatch[this.getPatchType].isNil,{
+			postln("There is no patch to save!");
+			postln(this.noworkingPatchMessage);
+			^nil;
+		});
+
+		this.workingPatch[this.getPatchType].name = patchname;
+		this.saveSpecificPatch(this.workingPatch[this.getPatchType]);
+	}
+
+	// Saves the supplied patch in the list of patches. Only used in the output of writeworkingPatch() and writeSavedPatches().
+	*saveSpecificPatch {
+		|patch|
+		this.preparePatchDictionary();
+
+		if (this.getPatchType != patch.class, {
+				Error(format("The patch parameter passed to %.saveSpecificPatch() must be an instance of %.", this.class, this.getPatchType)).throw;
+		},{
+			patches[this.getPatchType] = patches[this.getPatchType].add(patch.deepCopy); // shallowCopy doesn't seem to create an independent copy, for reasons I don't understand
+		});
 	}
 
 	*sendPatch {
