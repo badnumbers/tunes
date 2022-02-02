@@ -99,6 +99,21 @@ Synthesiser {
 		this.currentPatch[this.getPatchType] = patch;
 	}
 
+	*listKeptPatches {
+		this.preparePatchDictionary();
+
+		if ((patches[this.getPatchType].class != Array) || (patches[this.getPatchType].size == 0), {
+			postln("There are no kept patches to list.");
+			postln(this.noKeptPatchesMessage);
+			^nil;
+		});
+
+		this.patches[this.getPatchType].do({
+			|patch|
+			postln(patch.name);
+		});
+	}
+
 	*modifyCurrentPatch {
 		|midiout, parameterNumber, parameterValue|
 
@@ -146,7 +161,7 @@ Synthesiser {
 
 		currentPatch[this.getPatchType] = patches[this.getPatchType][currentPatchIndices[this.getPatchType]];
 		this.sendPatch(midiout,currentPatch[this.getPatchType]);
-		postln(format("Changed patch to %", if (currentPatch[this.getPatchType].name.isNil, "Unnamed patch", currentPatch[this.getPatchType].name)));
+		postln(format("Changed patch to %: (% of % kept patches).", if (currentPatch[this.getPatchType].name.isNil, "Unnamed patch", currentPatch[this.getPatchType].name), currentPatchIndices[this.getPatchType] + 1, patches[this.getPatchType].size));
 		^currentPatch[this.getPatchType];
 	}
 
@@ -193,9 +208,9 @@ Synthesiser {
 			currentPatchIndices[this.getPatchType] = patches[this.getPatchType].size - 1;
 		});
 
-		currentPatch[this.getPatchType] = patches[currentPatchIndices[this.getPatchType]];
+		currentPatch[this.getPatchType] = patches[this.getPatchType][currentPatchIndices[this.getPatchType]];
 		this.sendPatch(midiout,currentPatch[this.getPatchType]);
-		postln(format("Changed patch to %", if (currentPatch[this.getPatchType].name.isNil, "Unnamed patch", currentPatch[this.getPatchType].name)));
+		postln(format("Changed patch to %: (% of % kept patches).", if (currentPatch[this.getPatchType].name.isNil, "Unnamed patch", currentPatch[this.getPatchType].name), currentPatchIndices[this.getPatchType] + 1, patches[this.getPatchType].size));
 		^currentPatch[this.getPatchType];
 	}
 
@@ -284,13 +299,7 @@ Synthesiser {
 	*writeKeptPatches {
 		this.preparePatchDictionary();
 
-		this.preparePatchDictionary();
-		if (patches[this.getPatchType].class != Array, {
-			postln("There are no kept patches to write.");
-			postln(this.noKeptPatchesMessage);
-			^nil;
-		});
-		if (patches[this.getPatchType].size == 0, {
+		if ((patches[this.getPatchType].class != Array) || (patches[this.getPatchType].size == 0), {
 			postln("There are no kept patches to write.");
 			postln(this.noKeptPatchesMessage);
 			^nil;
