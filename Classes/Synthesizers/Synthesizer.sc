@@ -5,7 +5,7 @@ Synthesizer {
 	classvar <noWorkingPatchMessage = "To create a working patch, call initialisePatch(), randomisePatch() or recordMidiParameters().";
 	classvar <noSavedPatchesMessage = "To save the working patch, call saveWorkingPatch().";
 
-	// Modifies the current patch by updating the value of the parameter (e.g. a CC) with the supplied parameterNumber to the new value parameterValue.
+	// Modifies the working patch by updating the value of the parameter (e.g. a CC) with the supplied parameterNumber to the new value parameterValue.
 	// E.g. applyMidiParameterToPatch(71,127)
 	*applyMidiParameterToPatch {
 		|parameterNumber,parameterValue|
@@ -33,7 +33,7 @@ Synthesizer {
 		this.preparePatchDictionary();
 
 		if (this.workingPatch[this.getPatchType].isNil,{
-			postln("There is no current patch to describe!");
+			postln("There is no working patch to describe!");
 			postln(this.noWorkingPatchMessage);
 			^nil;
 		});
@@ -92,7 +92,7 @@ Synthesizer {
 		this.preparePatchDictionary();
 
 		if (this.workingPatch[this.getPatchType].isNil,{
-			postln("There is no current patch to modify!");
+			postln("There is no working patch to modify!");
 			postln(this.noWorkingPatchMessage);
 			^nil;
 		});
@@ -269,7 +269,7 @@ Synthesizer {
 		});
 	}
 
-	// Takes an instance of a patch and sets it to be the current patch.
+	// Takes an instance of a patch and sets it to be the working patch.
 	// Used by randomisePatch().
 	*setWorkingPatch {
 		|patch|
