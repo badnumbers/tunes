@@ -11,6 +11,10 @@ Tb03 : Synthesizer {
 	classvar <tuningCcNo = 104;
 	classvar <>midiChannel = 1;
 
+	*getControlSurfaceType {
+		^Tb03ControlSurface;
+	}
+
 	*getPatchType {
 		^Tb03Patch;
 	}

@@ -51,6 +51,11 @@ Synthesizer {
 		^randomValue;
 	}
 
+	// Gets the type of the control surface class intended for this Synthesizer.
+	*getControlSurfaceType {
+		Error("This Synthesizer does not have a control surface defined.").throw;
+	}
+
 	*getMidiParametersFromMididef {
 		|args|
 		^[args[1],args[0]]
@@ -225,6 +230,24 @@ Synthesizer {
 			midiParameterValues = this.getMidiParametersFromMididef(args);
 			this.applyMidiParameterToPatch(midiParameterValues[0],midiParameterValues[1]);
 		},nil,nil,this.getMidiMessageType,nil,nil,nil);
+	}
+
+	*registerControlSurface {
+		|midiout|
+
+		var controlSurfaceType = this.getControlSurfaceType();
+
+		if (midiout.class != MIDIOut,{
+			Error(format("The midiout parameter passed to %.randomise() must be an instance of MIDIOut.", this.class)).throw;
+		});
+
+		this.preparePatchDictionary();
+
+		if (this.workingPatch[this.getPatchType].isNil,{
+			this.createBlankPatch();
+		});
+
+		controlSurfaceType.register(midiout);
 	}
 
 	*saveWorkingPatch {

@@ -130,7 +130,7 @@ Writes code to the console window which can be run later to recreate all the sav
 
 See CODE::writeWorkingPatch:: for an example of the output.
 
-PRIVATE::applyMidiParameterToPatch,chooseRandomValue,createBlankPatch,workingPatch,workingPatchIndices,generateRandomValue,getMidiParametersFromMididef,noSavedPatchesMessage,noWorkingPatchMessage,saveSpecificPatch,patches,prWritePatch,preparePatchDictionary,sendPatch,setWorkingPatch
+PRIVATE::applyMidiParameterToPatch,chooseRandomValue,createBlankPatch,workingPatch,workingPatchIndices,generateRandomValue,getControlSurfaceType,getMidiParametersFromMididef,noSavedPatchesMessage,noWorkingPatchMessage,saveSpecificPatch,patches,prWritePatch,preparePatchDictionary,sendPatch,setWorkingPatch
 
 EXAMPLES::
 
