@@ -6,38 +6,68 @@ related:: Classes/Microvolt, Classes/OhCoast, Classes/Sh01a, Classes/Tb03, Class
 DESCRIPTION::
 A base class for other classes which describe a hardware synthesiser.
 
-NOTE::
-A key concept is the TELETYPE::patch::, which is a stored set of parameters describing a patch which is kept in memory. CODE::Synthesiser:: will keep track of the patches you create, and allow you to cycle between them by calling CODE::nextPatch():: and CODE::previousPatch()::.
-::
+A key concept is the TELETYPE::patch::, which is a stored set of parameters describing a patch which is kept in memory. The patch you are actively working with is called the TELETYPE::working patch::. At any point you can save the working patch by calling CODE::saveWorkingPatch::. You can then cycle between saved patches using by calling CODE::nextPatch:: or CODE::previousPatch::, which will overwrite the working patch with the saved patch.
+
+You will first need to create a working patch by calling CODE::initialisePatch::, CODE::randomisePatch:: or CODE::recordMidiParameters::.
+
 
 CLASSMETHODS::
 
 METHOD:: describeWorkingPatch
-Writes a description of the current patch to the post window including all parameter values.
+Writes a description of the working patch to the post window including all parameter values.
+
+For example, describing a TB-03 patch might result in output similar to the following:
+
+TELETYPE::
+TB-03 PATCH: Unnamed patch
+Tuning: 64
+Cutoff Freq: 126.0
+Resonance: 119.0
+Env Mod: 64
+Decay: 70.0
+Accent: 59.0
+Overdrive: 17.0
+Delay Time: 0
+Delay Feedback: nil
+::
 
 METHOD:: initialisePatch
-Creates a patch with the default values and sends it to the hardware synth.
+Creates or updates the working patch with default parameter values and sends it to the hardware synth.
 
 ARGUMENT:: midiout
 An instance of code::MIDIOut:: used for sending the patch parameters to the hardware synth.
 
 METHOD:: keepWorkingPatch
-Stores the current patch in memory to enable you to create other patches without losing this one. To keep the patch permanently, call CODE::WriteCurrentPatch():: and save the code written to the output window.
+Stores the working patch in memory to enable you to create other patches without losing this one. To keep the patch permanently, call CODE::writeWorkingPatch():: and save the code written to the output window.
+
+ARGUMENT:: patchname
+The name to give the patch.
+
+METHOD:: listKeptPatches
+Writes the names of saved patches to the post window.
 
 METHOD:: nextPatch
-Moves to the next patch in the list and sends it to the hardware synth.
+Replaces the working patch with next saved patch in the list and sends it to the hardware synth.
+
+NOTE::
+The current working patch will be lost permanently unless it had been saved previously.
+::
 
 ARGUMENT:: midiout
 An instance of code::MIDIOut:: used for sending the patch parameters to the hardware synth.
 
 METHOD:: previousPatch
-Moves to the previous patch in the list and sends it to the hardware synth.
+Replaces the working patch with the previous patch in the list and sends it to the hardware synth.
+
+NOTE::
+The current working patch will be lost permanently unless it had been saved previously.
+::
 
 ARGUMENT:: midiout
 An instance of code::MIDIOut:: used for sending the patch parameters to the hardware synth.
 
 METHOD:: randomisePatch
-Provides a base method, intended for overriding, for generating a random patch for the synthesiser. Unless overridden, this method simply validates its inputs.
+Replaces the working patch with a randomly-generated one. In CODE::Synthesiser:: only a base method, intended for overriding, is provided. Unless overridden, this method simply validates its inputs.
 
 ARGUMENT:: midiout
 An instance of code::MIDIOut:: used for sending the random patch parameters to the hardware synth.
@@ -47,5 +77,28 @@ The type of patch to generate.
 
 ARGUMENT:: writeToPostWindow
 Whether the randomly generated values should be written to the post window. Defaults to teletype::false::.
+
+METHOD:: recordMidiParameters
+Sets up a CODE::Mididef:: which records MIDI data from the hardware synth and uses it to overwrite parameters in the working patch. This means that changes to settings in the hardware synth (e.g. cutoff or resonance) are reflected in the working patch.
+
+In order for this to work, these things must have been done:
+NUMBEREDLIST::
+## The MIDI output socket of the hardware synth must be physically connected to the MIDI interface using a cable.
+## The MIDI output port of the MIDI interface must be virtually connected to SuperCollider's MIDI input port in JACK.
+::
+
+METHOD:: writeWorkingPatch
+Writes code to the console window which can be run later to recreate the patch. This is how patches can be saved permanently.
+
+For example, writing a TB-03 patch might result in output similar to the following:
+
+CODE::
+(
+var patch = Tb03Patch();
+patch.name = "Unnamed patch";
+patch.kvps[74]=126.0;patch.kvps[104]=64;patch.kvps[12]=64;patch.kvps[71]=119.0;patch.kvps[16]=59.0;patch.kvps[18]=0;patch.kvps[75]=70.0;patch.kvps[17]=17.0;
+Tb03.keepSpecificPatch(patch);
+)
+::
 
 PRIVATE::applyMidiParameterToPatch,chooseRandomValue,createBlankPatch,workingPatch,workingPatchIndices,generateRandomValue,getMidiParametersFromMididef,keepSpecificPatch,patches,prWritePatch,preparePatchDictionary,sendPatch,setWorkingPatch
