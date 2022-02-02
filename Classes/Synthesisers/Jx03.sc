@@ -54,7 +54,7 @@ Jx03 : Synthesiser {
 		var crossMod = 6.rand;
 		var sourceMix, envModDepth, cutoff, lfoWaveform, lfoToDcoProbabilities, dco1Waveform, lfoToDcoProbabilityBoost = 1;
 		var envToPitchFunction, lfoToPitchFunction,envToDcoPitchProbability=0.2,allowDc01PitchModulation=true;
-		super.randomise(midiout,patchType,writeToPostWindow);
+		super.randomisePatch(midiout,patchType,writeToPostWindow);
 
 		sourceMix = patch.set(Jx03Sysex.vcfSourceMix, this.generateRandomValue(0,255,0,0,255));
 
@@ -240,7 +240,7 @@ Jx03 : Synthesiser {
 		patch.set(Jx03Sysex.vcfEnvPolarity, this.chooseRandomValue([0,1],[1,4]));
 
 		this.sendPatch(midiout,patch);
-		this.setCurrentPatch(patch);
+		this.setWorkingPatch(patch);
 		patch.describe();
     }
 

@@ -69,6 +69,7 @@ UnoSynth : Synthesiser {
 		var patch = UnoSynthPatch();
 		var osc1Level = 127;
 		var detuneAmount;
+		super.randomisePatch(midiout,patchType,writeToPostWindow);
 
 		// Oscillators
 		if (0.5.coin,{
@@ -113,7 +114,7 @@ UnoSynth : Synthesiser {
 		patch.set(UnoSynth.filterReleaseCcNo, this.generateRandomValue(0,127,8,0,127));
 
 		this.sendPatch(midiout,patch);
-		this.setCurrentPatch(patch);
+		this.setWorkingPatch(patch);
 		patch.describe();
     }
 

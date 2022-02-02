@@ -21,7 +21,7 @@ Tb03 : Synthesiser {
 	*randomisePatch {
         |midiout,patchType,writeToPostWindow=false|
 		var patch = Tb03Patch();
-		super.randomise(midiout,patchType,writeToPostWindow);
+		super.randomisePatch(midiout,patchType,writeToPostWindow);
 
 		patch.set(Tb03.accentCcNo,this.generateRandomValue(0,127,-2,0,127));
 		patch.set(Tb03.cutoffFreqCcNo,this.generateRandomValue(0,127,-2,0,127));
@@ -30,7 +30,7 @@ Tb03 : Synthesiser {
 		patch.set(Tb03.resonanceCcNo,this.generateRandomValue(0,127,-3,0,127));
 
 		this.sendPatch(midiout,patch);
-		this.setCurrentPatch(patch);
+		this.setWorkingPatch(patch);
 		patch.describe();
     }
 

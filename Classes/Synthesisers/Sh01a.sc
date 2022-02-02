@@ -44,7 +44,7 @@ Sh01a : Synthesiser {
 		var patch = Sh01aPatch();
 		var lfoMode, lfoRate, lfoSpeed;
 		var subLevel, pwmLevel, sawLevel, oscLevelTotal, oscLevelScaleFunction, subType;
-		super.randomise(midiout,patchType,writeToPostWindow);
+		super.randomisePatch(midiout,patchType,writeToPostWindow);
 
 		// LFO
 		lfoMode = patch.set(Sh01a.lfoModeCcNo,this.chooseRandomValue([0,1],[4,1]));
@@ -116,7 +116,7 @@ Sh01a : Synthesiser {
 		patch.set(Sh01a.portamentoCcNo,this.generateRandomValue(-10,60,3,0,60));
 
 		this.sendPatch(midiout,patch);
-		this.setCurrentPatch(patch);
+		this.setWorkingPatch(patch);
 		patch.describe();
     }
 
