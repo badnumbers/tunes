@@ -31,6 +31,7 @@ returns:: 25.
 
 METHOD:: dcoEnvPolarityCcNo
 The MIDI CC number that is used to control the JX-03's DC0 frequency envelope polarity.
+table::
 ## Value || Waveform
 ## 0 || Inverted
 ## 1 || Normal
@@ -44,6 +45,7 @@ returns:: 20.
 
 METHOD:: dco1FreqModEnvSwitchCcNo
 The MIDI CC number that is used to control whether DCO1's frequency is modulated by the envelope.
+table::
 ## Value || On / off
 ## 0 || Off
 ## 1 || On
@@ -53,6 +55,7 @@ returns:: 16.
 
 METHOD:: dco1FreqModLfoSwitchCcNo
 The MIDI CC number that is used to control whether DCO1's frequency is modulated by the LFO.
+table::
 ## Value || On / off
 ## 0 || Off
 ## 1 || On
@@ -90,6 +93,7 @@ returns:: 14.
 
 METHOD:: dco2CrossModCcNo
 The MIDI CC number that is used to select the JX-03's DC02 cross mod algorithm.
+table::
 ## Value || Algorithm
 ## 0 || Off
 ## 1 || Syn 1
@@ -108,6 +112,7 @@ returns:: 20.
 
 METHOD:: dco2FreqModEnvSwitchCcNo
 The MIDI CC number that is used to control whether DCO2's frequency is modulated by the envelope.
+table::
 ## Value || On / off
 ## 0 || Off
 ## 1 || On
@@ -117,6 +122,7 @@ returns:: 23.
 
 METHOD:: dco2FreqModLfoSwitchCcNo
 The MIDI CC number that is used to control whether DCO2's frequency is modulated by the LFO.
+table::
 ## Value || On / off
 ## 0 || Off
 ## 1 || On
@@ -263,6 +269,7 @@ returns:: 31.
 
 METHOD:: vcfEnvPolarityCcNo
 The MIDI CC number that is used to control the JX-03's VCF envelope polarity.
+table::
 ## Value || Waveform
 ## 0 || Inverted
 ## 1 || Normal
