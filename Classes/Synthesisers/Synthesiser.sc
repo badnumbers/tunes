@@ -1,16 +1,16 @@
 Synthesiser {
-	classvar <>currentPatch;
+	classvar <>workingPatch;
 	classvar <>patches;
-	classvar <>currentPatchIndices;
-	classvar <noCurrentPatchMessage = "To create a patch, call initialisePatch(), randomisePatch() or recordMidiParameters().";
-	classvar <noKeptPatchesMessage = "To keep a patch, call keepCurrentPatch().";
+	classvar <>workingPatchIndices;
+	classvar <noWorkingPatchMessage = "To create a working patch, call initialisePatch(), randomisePatch() or recordMidiParameters().";
+	classvar <noKeptPatchesMessage = "To keep the working patch, call keepWorkingPatch().";
 
 	// Modifies the current patch by updating the value of the parameter (e.g. a CC) with the supplied parameterNumber to the new value parameterValue.
 	// E.g. applyMidiParameterToPatch(71,127)
 	*applyMidiParameterToPatch {
 		|parameterNumber,parameterValue|
-		currentPatch[this.getPatchType].kvps[parameterNumber] = parameterValue;
-		postln(format("The parameter number % now has the value %.", parameterNumber, currentPatch[this.getPatchType].kvps[parameterNumber]));
+		workingPatch[this.getPatchType].kvps[parameterNumber] = parameterValue;
+		postln(format("The parameter number % now has the value %.", parameterNumber, workingPatch[this.getPatchType].kvps[parameterNumber]));
 	}
 
 	// Chooses between an array of values with a specified weighting.
@@ -25,20 +25,20 @@ Synthesiser {
 	// Creates a blank patch for when there are no patches yet. Does not send the init patch values to the hardware synth.
 	*createBlankPatch {
 		this.preparePatchDictionary();
-		this.currentPatch[this.getPatchType] = this.getPatchType().new;
+		this.workingPatch[this.getPatchType] = this.getPatchType().new;
 	}
 
-	*describeCurrentPatch
+	*describeworkingPatch
 	{
 		this.preparePatchDictionary();
 
-		if (this.currentPatch[this.getPatchType].isNil,{
+		if (this.workingPatch[this.getPatchType].isNil,{
 			postln("There is no current patch to describe!");
-			postln(this.noCurrentPatchMessage);
+			postln(this.noworkingPatchMessage);
 			^nil;
 		});
 
-		this.currentPatch[this.getPatchType].describe;
+		this.workingPatch[this.getPatchType].describe;
 	}
 
 	// Chooses between a range of values with a specified curve, low clip and high clip.
@@ -63,10 +63,10 @@ Synthesiser {
 		});
 
 		this.createBlankPatch();
-		this.sendPatch(midiout,this.currentPatch[this.getPatchType]);
+		this.sendPatch(midiout,this.workingPatch[this.getPatchType]);
 	}
 
-	*keepCurrentPatch {
+	*keepWorkingPatch {
 		|patchname|
 
 		if ((patchname.isNil) || (patchname == ""), {
@@ -76,17 +76,17 @@ Synthesiser {
 
 		this.preparePatchDictionary();
 
-		if (this.currentPatch[this.getPatchType].isNil,{
+		if (this.workingPatch[this.getPatchType].isNil,{
 			postln("There is no patch to keep!");
-			postln(this.noCurrentPatchMessage);
+			postln(this.noworkingPatchMessage);
 			^nil;
 		});
 
-		this.currentPatch[this.getPatchType].name = patchname;
-		this.keepSpecificPatch(this.currentPatch[this.getPatchType]);
+		this.workingPatch[this.getPatchType].name = patchname;
+		this.keepSpecificPatch(this.workingPatch[this.getPatchType]);
 	}
 
-	// Keeps the supplied patch in the list of patches. Only used in the output of WriteCurrentPatch() and WriteKeptPatches().
+	// Keeps the supplied patch in the list of patches. Only used in the output of writeworkingPatch() and writeKeptPatches().
 	*keepSpecificPatch {
 		|patch|
 		this.preparePatchDictionary();
@@ -113,7 +113,7 @@ Synthesiser {
 		});
 	}
 
-	*modifyCurrentPatch {
+	*modifyWorkingPatch {
 		|midiout, parameterNumber, parameterValue|
 
 		if (midiout.class != MIDIOut,{
@@ -122,9 +122,9 @@ Synthesiser {
 
 		this.preparePatchDictionary();
 
-		if (this.currentPatch[this.getPatchType].isNil,{
+		if (this.workingPatch[this.getPatchType].isNil,{
 			postln("There is no current patch to modify!");
-			postln(this.noCurrentPatchMessage);
+			postln(this.noWorkingPatchMessage);
 			^nil;
 		});
 
@@ -152,16 +152,16 @@ Synthesiser {
 			^nil;
 		});
 
-		currentPatchIndices[this.getPatchType] = currentPatchIndices[this.getPatchType] + 1;
+		workingPatchIndices[this.getPatchType] = workingPatchIndices[this.getPatchType] + 1;
 
-		if (currentPatchIndices[this.getPatchType] > (patches[this.getPatchType].size - 1), {
-			currentPatchIndices[this.getPatchType] = 0;
+		if (workingPatchIndices[this.getPatchType] > (patches[this.getPatchType].size - 1), {
+			workingPatchIndices[this.getPatchType] = 0;
 		});
 
-		currentPatch[this.getPatchType] = patches[this.getPatchType][currentPatchIndices[this.getPatchType]];
-		this.sendPatch(midiout,currentPatch[this.getPatchType]);
-		postln(format("Changed patch to %: (% of % kept patches).", if (currentPatch[this.getPatchType].name.isNil, "Unnamed patch", currentPatch[this.getPatchType].name), currentPatchIndices[this.getPatchType] + 1, patches[this.getPatchType].size));
-		^currentPatch[this.getPatchType];
+		workingPatch[this.getPatchType] = patches[this.getPatchType][workingPatchIndices[this.getPatchType]].deepCopy;
+		this.sendPatch(midiout,workingPatch[this.getPatchType]);
+		postln(format("Changed patch to %: (% of % kept patches).", if (workingPatch[this.getPatchType].name.isNil, "Unnamed patch", workingPatch[this.getPatchType].name), workingPatchIndices[this.getPatchType] + 1, patches[this.getPatchType].size));
+		^workingPatch[this.getPatchType];
 	}
 
 	*preparePatchDictionary {
@@ -169,16 +169,16 @@ Synthesiser {
 			patches = Dictionary();
 		});
 
-		if (currentPatch.isNil,{
-			currentPatch = Dictionary();
+		if (workingPatch.isNil,{
+			workingPatch = Dictionary();
 		});
 
-		if (currentPatchIndices.isNil,{
-			currentPatchIndices = Dictionary();
+		if (workingPatchIndices.isNil,{
+			workingPatchIndices = Dictionary();
 		});
 
-		if (currentPatchIndices[this.getPatchType].isNil,{
-			currentPatchIndices[this.getPatchType] = 0;
+		if (workingPatchIndices[this.getPatchType].isNil,{
+			workingPatchIndices[this.getPatchType] = 0;
 		});
 	}
 
@@ -201,21 +201,21 @@ Synthesiser {
 			^nil;
 		});
 
-		currentPatchIndices[this.getPatchType] = currentPatchIndices[this.getPatchType] - 1;
+		workingPatchIndices[this.getPatchType] = workingPatchIndices[this.getPatchType] - 1;
 
-		if (currentPatchIndices[this.getPatchType] < 0, {
-			currentPatchIndices[this.getPatchType] = patches[this.getPatchType].size - 1;
+		if (workingPatchIndices[this.getPatchType] < 0, {
+			workingPatchIndices[this.getPatchType] = patches[this.getPatchType].size - 1;
 		});
 
-		currentPatch[this.getPatchType] = patches[this.getPatchType][currentPatchIndices[this.getPatchType]];
-		this.sendPatch(midiout,currentPatch[this.getPatchType]);
-		postln(format("Changed patch to %: (% of % kept patches).", if (currentPatch[this.getPatchType].name.isNil, "Unnamed patch", currentPatch[this.getPatchType].name), currentPatchIndices[this.getPatchType] + 1, patches[this.getPatchType].size));
-		^currentPatch[this.getPatchType];
+		workingPatch[this.getPatchType] = patches[this.getPatchType][workingPatchIndices[this.getPatchType]].deepCopy;
+		this.sendPatch(midiout,workingPatch[this.getPatchType]);
+		postln(format("Changed patch to %: (% of % kept patches).", if (workingPatch[this.getPatchType].name.isNil, "Unnamed patch", workingPatch[this.getPatchType].name), workingPatchIndices[this.getPatchType] + 1, patches[this.getPatchType].size));
+		^workingPatch[this.getPatchType];
 	}
 
 	// Writes code describing the supplied patch to the post window.
 	// Running this code will recreate the patch.
-	// Used by writeCurrentPatch() and writeKeptPatches().
+	// Used by writeWorkingPatch() and writeKeptPatches().
 	*prWritePatch {
 		|patch|
 		if (this.getPatchType != patch.class, {
@@ -246,7 +246,7 @@ Synthesiser {
 	*recordMidiParameters {
 		this.preparePatchDictionary();
 
-		if (this.currentPatch[this.getPatchType].isNil,{
+		if (this.workingPatch[this.getPatchType].isNil,{
 			this.createBlankPatch();
 		});
 
@@ -270,27 +270,27 @@ Synthesiser {
 
 	// Takes an instance of a patch and sets it to be the current patch.
 	// Used by randomisePatch().
-	*setCurrentPatch {
+	*setWorkingPatch {
 		|patch|
 		if (this.getPatchType != patch.class, {
-			Error(format("The patch parameter passed to Synthesiser.setCurrentPatch() must be an instance of %.", this.getPatchType)).throw;
+			Error(format("The patch parameter passed to Synthesiser.setWorkingPatch() must be an instance of %.", this.getPatchType)).throw;
 		});
 
 		this.preparePatchDictionary();
-		this.currentPatch[this.getPatchType] = patch;
+		this.workingPatch[this.getPatchType] = patch;
 	}
 
-	*writeCurrentPatch {
+	*writeWorkingPatch {
 		this.preparePatchDictionary();
 
-		if (this.currentPatch[this.getPatchType].isNil,{
+		if (this.workingPatch[this.getPatchType].isNil,{
 			postln("There is no patch to write!");
-			postln(this.noCurrentPatchMessage);
+			postln(this.noWorkingPatchMessage);
 			^nil;
 		});
 		postln("(");
 		postln(format("var patch = %();", this.getPatchType()));
-		this.prWritePatch(this.currentPatch[this.getPatchType]);
+		this.prWritePatch(this.workingPatch[this.getPatchType]);
 		postln(format("%.keepSpecificPatch(patch);", this.name));
 		postln(")");
 	}

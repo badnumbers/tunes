@@ -12,7 +12,7 @@ A key concept is the TELETYPE::patch::, which is a stored set of parameters desc
 
 CLASSMETHODS::
 
-METHOD:: describeCurrentPatch
+METHOD:: describeWorkingPatch
 Writes a description of the current patch to the post window including all parameter values.
 
 METHOD:: initialisePatch
@@ -21,7 +21,7 @@ Creates a patch with the default values and sends it to the hardware synth.
 ARGUMENT:: midiout
 An instance of code::MIDIOut:: used for sending the patch parameters to the hardware synth.
 
-METHOD:: keepCurrentPatch
+METHOD:: keepWorkingPatch
 Stores the current patch in memory to enable you to create other patches without losing this one. To keep the patch permanently, call CODE::WriteCurrentPatch():: and save the code written to the output window.
 
 METHOD:: nextPatch
@@ -48,4 +48,4 @@ The type of patch to generate.
 ARGUMENT:: writeToPostWindow
 Whether the randomly generated values should be written to the post window. Defaults to teletype::false::.
 
-PRIVATE::applyMidiParameterToPatch,chooseRandomValue,createBlankPatch,currentPatch,currentPatchIndices,generateRandomValue,getMidiParametersFromMididef,keepSpecificPatch,patches,prWritePatch,preparePatchDictionary,sendPatch,setCurrentPatch
+PRIVATE::applyMidiParameterToPatch,chooseRandomValue,createBlankPatch,workingPatch,workingPatchIndices,generateRandomValue,getMidiParametersFromMididef,keepSpecificPatch,patches,prWritePatch,preparePatchDictionary,sendPatch,setWorkingPatch
