@@ -5,6 +5,7 @@ Tb03 : Synthesiser {
 	classvar <delayTimeCcNo = 18;
 	classvar <delayFeedbackCcNo = 19;
 	classvar <envModCcNo = 12;
+	classvar <name = "TB-03";
 	classvar <overdriveCcNo = 17;
 	classvar <resonanceCcNo = 71;
 	classvar <tuningCcNo = 104;

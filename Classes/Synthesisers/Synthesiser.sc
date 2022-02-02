@@ -38,6 +38,7 @@ Synthesiser {
 			^nil;
 		});
 
+		postln(format("% PATCH: %", this.name, if (workingPatch[this.getPatchType].name.isNil, "Unnamed patch", workingPatch[this.getPatchType].name)));
 		this.workingPatch[this.getPatchType].describe;
 	}
 

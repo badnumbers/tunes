@@ -36,6 +36,7 @@ UnoSynth : Synthesiser {
 	classvar <lfoToWahCcNo = 71;
 	classvar <lfoWaveCcNo = 66;
 	classvar <>midiChannel = 15;
+	classvar <name = "UnoSynth";
 	classvar <noiseLevelCcNo = 14;
 	classvar <osc1LevelCcNo = 12;
 	classvar <osc1TuneCcNo = 17;
