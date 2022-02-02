@@ -1,4 +1,4 @@
-Tb03 : Synthesiser {
+Tb03 : Synthesizer {
 	classvar <accentCcNo = 16;
 	classvar <cutoffFreqCcNo = 74;
 	classvar <decayCcNo = 75;

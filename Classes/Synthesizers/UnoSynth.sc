@@ -1,4 +1,4 @@
-UnoSynth : Synthesiser {
+UnoSynth : Synthesizer {
 	classvar <ampAttackCcNo = 24;
 	classvar <ampDecayCcNo = 25;
 	classvar <ampSustainCcNo = 26;

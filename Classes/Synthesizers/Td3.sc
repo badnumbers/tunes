@@ -1,3 +1,3 @@
-Td3 : Synthesiser {
+Td3 : Synthesizer {
 	classvar <>midiChannel = 7;
 }

@@ -1,10 +1,10 @@
-TITLE:: Synthesiser
-summary:: A base class for other classes which describe a particular hardware synthesiser
+TITLE:: Synthesizer
+summary:: A base class for other classes which describe a particular hardware synthesizer
 categories:: External control
 related:: Classes/Microvolt, Classes/OhCoast, Classes/Sh01a, Classes/Tb03, Classes/UnoSynth
 
 DESCRIPTION::
-A base class for other classes which describe a hardware synthesiser.
+A base class for other classes which describe a hardware synthesizer.
 
 NOTE::
 This class is not intended to be used directly, but instead is accessed via its subclasses such as LINK::Classes/Tb03:: and LINK::Classes/Sh01a::.
@@ -85,7 +85,7 @@ ARGUMENT:: midiout
 An instance of code::MIDIOut:: used for sending the patch parameters to the hardware synth.
 
 METHOD:: randomisePatch
-Replaces the working patch with a randomly-generated one. In CODE::Synthesiser:: only a base method, intended for overriding, is provided. Unless overridden, this method simply validates its inputs.
+Replaces the working patch with a randomly-generated one. In CODE::Synthesizer:: only a base method, intended for overriding, is provided. Unless overridden, this method simply validates its inputs.
 
 ARGUMENT:: midiout
 An instance of code::MIDIOut:: used for sending the random patch parameters to the hardware synth.

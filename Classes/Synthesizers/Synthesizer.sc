@@ -1,4 +1,4 @@
-Synthesiser {
+Synthesizer {
 	classvar <>workingPatch;
 	classvar <>patches;
 	classvar <>workingPatchIndices;
@@ -188,7 +188,7 @@ Synthesiser {
 	*prWritePatch {
 		|patch|
 		if (this.getPatchType != patch.class, {
-				Error(format("The patch parameter passed to Synthesiser.prWritePatch() must be an instance of %.", this.getPatchType)).throw;
+				Error(format("The patch parameter passed to Synthesizer.prWritePatch() must be an instance of %.", this.getPatchType)).throw;
 		});
 		postln(format("patch.name = %;", if (patch.name.isNil, "\"Unnamed patch\"", format("\"%\"", patch.name))));
 		patch.kvps.keys.do({
@@ -274,7 +274,7 @@ Synthesiser {
 	*setWorkingPatch {
 		|patch|
 		if (this.getPatchType != patch.class, {
-			Error(format("The patch parameter passed to Synthesiser.setWorkingPatch() must be an instance of %.", this.getPatchType)).throw;
+			Error(format("The patch parameter passed to Synthesizer.setWorkingPatch() must be an instance of %.", this.getPatchType)).throw;
 		});
 
 		this.preparePatchDictionary();

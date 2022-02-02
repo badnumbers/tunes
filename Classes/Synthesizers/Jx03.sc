@@ -1,4 +1,4 @@
-Jx03 : Synthesiser {
+Jx03 : Synthesizer {
 	classvar <chorusCcNo = 93;
 	classvar <dcoEnvDepthCcNo = 25;
 	classvar <dcoEnvPolarityCcNo = 26;

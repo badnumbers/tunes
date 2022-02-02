@@ -1,4 +1,4 @@
-Sh01a : Synthesiser {
+Sh01a : Synthesizer {
 	classvar <bendDepthCcNo = 18;
 	classvar <envelopeAttack = 73;
 	classvar <envelopeDecay = 75;
