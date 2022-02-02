@@ -28,7 +28,7 @@ Synthesiser {
 		this.workingPatch[this.getPatchType] = this.getPatchType().new;
 	}
 
-	*describeworkingPatch
+	*describeWorkingPatch
 	{
 		this.preparePatchDictionary();
 
