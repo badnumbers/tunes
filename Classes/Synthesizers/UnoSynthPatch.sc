@@ -66,7 +66,7 @@ UnoSynthPatch : Patch {
 		kvps.add(UnoSynth.delayTimeCcNo -> 0); // Min
 
 		// Sundries
-		kvps.add(UnoSynth.volumeCcNo -> 0); // Max
+		kvps.add(UnoSynth.volumeCcNo -> 64); // Mid
 		kvps.add(UnoSynth.glideTimeCcNo -> 0); // Min
     }
 
