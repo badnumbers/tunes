@@ -57,6 +57,10 @@ UnoSynth : Synthesizer {
 	classvar <volumeCcNo = 7;
 	classvar <wahOnOffCcNo = 78;
 
+	*getControlSurfaceType {
+		^UnoSynthControlSurface;
+	}
+
 	*getPatchType {
 		^UnoSynthPatch;
 	}
