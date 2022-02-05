@@ -7,10 +7,10 @@ UnoSynthPatch : Patch {
 		kvps = Dictionary();
 
 		// Oscillators
-		kvps.add(UnoSynth.osc1WaveCcNo -> 64); // Mid
-		kvps.add(UnoSynth.osc2WaveCcNo -> 64); // Mid
+		kvps.add(UnoSynth.osc1WaveCcNo -> 40); // Saw
+		kvps.add(UnoSynth.osc2WaveCcNo -> 40); // Saw
 		kvps.add(UnoSynth.osc1LevelCcNo -> 127); // Max
-		kvps.add(UnoSynth.osc2LevelCcNo -> 127); // Max
+		kvps.add(UnoSynth.osc2LevelCcNo -> 0); // Max
 		kvps.add(UnoSynth.osc1TuneCcNo -> 64); // Centred
 		kvps.add(UnoSynth.osc2TuneCcNo -> 64); // Centred
 		kvps.add(UnoSynth.noiseLevelCcNo -> 0); // Min
@@ -25,13 +25,13 @@ UnoSynthPatch : Patch {
 		// Amplitude envelope
 		kvps.add(UnoSynth.ampAttackCcNo -> 0); // Min
 		kvps.add(UnoSynth.ampDecayCcNo -> 64); // Mid
-		kvps.add(UnoSynth.ampSustainCcNo -> 64); // Mid
+		kvps.add(UnoSynth.ampSustainCcNo -> 127); // Max
 		kvps.add(UnoSynth.ampReleaseCcNo -> 0); // Min
 
 		// Filter envelope
 		kvps.add(UnoSynth.filterAttackCcNo -> 0); // Min
 		kvps.add(UnoSynth.filterDecayCcNo-> 64); // Mid
-		kvps.add(UnoSynth.filterSustainCcNo-> 64); // Mid
+		kvps.add(UnoSynth.filterSustainCcNo-> 127); // Max
 		kvps.add(UnoSynth.filterReleaseCcNo-> 0); // Min
 
 		// LFO
@@ -50,8 +50,8 @@ UnoSynthPatch : Patch {
 		// Velocity
 		kvps.add(UnoSynth.velocityToFilterCutoffCcNo -> 0); // Min
 		kvps.add(UnoSynth.velocityToFilterEnvAmtCcNo -> 0); // Min
-		kvps.add(UnoSynth.velocityToLfoRateCcNo -> 0); // Min
-		kvps.add(UnoSynth.velocityToVolumeCcNo -> 0); // Min
+		kvps.add(UnoSynth.velocityToLfoRateCcNo -> 64); // No effect
+		kvps.add(UnoSynth.velocityToVolumeCcNo -> 127); // Max
 
 		// Performance buttons
 		kvps.add(UnoSynth.diveOnOffCcNo -> 0); // Off
