@@ -2,6 +2,10 @@ TouchOscControlSurface {
 	classvar <parameterMinValue = 0;
 	classvar <parameterMaxValue = 127;
 
+	*getControlParameters {
+		Error("The control parameters are to be defined by the subclass.").throw;
+	}
+
 	*register {
 		|midiout|
 

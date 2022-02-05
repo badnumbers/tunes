@@ -1,0 +1,42 @@
+TITLE:: TouchOscControlSurface
+summary:: Representation of a Touch OSC control surface for a particular synthesizer.
+categories:: External Control
+related:: Classes/Tb03ControlSurface
+
+DESCRIPTION::
+Provides convenience methods for hooking up a Touch OSC control surface so that it updates a Synthesizer patch.
+
+NOTE::
+This class is not intended to be used directly, but one of its subclasses such as LINK::Classes/Tb03ControlSurface:: is defined as the control surface for a LINK::Classes/Synthesizer:: using the LINK::Classes/Synthesizer:: method CODE::getControlSurfaceType::.
+::
+
+CLASSMETHODS::
+
+METHOD:: getControlParameters
+Returns an array of symbols listing the parameters that the control surface can modify. Each symbol must be a parameter property of the corresponding LINK::Classes/Synthesizer::.
+
+For example, in LINK::Classes/Tb03ControlSurface::, this method returns the following array, all of which members are properties of LINK::Classes/Tb03:::
+
+CODE::
+[\tuningCcNo,\cutoffFreqCcNo,\decayCcNo,\delayTimeCcNo,\delayFeedbackCcNo,\envModCcNo,\overdriveCcNo,\resonanceCcNo,\tuningCcNo]
+::
+
+NOTE::
+This method must be implemented by each subclass.
+::
+
+METHOD:: parameterMaxValue
+The maximum value of parameters for the corresponding synthesizer. This is usually 127, since most synthesizers use CCs to control parameters.
+
+METHOD:: parameterMinValue
+The minimum value of parameters for the corresponding synthesizer. This is usually 0, since most synthesizers use CCs to control parameters.
+
+METHOD:: register
+Creates an CODE::OSCdef:: for each parameter the control surface can modify (see CODE::getControlParameters::). This OSCdef captures the OSC data from the control surface and uses it to update the LINK::Classes/Synthesizer:: TELETYPE::patch::, and in turn sends the new parameter value to the hardware synthesizer itself.
+
+NOTE::
+You should not need to call this method yourself. Instead, it is called by the CODE::registerControlSurface:: method of LINK::Classes/Synthesizer::.
+::
+
+ARGUMENT:: midiout
+An instance of code::MIDIOut:: used for sending the updated parameter to the hardware synth.

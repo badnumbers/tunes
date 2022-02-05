@@ -103,13 +103,29 @@ ARGUMENT:: writeToPostWindow
 Whether the randomly generated values should be written to the post window. Defaults to teletype::false::.
 
 METHOD:: recordMidiParameters
-Creates the working patch if necessary and sets up a CODE::Mididef:: which records MIDI data from the hardware synth and uses it to overwrite parameters in the working patch. This means that changes to settings in the hardware synth (e.g. cutoff or resonance) are reflected in the working patch.
+Creates the TELETYPE::working patch:: if necessary and sets up a CODE::Mididef:: which records MIDI data from the hardware synth and uses it to overwrite parameters in the working patch. This means that changes to settings in the hardware synth (e.g. cutoff or resonance) are reflected in the working patch.
 
 In order for this to work, these things must have been done:
 NUMBEREDLIST::
 ## The MIDI output socket of the hardware synth must be physically connected to the MIDI interface using a cable.
 ## The MIDI output port of the MIDI interface must be virtually connected to SuperCollider's MIDI input port in JACK.
 ::
+
+METHOD:: registerControlSurface
+Creates the TELETYPE::working patch:: if necessary and creates an CODE::OSCdef:: for each parameter the control surface can modify (see CODE::getControlParameters:: in LINK::Classes/TouchOscControlSurface::). This OSCdef captures the OSC data from the control surface and uses it to update the TELETYPE::working patch::, and in turn sends the new parameter value to the hardware synthesizer itself.
+
+In order for this to work, these things must have been done:
+NUMBEREDLIST::
+## Touch OSC must be showing a suitable Layout for the LINK::Classes/Synthesizer::, with control URLs in the form STRONG::/controls/{parameter name}::, where STRONG::{parameter name}:: is the name of the corresponding property of the LINK::Classes/Synthesizer:: (e.g. CODE::cutoffFreqCcNo:: in LINK::Classes/Tb03::).
+## Touch OSC must be configured with the IP address of the machine that SuperCollider is running on, as obtained by running a terminal command such as the following:
+::
+
+CODE::
+hostname -I
+::
+
+ARGUMENT:: midiout
+An instance of code::MIDIOut:: used for sending the patch parameters updated by the control surface to the hardware synth.
 
 METHOD:: writeWorkingPatch
 Writes code to the console window which can be run later to recreate the patch. This is how patches can be saved permanently.
