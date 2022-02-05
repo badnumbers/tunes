@@ -401,7 +401,7 @@ The MIDI CC number that is used to control the extent to which velocity affects 
 returns:: 104.
 
 METHOD:: velocityToLfoRateCcNo
-The MIDI CC number that is used to control the extent to which velocity affects LFO rate.
+The MIDI CC number that is used to control the extent to which velocity affects LFO rate. This is bipolar; 64 indicates no effect.
 
 returns:: 105.
 
