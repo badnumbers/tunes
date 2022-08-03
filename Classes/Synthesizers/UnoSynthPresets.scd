@@ -28,7 +28,7 @@ Pdef(\tangerines,
 		\midinote, Pseq([41,45,52,45,56,45],inf) + 12,
 		\amp, Pseq([0.5,0.4,0.55,0.45,0.9,0.45],inf),
 		\amp, (Pkey(\amp) + Pbrown(-0.1,0.1,0.1,inf)).clip(0,1),
-		\legato, 0.4,
+		\legato, 0.1,
 		\dur,0.2
 	)
 ).play;
