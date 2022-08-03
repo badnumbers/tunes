@@ -3,13 +3,15 @@ w=1;h=0.5;q=0.25;e=0.125;t=1/3;
 c = TempoClock.default;
 f = f ?? ();
 p = p ?? ();
+p.tb = ();
 )
 
-c.tempo = 2;
+c.tempo = 131/60;
+n = NetAddr("192.168.0.47",9000);
 
 (
 MIDIClient.init;
-d = MIDIOut.newByName("Scarlett 6i6 USB", "Scarlett 6i6 USB MIDI 1").latency_(s.latency);
+d = MIDIOut.newByName("Scarlett 18i8 USB", "Scarlett 18i8 USB MIDI 1");
 )
 
 (
@@ -23,35 +25,60 @@ f.tb = {
 }.play;
 )
 
+
 (
-/*p.tb = (
-	dur: ([q,q,q,q, q*3,q, w, h,h] ++ [q,q,q,q, q,q,q,q, w, h,h]).scramble.flat,
-	degree: {7.rand2}!p.tb.dur.size,
-	legato: {[1.1!4,h!13,0.1!4].flat.choose}!p.tb.dur.size,
-	amp: {[w,h!3].flat.choose}!p.tb.dur.size,
-	cutoffdur: ([w,w,h,h,h,h]++[w,w,h,h,w]).scramble,
-	cutoff: {160.rand}!p.tb.cutoffdur.size,
-	resonancedur: ([w,w,h,h,h,h]++[h,h,h,h,w,q,q,q,q]).scramble,
-	resonance: {127.rand}!p.tb.resonancedur.size,
-	envmoddur: ([w,w,h,h,h,h]++[w,w,h,h,w]).scramble,
-	envmod: {127.rand}!p.tb.envmoddur.size,
-	decaydur: ([w,w,h,h,h,h]++[h,h,h,h,w,q,q,q,q]).scramble,
-	decay: {127.rand}!p.tb.decaydur.size,
-	accentdur: ([w,w,h,h,h,h]++[w,w,h,h,w]).scramble,
-	accent: {127.rand}!p.tb.accentdur.size,
-	overdrivedur: ([w,w,h,h,h,h]++[h,h,h,h,w,q,q,q,q]).scramble,
-	overdrive: {127.rand}!p.tb.overdrivedur.size
-);*/
+p.tb.cutofffreqoffset = 64;
+p.tb.cutofffreqrange = 1;
+p.tb.cutofffreqtoggle = 1;
+p.tb.resonanceoffset = 64;
+p.tb.resonancerange = 1;
+p.tb.resonancetoggle = 1;
+p.tb.envmodoffset = 64;
+p.tb.envmodrange = 1;
+p.tb.envmodtoggle = 1;
+p.tb.decayoffset = 64;
+p.tb.decayrange = 1;
+p.tb.decaytoggle = 1;
+p.tb.accentoffset = 64;
+p.tb.accentrange = 1;
+p.tb.accenttoggle = 1;
+p.tb.overdriveoffset = 64;
+p.tb.overdriverange = 1;
+p.tb.overdrivetoggle = 1;
+)
+
+(
+p.tb.dur = ([[q,q,q,q], [h,h], [h,w,h], [h,h], [q,q,h]]).scramble.flat;
+//p.tb.dur = q!24;
+p.tb.degree = {7.rand2}!p.tb.dur.size;
+p.tb.type = {[\midi!5,\rest].flat.choose}!p.tb.dur.size;
+p.tb.legato = {[1.1!4,h!13,0.1!4].flat.choose}!p.tb.dur.size;
+p.tb.amp = {[w,h!3].flat.choose}!p.tb.dur.size;
+p.tb.cutofffreqdur = ([w,w,h,h,h,h,w,h,h]).scramble;
+p.tb.cutofffreq = {64.rand2}!p.tb.cutofffreqdur.size;
+p.tb.resonancedur = ([w,w,h,h,h,h,h,h,w]).scramble;
+p.tb.resonance = {64.rand2}!p.tb.resonancedur.size;
+p.tb.envmoddur = ([w,w,h,h,h,h,w,h,h]).scramble;
+p.tb.envmod = {64.rand2}!p.tb.envmoddur.size;
+p.tb.decaydur = ([w,w,h,h,h,h,h,h,h,h]).scramble;
+p.tb.decay = {64.rand2}!p.tb.decaydur.size;
+p.tb.accentdur = ([w,w,h,h,h,h,w,h,h]).scramble;
+p.tb.accent = {64.rand2}!p.tb.accentdur.size;
+p.tb.overdrivedur = ([w,w,h,h,h,h,h,h,h,h]).scramble;
+p.tb.overdrive = {64.rand2}!p.tb.overdrivedur.size;
+p.tb.totalDuration = p.tb.dur.sum * 40;
+//)(
 Pdef(\tb,
 	Pseq([
 		Ppar([
 			Pbind(
-				\type, \midi,
+				\type, \midi,//Pseq(p.tb.type),
 				\midiout, d,
 				\chan, 1,
 				\midicmd, \noteOn,
-				\octave, 3,//Pwrand([3,4,5],[15,3,1].normalizeSum,p.tb.dur.size),
-				\scale, Scale.harmonicMinor,//Scale([0,2,4,6,8,10]),
+				\octave, Pwrand([3,4,5],[60,3,1].normalizeSum,p.tb.dur.size),
+				\scale, Scale([0,2,3,5,7,9,11]),//Scale.harmonicMinor,//Scale([0,2,4,6,8,10]),
+				\ctranspose,1,
 				\degree, Pseq(p.tb.degree),// + Pstutter(Pwhite(1,10),Pwrand([0,4],[25,1].normalizeSum,p.tb.dur.size)),
 				\dur, Pseq(p.tb.dur),
 				\legato, Pseq(p.tb.legato),
@@ -59,69 +86,133 @@ Pdef(\tb,
 				\lag, Pseg(Pseq([0,0.05],inf),Pseq([h,h],inf),\sine,p.tb.dur.size) * c.beatDur,
 			),
 			Pbind(
-				\type, \midi,
+				\type, Pif(Pfunc({p.tb.cutofffreqtoggle == 1}),\midi,\rest),
 				\midiout, d,
 				\chan, 1,
 				\midicmd, \control,
 				\ctlNum, 74,
-				\control, (Pseg(Pseq(p.tb.cutoff,inf),Pseq(p.tb.cutoffdur,inf),\sin,inf) + Pbrown(-20, 20, 1,inf)).clip(0,127),
-				\dur, Pseq([q * 0.1],320)
+				\control, (Pseg(Pseq(p.tb.cutofffreq,inf),Pseq(p.tb.cutofffreqdur,inf),\sin,inf) * Pfunc({p.tb.cutofffreqrange}) + Pfunc({p.tb.cutofffreqoffset}) + Pbrown(-20, 20, 1,inf)).clip(0,127),
+				\update, Pfunc({
+					|e|
+					if (e.type == \midi,
+						{n.sendMsg('/controls/cutofffreqdisplay',e.control);})
+				}),
+				\dur, Pseq([q * 0.1],p.tb.totalDuration)
 			),
 			Pbind(
-				\type, \midi,
+				\type, Pif(Pfunc({p.tb.resonancetoggle == 1}),\midi,\rest),
 				\midiout, d,
 				\chan, 1,
 				\midicmd, \control,
 				\ctlNum, 71,
-				\control, (Pseg(Pseq(p.tb.resonance,inf),Pseq(p.tb.resonancedur,inf),\sin,inf) + Pbrown(-20, 20, 1,inf)).clip(0,127),
-				\dur, Pseq([q * 0.1],320)
+				\control, (Pseg(Pseq(p.tb.resonance,inf),Pseq(p.tb.resonancedur,inf),\sin,inf) * Pfunc({p.tb.resonancerange}) + Pfunc({p.tb.resonanceoffset}) + Pbrown(-20, 20, 1,inf)).clip(0,127),
+				\update, Pfunc({
+					|e|
+					if (e.type == \midi,
+						{n.sendMsg('/controls/resonancedisplay',e.control);})
+				}),
+				\dur, Pseq([q * 0.1],p.tb.totalDuration)
 			),
 			Pbind(
-				\type, \midi,
+				\type, Pif(Pfunc({p.tb.envmodtoggle == 1}),\midi,\rest),
 				\midiout, d,
 				\chan, 1,
 				\midicmd, \control,
 				\ctlNum, 12,
-				\control, (Pseg(Pseq(p.tb.envmod,inf),Pseq(p.tb.envmoddur,inf),\sin,inf) + Pbrown(-20, 20, 1,inf)).clip(0,127),
-				\dur, Pseq([q * 0.1],320)
+				\control, (Pseg(Pseq(p.tb.envmod,inf),Pseq(p.tb.envmoddur,inf),\sin,inf) * Pfunc({p.tb.envmodrange}) + Pfunc({p.tb.envmodoffset}) + Pbrown(-20, 20, 1,inf)).clip(0,127),
+				\update, Pfunc({
+					|e|
+					if (e.type == \midi,
+						{n.sendMsg('/controls/envmoddisplay',e.control);})
+				}),
+				\dur, Pseq([q * 0.1],p.tb.totalDuration)
 			),
 			Pbind(
-				\type, \midi,
+				\type, Pif(Pfunc({p.tb.decaytoggle == 1}),\midi,\rest),
 				\midiout, d,
 				\chan, 1,
 				\midicmd, \control,
 				\ctlNum, 75,
-				\control, (Pseg(Pseq(p.tb.decay,inf),Pseq(p.tb.decaydur,inf),\sin,inf) + Pbrown(-20, 20, 1,inf)).clip(0,127),
-				\dur, Pseq([q * 0.1],320)
+				\control, (Pseg(Pseq(p.tb.decay,inf),Pseq(p.tb.decaydur,inf),\sin,inf) * Pfunc({p.tb.decayrange}) + Pfunc({p.tb.decayoffset}) + Pbrown(-20, 20, 1,inf)).clip(0,127),
+				\update, Pfunc({
+					|e|
+					if (e.type == \midi,
+						{n.sendMsg('/controls/decaydisplay',e.control);})
+				}),
+				\dur, Pseq([q * 0.1],p.tb.totalDuration)
 			),
 			Pbind(
-				\type, \midi,
+				\type, Pif(Pfunc({p.tb.accenttoggle == 1}),\midi,\rest),
 				\midiout, d,
 				\chan, 1,
 				\midicmd, \control,
 				\ctlNum, 16,
-				\control, (Pseg(Pseq(p.tb.accent,inf),Pseq(p.tb.accentdur,inf),\sin,inf) + Pbrown(-20, 20, 1,inf)).clip(0,127),
-				\dur, Pseq([q * 0.1],320)
+				\control, (Pseg(Pseq(p.tb.accent,inf),Pseq(p.tb.accentdur,inf),\sin,inf) * Pfunc({p.tb.accentrange}) + Pfunc({p.tb.accentoffset}) + Pbrown(-20, 20, 1,inf)).clip(0,127),
+				\update, Pfunc({
+					|e|
+					if (e.type == \midi,
+						{n.sendMsg('/controls/accentdisplay',e.control);})
+				}),
+				\dur, Pseq([q * 0.1],p.tb.totalDuration)
 			),
 			Pbind(
-				\type, \midi,
+				\type, Pif(Pfunc({p.tb.overdrivetoggle == 1}),\midi,\rest),
 				\midiout, d,
 				\chan, 1,
 				\midicmd, \control,
 				\ctlNum, 17,
-				\control, (Pseg(Pseq(p.tb.overdrive,inf),Pseq(p.tb.overdrivedur,inf),\sin,inf) + Pbrown(-20, 20, 1,inf)).clip(0,127),
-				\dur, Pseq([q * 0.1],320)
+				\control, (Pseg(Pseq(p.tb.overdrive,inf),Pseq(p.tb.overdrivedur,inf),\sin,inf) * Pfunc({p.tb.overdriverange}) + Pfunc({p.tb.overdriveoffset}) + Pbrown(-20, 20, 1,inf)).clip(0,127),
+				\update, Pfunc({
+					|e|
+					if (e.type == \midi,
+						{n.sendMsg('/controls/overdrivedisplay',e.control);})
+				}),
+				\dur, Pseq([q * 0.1],p.tb.totalDuration)
 			)
 		])
 	],inf)
 );
-[\kick,\snare,\hat,\tb].do({|sym|Pdef(sym).play;});
+[\tb].do({|sym|Pdef(sym).play;});
 )
-[\kick,\snare,\hat,\tb].do({|sym|Pdef(sym).stop;});
+[\tb].do({|sym|Pdef(sym).stop;});
 
+(
+[\cutofffreqoffset, \resonanceoffset, \envmodoffset, \decayoffset, \accentoffset, \overdriveoffset].do({
+	|parameter|
+	OSCdef(\acid_ ++ parameter,{
+		|msg|
+		p.tb[parameter] = msg[1].linlin(0,1,-127,127);
+	},
+	'/controls/' ++ parameter;
+	)
+});
+[\cutofffreqrange, \resonancerange, \envmodrange, \decayrange, \accentrange, \overdriverange].do({
+	|parameter|
+	OSCdef(\acid_ ++ parameter,{
+		|msg|
+		p.tb[parameter] = msg[1].linlin(0,1,-2,2);
+	},
+	'/controls/' ++ parameter;
+	)
+});
+[\cutofffreqtoggle, \resonancetoggle, \envmodtoggle, \decaytoggle, \accenttoggle, \overdrivetoggle].do({
+	|parameter|
+	OSCdef(\acid_ ++ parameter,{
+		|msg|
+		p.tb[parameter] = msg[1];
+	},
+	'/controls/' ++ parameter;
+	)
+});
+)
 
+(
+prTouchOscNetAddress.sendMsg(oscPath, value);
+)
 
-d.latency = 0.27;
+OSCdef.all
+
+d.latency = 0.21;
 
 p.tb.keys.do({|key|postln(format("%: %,",key,p.tb[key]));})
 
@@ -129,7 +220,7 @@ p.tb.keys.do({|key|postln(format("%: %,",key,p.tb[key]));})
 p.tb = ( 'legato': [ 0.5, 1.1, 1.1, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 1.1, 0.5, 0.5 ], 'degree': [ -3, 3, 6, -6, -1, 5, 6, 6, -5, -1, -1, -1, 4, 0, 7 ], 'dur': [ 0.5, 0.5, 0.25, 0.25, 0.5, 0.25, 0.25, 0.25, 0.25, 0.25, 0.75 ], 'cutoff': [ 82, 68, 115, 102, 37, 141, 66 ],
   'resonance': [ 109, 84, 49, 116, 36, 148, 15 ], 'amp': [ 1, 1, 0.5, 0.5, 0.5, 0.5, 0.5, 1, 1, 0.5, 0.5, 0.5, 0.5 ], 'cutoffdur': [ 0.5, 0.5, 1, 0.5, 1, 0.5 ], 'resonancedur': [ 1, 1, 0.5, 0.5, 0.5, 0.5 ] );
 d.latency = 0.265;
-a.preset((tuning:0,envmod:0,decay:10,accent:10,overdrive:4)); // saw
+//a.preset((tuning:0,envmod:0,decay:10,accent:10,overdrive:4)); // saw
 )
 
 (
