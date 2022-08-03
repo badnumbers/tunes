@@ -1,50 +1,35 @@
 Synthesizer {
-	classvar <>workingPatch;
-	classvar <>patches;
-	classvar <>workingPatchIndices;
-	classvar <noWorkingPatchMessage = "To create a working patch, call initialisePatch(), randomisePatch() or recordMidiParameters().";
-	classvar <noSavedPatchesMessage = "To save the working patch, call saveWorkingPatch().";
+	var <>workingPatch;
+	var <>savedPatches;
+	var <>workingPatchIndex = 0;
+	var <noSavedPatchesMessage = "To save the working patch, call saveWorkingPatch().";
 
 	// Modifies the working patch by updating the value of the parameter (e.g. a CC) with the supplied parameterNumber to the new value parameterValue.
 	// E.g. applyMidiParameterToPatch(71,127)
-	*applyMidiParameterToPatch {
+	applyMidiParameterToPatch {
 		|parameterNumber,parameterValue|
-		workingPatch[this.getPatchType].kvps[parameterNumber] = parameterValue;
-		postln(format("The parameter number % now has the value %.", parameterNumber, workingPatch[this.getPatchType].kvps[parameterNumber]));
+		workingPatch.kvps[parameterNumber] = parameterValue;
+		postln(format("The parameter number % now has the value %.", parameterNumber, workingPatch.kvps[parameterNumber]));
 	}
 
 	// Chooses between an array of values with a specified weighting.
 	// E.g. this.chooseRandomValue([0,1,2],[1,3,1])
-	*chooseRandomValue
+	chooseRandomValue
 	{
 		|possibleValues,weights|
 		var choice = possibleValues[weights.normalizeSum.windex];
 		^choice;
 	}
 
-	// Creates a blank patch for when there are no patches yet. Does not send the init patch values to the hardware synth.
-	*createBlankPatch {
-		this.preparePatchDictionary();
-		this.workingPatch[this.getPatchType] = this.getPatchType().new;
-	}
-
-	*describeWorkingPatch
+	describeWorkingPatch
 	{
-		this.preparePatchDictionary();
-
-		if (this.workingPatch[this.getPatchType].isNil,{
-			postln("There is no working patch to describe!");
-			postln(this.noWorkingPatchMessage);
-			^nil;
-		});
-
-		postln(format("% PATCH: %", this.name, if (workingPatch[this.getPatchType].name.isNil, "Unnamed patch", workingPatch[this.getPatchType].name)));
-		this.workingPatch[this.getPatchType].describe;
+		postln(format("*** % patch: % ***", this.class.name, if (workingPatch.name.isNil, "Unnamed patch", workingPatch.name)));
+		this.workingPatch.describe;
 	}
 
 	// Chooses between a range of values with a specified curve, low clip and high clip.
 	// E.g. this.generateRandomValue(20,127,2,0,127)
-	*generateRandomValue
+	generateRandomValue
 	{
 		|lo,hi,curve=0,clipMin=0,clipMax=127|
 		var randomValue = 1.0.rand.lincurve(0,1,lo,hi,curve).clip(clipMin,clipMax).round;
@@ -56,47 +41,48 @@ Synthesizer {
 		Error("This Synthesizer does not have a control surface defined.").throw;
 	}
 
-	*getMidiParametersFromMididef {
+	getMidiParametersFromMididef {
 		|args|
 		^[args[1],args[0]]
 	}
 
-	*initialisePatch {
+	init {
+		this.workingPatch = this.class.getPatchType().new;
+		this.savedPatches = Array();
+	}
+
+	initialisePatch {
 		|midiout|
 
 		if (midiout.class != MIDIOut,{
 			Error(format("The midiout parameter passed to %.sendPatch() must be an instance of MIDIOut.", this.class)).throw;
 		});
 
-		this.createBlankPatch();
-		this.sendPatch(midiout,this.workingPatch[this.getPatchType]);
+		this.workingPatch = this.class.getPatchType().new;
+		this.sendPatch(midiout,this.workingPatch);
 	}
 
-	*listSavedPatches {
-		this.preparePatchDictionary();
-
-		if ((patches[this.getPatchType].class != Array) || (patches[this.getPatchType].size == 0), {
+	listSavedPatches {
+		if (savedPatches.size == 0, {
 			postln("There are no saved patches to list.");
 			postln(this.noSavedPatchesMessage);
 			^nil;
 		});
 
-		this.patches[this.getPatchType].do({
+		this.savedPatches.do({
 			|patch|
 			postln(patch.name);
 		});
 	}
 
-	*modifyWorkingPatch {
+	modifyWorkingPatch {
 		|midiout, parameterNumber, parameterValue|
 
 		if (midiout.class != MIDIOut,{
 			Error(format("The midiout parameter passed to %.sendPatch() must be an instance of MIDIOut.", this.class)).throw;
 		});
 
-		this.preparePatchDictionary();
-
-		if (this.workingPatch[this.getPatchType].isNil,{
+		if (this.workingPatch.isNil,{
 			postln("There is no working patch to modify!");
 			postln(this.noWorkingPatchMessage);
 			^nil;
@@ -106,94 +92,67 @@ Synthesizer {
 		midiout.control(this.midiChannel,parameterNumber,parameterValue);
 	}
 
-	*nextPatch {
+	nextPatch {
 		|midiout|
 
 		if (midiout.class != MIDIOut,{
 			Error(format("The midiout parameter passed to %.sendPatch() must be an instance of MIDIOut.", this.class)).throw;
 		});
 
-		this.preparePatchDictionary();
-
-		if (patches[this.getPatchType].class != Array, {
-			postln("There are no saved patches to move between...");
-			postln(this.noSavedPatchesMessage);
-			^nil;
-		});
-		if (patches[this.getPatchType].size == 0, {
+		if (savedPatches.size == 0, {
 			postln("There are no saved patches to move between...");
 			postln(this.noSavedPatchesMessage);
 			^nil;
 		});
 
-		workingPatchIndices[this.getPatchType] = workingPatchIndices[this.getPatchType] + 1;
+		workingPatchIndex = workingPatchIndex + 1;
 
-		if (workingPatchIndices[this.getPatchType] > (patches[this.getPatchType].size - 1), {
-			workingPatchIndices[this.getPatchType] = 0;
+		if (workingPatchIndex > (savedPatches.size - 1), {
+			workingPatchIndex = 0;
 		});
 
-		workingPatch[this.getPatchType] = patches[this.getPatchType][workingPatchIndices[this.getPatchType]].deepCopy;
-		this.sendPatch(midiout,workingPatch[this.getPatchType]);
-		postln(format("Changed patch to %: (% of % saved patches).", if (workingPatch[this.getPatchType].name.isNil, "Unnamed patch", workingPatch[this.getPatchType].name), workingPatchIndices[this.getPatchType] + 1, patches[this.getPatchType].size));
-		^workingPatch[this.getPatchType];
+		workingPatch = savedPatches[workingPatchIndex].deepCopy;
+		this.sendPatch(midiout,workingPatch);
+		postln(format("Changed patch to %: (% of % saved patches).", if (workingPatch.name.isNil, "Unnamed patch", workingPatch.name), workingPatchIndex + 1, savedPatches.size));
+		^workingPatch;
 	}
 
-	*preparePatchDictionary {
-		if (patches.isNil,{
-			patches = Dictionary();
-		});
-
-		if (workingPatch.isNil,{
-			workingPatch = Dictionary();
-		});
-
-		if (workingPatchIndices.isNil,{
-			workingPatchIndices = Dictionary();
-		});
-
-		if (workingPatchIndices[this.getPatchType].isNil,{
-			workingPatchIndices[this.getPatchType] = 0;
-		});
+	*new {
+		^super.new.init;
 	}
 
-	*previousPatch {
+	previousPatch {
 		|midiout|
 
 		if (midiout.class != MIDIOut,{
 			Error(format("The midiout parameter passed to %.sendPatch() must be an instance of MIDIOut.", this.class)).throw;
 		});
 
-		this.preparePatchDictionary();
-		if (patches[this.getPatchType].class != Array, {
-			postln("There are no saved patches to move between.");
-			postln(this.noSavedPatchesMessage);
-			^nil;
-		});
-		if (patches[this.getPatchType].size == 0, {
+		if (savedPatches.size == 0, {
 			postln("There are no saved patches to move between...");
 			postln(this.noSavedPatchesMessage);
 			^nil;
 		});
 
-		workingPatchIndices[this.getPatchType] = workingPatchIndices[this.getPatchType] - 1;
+		workingPatchIndex = workingPatchIndex - 1;
 
-		if (workingPatchIndices[this.getPatchType] < 0, {
-			workingPatchIndices[this.getPatchType] = patches[this.getPatchType].size - 1;
+		if (workingPatchIndex < 0, {
+			workingPatchIndex = savedPatches.size - 1;
 		});
 
-		workingPatch[this.getPatchType] = patches[this.getPatchType][workingPatchIndices[this.getPatchType]].deepCopy;
-		this.sendPatch(midiout,workingPatch[this.getPatchType]);
-		postln(format("Changed patch to %: (% of % saved patches).", if (workingPatch[this.getPatchType].name.isNil, "Unnamed patch", workingPatch[this.getPatchType].name), workingPatchIndices[this.getPatchType] + 1, patches[this.getPatchType].size));
-		^workingPatch[this.getPatchType];
+		workingPatch = savedPatches[workingPatchIndex].deepCopy;
+		this.sendPatch(midiout,workingPatch);
+		postln(format("Changed patch to %: (% of % saved patches).", if (workingPatch.name.isNil, "Unnamed patch", workingPatch.name), workingPatchIndex + 1, savedPatches.size));
+		^workingPatch;
 	}
 
 	// Writes code describing the supplied patch to the post window.
 	// Running this code will recreate the patch.
 	// Used by writeWorkingPatch() and writeSavedPatches().
-	*prWritePatch {
+	prWritePatch {
 		|patch|
-		if (this.getPatchType != patch.class, {
-				Error(format("The patch parameter passed to Synthesizer.prWritePatch() must be an instance of %.", this.getPatchType)).throw;
+		if (this.class.getPatchType != patch.class, {
+				Error(format("The patch parameter passed to Synthesizer.prWritePatch() must be an instance of %.", this.class.getPatchType)).throw;
 		});
 		postln(format("patch.name = %;", if (patch.name.isNil, "\"Unnamed patch\"", format("\"%\"", patch.name))));
 		patch.kvps.keys.do({
@@ -204,7 +163,8 @@ Synthesizer {
 		postln("");
 	}
 
-	*randomisePatch {
+	// This implementation is just validation. The subclass representing the synthesizer should implement randomisePatch() for itself, and calling the below at the beginning of the method.
+	randomisePatch {
         |midiout,patchType,writeToPostWindow=false|
 		if (midiout.class != MIDIOut,{
 			Error(format("The midiout parameter passed to %.randomise() must be an instance of MIDIOut.", this.class)).throw;
@@ -217,13 +177,7 @@ Synthesizer {
 		});
     }
 
-	*recordMidiParameters {
-		this.preparePatchDictionary();
-
-		if (this.workingPatch[this.getPatchType].isNil,{
-			this.createBlankPatch();
-		});
-
+	recordMidiParameters {
 		MIDIdef(format("%-%",this.class,"record-midi-parameters").asSymbol, {
 			|... args|
 			var midiParameterValues;
@@ -232,25 +186,19 @@ Synthesizer {
 		},nil,nil,this.getMidiMessageType,nil,nil,nil);
 	}
 
-	*registerControlSurface {
+	registerControlSurface {
 		|midiout|
 
-		var controlSurfaceType = this.getControlSurfaceType();
+		var controlSurfaceType = this.class.getControlSurfaceType();
 
 		if (midiout.class != MIDIOut,{
 			Error(format("The midiout parameter passed to %.randomise() must be an instance of MIDIOut.", this.class)).throw;
 		});
 
-		this.preparePatchDictionary();
-
-		if (this.workingPatch[this.getPatchType].isNil,{
-			this.createBlankPatch();
-		});
-
-		controlSurfaceType.register(midiout);
+		controlSurfaceType.register(midiout,this);
 	}
 
-	*saveWorkingPatch {
+	saveWorkingPatch {
 		|patchname|
 
 		if ((patchname.isNil) || (patchname == ""), {
@@ -258,71 +206,51 @@ Synthesizer {
 			^nil;
 		});
 
-		this.preparePatchDictionary();
-
-		if (this.workingPatch[this.getPatchType].isNil,{
-			postln("There is no patch to save!");
-			postln(this.noWorkingPatchMessage);
-			^nil;
-		});
-
-		this.workingPatch[this.getPatchType].name = patchname;
-		this.saveSpecificPatch(this.workingPatch[this.getPatchType]);
+		this.workingPatch.name = patchname;
+		this.saveSpecificPatch(this.workingPatch);
 	}
 
-	// Saves the supplied patch in the list of patches. Only used in the output of writeworkingPatch() and writeSavedPatches().
-	*saveSpecificPatch {
+	// Saves the supplied patch to the list of saved patches.
+	saveSpecificPatch {
 		|patch|
-		this.preparePatchDictionary();
-
-		if (this.getPatchType != patch.class, {
-				Error(format("The patch parameter passed to %.saveSpecificPatch() must be an instance of %.", this.class, this.getPatchType)).throw;
+		if (this.class.getPatchType != patch.class, {
+				Error(format("The patch parameter passed to %.saveSpecificPatch() must be an instance of %.", this.class, this.class.getPatchType)).throw;
 		},{
-			patches[this.getPatchType] = patches[this.getPatchType].add(patch.deepCopy); // shallowCopy doesn't seem to create an independent copy, for reasons I don't understand
+			savedPatches = savedPatches.add(patch.deepCopy); // shallowCopy doesn't seem to create an independent copy, for reasons I don't understand
 		});
 	}
 
-	*sendPatch {
+	sendPatch {
 		|midiout,patch|
 		if (midiout.class != MIDIOut,{
 			Error(format("The midiout parameter passed to %.sendPatch() must be an instance of MIDIOut.", this.class)).throw;
 		});
-		if (this.getPatchType != patch.class, {
-			Error(format("The patch parameter passed to %.sendPatch() must be an instance of %.", this.class, this.getPatchType)).throw;
+		if (this.class.getPatchType != patch.class, {
+			Error(format("The patch parameter passed to %.sendPatch() must be an instance of %.", this.class, this.class.getPatchType)).throw;
 		});
 	}
 
 	// Takes an instance of a patch and sets it to be the working patch.
 	// Used by randomisePatch().
-	*setWorkingPatch {
+	setWorkingPatch {
 		|patch|
-		if (this.getPatchType != patch.class, {
-			Error(format("The patch parameter passed to Synthesizer.setWorkingPatch() must be an instance of %.", this.getPatchType)).throw;
+		if (this.class.getPatchType != patch.class, {
+			Error(format("The patch parameter passed to Synthesizer.setWorkingPatch() must be an instance of %.", this.class.getPatchType)).throw;
 		});
 
-		this.preparePatchDictionary();
-		this.workingPatch[this.getPatchType] = patch;
+		this.workingPatch = patch;
 	}
 
-	*writeWorkingPatch {
-		this.preparePatchDictionary();
-
-		if (this.workingPatch[this.getPatchType].isNil,{
-			postln("There is no patch to write!");
-			postln(this.noWorkingPatchMessage);
-			^nil;
-		});
+	writeWorkingPatch {
 		postln("(");
-		postln(format("var patch = %();", this.getPatchType()));
-		this.prWritePatch(this.workingPatch[this.getPatchType]);
-		postln(format("%.saveSpecificPatch(patch);", this.name));
+		postln(format("var patch = %();", this.class.getPatchType()));
+		this.prWritePatch(this.workingPatch);
+		postln(format("%.saveSpecificPatch(patch);", this.class.name));
 		postln(")");
 	}
 
-	*writeSavedPatches {
-		this.preparePatchDictionary();
-
-		if ((patches[this.getPatchType].class != Array) || (patches[this.getPatchType].size == 0), {
+	writeSavedPatches {
+		if (savedPatches.size == 0, {
 			postln("There are no saved patches to write.");
 			postln(this.noSavedPatchesMessage);
 			^nil;
@@ -330,9 +258,9 @@ Synthesizer {
 
 		postln("(");
 		postln("var patch;");
-		this.patches[this.getPatchType].do({
+		this.savedPatches.do({
 			|patch|
-			postln(format("patch = %();", this.getPatchType()));
+			postln(format("patch = %();", this.class.getPatchType()));
 			this.prWritePatch(patch);
 			postln(format("%.saveSpecificPatch(patch);", this.name));
 		});

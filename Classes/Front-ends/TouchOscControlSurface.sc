@@ -7,10 +7,14 @@ TouchOscControlSurface {
 	}
 
 	*register {
-		|midiout|
+		|midiout,synthesizer|
 
 		if (midiout.class != MIDIOut,{
 			Error(format("The midiout parameter passed to %.randomise() must be an instance of MIDIOut.", this.class)).throw;
+		});
+
+		if (synthesizer.class != this.getSynthesizerType(),{
+			Error(format("The synthesizer parameter passed to %.randomise() must be an instance of %.", this.class, this.getSynthesizerType())).throw;
 		});
 
 		this.getControlParameters.do({
@@ -19,7 +23,7 @@ TouchOscControlSurface {
 				|msg|
 				var parameterNumber = this.getSynthesizerType().perform(controlParameter);
 				var parameterValue = msg[1].linlin(0,1,this.parameterMinValue,this.parameterMaxValue).floor;
-				this.getSynthesizerType().modifyWorkingPatch(midiout,parameterNumber,parameterValue);
+				synthesizer.modifyWorkingPatch(midiout,parameterNumber,parameterValue);
 			},
 			'/controls/' ++ controlParameter;
 			)

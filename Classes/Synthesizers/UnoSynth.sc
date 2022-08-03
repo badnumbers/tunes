@@ -35,8 +35,7 @@ UnoSynth : Synthesizer {
 	classvar <lfoToVibratoCcNo = 72;
 	classvar <lfoToWahCcNo = 71;
 	classvar <lfoWaveCcNo = 66;
-	classvar <>midiChannel = 15;
-	classvar <name = "UnoSynth";
+	var <>midiChannel = 15;
 	classvar <noiseLevelCcNo = 14;
 	classvar <osc1LevelCcNo = 12;
 	classvar <osc1TuneCcNo = 17;
@@ -69,7 +68,7 @@ UnoSynth : Synthesizer {
 		^\control;
 	}
 
-	*randomisePatch {
+	randomisePatch {
         |midiout,patchType,writeToPostWindow=false|
 		var patch = UnoSynthPatch();
 		var osc1Level = 127;
@@ -120,10 +119,10 @@ UnoSynth : Synthesizer {
 
 		this.sendPatch(midiout,patch);
 		this.setWorkingPatch(patch);
-		patch.describe();
+		if (writeToPostWindow, { patch.describe(); });
     }
 
-	*sendPatch {
+	sendPatch {
 		|midiout,patch|
 		super.sendPatch(midiout,patch);
 		patch.kvps.keys.do({
