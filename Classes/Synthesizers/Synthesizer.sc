@@ -8,6 +8,10 @@ Synthesizer {
 
 	addUpdateAction {
 		|actor,parameterNumber,action|
+		Validator.validateMethodParameterType(actor, Symbol, "actor", "Synthesizer", "addUpdateAction");
+		Validator.validateMethodParameterType(parameterNumber, Integer, "parameterNumber", "Synthesizer", "addUpdateAction");
+		Validator.validateMethodParameterType(action, Function, "action", "Synthesizer", "addUpdateAction");
+
 		if (updateActions.at(actor).class != Dictionary, {
 			updateActions.add(actor -> Dictionary());
 		});
@@ -18,9 +22,10 @@ Synthesizer {
 	// E.g. applyMidiParameterToPatch(71,127)
 	applyMidiParameterToPatch {
 		|parameterNumber,parameterValue|
-		postln(format("APPLYMIDIPARAMETERTOPATCH(%,%)", parameterNumber, parameterValue));
+		Validator.validateMethodParameterType(parameterNumber, Integer, "parameterNumber", "Synthesizer", "applyMidiParameterToPatch");
+		Validator.validateMethodParameterType(parameterValue, Integer, "parameterValue", "Synthesizer", "applyMidiParameterToPatch");
+
 		workingPatch.kvps[parameterNumber] = parameterValue;
-		postln(format("The parameter number % now has the value %.", parameterNumber, workingPatch.kvps[parameterNumber]));
 	}
 
 	// Chooses between an array of values with a specified weighting.
@@ -64,9 +69,7 @@ Synthesizer {
 
 	init {
 		|midiout|
-		if (midiout.class != MIDIOut,{
-			Error(format("The midiout parameter passed to %.sendPatch() must be an instance of MIDIOut.", this.class)).throw;
-		});
+		Validator.validateMethodParameterType(midiout, MIDIOut, "midiout", "Synthesizer", "init");
 
 		this.midiout = midiout;
 		workingPatch = this.class.getPatchType().new;
