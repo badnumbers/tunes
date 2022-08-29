@@ -13,7 +13,8 @@ ScGuiControlSurface {
 
 	init {
 		|synthesizer|
-		postln("ScGuiControlSurface init");
+		Validator.validateMethodParameterType(synthesizer, Synthesizer, "synthesizer", "ScGuiControlSurface", "init");
+
 		this.synthesizer = synthesizer;
 		updateables = Dictionary();
 		window = Window(name, Rect(0, 0, windowwidth, windowheight)).background_(background);
@@ -22,13 +23,16 @@ ScGuiControlSurface {
 
 	*new {
 		|synthesizer|
-		postln("ScGuiControlSurface new");
-		postln(format("synthesizer is a %", synthesizer.class));
+		Validator.validateMethodParameterType(synthesizer, Synthesizer, "synthesizer", "ScGuiControlSurface", "new");
+
 		^super.new.init(synthesizer);
 	}
 
 	openStethoscope {
 		|audioChannelIndex,numChannels|
+		Validator.validateMethodParameterType(audioChannelIndex, Integer, "audioChannelIndex", "ScGuiControlSurface", "openStethoscope");
+		Validator.validateMethodParameterType(numChannels, Integer, "numChannels", "ScGuiControlSurface", "openStethoscope");
+
 		Server.default.scope(Server.default,numChannels:numChannels,index:audioChannelIndex);
 	}
 }
