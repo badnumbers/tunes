@@ -74,11 +74,11 @@ UnoSynth : Synthesizer {
 	}
 
 	randomisePatch {
-        |midiout,patchType,writeToPostWindow=false|
+        |patchType,writeToPostWindow=false|
 		var patch = UnoSynthPatch();
 		var osc1Level = 127;
 		var detuneAmount;
-		super.randomisePatch(midiout,patchType,writeToPostWindow);
+		super.randomisePatch(patchType,writeToPostWindow);
 
 		// Oscillators
 		if (0.5.coin,{
@@ -122,14 +122,14 @@ UnoSynth : Synthesizer {
 		patch.set(UnoSynth.filterSustainCcNo, this.generateRandomValue(-50,127,0,0,127));
 		patch.set(UnoSynth.filterReleaseCcNo, this.generateRandomValue(0,127,8,0,127));
 
-		this.sendPatch(midiout,patch);
+		this.sendPatch(patch);
 		this.setWorkingPatch(patch);
 		if (writeToPostWindow, { patch.describe(); });
     }
 
 	sendPatch {
-		|midiout,patch|
-		super.sendPatch(midiout,patch);
+		|patch|
+		super.sendPatch(patch);
 		patch.kvps.keys.do({
 			|key|
 			var val = patch.kvps[key];
