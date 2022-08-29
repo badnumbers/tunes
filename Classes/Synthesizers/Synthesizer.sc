@@ -1,15 +1,23 @@
 Synthesizer {
-	var <>workingPatch;
-	var <>savedPatches;
-	var <>workingPatchIndex = 0;
+	var <>midiout;
 	var <noSavedPatchesMessage = "To save the working patch, call saveWorkingPatch().";
+	var <>savedPatches;
+	var <>updateActions;
+	var <>workingPatch;
+	var <>workingPatchIndex = 0;
+
+	addUpdateAction {
+		|parameterNumber,source,action|
+		updateActions.at(parameterNumber).add(source -> action);
+	}
 
 	// Modifies the working patch by updating the value of the parameter (e.g. a CC) with the supplied parameterNumber to the new value parameterValue.
 	// E.g. applyMidiParameterToPatch(71,127)
 	applyMidiParameterToPatch {
 		|parameterNumber,parameterValue|
-		workingPatch.kvps[parameterNumber] = parameterValue;
-		postln(format("The parameter number % now has the value %.", parameterNumber, workingPatch.kvps[parameterNumber]));
+		postln(format("APPLYMIDIPARAMETERTOPATCH(%,%)", parameterNumber, parameterValue));
+		this.workingPatch.kvps[parameterNumber] = parameterValue;
+		postln(format("The parameter number % now has the value %.", parameterNumber, this.workingPatch.kvps[parameterNumber]));
 	}
 
 	// Chooses between an array of values with a specified weighting.
@@ -41,25 +49,44 @@ Synthesizer {
 		Error("This Synthesizer does not have a control surface defined.").throw;
 	}
 
+	// Gets the SC GUI class intended for this Synthesizer.
+	*getGuiType {
+		Error("This Synthesizer does not have a GUI class defined.").throw;
+	}
+
 	getMidiParametersFromMididef {
 		|args|
 		^[args[1],args[0]]
 	}
 
 	init {
-		this.workingPatch = this.class.getPatchType().new;
-		this.savedPatches = Array();
-	}
-
-	initialisePatch {
 		|midiout|
-
 		if (midiout.class != MIDIOut,{
 			Error(format("The midiout parameter passed to %.sendPatch() must be an instance of MIDIOut.", this.class)).throw;
 		});
 
+		this.midiout = midiout;
 		this.workingPatch = this.class.getPatchType().new;
-		this.sendPatch(midiout,this.workingPatch);
+		this.savedPatches = Array();
+		this.updateActions = Dictionary();
+		this.workingPatch.kvps.keys.do({
+			|key|
+			//postln(format("this.class: %", this.class));
+			//postln(format("key: %", key));
+			//postln(format("newvalue: %"), newvalue);
+			//postln(format("this.midiChannel: %", this.midiChannel));
+			this.updateActions.add(key -> Dictionary());
+			this.addUpdateAction(key, \hardware, {
+				|newvalue|
+				postln(format("Updating the % hardware synthesizer. Setting parameter number % to the value %.", this.class, key, newvalue));
+				this.midiout.control(this.midiChannel,key,newvalue);
+			});
+		});
+	}
+
+	initialisePatch {
+		this.workingPatch = this.class.getPatchType().new;
+		this.sendPatch(this.workingPatch);
 	}
 
 	listSavedPatches {
@@ -76,11 +103,7 @@ Synthesizer {
 	}
 
 	modifyWorkingPatch {
-		|midiout, parameterNumber, parameterValue|
-
-		if (midiout.class != MIDIOut,{
-			Error(format("The midiout parameter passed to %.sendPatch() must be an instance of MIDIOut.", this.class)).throw;
-		});
+		|parameterNumber, parameterValue, source|
 
 		if (this.workingPatch.isNil,{
 			postln("There is no working patch to modify!");
@@ -89,16 +112,14 @@ Synthesizer {
 		});
 
 		this.applyMidiParameterToPatch(parameterNumber,parameterValue);
-		midiout.control(this.midiChannel,parameterNumber,parameterValue);
+		if (source.isNil, {
+			this.prInvokeUpdateAction({|subscriber| true}, parameterNumber, parameterValue);
+		}, {
+			this.prInvokeUpdateAction({|subscriber| subscriber != source}, parameterNumber, parameterValue);
+		});
 	}
 
 	nextPatch {
-		|midiout|
-
-		if (midiout.class != MIDIOut,{
-			Error(format("The midiout parameter passed to %.sendPatch() must be an instance of MIDIOut.", this.class)).throw;
-		});
-
 		if (savedPatches.size == 0, {
 			postln("There are no saved patches to move between...");
 			postln(this.noSavedPatchesMessage);
@@ -112,22 +133,17 @@ Synthesizer {
 		});
 
 		workingPatch = savedPatches[workingPatchIndex].deepCopy;
-		this.sendPatch(midiout,workingPatch);
+		this.sendPatch(workingPatch);
 		postln(format("Changed patch to %: (% of % saved patches).", if (workingPatch.name.isNil, "Unnamed patch", workingPatch.name), workingPatchIndex + 1, savedPatches.size));
 		^workingPatch;
 	}
 
 	*new {
-		^super.new.init;
+		|midiout|
+		^super.new.init(midiout);
 	}
 
 	previousPatch {
-		|midiout|
-
-		if (midiout.class != MIDIOut,{
-			Error(format("The midiout parameter passed to %.sendPatch() must be an instance of MIDIOut.", this.class)).throw;
-		});
-
 		if (savedPatches.size == 0, {
 			postln("There are no saved patches to move between...");
 			postln(this.noSavedPatchesMessage);
@@ -141,9 +157,25 @@ Synthesizer {
 		});
 
 		workingPatch = savedPatches[workingPatchIndex].deepCopy;
-		this.sendPatch(midiout,workingPatch);
+		this.sendPatch(workingPatch);
 		postln(format("Changed patch to %: (% of % saved patches).", if (workingPatch.name.isNil, "Unnamed patch", workingPatch.name), workingPatchIndex + 1, savedPatches.size));
 		^workingPatch;
+	}
+
+	prInvokeUpdateAction {
+		|sourcefilter, parameterNumber, parameterValue|
+		var actionKeys;
+		//postln(format("PRINVOKEUPDATEACTION(%, %, %)", sourcefilter, parameterNumber, parameterValue));
+		updateActions.at(parameterNumber).keys.do({
+			|key|
+			var selected = sourcefilter.value(key);
+			//postln(format("The key % returned %.", key, selected));
+		});
+		actionKeys = updateActions.at(parameterNumber).keys.select(sourcefilter).do({
+			|key|
+			//postln(format("Invoking the update action for source % for parameter number % with the value %.", key, parameterNumber, parameterValue));
+			updateActions.at(parameterNumber).at(key).value(parameterValue);
+		});
 	}
 
 	// Writes code describing the supplied patch to the post window.
@@ -165,10 +197,7 @@ Synthesizer {
 
 	// This implementation is just validation. The subclass representing the synthesizer should implement randomisePatch() for itself, and calling the below at the beginning of the method.
 	randomisePatch {
-        |midiout,patchType,writeToPostWindow=false|
-		if (midiout.class != MIDIOut,{
-			Error(format("The midiout parameter passed to %.randomise() must be an instance of MIDIOut.", this.class)).throw;
-		});
+        |patchType,writeToPostWindow=false|
 		if (patchType.isInteger == false,{
 			Error(format("The patchType parameter passed to %.randomise() must be an instance of Integer.", this.class)).throw;
 		});
@@ -187,15 +216,8 @@ Synthesizer {
 	}
 
 	registerControlSurface {
-		|midiout|
-
 		var controlSurfaceType = this.class.getControlSurfaceType();
-
-		if (midiout.class != MIDIOut,{
-			Error(format("The midiout parameter passed to %.randomise() must be an instance of MIDIOut.", this.class)).throw;
-		});
-
-		controlSurfaceType.register(midiout,this);
+		controlSurfaceType.register(this.midiout,this);
 	}
 
 	saveWorkingPatch {
@@ -221,10 +243,7 @@ Synthesizer {
 	}
 
 	sendPatch {
-		|midiout,patch|
-		if (midiout.class != MIDIOut,{
-			Error(format("The midiout parameter passed to %.sendPatch() must be an instance of MIDIOut.", this.class)).throw;
-		});
+		|patch|
 		if (this.class.getPatchType != patch.class, {
 			Error(format("The patch parameter passed to %.sendPatch() must be an instance of %.", this.class, this.class.getPatchType)).throw;
 		});
@@ -239,6 +258,14 @@ Synthesizer {
 		});
 
 		this.workingPatch = patch;
+	}
+
+	showGui {
+		var gui = this.class.getGuiType().new(this);
+		this.workingPatch.kvps.keys.do({
+			|key|
+			this.prInvokeUpdateAction({|source| source == this.class.getGuiType().name}, key, this.workingPatch.kvps[key]);
+		});
 	}
 
 	writeWorkingPatch {

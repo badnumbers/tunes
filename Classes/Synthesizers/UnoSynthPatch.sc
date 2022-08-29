@@ -34,6 +34,11 @@ UnoSynthPatch : Patch {
 		kvps.add(UnoSynth.filterSustainCcNo-> 127); // Max
 		kvps.add(UnoSynth.filterReleaseCcNo-> 0); // Min
 
+		kvps.add(UnoSynth.filterEnvToOsc1PwmCcNo-> 0); // Min
+		kvps.add(UnoSynth.filterEnvToOsc1WaveCcNo-> 0); // Min
+		kvps.add(UnoSynth.filterEnvToOsc2PwmCcNo-> 0); // Min
+		kvps.add(UnoSynth.filterEnvToOsc2WaveCcNo-> 0); // Min
+
 		// LFO
 		kvps.add(UnoSynth.lfoRateCcNo -> 58); // Mid
 		kvps.add(UnoSynth.lfoToFilterCutoffCcNo -> 0); // Min
@@ -58,6 +63,7 @@ UnoSynthPatch : Patch {
 		kvps.add(UnoSynth.diveRangeCcNo -> 0); // Min
 		kvps.add(UnoSynth.scoopOnOffCcNo -> 0); // Off
 		kvps.add(UnoSynth.scoopRangeCcNo-> 0); // Min
+		kvps.add(UnoSynth.tremoloOnOffCcNo-> 0); // Off
 		kvps.add(UnoSynth.vibratoOnOffCcNo -> 0); // Off
 		kvps.add(UnoSynth.wahOnOffCcNo -> 0); // Off
 
