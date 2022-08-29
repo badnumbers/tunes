@@ -2,13 +2,16 @@ Synthesizer {
 	var <>midiout;
 	var <noSavedPatchesMessage = "To save the working patch, call saveWorkingPatch().";
 	var <>savedPatches;
-	var <>updateActions;
+	var updateActions;
 	var <>workingPatch;
 	var <>workingPatchIndex = 0;
 
 	addUpdateAction {
-		|parameterNumber,source,action|
-		updateActions.at(parameterNumber).add(source -> action);
+		|actor,parameterNumber,action|
+		if (updateActions.at(actor).class != Dictionary, {
+			updateActions.add(actor -> Dictionary());
+		});
+		updateActions.at(actor).add(parameterNumber -> action);
 	}
 
 	// Modifies the working patch by updating the value of the parameter (e.g. a CC) with the supplied parameterNumber to the new value parameterValue.
@@ -68,15 +71,11 @@ Synthesizer {
 		this.midiout = midiout;
 		this.workingPatch = this.class.getPatchType().new;
 		this.savedPatches = Array();
-		this.updateActions = Dictionary();
+		updateActions = Dictionary();
+		updateActions.add(\hardware -> Dictionary());
 		this.workingPatch.kvps.keys.do({
 			|key|
-			//postln(format("this.class: %", this.class));
-			//postln(format("key: %", key));
-			//postln(format("newvalue: %"), newvalue);
-			//postln(format("this.midiChannel: %", this.midiChannel));
-			this.updateActions.add(key -> Dictionary());
-			this.addUpdateAction(key, \hardware, {
+			this.addUpdateAction(\hardware, key, {
 				|newvalue|
 				postln(format("Updating the % hardware synthesizer. Setting parameter number % to the value %.", this.class, key, newvalue));
 				this.midiout.control(this.midiChannel,key,newvalue);
@@ -163,18 +162,12 @@ Synthesizer {
 	}
 
 	prInvokeUpdateAction {
-		|sourcefilter, parameterNumber, parameterValue|
+		|actorFilter, parameterNumber, parameterValue|
 		var actionKeys;
-		//postln(format("PRINVOKEUPDATEACTION(%, %, %)", sourcefilter, parameterNumber, parameterValue));
-		updateActions.at(parameterNumber).keys.do({
-			|key|
-			var selected = sourcefilter.value(key);
-			//postln(format("The key % returned %.", key, selected));
-		});
-		actionKeys = updateActions.at(parameterNumber).keys.select(sourcefilter).do({
-			|key|
-			//postln(format("Invoking the update action for source % for parameter number % with the value %.", key, parameterNumber, parameterValue));
-			updateActions.at(parameterNumber).at(key).value(parameterValue);
+		updateActions.keys.select(actorFilter).do({
+			|actor| // The actor, e.g. hardware synth or control surface
+			postln(format("prInvokeUpdateAction: Updating actor %, parameter number % with the value %.", actor, parameterNumber, parameterValue));
+			updateActions.at(actor).at(parameterNumber).value(parameterValue);
 		});
 	}
 
@@ -263,8 +256,19 @@ Synthesizer {
 	showGui {
 		var gui = this.class.getGuiType().new(this);
 		this.workingPatch.kvps.keys.do({
-			|key|
-			this.prInvokeUpdateAction({|source| source == this.class.getGuiType().name}, key, this.workingPatch.kvps[key]);
+			|parameterNumber|
+			this.prInvokeUpdateAction({|actor| actor == this.class.getGuiType().name}, parameterNumber, this.workingPatch.kvps[parameterNumber]);
+		});
+	}
+
+	writeUpdateActions {
+		updateActions.keys.do({
+			|actor|
+			postln(format("- % (actor)",actor));
+			updateActions.at(actor).keys.do({
+				|parameterNumber|
+				postln(format("--- % (parameter number)",parameterNumber));
+			});
 		});
 	}
 

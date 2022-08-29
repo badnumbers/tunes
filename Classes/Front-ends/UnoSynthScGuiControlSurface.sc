@@ -23,7 +23,7 @@ UnoSynthScGuiControlSurface : ScGuiControlSurface {
 			this.synthesizer.modifyWorkingPatch(parameterNumber,this.controlSpec.map(slider.value),this.class.name);
 			postln(format("Value updated to %.", this.controlSpec.map(slider.value)));
 		});
-		this.synthesizer.addUpdateAction(parameterNumber, this.class.name, {
+		this.synthesizer.addUpdateAction(this.class.name, parameterNumber, {
 			|newvalue|
 			slider.value = this.controlSpec.unmap(newvalue);
 			postln(format("Setting the control % to the value %.", labelText, newvalue));
@@ -47,7 +47,7 @@ UnoSynthScGuiControlSurface : ScGuiControlSurface {
 			|knob|
 			this.synthesizer.modifyWorkingPatch(parameterNumber,this.controlSpec.map(knob.value),this.class.name);
 		});
-		this.synthesizer.addUpdateAction(parameterNumber, this.class.name, {
+		this.synthesizer.addUpdateAction(this.class.name, parameterNumber, {
 			|newvalue|
 			knob.value = this.controlSpec.unmap(newvalue);
 			postln(format("Setting the control % to the value %.", labelText, newvalue));
@@ -94,7 +94,7 @@ UnoSynthScGuiControlSurface : ScGuiControlSurface {
 			postln(format("Running the mouse up action for toggle button %. Sending CC value %.",labelText,onOffConvertToMidiCcFunc.value(button.value)));
 			this.synthesizer.modifyWorkingPatch(parameterNumber,onOffConvertToMidiCcFunc.value(button.value),this.class.name);
 		});
-		this.synthesizer.addUpdateAction(parameterNumber, this.class.name, {
+		this.synthesizer.addUpdateAction(this.class.name, parameterNumber, {
 			|newvalue|
 			button.value = onOffConvertFromMidiCcFunc.value(newvalue);
 			postln(format("Setting toggle button % to %.",labelText,button.value));
@@ -114,7 +114,7 @@ UnoSynthScGuiControlSurface : ScGuiControlSurface {
 			|slider|
 			this.synthesizer.modifyWorkingPatch(parameterNumber,this.controlSpec.map(slider.value),this.class.name);
 		});
-		this.synthesizer.addUpdateAction(parameterNumber, this.class.name, {
+		this.synthesizer.addUpdateAction(this.class.name, parameterNumber, {
 			|newvalue|
 			slider.value = this.controlSpec.unmap(newvalue);
 			postln(format("Setting the control % to the value %.", labelText, newvalue));
@@ -292,7 +292,7 @@ UnoSynthScGuiControlSurface : ScGuiControlSurface {
 			this.synthesizer.modifyWorkingPatch(UnoSynth.lfoWaveCcNo,lfoWaveChooserConvertToMidiCcFunc.value(selectedItem.value),this.class.name);
 			postln(format("Value updated to %.", lfoWaveChooserConvertToMidiCcFunc.value(selectedItem.value)));
 		});
-		this.synthesizer.addUpdateAction(UnoSynth.lfoWaveCcNo, this.class.name, {
+		this.synthesizer.addUpdateAction(this.class.name, UnoSynth.lfoWaveCcNo, {
 			|newvalue|
 			postln(format("In update action for LFO wave"));
 			lfoWaveChooser.value = lfoWaveChooserConvertFromMidiCcFunc.value(newvalue);
