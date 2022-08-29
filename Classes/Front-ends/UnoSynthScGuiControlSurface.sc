@@ -175,6 +175,13 @@ UnoSynthScGuiControlSurface : ScGuiControlSurface {
 		otherTab = tabset.addTab("OTHER");
 		this.initOtherTab(otherTab);
 
+		StaticText(window,Rect(50,710,100,30))
+		.background_(lightgrey)
+		.string_("Init patch")
+		.stringColor_(Color.black)
+		.align_(\center)
+		.mouseUpAction_({this.synthesizer.initialisePatch()});
+
 		StaticText(window,Rect(680,710,100,30))
 		.background_(lightgrey)
 		.string_("Write patch")
