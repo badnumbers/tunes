@@ -1,4 +1,5 @@
 Synthesizer {
+	var invokeUpdateActionsFunc;
 	var <>midiout;
 	var <noSavedPatchesMessage = "To save the working patch, call saveWorkingPatch().";
 	var <>savedPatches;
@@ -23,7 +24,7 @@ Synthesizer {
 	applyMidiParameterToPatch {
 		|parameterNumber,parameterValue|
 		Validator.validateMethodParameterType(parameterNumber, Integer, "parameterNumber", "Synthesizer", "applyMidiParameterToPatch");
-		Validator.validateMethodParameterType(parameterValue, Integer, "parameterValue", "Synthesizer", "applyMidiParameterToPatch");
+		Validator.validateMethodParameterType(parameterValue, SimpleNumber, "parameterValue", "Synthesizer", "applyMidiParameterToPatch");
 
 		workingPatch.kvps[parameterNumber] = parameterValue;
 	}
@@ -69,7 +70,7 @@ Synthesizer {
 
 	init {
 		|midiout|
-		Validator.validateMethodParameterType(midiout, MIDIOut, "midiout", "Synthesizer", "init");
+		//Validator.validateMethodParameterType(midiout, MIDIOut, "midiout", "Synthesizer", "init");
 
 		this.midiout = midiout;
 		workingPatch = this.class.getPatchType().new;
@@ -84,6 +85,15 @@ Synthesizer {
 				this.midiout.control(this.midiChannel,key,newvalue);
 			});
 		});
+
+		invokeUpdateActionsFunc = {
+			|actorFilter, parameterNumber, parameterValue|
+			var actionKeys;
+			updateActions.keys.select(actorFilter).do({
+				|actor| // The actor, e.g. hardware synth or control surface
+				updateActions.at(actor).at(parameterNumber).value(parameterValue);
+			});
+		};
 	}
 
 	initialisePatch {
@@ -115,9 +125,9 @@ Synthesizer {
 
 		this.applyMidiParameterToPatch(parameterNumber,parameterValue);
 		if (source.isNil, {
-			this.prInvokeUpdateAction({|subscriber| true}, parameterNumber, parameterValue);
+			invokeUpdateActionsFunc.value({|subscriber| true}, parameterNumber, parameterValue);
 		}, {
-			this.prInvokeUpdateAction({|subscriber| subscriber != source}, parameterNumber, parameterValue);
+			invokeUpdateActionsFunc.value({|subscriber| subscriber != source}, parameterNumber, parameterValue);
 		});
 	}
 
@@ -162,16 +172,6 @@ Synthesizer {
 		this.sendPatch(workingPatch);
 		postln(format("Changed patch to %: (% of % saved patches).", if (workingPatch.name.isNil, "Unnamed patch", workingPatch.name), workingPatchIndex + 1, savedPatches.size));
 		^workingPatch;
-	}
-
-	prInvokeUpdateAction {
-		|actorFilter, parameterNumber, parameterValue|
-		var actionKeys;
-		updateActions.keys.select(actorFilter).do({
-			|actor| // The actor, e.g. hardware synth or control surface
-			postln(format("prInvokeUpdateAction: Updating actor %, parameter number % with the value %.", actor, parameterNumber, parameterValue));
-			updateActions.at(actor).at(parameterNumber).value(parameterValue);
-		});
 	}
 
 	// Writes code describing the supplied patch to the post window.
@@ -260,7 +260,7 @@ Synthesizer {
 		var gui = this.class.getGuiType().new(this);
 		workingPatch.kvps.keys.do({
 			|parameterNumber|
-			this.prInvokeUpdateAction({|actor| actor == this.class.getGuiType().name}, parameterNumber, workingPatch.kvps[parameterNumber]);
+			invokeUpdateActionsFunc.value({|actor| actor == this.class.getGuiType().name}, parameterNumber, workingPatch.kvps[parameterNumber]);
 		});
 	}
 
