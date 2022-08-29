@@ -15,6 +15,9 @@ ScGuiTabSet : ScGuiControl {
 	addTab { |name|
 		var buttonwidth, counter = 0;
 		var tab = ScGuiTab(this,Rect(0,0,0,50),name);
+
+		Validator.validateMethodParameterType(name, String, "name", "ScGuiTabSet", "addTab");
+
 		tabs = tabs.add(tab);
 		tab.index = tabcount;
 		buttonwidth = this.width / (tabcount + 1);
@@ -30,14 +33,23 @@ ScGuiTabSet : ScGuiControl {
 			var left;
 			left = buttonwidth * counter;
 			tab.button.bounds = Rect(left, 0, buttonwidth, this.buttonheight);
-			//postln(format("Tab button % has a left of % and a width of %.", counter, left, buttonwidth));
 			counter = counter + 1;
 		});
 		^tab;
 	}
 
 	init { |parent, foregroundcolour, backgroundcolour, left, top, width, buttonheight, bodyheight, borderwidth, bordercolour|
-		postln("ScGuiTabSet init");
+		Validator.validateMethodParameterType(parent, Window, "parent", "ScGuiTabSet", "init");
+		Validator.validateMethodParameterType(foregroundcolour, Color, "foregroundcolour", "ScGuiTabSet", "init");
+		Validator.validateMethodParameterType(backgroundcolour, Color, "backgroundcolour", "ScGuiTabSet", "init");
+		Validator.validateMethodParameterType(left, Integer, "left", "ScGuiTabSet", "init");
+		Validator.validateMethodParameterType(top, Integer, "top", "ScGuiTabSet", "init");
+		Validator.validateMethodParameterType(width, Integer, "width", "ScGuiTabSet", "init");
+		Validator.validateMethodParameterType(buttonheight, Integer, "buttonheight", "ScGuiTabSet", "init");
+		Validator.validateMethodParameterType(bodyheight, Integer, "bodyheight", "ScGuiTabSet", "init");
+		Validator.validateMethodParameterType(borderwidth, Integer, "borderwidth", "ScGuiTabSet", "init");
+		Validator.validateMethodParameterType(bordercolour, Color, "bordercolour", "ScGuiTabSet", "init");
+
 		tabs = Array();
 		super.init(parent);
 		this.foregroundcolour = foregroundcolour;
