@@ -6,7 +6,7 @@ UnoSynth : Synthesizer {
 	classvar <arpeggiatorDirectionCcNo = 83;
 	classvar <arpeggiatorOnOffCcNo = 82;
 	classvar <arpeggiatorRangeCcNo = 84;
-	var audioInputChannels = #[19];
+	var <audioInputChannels = #[19];
 	classvar <cutoffCcNo = 20;
 	classvar <delayMixCcNo = 80;
 	classvar <delayTimeCcNo = 81;
