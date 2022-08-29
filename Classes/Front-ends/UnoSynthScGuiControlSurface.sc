@@ -18,6 +18,7 @@ UnoSynthScGuiControlSurface : ScGuiControlSurface {
 		.orientation_(\horizontal)
 		.knobColor_(Color.red)
 		.thumbSize_(25)
+		.step_(1/127)
 		.action_({
 			|slider|
 			this.synthesizer.modifyWorkingPatch(parameterNumber,this.controlSpec.map(slider.value),this.class.name);
@@ -43,6 +44,8 @@ UnoSynthScGuiControlSurface : ScGuiControlSurface {
 		var container = View(parent, Rect(left, top, knobSide + knobExternalMargin, knobSide + knobExternalMargin + 50));
 		var knob = Knob(container,Rect(knobExternalMargin,knobExternalMargin,knobSide,knobSide))
 		.color_(knobcolors)
+		.mode_(\vert)
+		.step_(1/127)
 		.action_({
 			|knob|
 			this.synthesizer.modifyWorkingPatch(parameterNumber,this.controlSpec.map(knob.value),this.class.name);
@@ -110,6 +113,7 @@ UnoSynthScGuiControlSurface : ScGuiControlSurface {
 		.orientation_(\vertical)
 		.knobColor_(Color.red)
 		.thumbSize_(25)
+		.step_(1/127)
 		.action_({
 			|slider|
 			this.synthesizer.modifyWorkingPatch(parameterNumber,this.controlSpec.map(slider.value),this.class.name);
@@ -132,7 +136,7 @@ UnoSynthScGuiControlSurface : ScGuiControlSurface {
 		var oscillatorstab, filtertab, filterEnvTab, lfoTab, effectsTab, otherTab;
 		darkgrey = Color(0.8,0.8,0.8);
 		lightgrey = Color(0.5,0.5,0.5);
-		controlSpec = ControlSpec(0,127,\lin,1.0/127);
+		controlSpec = ControlSpec(0,127,\lin,1/127);
 		postln(format("In UnoSynthScGuiControlSurface.init - this.controlSpec is a %.", this.controlSpec.class));
 		knobcolors = [
 			Color.black,
