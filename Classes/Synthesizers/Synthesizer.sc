@@ -240,11 +240,6 @@ Synthesizer {
 		savedPatches = savedPatches.add(patch.deepCopy);
 	}
 
-	sendPatch {
-		|patch|
-		Validator.validateMethodParameterType(patch, this.class, "patch", "Synthesizer", "sendPatch");
-	}
-
 	// Takes an instance of a patch and sets it to be the working patch.
 	// Used by randomisePatch().
 	setWorkingPatch {

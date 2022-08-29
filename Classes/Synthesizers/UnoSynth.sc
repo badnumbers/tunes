@@ -126,14 +126,4 @@ UnoSynth : Synthesizer {
 		this.setWorkingPatch(patch);
 		if (writeToPostWindow, { patch.describe(); });
     }
-
-	sendPatch {
-		|patch|
-		super.sendPatch(patch);
-		patch.kvps.keys.do({
-			|key|
-			var val = patch.kvps[key];
-			midiout.control(this.midiChannel,key,val);
-		});
-	}
 }
