@@ -19,8 +19,8 @@ Synthesizer {
 	applyMidiParameterToPatch {
 		|parameterNumber,parameterValue|
 		postln(format("APPLYMIDIPARAMETERTOPATCH(%,%)", parameterNumber, parameterValue));
-		this.workingPatch.kvps[parameterNumber] = parameterValue;
-		postln(format("The parameter number % now has the value %.", parameterNumber, this.workingPatch.kvps[parameterNumber]));
+		workingPatch.kvps[parameterNumber] = parameterValue;
+		postln(format("The parameter number % now has the value %.", parameterNumber, workingPatch.kvps[parameterNumber]));
 	}
 
 	// Chooses between an array of values with a specified weighting.
@@ -35,7 +35,7 @@ Synthesizer {
 	describeWorkingPatch
 	{
 		postln(format("*** % patch: % ***", this.class.name, if (workingPatch.name.isNil, "Unnamed patch", workingPatch.name)));
-		this.workingPatch.describe;
+		workingPatch.describe;
 	}
 
 	// Chooses between a range of values with a specified curve, low clip and high clip.
@@ -69,11 +69,11 @@ Synthesizer {
 		});
 
 		this.midiout = midiout;
-		this.workingPatch = this.class.getPatchType().new;
+		workingPatch = this.class.getPatchType().new;
 		this.savedPatches = Array();
 		updateActions = Dictionary();
 		updateActions.add(\hardware -> Dictionary());
-		this.workingPatch.kvps.keys.do({
+		workingPatch.kvps.keys.do({
 			|key|
 			this.addUpdateAction(\hardware, key, {
 				|newvalue|
@@ -84,8 +84,8 @@ Synthesizer {
 	}
 
 	initialisePatch {
-		this.workingPatch = this.class.getPatchType().new;
-		this.sendPatch(this.workingPatch);
+		workingPatch = this.class.getPatchType().new;
+		this.sendPatch(workingPatch);
 	}
 
 	listSavedPatches {
@@ -104,7 +104,7 @@ Synthesizer {
 	modifyWorkingPatch {
 		|parameterNumber, parameterValue, source|
 
-		if (this.workingPatch.isNil,{
+		if (workingPatch.isNil,{
 			postln("There is no working patch to modify!");
 			postln(this.noWorkingPatchMessage);
 			^nil;
@@ -221,8 +221,8 @@ Synthesizer {
 			^nil;
 		});
 
-		this.workingPatch.name = patchname;
-		this.saveSpecificPatch(this.workingPatch);
+		workingPatch.name = patchname;
+		this.saveSpecificPatch(workingPatch);
 	}
 
 	// Saves the supplied patch to the list of saved patches.
@@ -250,14 +250,14 @@ Synthesizer {
 			Error(format("The patch parameter passed to Synthesizer.setWorkingPatch() must be an instance of %.", this.class.getPatchType)).throw;
 		});
 
-		this.workingPatch = patch;
+		workingPatch = patch;
 	}
 
 	showGui {
 		var gui = this.class.getGuiType().new(this);
-		this.workingPatch.kvps.keys.do({
+		workingPatch.kvps.keys.do({
 			|parameterNumber|
-			this.prInvokeUpdateAction({|actor| actor == this.class.getGuiType().name}, parameterNumber, this.workingPatch.kvps[parameterNumber]);
+			this.prInvokeUpdateAction({|actor| actor == this.class.getGuiType().name}, parameterNumber, workingPatch.kvps[parameterNumber]);
 		});
 	}
 
@@ -275,7 +275,7 @@ Synthesizer {
 	writeWorkingPatch {
 		postln("(");
 		postln(format("var patch = %();", this.class.getPatchType()));
-		this.prWritePatch(this.workingPatch);
+		this.prWritePatch(workingPatch);
 		postln(format("%.saveSpecificPatch(patch);", this.class.name));
 		postln(")");
 	}
