@@ -97,7 +97,7 @@ Synthesizer {
 	}
 
 	initialisePatch {
-		workingPatch = this.class.getPatchType().new;
+		this.setWorkingPatch(this.class.getPatchType().new);
 	}
 
 	listSavedPatches {
@@ -244,6 +244,10 @@ Synthesizer {
 		Validator.validateMethodParameterType(patch, this.class, "patch", "Synthesizer", "setWorkingPatch");
 
 		workingPatch = patch;
+		workingPatch.kvps.keys.do({
+			|parameterNumber|
+			invokeUpdateActionsFunc.value({|actor| true}, parameterNumber, workingPatch.kvps[parameterNumber]);
+		});
 	}
 
 	showGui {
@@ -270,6 +274,7 @@ Synthesizer {
 		postln(format("var patch = %();", this.class.getPatchType()));
 		this.prWritePatch(workingPatch);
 		postln(format("%.saveSpecificPatch(patch);", this.class.name));
+		postln(format("%.setWorkingPatch(patch);", this.class.name));
 		postln(")");
 	}
 
