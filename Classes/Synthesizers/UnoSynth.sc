@@ -122,7 +122,6 @@ UnoSynth : Synthesizer {
 		patch.set(UnoSynth.filterSustainCcNo, this.generateRandomValue(-50,127,0,0,127));
 		patch.set(UnoSynth.filterReleaseCcNo, this.generateRandomValue(0,127,8,0,127));
 
-		this.sendPatch(patch);
 		this.setWorkingPatch(patch);
 		if (writeToPostWindow, { patch.describe(); });
     }

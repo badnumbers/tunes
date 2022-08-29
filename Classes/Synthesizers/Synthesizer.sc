@@ -98,7 +98,6 @@ Synthesizer {
 
 	initialisePatch {
 		workingPatch = this.class.getPatchType().new;
-		this.sendPatch(workingPatch);
 	}
 
 	listSavedPatches {
@@ -148,7 +147,6 @@ Synthesizer {
 		});
 
 		workingPatch = savedPatches[workingPatchIndex].deepCopy;
-		this.sendPatch(workingPatch);
 		postln(format("Changed patch to %: (% of % saved patches).", if (workingPatch.name.isNil, "Unnamed patch", workingPatch.name), workingPatchIndex + 1, savedPatches.size));
 		^workingPatch;
 	}
@@ -174,7 +172,6 @@ Synthesizer {
 		});
 
 		workingPatch = savedPatches[workingPatchIndex].deepCopy;
-		this.sendPatch(workingPatch);
 		postln(format("Changed patch to %: (% of % saved patches).", if (workingPatch.name.isNil, "Unnamed patch", workingPatch.name), workingPatchIndex + 1, savedPatches.size));
 		^workingPatch;
 	}
@@ -244,7 +241,7 @@ Synthesizer {
 	// Used by randomisePatch().
 	setWorkingPatch {
 		|patch|
-		Validator.validateMethodParameterType(patch, this.class, "patch", "Synthesizer", "sendPatch");
+		Validator.validateMethodParameterType(patch, this.class, "patch", "Synthesizer", "setWorkingPatch");
 
 		workingPatch = patch;
 	}
