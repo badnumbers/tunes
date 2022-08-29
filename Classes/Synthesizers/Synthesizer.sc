@@ -70,7 +70,7 @@ Synthesizer {
 
 	init {
 		|midiout|
-		//Validator.validateMethodParameterType(midiout, MIDIOut, "midiout", "Synthesizer", "init");
+		Validator.validateMethodParameterType(midiout, MIDIOut, "midiout", "Synthesizer", "init");
 
 		this.midiout = midiout;
 		workingPatch = this.class.getPatchType().new;
@@ -115,7 +115,10 @@ Synthesizer {
 	}
 
 	modifyWorkingPatch {
-		|parameterNumber, parameterValue, source|
+		|parameterNumber, parameterValue, actor|
+		Validator.validateMethodParameterType(parameterNumber, Integer, "parameterNumber", "Synthesizer", "modifyWorkingPatch");
+		Validator.validateMethodParameterType(parameterValue, Integer, "parameterValue", "Synthesizer", "modifyWorkingPatch");
+		Validator.validateMethodParameterType(actor, Symbol, "actor", "Synthesizer", "modifyWorkingPatch");
 
 		if (workingPatch.isNil,{
 			postln("There is no working patch to modify!");
@@ -124,10 +127,10 @@ Synthesizer {
 		});
 
 		this.applyMidiParameterToPatch(parameterNumber,parameterValue);
-		if (source.isNil, {
+		if (actor.isNil, {
 			invokeUpdateActionsFunc.value({|subscriber| true}, parameterNumber, parameterValue);
 		}, {
-			invokeUpdateActionsFunc.value({|subscriber| subscriber != source}, parameterNumber, parameterValue);
+			invokeUpdateActionsFunc.value({|subscriber| subscriber != actor}, parameterNumber, parameterValue);
 		});
 	}
 
@@ -152,6 +155,8 @@ Synthesizer {
 
 	*new {
 		|midiout|
+		Validator.validateMethodParameterType(midiout, MIDIOut, "midiout", "Synthesizer", "new");
+
 		^super.new.init(midiout);
 	}
 
@@ -179,9 +184,8 @@ Synthesizer {
 	// Used by writeWorkingPatch() and writeSavedPatches().
 	prWritePatch {
 		|patch|
-		if (this.class.getPatchType != patch.class, {
-				Error(format("The patch parameter passed to Synthesizer.prWritePatch() must be an instance of %.", this.class.getPatchType)).throw;
-		});
+		Validator.validateMethodParameterType(patch, this.class, "patch", "Synthesizer", "prWritePatch");
+
 		postln(format("patch.name = %;", if (patch.name.isNil, "\"Unnamed patch\"", format("\"%\"", patch.name))));
 		patch.kvps.keys.do({
 			|key|
@@ -231,27 +235,21 @@ Synthesizer {
 	// Saves the supplied patch to the list of saved patches.
 	saveSpecificPatch {
 		|patch|
-		if (this.class.getPatchType != patch.class, {
-				Error(format("The patch parameter passed to %.saveSpecificPatch() must be an instance of %.", this.class, this.class.getPatchType)).throw;
-		},{
-			savedPatches = savedPatches.add(patch.deepCopy); // shallowCopy doesn't seem to create an independent copy, for reasons I don't understand
-		});
+		Validator.validateMethodParameterType(patch, this.class, "patch", "Synthesizer", "saveSpecificPatch");
+
+		savedPatches = savedPatches.add(patch.deepCopy);
 	}
 
 	sendPatch {
 		|patch|
-		if (this.class.getPatchType != patch.class, {
-			Error(format("The patch parameter passed to %.sendPatch() must be an instance of %.", this.class, this.class.getPatchType)).throw;
-		});
+		Validator.validateMethodParameterType(patch, this.class, "patch", "Synthesizer", "sendPatch");
 	}
 
 	// Takes an instance of a patch and sets it to be the working patch.
 	// Used by randomisePatch().
 	setWorkingPatch {
 		|patch|
-		if (this.class.getPatchType != patch.class, {
-			Error(format("The patch parameter passed to Synthesizer.setWorkingPatch() must be an instance of %.", this.class.getPatchType)).throw;
-		});
+		Validator.validateMethodParameterType(patch, this.class, "patch", "Synthesizer", "sendPatch");
 
 		workingPatch = patch;
 	}
