@@ -68,6 +68,14 @@ Synthesizer {
 		^[args[1],args[0]]
 	}
 
+	getSynthesizerName {
+		Error(format("The Synthesizer with class name % needs to have getSynthesizerName defined.",this.class)).throw;
+	}
+
+	getDefaultVariableName {
+		Error(format("The Synthesizer with class name % needs to have getDefaultVariableName defined.",this.class)).throw;
+	}
+
 	init {
 		|midiout|
 		Validator.validateMethodParameterType(midiout, MIDIOut, "midiout", "Synthesizer", "init");
@@ -280,8 +288,7 @@ Synthesizer {
 		postln("(");
 		postln(format("var patch = %();", this.class.getPatchType()));
 		this.prWritePatch(workingPatch);
-		postln(format("%.saveSpecificPatch(patch);", this.class.name));
-		postln(format("%.setWorkingPatch(patch);", this.class.name));
+		postln(format("%.setWorkingPatch(patch);", this.getDefaultVariableName));
 		postln(")");
 	}
 
@@ -298,7 +305,7 @@ Synthesizer {
 			|patch|
 			postln(format("patch = %();", this.class.getPatchType()));
 			this.prWritePatch(patch);
-			postln(format("%.saveSpecificPatch(patch);", this.name));
+			postln(format("%.setWorkingPatch(patch);", this.getDefaultVariableName));
 		});
 		postln(")");
 	}
