@@ -208,7 +208,7 @@ Synthesizer {
 			|... args|
 			var midiParameterValues;
 			midiParameterValues = this.getMidiParametersFromMididef(args);
-			this.applyMidiParameterToPatch(midiParameterValues[0],midiParameterValues[1]);
+			this.modifyWorkingPatch(midiParameterValues[0],midiParameterValues[1],\hardware);
 		},nil,nil,this.getMidiMessageType,nil,nil,nil);
 	}
 
