@@ -5,7 +5,6 @@ Synthesizer {
 	var <>savedPatches;
 	var updateActions;
 	var <>workingPatch;
-	var <>workingPatchIndex = 0;
 
 	addUpdateAction {
 		|actor,parameterNumber,action|
@@ -17,16 +16,6 @@ Synthesizer {
 			updateActions.add(actor -> Dictionary());
 		});
 		updateActions.at(actor).add(parameterNumber -> action);
-	}
-
-	// Modifies the working patch by updating the value of the parameter (e.g. a CC) with the supplied parameterNumber to the new value parameterValue.
-	// E.g. applyMidiParameterToPatch(71,127)
-	applyMidiParameterToPatch {
-		|parameterNumber,parameterValue|
-		Validator.validateMethodParameterType(parameterNumber, Integer, "parameterNumber", "Synthesizer", "applyMidiParameterToPatch");
-		Validator.validateMethodParameterType(parameterValue, SimpleNumber, "parameterValue", "Synthesizer", "applyMidiParameterToPatch");
-
-		workingPatch.kvps[parameterNumber] = parameterValue;
 	}
 
 	// Chooses between an array of values with a specified weighting.
@@ -82,7 +71,7 @@ Synthesizer {
 
 		this.midiout = midiout;
 		workingPatch = this.class.getPatchType().new;
-		this.savedPatches = Array();
+		this.savedPatches = Dictionary();
 		updateActions = Dictionary();
 		updateActions.add(\hardware -> Dictionary());
 		workingPatch.kvps.keys.do({
@@ -115,9 +104,9 @@ Synthesizer {
 			^nil;
 		});
 
-		this.savedPatches.do({
+		this.savedPatches.keys.do({
 			|patch|
-			postln(patch.name);
+			postln(patch);
 		});
 	}
 
@@ -133,7 +122,7 @@ Synthesizer {
 			^nil;
 		});
 
-		this.applyMidiParameterToPatch(parameterNumber,parameterValue);
+		workingPatch.kvps[parameterNumber] = parameterValue;
 		if (actor.isNil, {
 			invokeUpdateActionsFunc.value({|subscriber| true}, parameterNumber, parameterValue);
 		}, {
@@ -141,47 +130,11 @@ Synthesizer {
 		});
 	}
 
-	nextPatch {
-		if (savedPatches.size == 0, {
-			postln("There are no saved patches to move between...");
-			postln(this.noSavedPatchesMessage);
-			^nil;
-		});
-
-		workingPatchIndex = workingPatchIndex + 1;
-
-		if (workingPatchIndex > (savedPatches.size - 1), {
-			workingPatchIndex = 0;
-		});
-
-		workingPatch = savedPatches[workingPatchIndex].deepCopy;
-		postln(format("Changed patch to %: (% of % saved patches).", if (workingPatch.name.isNil, "Unnamed patch", workingPatch.name), workingPatchIndex + 1, savedPatches.size));
-		^workingPatch;
-	}
-
 	*new {
 		|midiout|
 		Validator.validateMethodParameterType(midiout, MIDIOut, "midiout", "Synthesizer", "new");
 
 		^super.new.init(midiout);
-	}
-
-	previousPatch {
-		if (savedPatches.size == 0, {
-			postln("There are no saved patches to move between...");
-			postln(this.noSavedPatchesMessage);
-			^nil;
-		});
-
-		workingPatchIndex = workingPatchIndex - 1;
-
-		if (workingPatchIndex < 0, {
-			workingPatchIndex = savedPatches.size - 1;
-		});
-
-		workingPatch = savedPatches[workingPatchIndex].deepCopy;
-		postln(format("Changed patch to %: (% of % saved patches).", if (workingPatch.name.isNil, "Unnamed patch", workingPatch.name), workingPatchIndex + 1, savedPatches.size));
-		^workingPatch;
 	}
 
 	// Writes code describing the supplied patch to the post window.
@@ -301,8 +254,9 @@ Synthesizer {
 
 		postln("(");
 		postln("var patch;");
-		this.savedPatches.do({
-			|patch|
+		this.savedPatches.keys.do({
+			|key|
+			var patch = this.savedPatches[key];
 			postln(format("patch = %();", this.class.getPatchType()));
 			this.prWritePatch(patch);
 			postln(format("%.setWorkingPatch(patch);", this.getDefaultVariableName));
