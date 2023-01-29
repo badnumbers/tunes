@@ -73,6 +73,14 @@ UnoSynth : Synthesizer {
 		^\control;
 	}
 
+	getSynthesizerName {
+		^"UnoSynth";
+	}
+
+	getDefaultVariableName {
+		^"~unoSynth";
+	}
+
 	randomisePatch {
         |patchType,writeToPostWindow=false|
 		var patch = UnoSynthPatch();
