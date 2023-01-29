@@ -82,7 +82,7 @@ Synthesizer {
 			this.addUpdateAction(\hardware, key, {
 				|newvalue|
 				postln(format("Updating the % hardware synthesizer. Setting parameter number % to the value %.", this.class, key, newvalue));
-				this.midiout.control(this.midiChannel,key,newvalue);
+				this.updateParameterInHardwareSynth(key,newvalue);
 			});
 		});
 
@@ -256,6 +256,13 @@ Synthesizer {
 			|parameterNumber|
 			invokeUpdateActionsFunc.value({|actor| actor == this.class.getGuiType().name}, parameterNumber, workingPatch.kvps[parameterNumber]);
 		});
+	}
+
+	updateParameterInHardwareSynth {
+		|key,newvalue|
+		Validator.validateMethodParameterType(key, Integer, "key", "Synthesizer", "updateParameterInHardwareSynth");
+		Validator.validateMethodParameterType(newvalue, Integer, "newvalue", "Synthesizer", "updateParameterInHardwareSynth");
+		this.midiout.control(this.midiChannel,key,newvalue);
 	}
 
 	writeUpdateActions {
