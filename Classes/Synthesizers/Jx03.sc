@@ -25,8 +25,7 @@ Jx03 : Synthesizer {
 	classvar <lfoDelayTimeCcNo = 9;
 	classvar <lfoRateCcNo = 3;
 	classvar <lfoWaveformCcNo= 12;
-	classvar <>midiChannel = 5;
-	classvar <name= "JX-03";
+	var <>midiChannel = 5;
 	classvar <vcfCutoffCcNo = 74;
 	classvar <vcfEnvModDepthCcNo = 31;
 	classvar <vcfEnvPolarityCcNo = 35;
@@ -34,7 +33,7 @@ Jx03 : Synthesizer {
 	classvar <vcfResonanceCcNo = 71;
 	classvar <vcfSourceMixCcNo = 27;
 
-	*getMidiParametersFromMididef {
+	getMidiParametersFromMididef {
 		|args|
 		var controlNumber = args[0][10] * 100 + args[0][11];
 		var controlValue = args[0][12] * 16 + args[0][13];
@@ -45,11 +44,19 @@ Jx03 : Synthesizer {
 		^Jx03Patch;
 	}
 
-	*getMidiMessageType {
+	getMidiMessageType {
 		^\sysex;
 	}
 
-	*randomisePatch {
+	getSynthesizerName {
+		^"JX-03";
+	}
+
+	getDefaultVariableName {
+		^"~jx03";
+	}
+
+	randomisePatch {
         |midiout,patchType,writeToPostWindow=false|
 		var patch = Jx03Patch();
 		var crossMod = 6.rand;
@@ -245,6 +252,7 @@ Jx03 : Synthesizer {
 		patch.describe();
     }
 
+	// Probably no longer needed
 	*sendPatch {
 		|midiout,patch|
 		super.sendPatch(midiout,patch);
@@ -260,12 +268,8 @@ Jx03 : Synthesizer {
 		});
 	}
 
-	*setChorus {
-		|midiout, algorithm|
-		if (midiout.class != MIDIOut, {
-			Error("The midiout parameter passed to Jx03.setChorus() must be an instance of MIDIOut.").throw;
-		});
-
+	setChorus {
+		|algorithm|
 		if (algorithm.isNil, {
 			midiout.control(this.midiChannel, this.chorusCcNo, 0);
 			^this;
@@ -277,6 +281,19 @@ Jx03 : Synthesizer {
 			Error("The algorithm parameter passed to Jx03.setChorus() must be nil or a digit between 0 and 3 inclusive.").throw;
 		});
 
-		midiout.control(this.midiChannel, this.chorusCcNo, algorithm);
+		this.midiout.control(this.midiChannel, chorusCcNo, algorithm);
+	}
+
+	updateParameterInHardwareSynth {
+		|key,newvalue|
+		var address1,address2,hi,lo,checksum;
+		Validator.validateMethodParameterType(key, Integer, "key", "Synthesizer", "updateParameterInHardwareSynth");
+		Validator.validateMethodParameterType(newvalue, Integer, "newvalue", "Synthesizer", "updateParameterInHardwareSynth");
+		address1 = (key/100).asInteger;
+		address2 = key%100;
+		hi = (newvalue/16).asInteger;
+		lo = newvalue%16;
+		checksum = 125-address1-address2-hi-lo;
+		midiout.sysex(Int8Array[-16, 65, 16, 0, 0, 0, 30, 18, 3, 0, address1, address2, hi, lo, checksum, -9]);
 	}
 }
