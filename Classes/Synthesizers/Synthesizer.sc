@@ -1,10 +1,10 @@
 Synthesizer {
 	var invokeUpdateActionsFunc;
 	var prMidiout;
-	var <noSavedPatchesMessage = "To save the working patch, call saveWorkingPatch().";
+	var prNoSavedPatchesMessage = "To save the working patch, call saveWorkingPatch().";
 	var prPatchDictionary;
-	var updateActions;
-	var <>workingPatch;
+	var prUpdateActions;
+	var prWorkingPatch;
 
 	addUpdateAction {
 		|actor,parameterNumber,action|
@@ -12,10 +12,10 @@ Synthesizer {
 		Validator.validateMethodParameterType(parameterNumber, Integer, "parameterNumber", "Synthesizer", "addUpdateAction");
 		Validator.validateMethodParameterType(action, Function, "action", "Synthesizer", "addUpdateAction");
 
-		if (updateActions.at(actor).class != Dictionary, {
-			updateActions.add(actor -> Dictionary());
+		if (prUpdateActions.at(actor).class != Dictionary, {
+			prUpdateActions.add(actor -> Dictionary());
 		});
-		updateActions.at(actor).add(parameterNumber -> action);
+		prUpdateActions.at(actor).add(parameterNumber -> action);
 	}
 
 	// Chooses between an array of values with a specified weighting.
@@ -29,8 +29,8 @@ Synthesizer {
 
 	describeWorkingPatch
 	{
-		postln(format("*** % patch: % ***", this.class.name, if (workingPatch.name.isNil, "Unnamed patch", workingPatch.name)));
-		workingPatch.describe;
+		postln(format("*** % patch: % ***", this.class.name, if (prWorkingPatch.name.isNil, "Unnamed patch", prWorkingPatch.name)));
+		prWorkingPatch.describe;
 	}
 
 	// Chooses between a range of values with a specified curve, low clip and high clip.
@@ -70,11 +70,11 @@ Synthesizer {
 		Validator.validateMethodParameterType(midiout, MIDIOut, "midiout", "Synthesizer", "init");
 
 		prMidiout = midiout;
-		workingPatch = this.class.getPatchType().new;
+		prWorkingPatch = this.class.getPatchType().new;
 		prPatchDictionary = Dictionary();
-		updateActions = Dictionary();
-		updateActions.add(\hardware -> Dictionary());
-		workingPatch.kvps.keys.do({
+		prUpdateActions = Dictionary();
+		prUpdateActions.add(\hardware -> Dictionary());
+		prWorkingPatch.kvps.keys.do({
 			|key|
 			this.addUpdateAction(\hardware, key, {
 				|newvalue|
@@ -86,9 +86,9 @@ Synthesizer {
 		invokeUpdateActionsFunc = {
 			|actorFilter, parameterNumber, parameterValue|
 			var actionKeys;
-			updateActions.keys.select(actorFilter).do({
+			prUpdateActions.keys.select(actorFilter).do({
 				|actor| // The actor, e.g. hardware synth or control surface
-				updateActions.at(actor).at(parameterNumber).value(parameterValue);
+				prUpdateActions.at(actor).at(parameterNumber).value(parameterValue);
 			});
 		};
 	}
@@ -100,7 +100,7 @@ Synthesizer {
 	listSavedPatches {
 		if (prPatchDictionary.size == 0, {
 			postln("There are no saved patches to list.");
-			postln(this.noSavedPatchesMessage);
+			postln(prNoSavedPatchesMessage);
 			^nil;
 		});
 
@@ -120,13 +120,7 @@ Synthesizer {
 		Validator.validateMethodParameterType(parameterValue, Integer, "parameterValue", "Synthesizer", "modifyWorkingPatch");
 		Validator.validateMethodParameterType(actor, Symbol, "actor", "Synthesizer", "modifyWorkingPatch");
 
-		if (workingPatch.isNil,{
-			postln("There is no working patch to modify!");
-			postln(this.noWorkingPatchMessage);
-			^nil;
-		});
-
-		workingPatch.kvps[parameterNumber] = parameterValue;
+		prWorkingPatch.kvps[parameterNumber] = parameterValue;
 		if (actor.isNil, {
 			invokeUpdateActionsFunc.value({|subscriber| true}, parameterNumber, parameterValue);
 		}, {
@@ -190,8 +184,8 @@ Synthesizer {
 			^nil;
 		});
 
-		workingPatch.name = patchname;
-		saveSpecificPatch(workingPatch);
+		prWorkingPatch.name = patchname;
+		saveSpecificPatch(prWorkingPatch);
 	}
 
 	// Saves the supplied patch to the list of saved patches.
@@ -208,18 +202,18 @@ Synthesizer {
 		|patch|
 		Validator.validateMethodParameterType(patch, this.class, "patch", "Synthesizer", "setWorkingPatch");
 
-		workingPatch = patch;
-		workingPatch.kvps.keys.do({
+		prWorkingPatch = patch;
+		prWorkingPatch.kvps.keys.do({
 			|parameterNumber|
-			invokeUpdateActionsFunc.value({|actor| true}, parameterNumber, workingPatch.kvps[parameterNumber]);
+			invokeUpdateActionsFunc.value({|actor| true}, parameterNumber, prWorkingPatch.kvps[parameterNumber]);
 		});
 	}
 
 	showGui {
 		var gui = this.class.getGuiType().new(this);
-		workingPatch.kvps.keys.do({
+		prWorkingPatch.kvps.keys.do({
 			|parameterNumber|
-			invokeUpdateActionsFunc.value({|actor| actor == this.class.getGuiType().name}, parameterNumber, workingPatch.kvps[parameterNumber]);
+			invokeUpdateActionsFunc.value({|actor| actor == this.class.getGuiType().name}, parameterNumber, prWorkingPatch.kvps[parameterNumber]);
 		});
 	}
 
@@ -231,10 +225,10 @@ Synthesizer {
 	}
 
 	writeUpdateActions {
-		updateActions.keys.do({
+		prUpdateActions.keys.do({
 			|actor|
 			postln(format("- % (actor)",actor));
-			updateActions.at(actor).keys.do({
+			prUpdateActions.at(actor).keys.do({
 				|parameterNumber|
 				postln(format("--- % (parameter number)",parameterNumber));
 			});
@@ -244,7 +238,7 @@ Synthesizer {
 	writeWorkingPatch {
 		postln("(");
 		postln(format("var patch = %();", this.class.getPatchType()));
-		this.prWritePatch(workingPatch);
+		this.prWritePatch(prWorkingPatch);
 		postln(format("%.setWorkingPatch(patch);", this.getDefaultVariableName));
 		postln(")");
 	}
@@ -252,7 +246,7 @@ Synthesizer {
 	writeSavedPatches {
 		if (prPatchDictionary.size == 0, {
 			postln("There are no saved patches to write.");
-			postln(this.noSavedPatchesMessage);
+			postln(prNoSavedPatchesMessage);
 			^nil;
 		});
 
