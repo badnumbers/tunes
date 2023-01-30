@@ -270,10 +270,6 @@ Jx03 : Synthesizer {
 
 	setChorus {
 		|algorithm|
-		if (algorithm.isNil, {
-			midiout.control(this.midiChannel, this.chorusCcNo, 0);
-			^this;
-		});
 		if (algorithm.isInteger == false, {
 			Error("The algorithm parameter passed to Jx03.setChorus() must be nil or a digit between 0 and 3 inclusive.").throw;
 		});
@@ -281,7 +277,7 @@ Jx03 : Synthesizer {
 			Error("The algorithm parameter passed to Jx03.setChorus() must be nil or a digit between 0 and 3 inclusive.").throw;
 		});
 
-		this.midiout.control(this.midiChannel, chorusCcNo, algorithm);
+		super.modifyWorkingPatch(chorusCcNo, algorithm);
 	}
 
 	updateParameterInHardwareSynth {
@@ -294,6 +290,6 @@ Jx03 : Synthesizer {
 		hi = (newvalue/16).asInteger;
 		lo = newvalue%16;
 		checksum = 125-address1-address2-hi-lo;
-		midiout.sysex(Int8Array[-16, 65, 16, 0, 0, 0, 30, 18, 3, 0, address1, address2, hi, lo, checksum, -9]);
+		super.prMidiout.sysex(Int8Array[-16, 65, 16, 0, 0, 0, 30, 18, 3, 0, address1, address2, hi, lo, checksum, -9]);
 	}
 }

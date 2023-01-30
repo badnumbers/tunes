@@ -1,8 +1,8 @@
 Synthesizer {
 	var invokeUpdateActionsFunc;
-	var <>midiout;
+	var prMidiout;
 	var <noSavedPatchesMessage = "To save the working patch, call saveWorkingPatch().";
-	var <>savedPatches;
+	var prPatchDictionary;
 	var updateActions;
 	var <>workingPatch;
 
@@ -42,9 +42,8 @@ Synthesizer {
 		^randomValue;
 	}
 
-	// Gets the type of the control surface class intended for this Synthesizer.
-	*getControlSurfaceType {
-		Error("This Synthesizer does not have a control surface defined.").throw;
+	*getDefaultVariableName {
+		Error(format("The Synthesizer with class name % needs to have getDefaultVariableName defined.",this.class)).throw;
 	}
 
 	// Gets the SC GUI class intended for this Synthesizer.
@@ -61,17 +60,18 @@ Synthesizer {
 		Error(format("The Synthesizer with class name % needs to have getSynthesizerName defined.",this.class)).throw;
 	}
 
-	getDefaultVariableName {
-		Error(format("The Synthesizer with class name % needs to have getDefaultVariableName defined.",this.class)).throw;
+	// Gets the type of the Touch OSC control surface class intended for this Synthesizer.
+	*getTouchOscControlSurfaceType {
+		Error("This Synthesizer does not have a Touch OSC control surface defined.").throw;
 	}
 
 	init {
 		|midiout|
 		Validator.validateMethodParameterType(midiout, MIDIOut, "midiout", "Synthesizer", "init");
 
-		this.midiout = midiout;
+		prMidiout = midiout;
 		workingPatch = this.class.getPatchType().new;
-		this.savedPatches = Dictionary();
+		prPatchDictionary = Dictionary();
 		updateActions = Dictionary();
 		updateActions.add(\hardware -> Dictionary());
 		workingPatch.kvps.keys.do({
@@ -98,16 +98,20 @@ Synthesizer {
 	}
 
 	listSavedPatches {
-		if (savedPatches.size == 0, {
+		if (prPatchDictionary.size == 0, {
 			postln("There are no saved patches to list.");
 			postln(this.noSavedPatchesMessage);
 			^nil;
 		});
 
-		this.savedPatches.keys.do({
+		this.prPatchDictionary.keys.do({
 			|patch|
 			postln(patch);
 		});
+	}
+
+	loadPatch {
+		Error("Not implemented.").throw;
 	}
 
 	modifyWorkingPatch {
@@ -173,9 +177,9 @@ Synthesizer {
 		},nil,nil,this.getMidiMessageType,nil,nil,nil);
 	}
 
-	registerControlSurface {
-		var controlSurfaceType = this.class.getControlSurfaceType();
-		controlSurfaceType.register(this.midiout,this);
+	registerTouchOscControlSurface {
+		var touchOscControlSurfaceType = this.class.getTouchOscControlSurfaceType();
+		touchOscControlSurfaceType.register(prMidiout,this);
 	}
 
 	saveWorkingPatch {
@@ -187,7 +191,7 @@ Synthesizer {
 		});
 
 		workingPatch.name = patchname;
-		this.saveSpecificPatch(workingPatch);
+		saveSpecificPatch(workingPatch);
 	}
 
 	// Saves the supplied patch to the list of saved patches.
@@ -195,7 +199,7 @@ Synthesizer {
 		|patch|
 		Validator.validateMethodParameterType(patch, this.class, "patch", "Synthesizer", "saveSpecificPatch");
 
-		savedPatches = savedPatches.add(patch.deepCopy);
+		prPatchDictionary = prPatchDictionary.add(patch.deepCopy);
 	}
 
 	// Takes an instance of a patch and sets it to be the working patch.
@@ -223,7 +227,7 @@ Synthesizer {
 		|key,newvalue|
 		Validator.validateMethodParameterType(key, Integer, "key", "Synthesizer", "updateParameterInHardwareSynth");
 		Validator.validateMethodParameterType(newvalue, Integer, "newvalue", "Synthesizer", "updateParameterInHardwareSynth");
-		this.midiout.control(this.midiChannel,key,newvalue);
+		prMidiout.control(this.midiChannel,key,newvalue);
 	}
 
 	writeUpdateActions {
@@ -246,7 +250,7 @@ Synthesizer {
 	}
 
 	writeSavedPatches {
-		if (savedPatches.size == 0, {
+		if (prPatchDictionary.size == 0, {
 			postln("There are no saved patches to write.");
 			postln(this.noSavedPatchesMessage);
 			^nil;
@@ -254,9 +258,9 @@ Synthesizer {
 
 		postln("(");
 		postln("var patch;");
-		this.savedPatches.keys.do({
+		prPatchDictionary.keys.do({
 			|key|
-			var patch = this.savedPatches[key];
+			var patch = prPatchDictionary[key];
 			postln(format("patch = %();", this.class.getPatchType()));
 			this.prWritePatch(patch);
 			postln(format("%.setWorkingPatch(patch);", this.getDefaultVariableName));
