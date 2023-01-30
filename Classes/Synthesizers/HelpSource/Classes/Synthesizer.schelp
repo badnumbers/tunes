@@ -130,21 +130,20 @@ The following example is for the LINK::Classes/Tb03::.
 ::
 
 CODE::
-/*
 MIDIClient.init;
 d = MIDIOut.newByName("Scarlett 18i8 USB", "Scarlett 18i8 USB MIDI 1").latency_(Server.default.latency);
-*/
 
-Tb03.listSavedPatches(); // There are no saved patches yet
-Tb03.initialisePatch(d); // Set to default parameter values
-Tb03.saveWorkingPatch("Default"); // Save first patch
-Tb03.modifyWorkingPatch(d,Tb03.cutoffFreqCcNo,127); // Set the cutoff to maximum
-Tb03.saveWorkingPatch("Default - modified"); // Save second patch
-Tb03.randomisePatch(d,0); // Generate a random patch
-Tb03.saveWorkingPatch("Random"); // Save third patch
-Tb03.recordMidiParameters; // Hook up incoming MIDI and change the knobs on the TB-03 as desired
-Tb03.saveWorkingPatch("Random - modified"); // Save fourth patch
-Tb03.listSavedPatches(); // Shows four saved patches
-Tb03.nextPatch(d); // Cycle between the saved patches - sound updates each time
-Tb03.writeSavedPatches(); // Get code to save the four patches for later use
+~tb03 = Tb03(d);
+~tb03.listSavedPatches(); // There are no saved patches yet
+~tb03.initialisePatch(d); // Set to default parameter values
+~tb03.saveWorkingPatch("Default"); // Save first patch
+~tb03.modifyWorkingPatch(d,Tb03.cutoffFreqCcNo,127); // Set the cutoff to maximum
+~tb03.saveWorkingPatch("Default - modified"); // Save second patch
+~tb03.randomisePatch(d,0); // Generate a random patch
+~tb03.saveWorkingPatch("Random"); // Save third patch
+~tb03.recordMidiParameters; // Hook up incoming MIDI and change the knobs on the TB-03 as desired
+~tb03.saveWorkingPatch("Random - modified"); // Save fourth patch
+~tb03.listSavedPatches(); // Shows four saved patches
+~tb03.nextPatch(d); // Cycle between the saved patches - sound updates each time
+~tb03.writeSavedPatches(); // Get code to save the four patches for later use
 ::
