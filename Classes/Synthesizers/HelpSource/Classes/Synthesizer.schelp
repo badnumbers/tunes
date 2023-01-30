@@ -121,7 +121,7 @@ Writes code to the console window which can be run later to recreate all the sav
 
 See CODE::writeWorkingPatch:: for an example of the output.
 
-PRIVATE::addUpdateAction,chooseRandomValue,generateRandomValue,getMidiParametersFromMididef,getSynthesizerName,prWritePatch,saveSpecificPatch,setWorkingPatch,workingPatch
+PRIVATE::addUpdateAction,chooseRandomValue,generateRandomValue,getMidiParametersFromMididef,getSynthesizerName,prWritePatch,saveSpecificPatch,setWorkingPatch
 
 EXAMPLES::
 
