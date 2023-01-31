@@ -51,6 +51,10 @@ Synthesizer {
 		Error("This Synthesizer does not have a GUI class defined.").throw;
 	}
 
+	getMidiMessageType {
+		^\control;
+	}
+
 	getMidiParametersFromMididef {
 		|args|
 		^[args[1],args[0]]

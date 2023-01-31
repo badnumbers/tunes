@@ -69,10 +69,6 @@ UnoSynth : Synthesizer {
 		^UnoSynthPatch;
 	}
 
-	*getMidiMessageType {
-		^\control;
-	}
-
 	getSynthesizerName {
 		^"UnoSynth";
 	}

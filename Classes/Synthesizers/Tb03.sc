@@ -19,8 +19,8 @@ Tb03 : Synthesizer {
 		^Tb03Patch;
 	}
 
-	*getMidiMessageType {
-		^\control;
+	getSynthesizerName {
+		^"TB-03";
 	}
 
 	*randomisePatch {
