@@ -28,9 +28,9 @@ Tb03 : Synthesizer {
 	}
 
 	*randomisePatch {
-        |midiout,patchType,writeToPostWindow=false|
+        |midiout,patchType|
 		var patch = Tb03Patch();
-		super.randomisePatch(midiout,patchType,writeToPostWindow);
+		super.randomisePatch(midiout,patchType);
 
 		patch.set(Tb03.accentCcNo,this.generateRandomValue(0,127,-2,0,127));
 		patch.set(Tb03.cutoffFreqCcNo,this.generateRandomValue(0,127,-2,0,127));

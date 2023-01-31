@@ -166,12 +166,9 @@ Synthesizer {
 
 	// This implementation is just validation. The subclass representing the synthesizer should implement randomisePatch() for itself, and calling the below at the beginning of the method.
 	randomisePatch {
-        |patchType,writeToPostWindow=false|
+        |patchType|
 		if (patchType.isInteger == false,{
 			Error(format("The patchType parameter passed to %.randomise() must be an instance of Integer.", this.class)).throw;
-		});
-		if (writeToPostWindow.isKindOf(Boolean) == false,{
-			Error(format("The writeToPostWindow parameter passed to %.randomise() must be an instance of Boolean.", this.class)).throw;
 		});
     }
 
