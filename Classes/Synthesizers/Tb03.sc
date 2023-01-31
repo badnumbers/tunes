@@ -37,18 +37,7 @@ Tb03 : Synthesizer {
 		patch.set(Tb03.overdriveCcNo,this.generateRandomValue(-10,127,6,0,127));
 		patch.set(Tb03.resonanceCcNo,this.generateRandomValue(0,127,-3,0,127));
 
-		this.sendPatch(midiout,patch);
 		this.setWorkingPatch(patch);
-		patch.describe();
+		this.describeWorkingPatch;
     }
-
-	*sendPatch {
-		|midiout,patch|
-		super.sendPatch(midiout,patch);
-		patch.kvps.keys.do({
-			|key|
-			var val = patch.kvps[key];
-			midiout.control(this.midiChannel,key,val);
-		});
-	}
 }
