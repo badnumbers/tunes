@@ -50,6 +50,12 @@ Updates the Working Patch with default parameter values and sends it to the hard
 METHOD:: listSavedPatches
 Writes the names of saved Patches to the post window.
 
+METHOD:: loadPatch
+Loads the Patch with the specified name from the Patch Dictionary into the Working Patch.
+
+ARGUMENT:: patchname
+A CODE::Symbol:: which is the name of the Patch to load.
+
 METHOD:: modifyWorkingPatch
 Updates the Working Patch by changing the value of one of its parameters. This changed value is sent to the hardware synth.
 

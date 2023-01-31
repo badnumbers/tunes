@@ -111,7 +111,16 @@ Synthesizer {
 	}
 
 	loadPatch {
-		Error("Not implemented.").throw;
+		|patchname|
+		var loadedPatch;
+		Validator.validateMethodParameterType(patchname, Symbol, "patchname", "Synthesizer", "loadPatch");
+
+		loadedPatch = prPatchDictionary[patchname];
+		if (loadedPatch.isNil, {
+			postln(format("There is no saved patch with the name %.",patchname));
+		},{
+			this.setWorkingPatch(loadedPatch);
+		});
 	}
 
 	modifyWorkingPatch {
