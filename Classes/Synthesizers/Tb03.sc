@@ -5,11 +5,10 @@ Tb03 : Synthesizer {
 	classvar <delayTimeCcNo = 18;
 	classvar <delayFeedbackCcNo = 19;
 	classvar <envModCcNo = 12;
-	classvar <name = "TB-03";
 	classvar <overdriveCcNo = 17;
 	classvar <resonanceCcNo = 71;
 	classvar <tuningCcNo = 104;
-	classvar <>midiChannel = 1;
+	var <>midiChannel = 1;
 
 	*getControlSurfaceType {
 		^Tb03ControlSurface;

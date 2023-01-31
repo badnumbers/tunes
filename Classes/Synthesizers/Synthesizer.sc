@@ -108,7 +108,7 @@ Synthesizer {
 			^nil;
 		});
 
-		this.prPatchDictionary.keys.do({
+		prPatchDictionary.keys.do({
 			|patch|
 			postln(patch);
 		});
@@ -188,6 +188,7 @@ Synthesizer {
 
 	saveWorkingPatch {
 		|patchname|
+		Validator.validateMethodParameterType(patchname, Symbol, "patchname", "Synthesizer", "saveWorkingPatch");
 
 		if ((patchname.isNil) || (patchname == ""), {
 			postln("You must give your patch a name when you save it.");
@@ -195,7 +196,7 @@ Synthesizer {
 		});
 
 		prWorkingPatch.name = patchname;
-		saveSpecificPatch(prWorkingPatch);
+		this.saveSpecificPatch(prWorkingPatch);
 	}
 
 	// Saves the supplied patch to the list of saved patches.
@@ -207,7 +208,7 @@ Synthesizer {
 	}
 
 	// Takes an instance of a patch and sets it to be the working patch.
-	// Used by randomisePatch().
+	// Used by loadPatch and randomisePatch.
 	setWorkingPatch {
 		|patch|
 		Validator.validateMethodParameterType(patch, this.class, "patch", "Synthesizer", "setWorkingPatch");
