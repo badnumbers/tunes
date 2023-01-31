@@ -42,7 +42,7 @@ Synthesizer {
 		^randomValue;
 	}
 
-	*getDefaultVariableName {
+	getDefaultVariableName {
 		Error(format("The Synthesizer with class name % needs to have getDefaultVariableName defined.",this.class)).throw;
 	}
 

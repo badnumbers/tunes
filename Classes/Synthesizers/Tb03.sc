@@ -23,6 +23,10 @@ Tb03 : Synthesizer {
 		^"TB-03";
 	}
 
+	getDefaultVariableName {
+		^"~tb03";
+	}
+
 	*randomisePatch {
         |midiout,patchType,writeToPostWindow=false|
 		var patch = Tb03Patch();
