@@ -203,7 +203,7 @@ Synthesizer {
 		|patch|
 		Validator.validateMethodParameterType(patch, this.class, "patch", "Synthesizer", "saveSpecificPatch");
 
-		prPatchDictionary = prPatchDictionary.add(patch.deepCopy);
+		prPatchDictionary = prPatchDictionary.add(patch.name -> patch);
 	}
 
 	// Takes an instance of a patch and sets it to be the working patch.
