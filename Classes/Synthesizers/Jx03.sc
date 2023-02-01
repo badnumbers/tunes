@@ -33,6 +33,10 @@ Jx03 : Synthesizer {
 	classvar <vcfResonanceCcNo = 71;
 	classvar <vcfSourceMixCcNo = 27;
 
+	*getGuiType {
+		^Jx03ScGuiControlSurface;
+	}
+
 	getMidiParametersFromMididef {
 		|args|
 		var controlNumber = args[0][10] * 100 + args[0][11];
@@ -290,6 +294,6 @@ Jx03 : Synthesizer {
 		hi = (newvalue/16).asInteger;
 		lo = newvalue%16;
 		checksum = 125-address1-address2-hi-lo;
-		super.prMidiout.sysex(Int8Array[-16, 65, 16, 0, 0, 0, 30, 18, 3, 0, address1, address2, hi, lo, checksum, -9]);
+		prMidiout.sysex(Int8Array[-16, 65, 16, 0, 0, 0, 30, 18, 3, 0, address1, address2, hi, lo, checksum, -9]);
 	}
 }
