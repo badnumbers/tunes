@@ -1,49 +1,28 @@
 Jx03ScGuiControlSurface : ScGuiControlSurface {
 	var <controlSpec;
 	var <darkgrey;
-	var knobcolors;
 	var <lightgrey;
+	var knobcolors;
 
-	addControlLabel {
-		|view,rect,text|
-		StaticText(view,rect).string_(text).align_(\center).stringColor_(this.lightgrey);
+	addDropDownListWithLabel {
+		|parent,left,top,labelText,parameterNumber,midiMappings|
+		var container = View(parent, Rect(left, top, 200, 50)).background_(Color(0.3,0,0));
+		this.addControlLabel(container, Rect(0,0,200,25), labelText, \center, Color.white);
+		this.addDropDownList(container, Rect(0,25,200,25),parameterNumber,midiMappings);
 	}
 
-	addDropDownList {
-		|view,rect,parameterNumber, labelMidiMappings|
-		var popupMenu,convertFromMidiFunc,convertToMidiFunc;
-		convertFromMidiFunc = {
-			|midiCcValue|
-			var dropDownListIndex;
-			labelMidiMappings.do({
-				|mapping,index|
-				if (mapping[1].includes(midiCcValue),{
-					dropDownListIndex = index;
-					// We should exit from the loop here but I don't know how
-				});
-			});
-			if (dropDownListIndex.isNil, {
-				Error(format("No drop-down list index was found for the MIDI value %.", midiCcValue)).throw;
-			});
-			dropDownListIndex;
-		};
-		convertToMidiFunc = {
-			|dropDownListIndex|
-			var mapping = labelMidiMappings[dropDownListIndex];
-			if (mapping.isNil, {
-				Error(format("No MIDI value was found for the drop-down list index %", dropDownListIndex)).throw;
-			});
-			mapping[1][0];
-		};
-		popupMenu = PopUpMenu(view,rect).items_(labelMidiMappings.collect(_[0]))
-		.action_({
-			|selectedItem|
-			this.synthesizer.modifyWorkingPatch(parameterNumber,convertToMidiFunc.value(selectedItem.value),this.class.name);
-		});
-		this.synthesizer.addUpdateAction(this.class.name, parameterNumber, {
-			|newvalue|
-			popupMenu.value = convertFromMidiFunc.value(newvalue);
-		});
+	addFreqModToggleButtons {
+		|parent,left,top,lfoModParameterNumber,envModParameterNumber|
+		var container = View(parent, Rect(left, top, 200, 150)).background_(Color(0,0,0.3));
+		this.addControlLabel(container, Rect(0,0,200,25), "Freq Mod", \center, Color.white);
+		this.addControlLabel(container, Rect(0,25,100,25), "LFO", \center, Color.white);
+		this.addControlLabel(container, Rect(100,25,100,25), "ENV", \center, Color.white);
+		this.addToggleButton(container,Rect(15,50,70,70),lfoModParameterNumber,[
+			[False, [0] ], [True, [1] ]
+		],Color.white,this.darkgrey,Color.white,Color.black,this.darkgrey);
+		this.addToggleButton(container,Rect(115,50,70,70),envModParameterNumber,[
+			[False, [0] ], [True, [1] ]
+		],Color.white,this.darkgrey,Color.white,Color.black,this.darkgrey);
 	}
 
 	addHorizontalSlider {
@@ -74,30 +53,16 @@ Jx03ScGuiControlSurface : ScGuiControlSurface {
 		StaticText(container,labelRect).string_(labelText).align_(\center).stringColor_(this.lightgrey);
 	}
 
-	addKnob {
-		|parent,left,top,parameterNumber,labelText|
-		var knobSide = 100;
-		var knobExternalMargin = 20;
-		var container = View(parent, Rect(left, top, knobSide + knobExternalMargin, knobSide + knobExternalMargin + 50));
-		var knob = Knob(container,Rect(knobExternalMargin,knobExternalMargin,knobSide,knobSide))
-		.color_(knobcolors)
-		.mode_(\vert)
-		.step_(1/127)
-		.action_({
-			|knob|
-			this.synthesizer.modifyWorkingPatch(parameterNumber,this.controlSpec.map(knob.value),this.class.name);
-		});
-		this.synthesizer.addUpdateAction(this.class.name, parameterNumber, {
-			|newvalue|
-			knob.value = this.controlSpec.unmap(newvalue);
-			postln(format("Setting the control % to the value %.", labelText, newvalue));
-		});
-		StaticText(container,Rect(0,knobSide + knobExternalMargin,knobSide + knobExternalMargin,50)).string_(labelText).align_(\center).stringColor_(this.lightgrey);
+	addKnobWithLabel {
+		|parent,left,top,parameterNumber,labelText,midiMappings|
+		var container = View(parent, Rect(left, top, 200, 230)).background_(Color(0,0.3,0));
+		this.addControlLabel(container, Rect(0,0,200,25), labelText, \center, Color.white);
+		this.addKnob(container,Rect(0,25,200,230),parameterNumber,false,Color(1,0,0),Color(0,1,0),Color(0,0,1),Color(0.5,0.5,0));
 	}
 
 	addSectionLabel {
-		|view,rect,text|
-		var staticText = StaticText(view,rect)
+		|parent,rect,text|
+		var staticText = StaticText(parent,rect)
 		.string_(text)
 		.align_(\center)
 		.stringColor_(this.lightgrey)
@@ -105,41 +70,13 @@ Jx03ScGuiControlSurface : ScGuiControlSurface {
 		.background_(this.darkgrey);
 	}
 
-	addToggleButton {
-		|view,left,top,width,parameterNumber,labelText|
-		var button;
-		var externalMargin = 40;
-		var onOffConvertFromMidiCcFunc = {
-			|midiCcValue|
-			var onOffValue;
-			if (midiCcValue <= 63, {onOffValue = False;}, {onOffValue = True});
-			onOffValue;
-		};
-		var onOffConvertToMidiCcFunc = {
-			|onOffValue|
-			var midiCcValue;
-			if (onOffValue == True, {midiCcValue = 90;},{midiCcValue = 30;});
-			postln(format("Setting parameter number % (%) to %.",parameterNumber,labelText,midiCcValue));
-			midiCcValue;
-		};
-		button = ScGuiToggleButton(view,Rect(left,top,width,width),
-			backgroundColour:Color.black,
-			borderColour:lightgrey,
-			clickColour:Color.white,
-			offColour:Color.black,
-			onColour:lightgrey,
-			externalMargin:externalMargin,
-			borderWidth:5)
-		.mouseUpAction_({
-			postln(format("Running the mouse up action for toggle button %. Sending CC value %.",labelText,onOffConvertToMidiCcFunc.value(button.value)));
-			this.synthesizer.modifyWorkingPatch(parameterNumber,onOffConvertToMidiCcFunc.value(button.value),this.class.name);
-		});
-		this.synthesizer.addUpdateAction(this.class.name, parameterNumber, {
-			|newvalue|
-			button.value = onOffConvertFromMidiCcFunc.value(newvalue);
-			postln(format("Setting toggle button % to %.",labelText,button.value));
-		});
-		StaticText(view,Rect(left,top+width-externalMargin,width,50)).string_(labelText).align_(\center).stringColor_(this.lightgrey);
+	addToggleButtonWithLabel {
+		|parent,left,top,parameterNumber,labelText|
+		var container = View(parent, Rect(left, top, 200, 230)).background_(Color(0,0,0.3));
+		this.addControlLabel(container, Rect(0,0,200,25), labelText, \center, Color.white);
+		this.addToggleButton(container,Rect(0,25,100,100),parameterNumber,[
+			[False, [0] ], [True, [1] ]
+		],Color(1,0,0),Color(0,1,0),Color(0,0,1),Color(0.5,0.5,0),Color(1,0,0));
 	}
 
 	addVerticalSlider {
@@ -207,23 +144,25 @@ Jx03ScGuiControlSurface : ScGuiControlSurface {
 
 	initOscillatorsTab {
 		|tab|
+		var ddlContainer;
 		var container = View(tab.body,Rect(0,0,tab.body.bounds.width,tab.body.bounds.height));
-		this.addSectionLabel(container,Rect(0,0,240,50),"DCO-1");
 
-		this.addDropDownList(container, Rect(350,230,140,25),Jx03Sysex.dco1Range,[
-			[ "64", [0] ], [ "32", [1] ], [ "16", [2] ], [ "8", [3] ], [ "4", [4] ], [ "2", (5..127) ]
+		this.addSectionLabel(container,Rect(0,0,300,50),"DCO-1");
+		this.addDropDownListWithLabel(container,50,75,"Range",Jx03Sysex.dco1Range,[
+			[ "64", [0] ], [ "32", [1] ], [ "16", [2] ], [ "8", [3] ], [ "4", [4] ], [ "2", [5] ]
 		]);
+		this.addDropDownListWithLabel(container,50,150,"Waveform",Jx03Sysex.dco1Waveform,[
+			[ "Sine", [0] ], [ "Triangle", [1] ], [ "Sawtooth", [2] ], [ "Pulsewidth", [3] ], [ "Square", [4] ], [ "Pink noise", [5] ]
+		]);
+		this.addFreqModToggleButtons(container,50,225,Jx03Sysex.dco1FreqModLfoSwitch,Jx03Sysex.dco1FreqModEnvSwitch);
 
-		this.addKnob(container,0,50,UnoSynth.osc1WaveCcNo,"WAVE");
-		this.addKnob(container,0,200,UnoSynth.osc1TuneCcNo,"TUNE");
-		this.addVerticalSlider(container,140,70,100,UnoSynth.osc1LevelCcNo,"LEVEL");
-
-		this.addSectionLabel(container,Rect(600,0,240,50),"Oscillator 2");
-		this.addVerticalSlider(container,600,70,100,UnoSynth.osc2LevelCcNo,"LEVEL");
-		this.addKnob(container,700,50,UnoSynth.osc2WaveCcNo,"WAVE");
-		this.addKnob(container,700,200,UnoSynth.osc2TuneCcNo,"TUNE");
-
-		this.addSectionLabel(container,Rect(0,400,840,50),"Noise");
-		this.addHorizontalSlider(container,0,450,840,UnoSynth.noiseLevelCcNo,"LEVEL",\left);
+		this.addSectionLabel(container,Rect(500,0,240,50),"DCO-2");
+		this.addDropDownListWithLabel(container,550,75,"Range",Jx03Sysex.dco2Range,[
+			[ "64", [0] ], [ "32", [1] ], [ "16", [2] ], [ "8", [3] ], [ "4", [4] ], [ "2", [5] ]
+		]);
+		this.addDropDownListWithLabel(container,550,150,"Waveform",Jx03Sysex.dco2Waveform,[
+			[ "Sine", [0] ], [ "Triangle", [1] ], [ "Sawtooth", [2] ], [ "Pulsewidth", [3] ], [ "Square", [4] ], [ "Pink noise", [5] ]
+		]);
+		this.addFreqModToggleButtons(container,550,225,Jx03Sysex.dco2FreqModLfoSwitch,Jx03Sysex.dco2FreqModEnvSwitch);
 	}
 }

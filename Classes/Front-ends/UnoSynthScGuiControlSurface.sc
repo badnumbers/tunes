@@ -1,5 +1,4 @@
 UnoSynthScGuiControlSurface : ScGuiControlSurface {
-	var <controlSpec;
 	var <darkgrey;
 	var knobcolors;
 	var <lightgrey;
