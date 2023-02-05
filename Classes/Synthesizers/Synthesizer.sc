@@ -1,10 +1,10 @@
 Synthesizer {
 	var invokeUpdateActionsFunc;
-	var prMidiout;
+	var <>prMidiout;
 	var prNoSavedPatchesMessage = "To save the working patch, call saveWorkingPatch().";
 	var prPatchDictionary;
 	var prUpdateActions;
-	var prWorkingPatch;
+	var <prWorkingPatch; // Needs to be called from subclasses that override updateParameterInHardwareSynth
 
 	addUpdateAction {
 		|actor,parameterNumber,action|
