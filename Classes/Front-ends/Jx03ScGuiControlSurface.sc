@@ -1,5 +1,4 @@
 Jx03ScGuiControlSurface : ScGuiControlSurface {
-	var <controlSpec;
 	var <darkgrey;
 	var <lightgrey;
 	var <orange;
@@ -26,41 +25,17 @@ Jx03ScGuiControlSurface : ScGuiControlSurface {
 		],Color.white,this.darkgrey,Color.white,Color.black,this.darkgrey);
 	}
 
-	addHorizontalSlider {
-		|parent,left,top,width,parameterNumber,labelText,labelAlignment|
-		var labelRect;
-		var height = 300, sliderHeight = 30, sliderContainerHeight = 50;
-		var container = View(parent,Rect(left,top,width,height));
-		var slider = Slider(container,Rect(0,(sliderContainerHeight-sliderHeight)/2,width,sliderHeight))
-		.orientation_(\horizontal)
-		.knobColor_(Color.red)
-		.thumbSize_(25)
-		.step_(1/127)
-		.action_({
-			|slider|
-			this.synthesizer.modifyWorkingPatch(parameterNumber,this.controlSpec.map(slider.value),this.class.name);
-			postln(format("Value updated to %.", this.controlSpec.map(slider.value)));
-		});
-		this.synthesizer.addUpdateAction(this.class.name, parameterNumber, {
-			|newvalue|
-			slider.value = this.controlSpec.unmap(newvalue);
-			postln(format("Setting the control % to the value %.", labelText, newvalue));
-		});
-		if (labelAlignment == \left,{
-			labelRect = Rect(0,sliderContainerHeight,50,50);
-		},{
-			labelRect = Rect(width-50,sliderContainerHeight,50,50);
-		});
-		StaticText(container,labelRect).string_(labelText).align_(\center).stringColor_(this.lightgrey);
-	}
-
 	addKnobPair {
-		|parent,left,top,parameterNumber1,labelText1,centred1,parameterNumber2,labelText2,centred2|
+		|parent,left,top,parameterNumber1,labelText1,centred1,parameterNumber2,labelText2,centred2,controlSpec|
 		var container = View(parent, Rect(left, top, 200, 100)).background_(Color.black);
-		this.addControlLabel(container, Rect(0,0,100,25), labelText1, \center, Color.white);
-		this.addControlLabel(container, Rect(100,0,100,25), labelText2, \center, Color.white);
-		this.addKnob(container,Rect(10,25,80,80),parameterNumber1,centred1,this.darkgrey,this.orange,Color.black,Color.white);
-		this.addKnob(container,Rect(110,25,80,80),parameterNumber2,centred2,this.darkgrey,this.orange,Color.black,Color.white);
+		if (parameterNumber1.isNil == false, {
+			this.addControlLabel(container, Rect(0,0,100,25), labelText1, \center, Color.white);
+			this.addKnob(container,Rect(10,25,80,80),parameterNumber1,centred1,this.darkgrey,this.orange,Color.black,Color.white,controlSpec);
+		});
+		if (parameterNumber2.isNil == false, {
+			this.addControlLabel(container, Rect(100,0,100,25), labelText2, \center, Color.white);
+			this.addKnob(container,Rect(110,25,80,80),parameterNumber2,centred2,this.darkgrey,this.orange,Color.black,Color.white,controlSpec);
+		});
 	}
 
 	addSectionLabel {
@@ -77,27 +52,6 @@ Jx03ScGuiControlSurface : ScGuiControlSurface {
 		],Color(1,0,0),Color(0,1,0),Color(0,0,1),Color(0.5,0.5,0),Color(1,0,0));
 	}
 
-	addVerticalSlider {
-		|parent,left,top,width,parameterNumber,labelText|
-		var height = 300, sliderWidth = 30;
-		var container = View(parent, Rect(left, top, width, height));
-		var slider = Slider(container,Rect((width - sliderWidth) / 2,0,sliderWidth,height-50))
-		.orientation_(\vertical)
-		.knobColor_(Color.red)
-		.thumbSize_(25)
-		.step_(1/127)
-		.action_({
-			|slider|
-			this.synthesizer.modifyWorkingPatch(parameterNumber,this.controlSpec.map(slider.value),this.class.name);
-		});
-		this.synthesizer.addUpdateAction(this.class.name, parameterNumber, {
-			|newvalue|
-			slider.value = this.controlSpec.unmap(newvalue);
-			postln(format("Setting the control % to the value %.", labelText, newvalue));
-		});
-		StaticText(container,Rect(0,height-50,width,50)).string_(labelText).align_(\center).stringColor_(this.lightgrey);
-	}
-
 	*getPatchType {
 		^Jx03Patch;
 	}
@@ -105,11 +59,10 @@ Jx03ScGuiControlSurface : ScGuiControlSurface {
 	init {
 		|synthesizer|
 		var tabset;
-		var oscillatorstab, filtertab, filterEnvTab, lfoTab, effectsTab, otherTab;
+		var oscillatorstab, vcfTab, modTab, effectsTab;
 		darkgrey = Color(0.8,0.8,0.8);
 		lightgrey = Color(0.5,0.5,0.5);
 		orange = Color(0.8,0.2,0.14);
-		controlSpec = ControlSpec(0,127,\lin,1/127);
 		knobcolors = [
 			Color.black,
 			darkgrey,
@@ -138,12 +91,18 @@ Jx03ScGuiControlSurface : ScGuiControlSurface {
 		oscillatorstab = tabset.addTab("OSCILLATORS");
 		this.initOscillatorsTab(oscillatorstab);
 
-		oscillatorstab = tabset.addTab("VCF");
+		vcfTab = tabset.addTab("VCF / VCA");
+		this.initVcfTab(vcfTab);
+
+		modTab = tabset.addTab("MODULATION");
+		this.initModTab(modTab);
+
+		effectsTab = tabset.addTab("EFFECTS");
+		this.initEffectsTab(effectsTab);
 	}
 
 	initOscillatorsTab {
 		|tab|
-		var ddlContainer;
 		var container = View(tab.body,Rect(0,0,tab.body.bounds.width,tab.body.bounds.height));
 
 		this.addSectionLabel(container,Rect(0,25,300,50),"DCO-1");
@@ -177,5 +136,83 @@ Jx03ScGuiControlSurface : ScGuiControlSurface {
 		this.addDropDownListWithLabel(container,600,225,"Env Polarity",Jx03Sysex.dcoFreqEnvPolarity,[
 			[ "Inverted", [0] ], [ "Normal", [1] ]
 		]);
+	}
+
+	initVcfTab {
+		|tab|
+		var container = View(tab.body,Rect(0,0,tab.body.bounds.width,tab.body.bounds.height));
+
+		this.addSectionLabel(container,Rect(0,25,700,50),"");
+
+		this.addSectionLabel(container,Rect(100,25,300,50),"VCF");
+		this.addKnobPair(container,100,100,Jx03Sysex.vcfSourceMix,"Source Mix",true,Jx03Sysex.vcfHpf,"HPF",false);
+		this.addKnobPair(container,100,225,Jx03Sysex.vcfCutoffFreq,"Cutoff Freq",false,Jx03Sysex.vcfResonance,"Resonance",false);
+		this.addKnobPair(container,100,350,Jx03Sysex.vcfLfoMod,"LFO Mod",false,Jx03Sysex.vcfPitchFollow,"Pitch Follow",false);
+
+		this.addKnobPair(container,325,100,Jx03Sysex.vcfEnvMod,"Env Mod",false,nil,nil,nil);
+		this.addDropDownListWithLabel(container,325,225,"Env Polarity",Jx03Sysex.vcfEnvPolarity,[
+			[ "Inverted", [0] ], [ "Normal", [1] ]
+		]);
+
+		View(container, Rect(562, 100, 1, 475)).background_(Color.white);
+
+		this.addSectionLabel(container,Rect(550,25,300,50),"VCA");
+		this.addKnobPair(container,600,100,Jx03Sysex.vcaLevel,"Level",false,nil,nil,nil);
+		this.addDropDownListWithLabel(container,600,225,"VCA Mode",Jx03Sysex.vcaEnvSwitch,[
+			[ "Gate", [0] ], [ "Envelope", [1] ]
+		]);
+		this.addDropDownListWithLabel(container,600,300,"Assign Mode",Jx03Sysex.assignMode,[
+			[ "Poly", [0] ], [ "Solo", [2] ], [ "Unison", [3] ]
+		]);
+	}
+
+	initModTab {
+		|tab|
+		var container = View(tab.body,Rect(0,0,tab.body.bounds.width,tab.body.bounds.height));
+
+		this.addSectionLabel(container,Rect(0,25,700,50),"");
+
+		this.addSectionLabel(container,Rect(0,25,300,50),"LFO");
+		this.addKnobPair(container,50,100,Jx03Sysex.lfoDelayTime,"Delay Time",false,Jx03Sysex.lfoRate,"Rate",false);
+		this.addDropDownListWithLabel(container,50,225,"Waveform",Jx03Sysex.lfoWaveform,[
+			[ "Sine", [0] ], [ "Ascending Ramp", [1] ], [ "Descending Ramp", [2] ], [ "Square", [3] ], [ "Random", [4] ], [ "Noise", [5] ]
+		]);
+
+		View(container, Rect(288, 100, 1, 475)).background_(Color.white);
+
+		View(container, Rect(562, 100, 1, 475)).background_(Color.white);
+
+		this.addSectionLabel(container,Rect(550,25,300,50),"ENV");
+		this.addKnobPair(container,600,100,Jx03Sysex.envelopeAttack,"Attack",false,Jx03Sysex.envelopeDecay,"Decay",false);
+		this.addKnobPair(container,600,225,Jx03Sysex.envelopeSustain,"Sustain",false,Jx03Sysex.envelopeRelease,"Release",false);
+	}
+
+	initEffectsTab {
+		|tab|
+		var container = View(tab.body,Rect(0,0,tab.body.bounds.width,tab.body.bounds.height));
+		var delayControlSpec = ControlSpec(0,15,\lin,1/15);
+
+		this.addSectionLabel(container,Rect(0,25,300,50),"DELAY");
+		this.addKnobPair(container,50,100,Jx03Sysex.delayTime,"Time",false,Jx03Sysex.delayLevel,"Level",false,delayControlSpec);
+		this.addKnobPair(container,50,225,Jx03Sysex.delayFeedback,"Feedback",false,nil,nil,nil,delayControlSpec);
+
+		View(container, Rect(288, 100, 1, 475)).background_(Color.white);
+
+		this.addSectionLabel(container,Rect(275,25,300,50),"CHORUS");
+		this.addDropDownListWithLabel(container,325,100,"Algorithm",Jx03Sysex.chorusAlgorithm,[
+			[ "Off", [0] ], [ "One", [1] ], [ "Two", [2] ], [ "Three", [3] ]
+		]);
+
+		View(container, Rect(562, 100, 1, 475)).background_(Color.white);
+
+		this.addSectionLabel(container,Rect(550,25,300,50),"PORTAMENTO");
+		this.addDropDownListWithLabel(container,600,100,"Switch",Jx03Sysex.portamentoSwitch,[
+			[ "Off", [0] ], [ "On", [1] ]
+		]);
+		this.addKnobPair(container,600,175,Jx03Sysex.portamentoTime,"Time",false,nil,nil,nil);
+	}
+
+	setDefaultControlSpec {
+		defaultControlSpec = ControlSpec(0,255,\lin,1/255);
 	}
 }

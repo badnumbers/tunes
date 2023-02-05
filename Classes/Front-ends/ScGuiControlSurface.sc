@@ -1,6 +1,6 @@
 ScGuiControlSurface {
 	var background;
-	var controlSpec;
+	var defaultControlSpec;
 	var updateables;
 	var name;
 	var <>synthesizer;
@@ -51,19 +51,26 @@ ScGuiControlSurface {
 	}
 
 	addKnob {
-		|parent,rect,parameterNumber,centred,mainKnobColour,valueIndicatorColour,deviationIndicatorColour,backgroundOfDeviationIndicatorColour|
-		var knob = Knob(parent,rect)
+		|parent,rect,parameterNumber,centred,mainKnobColour,valueIndicatorColour,deviationIndicatorColour,backgroundOfDeviationIndicatorColour,controlSpec|
+		var effectiveControlSpec, knob;
+		if (controlSpec.isNil,{
+			effectiveControlSpec = defaultControlSpec;
+		},{
+			effectiveControlSpec = controlSpec;
+		});
+		knob = Knob(parent,rect)
 		.color_([mainKnobColour,valueIndicatorColour,deviationIndicatorColour,backgroundOfDeviationIndicatorColour])
 		.centered_(centred)
 		.mode_(\vert)
 		.step_(1/127)
 		.action_({
 			|knob|
-			this.synthesizer.modifyWorkingPatch(parameterNumber,controlSpec.map(knob.value),this.class.name);
+			this.synthesizer.modifyWorkingPatch(parameterNumber,effectiveControlSpec.map(knob.value),this.class.name);
 		});
+
 		this.synthesizer.addUpdateAction(this.class.name, parameterNumber, {
 			|newvalue|
-			knob.value = controlSpec.unmap(newvalue);
+			knob.value = effectiveControlSpec.unmap(newvalue);
 		});
 	}
 
@@ -130,7 +137,7 @@ ScGuiControlSurface {
 		Validator.validateMethodParameterType(synthesizer, Synthesizer, "synthesizer", "ScGuiControlSurface", "init");
 
 		this.synthesizer = synthesizer;
-		controlSpec = ControlSpec(0,127,\lin,1/127);
+		this.setDefaultControlSpec();
 		updateables = Dictionary();
 		window = Window(name, Rect(0, 0, windowwidth, windowheight)).background_(background);
 		window.front;
@@ -149,5 +156,9 @@ ScGuiControlSurface {
 		Validator.validateMethodParameterType(numChannels, Integer, "numChannels", "ScGuiControlSurface", "openStethoscope");
 
 		Server.default.scope(Server.default,numChannels:numChannels,index:audioChannelIndex);
+	}
+
+	setDefaultControlSpec {
+		defaultControlSpec = ControlSpec(0,127,\lin,1/127);
 	}
 }

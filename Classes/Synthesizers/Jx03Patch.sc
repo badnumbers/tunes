@@ -39,12 +39,16 @@ Jx03Patch : Patch {
 		kvps.add(Jx03Sysex.lfoRate -> 128); // Mid
 		kvps.add(Jx03Sysex.lfoDelayTime -> 0); // Min
 
-		kvps.add(Jx03Sysex.envelopeAttack -> 128); // Mid
+		kvps.add(Jx03Sysex.envelopeAttack -> 0); // Mid
 		kvps.add(Jx03Sysex.envelopeDecay -> 128); // Mid
 		kvps.add(Jx03Sysex.envelopeSustain -> 128); // Mid
 		kvps.add(Jx03Sysex.envelopeRelease -> 128); // Mid
 
 		kvps.add(Jx03Sysex.chorusAlgorithm -> 0); // Off
+
+		kvps.add(Jx03Sysex.delayTime -> 0);
+		kvps.add(Jx03Sysex.delayLevel -> 0);
+		kvps.add(Jx03Sysex.delayFeedback -> 0);
 
 		kvps.add(Jx03Sysex.portamentoSwitch -> 0); // Off
 		kvps.add(Jx03Sysex.portamentoTime -> 128); // Mid
@@ -101,6 +105,9 @@ Jx03Patch : Patch {
 
 		postln("Sundries:");
 		postln(format("  Chorus Algorithm: %", this.prGetChorusAlgorithmDescription(kvps[Jx03Sysex.chorusAlgorithm])));
+		postln(format("  Delay Time: %", kvps[Jx03Sysex.delayTime]));
+		postln(format("  Delay Level: %", kvps[Jx03Sysex.delayLevel]));
+		postln(format("  Delay Feedback: %", kvps[Jx03Sysex.delayFeedback]));
 		postln(format("  Portamento: %", this.prGetSwitchDescription(kvps[Jx03Sysex.portamentoSwitch])));
 		postln(format("  Portamento Time: %", kvps[Jx03Sysex.portamentoTime]));
 		postln(format("  Assign Mode: %", this.prGetAssignModeDescription(kvps[Jx03Sysex.assignMode])));

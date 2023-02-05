@@ -287,6 +287,7 @@ Jx03 : Synthesizer {
 	updateParameterInHardwareSynth {
 		|key,newvalue|
 		var address1,address2,hi,lo,checksum;
+		newvalue = newvalue.asInteger;
 		Validator.validateMethodParameterType(key, Integer, "key", "Synthesizer", "updateParameterInHardwareSynth");
 		Validator.validateMethodParameterType(newvalue, Integer, "newvalue", "Synthesizer", "updateParameterInHardwareSynth");
 		address1 = (key/100).asInteger;

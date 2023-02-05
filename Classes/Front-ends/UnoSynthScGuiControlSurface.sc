@@ -20,12 +20,12 @@ UnoSynthScGuiControlSurface : ScGuiControlSurface {
 		.step_(1/127)
 		.action_({
 			|slider|
-			this.synthesizer.modifyWorkingPatch(parameterNumber,this.controlSpec.map(slider.value),this.class.name);
-			postln(format("Value updated to %.", this.controlSpec.map(slider.value)));
+			this.synthesizer.modifyWorkingPatch(parameterNumber,this.defaultControlSpec.map(slider.value),this.class.name);
+			postln(format("Value updated to %.", this.defaultControlSpec.map(slider.value)));
 		});
 		this.synthesizer.addUpdateAction(this.class.name, parameterNumber, {
 			|newvalue|
-			slider.value = this.controlSpec.unmap(newvalue);
+			slider.value = this.defaultControlSpec.unmap(newvalue);
 			postln(format("Setting the control % to the value %.", labelText, newvalue));
 		});
 		if (labelAlignment == \left,{
@@ -47,11 +47,11 @@ UnoSynthScGuiControlSurface : ScGuiControlSurface {
 		.step_(1/127)
 		.action_({
 			|knob|
-			this.synthesizer.modifyWorkingPatch(parameterNumber,this.controlSpec.map(knob.value),this.class.name);
+			this.synthesizer.modifyWorkingPatch(parameterNumber,this.defaultControlSpec.map(knob.value),this.class.name);
 		});
 		this.synthesizer.addUpdateAction(this.class.name, parameterNumber, {
 			|newvalue|
-			knob.value = this.controlSpec.unmap(newvalue);
+			knob.value = this.defaultControlSpec.unmap(newvalue);
 			postln(format("Setting the control % to the value %.", labelText, newvalue));
 		});
 		StaticText(container,Rect(0,knobSide + knobExternalMargin,knobSide + knobExternalMargin,50)).string_(labelText).align_(\center).stringColor_(this.lightgrey);
@@ -115,11 +115,11 @@ UnoSynthScGuiControlSurface : ScGuiControlSurface {
 		.step_(1/127)
 		.action_({
 			|slider|
-			this.synthesizer.modifyWorkingPatch(parameterNumber,this.controlSpec.map(slider.value),this.class.name);
+			this.synthesizer.modifyWorkingPatch(parameterNumber,this.defaultControlSpec.map(slider.value),this.class.name);
 		});
 		this.synthesizer.addUpdateAction(this.class.name, parameterNumber, {
 			|newvalue|
-			slider.value = this.controlSpec.unmap(newvalue);
+			slider.value = this.defaultControlSpec.unmap(newvalue);
 			postln(format("Setting the control % to the value %.", labelText, newvalue));
 		});
 		StaticText(container,Rect(0,height-50,width,50)).string_(labelText).align_(\center).stringColor_(this.lightgrey);
@@ -135,8 +135,6 @@ UnoSynthScGuiControlSurface : ScGuiControlSurface {
 		var oscillatorstab, filtertab, filterEnvTab, lfoTab, effectsTab, otherTab;
 		darkgrey = Color(0.8,0.8,0.8);
 		lightgrey = Color(0.5,0.5,0.5);
-		controlSpec = ControlSpec(0,127,\lin,1/127);
-		postln(format("In UnoSynthScGuiControlSurface.init - this.controlSpec is a %.", this.controlSpec.class));
 		knobcolors = [
 			Color.black,
 			darkgrey,
