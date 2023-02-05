@@ -141,6 +141,11 @@ ScGuiControlSurface {
 		updateables = Dictionary();
 		window = Window(name, Rect(0, 0, windowwidth, windowheight)).background_(background);
 		window.front;
+		window.addToOnClose({
+			postln("In window.onClose");
+			this.synthesizer.gui = nil;
+			postln(format("this.synthesizer.gui",this.synthesizer.gui));
+		}); // Simply doesn't work; event is never fired
 	}
 
 	*new {

@@ -1,4 +1,5 @@
 Synthesizer {
+	var <gui;
 	var invokeUpdateActionsFunc;
 	var <>prMidiout;
 	var prNoSavedPatchesMessage = "To save the working patch, call saveWorkingPatch().";
@@ -221,7 +222,11 @@ Synthesizer {
 	}
 
 	showGui {
-		var gui = this.class.getGuiType().new(this);
+		postln(format("gui is %.",gui));
+		if (gui.isNil == false,{
+			//^this; Had to remove this because window.onClose doesn't work
+		});
+		gui = this.class.getGuiType().new(this);
 		prWorkingPatch.kvps.keys.do({
 			|parameterNumber|
 			invokeUpdateActionsFunc.value({|actor| actor == this.class.getGuiType().name}, parameterNumber, prWorkingPatch.kvps[parameterNumber]);
