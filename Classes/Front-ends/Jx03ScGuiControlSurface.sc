@@ -99,6 +99,27 @@ Jx03ScGuiControlSurface : ScGuiControlSurface {
 
 		effectsTab = tabset.addTab("EFFECTS");
 		this.initEffectsTab(effectsTab);
+
+		StaticText(window,Rect(50,710,100,30))
+		.background_(lightgrey)
+		.string_("Init patch")
+		.stringColor_(Color.black)
+		.align_(\center)
+		.mouseUpAction_({this.synthesizer.initialisePatch()});
+
+		StaticText(window,Rect(680,710,100,30))
+		.background_(lightgrey)
+		.string_("Write patch")
+		.stringColor_(Color.black)
+		.align_(\center)
+		.mouseUpAction_({this.synthesizer.writeWorkingPatch()});
+
+		StaticText(window,Rect(790,710,100,30))
+		.background_(lightgrey)
+		.string_("Scope")
+		.stringColor_(Color.black)
+		.align_(\center)
+		.mouseUpAction_({this.openStethoscope(this.synthesizer.audioInputChannels[0],this.synthesizer.audioInputChannels.size)});
 	}
 
 	initOscillatorsTab {

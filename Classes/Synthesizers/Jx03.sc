@@ -1,4 +1,5 @@
 Jx03 : Synthesizer {
+	var <audioInputChannels = #[20,21];
 	classvar <chorusCcNo = 93;
 	classvar <dcoEnvDepthCcNo = 25;
 	classvar <dcoEnvPolarityCcNo = 26;
