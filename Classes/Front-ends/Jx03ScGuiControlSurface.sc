@@ -2,18 +2,19 @@ Jx03ScGuiControlSurface : ScGuiControlSurface {
 	var <controlSpec;
 	var <darkgrey;
 	var <lightgrey;
+	var <orange;
 	var knobcolors;
 
 	addDropDownListWithLabel {
 		|parent,left,top,labelText,parameterNumber,midiMappings|
-		var container = View(parent, Rect(left, top, 200, 50)).background_(Color(0.3,0,0));
+		var container = View(parent, Rect(left, top, 200, 50)).background_(Color.black);
 		this.addControlLabel(container, Rect(0,0,200,25), labelText, \center, Color.white);
 		this.addDropDownList(container, Rect(0,25,200,25),parameterNumber,midiMappings);
 	}
 
 	addFreqModToggleButtons {
 		|parent,left,top,lfoModParameterNumber,envModParameterNumber|
-		var container = View(parent, Rect(left, top, 200, 150)).background_(Color(0,0,0.3));
+		var container = View(parent, Rect(left, top, 200, 125)).background_(Color.black);
 		this.addControlLabel(container, Rect(0,0,200,25), "Freq Mod", \center, Color.white);
 		this.addControlLabel(container, Rect(0,25,100,25), "LFO", \center, Color.white);
 		this.addControlLabel(container, Rect(100,25,100,25), "ENV", \center, Color.white);
@@ -53,26 +54,23 @@ Jx03ScGuiControlSurface : ScGuiControlSurface {
 		StaticText(container,labelRect).string_(labelText).align_(\center).stringColor_(this.lightgrey);
 	}
 
-	addKnobWithLabel {
-		|parent,left,top,parameterNumber,labelText,midiMappings|
-		var container = View(parent, Rect(left, top, 200, 230)).background_(Color(0,0.3,0));
-		this.addControlLabel(container, Rect(0,0,200,25), labelText, \center, Color.white);
-		this.addKnob(container,Rect(0,25,200,230),parameterNumber,false,Color(1,0,0),Color(0,1,0),Color(0,0,1),Color(0.5,0.5,0));
+	addKnobPair {
+		|parent,left,top,parameterNumber1,labelText1,centred1,parameterNumber2,labelText2,centred2|
+		var container = View(parent, Rect(left, top, 200, 100)).background_(Color.black);
+		this.addControlLabel(container, Rect(0,0,100,25), labelText1, \center, Color.white);
+		this.addControlLabel(container, Rect(100,0,100,25), labelText2, \center, Color.white);
+		this.addKnob(container,Rect(10,25,80,80),parameterNumber1,centred1,this.darkgrey,this.orange,Color.black,Color.white);
+		this.addKnob(container,Rect(110,25,80,80),parameterNumber2,centred2,this.darkgrey,this.orange,Color.black,Color.white);
 	}
 
 	addSectionLabel {
 		|parent,rect,text|
-		var staticText = StaticText(parent,rect)
-		.string_(text)
-		.align_(\center)
-		.stringColor_(this.lightgrey)
-		.font_(Font.new.pixelSize_(18))
-		.background_(this.darkgrey);
+		super.addSectionLabel(parent,rect,text,Color.white,this.orange);
 	}
 
 	addToggleButtonWithLabel {
 		|parent,left,top,parameterNumber,labelText|
-		var container = View(parent, Rect(left, top, 200, 230)).background_(Color(0,0,0.3));
+		var container = View(parent, Rect(left, top, 200, 230)).background_(Color.black);
 		this.addControlLabel(container, Rect(0,0,200,25), labelText, \center, Color.white);
 		this.addToggleButton(container,Rect(0,25,100,100),parameterNumber,[
 			[False, [0] ], [True, [1] ]
@@ -110,6 +108,7 @@ Jx03ScGuiControlSurface : ScGuiControlSurface {
 		var oscillatorstab, filtertab, filterEnvTab, lfoTab, effectsTab, otherTab;
 		darkgrey = Color(0.8,0.8,0.8);
 		lightgrey = Color(0.5,0.5,0.5);
+		orange = Color(0.8,0.2,0.14);
 		controlSpec = ControlSpec(0,127,\lin,1/127);
 		knobcolors = [
 			Color.black,
@@ -147,22 +146,36 @@ Jx03ScGuiControlSurface : ScGuiControlSurface {
 		var ddlContainer;
 		var container = View(tab.body,Rect(0,0,tab.body.bounds.width,tab.body.bounds.height));
 
-		this.addSectionLabel(container,Rect(0,0,300,50),"DCO-1");
-		this.addDropDownListWithLabel(container,50,75,"Range",Jx03Sysex.dco1Range,[
+		this.addSectionLabel(container,Rect(0,25,300,50),"DCO-1");
+		this.addDropDownListWithLabel(container,50,100,"Range",Jx03Sysex.dco1Range,[
 			[ "64", [0] ], [ "32", [1] ], [ "16", [2] ], [ "8", [3] ], [ "4", [4] ], [ "2", [5] ]
 		]);
-		this.addDropDownListWithLabel(container,50,150,"Waveform",Jx03Sysex.dco1Waveform,[
+		this.addDropDownListWithLabel(container,50,175,"Waveform",Jx03Sysex.dco1Waveform,[
 			[ "Sine", [0] ], [ "Triangle", [1] ], [ "Sawtooth", [2] ], [ "Pulsewidth", [3] ], [ "Square", [4] ], [ "Pink noise", [5] ]
 		]);
-		this.addFreqModToggleButtons(container,50,225,Jx03Sysex.dco1FreqModLfoSwitch,Jx03Sysex.dco1FreqModEnvSwitch);
+		this.addFreqModToggleButtons(container,50,250,Jx03Sysex.dco1FreqModLfoSwitch,Jx03Sysex.dco1FreqModEnvSwitch);
 
-		this.addSectionLabel(container,Rect(500,0,240,50),"DCO-2");
-		this.addDropDownListWithLabel(container,550,75,"Range",Jx03Sysex.dco2Range,[
+		View(container, Rect(288, 100, 1, 475)).background_(Color.white);
+
+		this.addSectionLabel(container,Rect(275,25,300,50),"DCO-2");
+		this.addDropDownListWithLabel(container,325,100,"Range",Jx03Sysex.dco2Range,[
 			[ "64", [0] ], [ "32", [1] ], [ "16", [2] ], [ "8", [3] ], [ "4", [4] ], [ "2", [5] ]
 		]);
-		this.addDropDownListWithLabel(container,550,150,"Waveform",Jx03Sysex.dco2Waveform,[
+		this.addDropDownListWithLabel(container,325,175,"Waveform",Jx03Sysex.dco2Waveform,[
 			[ "Sine", [0] ], [ "Triangle", [1] ], [ "Sawtooth", [2] ], [ "Pulsewidth", [3] ], [ "Square", [4] ], [ "Pink noise", [5] ]
 		]);
-		this.addFreqModToggleButtons(container,550,225,Jx03Sysex.dco2FreqModLfoSwitch,Jx03Sysex.dco2FreqModEnvSwitch);
+		this.addFreqModToggleButtons(container,325,250,Jx03Sysex.dco2FreqModLfoSwitch,Jx03Sysex.dco2FreqModEnvSwitch);
+		this.addDropDownListWithLabel(container,325,400,"Cross Mod",Jx03Sysex.dco2CrossMod,[
+			[ "Off", [0] ], [ "Syn 1", [1] ], [ "Syn 2", [2] ], [ "Met 1", [3] ], [ "Met 2", [4] ], [ "Ring modulation", [5] ]
+		]);
+		this.addKnobPair(container,325,475,Jx03Sysex.dco2Tune,"Tune",true,Jx03Sysex.dco2FineTune,"Fine Tune",true);
+
+		View(container, Rect(562, 100, 1, 475)).background_(Color.white);
+
+		this.addSectionLabel(container,Rect(550,25,300,50),"MOD");
+		this.addKnobPair(container,600,100,Jx03Sysex.dcoFreqLfoMod,"LFO Mod",false,Jx03Sysex.dcoFreqEnvMod,"Env Mod",false);
+		this.addDropDownListWithLabel(container,600,225,"Env Polarity",Jx03Sysex.dcoFreqEnvPolarity,[
+			[ "Inverted", [0] ], [ "Normal", [1] ]
+		]);
 	}
 }

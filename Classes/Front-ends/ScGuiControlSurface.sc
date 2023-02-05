@@ -59,12 +59,22 @@ ScGuiControlSurface {
 		.step_(1/127)
 		.action_({
 			|knob|
-			this.synthesizer.modifyWorkingPatch(parameterNumber,this.controlSpec.map(knob.value),this.class.name);
+			this.synthesizer.modifyWorkingPatch(parameterNumber,controlSpec.map(knob.value),this.class.name);
 		});
 		this.synthesizer.addUpdateAction(this.class.name, parameterNumber, {
 			|newvalue|
-			knob.value = this.controlSpec.unmap(newvalue);
+			knob.value = controlSpec.unmap(newvalue);
 		});
+	}
+
+	addSectionLabel {
+		|parent,rect,text,textColour,backgroundColour|
+		var staticText = StaticText(parent,rect)
+		.string_(text)
+		.align_(\center)
+		.stringColor_(textColour)
+		.font_(Font.new.pixelSize_(18))
+		.background_(backgroundColour);
 	}
 
 	addToggleButton {
