@@ -252,9 +252,7 @@ Jx03 : Synthesizer {
 		patch.set(Jx03Sysex.chorusAlgorithm, this.chooseRandomValue([0,1,2,3],[7,2,2,1]));
 		patch.set(Jx03Sysex.vcfEnvPolarity, this.chooseRandomValue([0,1],[1,4]));
 
-		this.sendPatch(midiout,patch);
 		this.setWorkingPatch(patch);
-		patch.describe();
     }
 
 	// Probably no longer needed

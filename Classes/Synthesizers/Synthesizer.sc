@@ -39,7 +39,7 @@ Synthesizer {
 	generateRandomValue
 	{
 		|lo,hi,curve=0,clipMin=0,clipMax=127|
-		var randomValue = 1.0.rand.lincurve(0,1,lo,hi,curve).clip(clipMin,clipMax).round;
+		var randomValue = 1.0.rand.lincurve(0,1,lo,hi,curve).clip(clipMin,clipMax).round.asInt;
 		^randomValue;
 	}
 
@@ -83,7 +83,6 @@ Synthesizer {
 			|key|
 			this.addUpdateAction(\hardware, key, {
 				|newvalue|
-				postln(format("Updating the % hardware synthesizer. Setting parameter number % to the value %.", this.class, key, newvalue));
 				this.updateParameterInHardwareSynth(key,newvalue);
 			});
 		});
@@ -222,7 +221,6 @@ Synthesizer {
 	}
 
 	showGui {
-		postln(format("gui is %.",gui));
 		if (gui.isNil == false,{
 			//^this; Had to remove this because window.onClose doesn't work
 		});

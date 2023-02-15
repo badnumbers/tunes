@@ -102,14 +102,21 @@ Jx03ScGuiControlSurface : ScGuiControlSurface {
 
 		StaticText(window,Rect(50,710,100,30))
 		.background_(lightgrey)
-		.string_("Init patch")
+		.string_("Initialise")
 		.stringColor_(Color.black)
 		.align_(\center)
 		.mouseUpAction_({this.synthesizer.initialisePatch()});
 
+		StaticText(window,Rect(160,710,100,30))
+		.background_(lightgrey)
+		.string_("Randomise")
+		.stringColor_(Color.black)
+		.align_(\center)
+		.mouseUpAction_({this.synthesizer.randomisePatch(0)});
+
 		StaticText(window,Rect(680,710,100,30))
 		.background_(lightgrey)
-		.string_("Write patch")
+		.string_("Write")
 		.stringColor_(Color.black)
 		.align_(\center)
 		.mouseUpAction_({this.synthesizer.writeWorkingPatch()});

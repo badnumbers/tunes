@@ -27,7 +27,7 @@ ScGuiControlSurface {
 				});
 			});
 			if (dropDownListIndex.isNil, {
-				Error(format("No drop-down list index was found for the MIDI value %.", midiCcValue)).throw;
+				Error(format("parameter %: No drop-down list index was found for the MIDI value %.", parameterNumber, midiCcValue)).throw;
 			});
 			dropDownListIndex;
 		};
@@ -35,7 +35,7 @@ ScGuiControlSurface {
 			|dropDownListIndex|
 			var mapping = midiMappings[dropDownListIndex];
 			if (mapping.isNil, {
-				Error(format("No MIDI value was found for the drop-down list index %", dropDownListIndex)).throw;
+				Error(format("parameter %: No MIDI value was found for the drop-down list index %", parameterNumber, dropDownListIndex)).throw;
 			});
 			mapping[1][0];
 		};
