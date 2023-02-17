@@ -32,12 +32,24 @@ Sh01a : Synthesizer {
 	classvar <vcoSubLevelCcNo = 21;
 	classvar <vcoSubTypeCcNo = 22;
 
+	*getGuiType {
+		^Sh01aScGuiControlSurface;
+	}
+
 	*getPatchType {
 		^Sh01aPatch;
 	}
 
 	*getMidiMessageType {
 		^\control;
+	}
+
+	getSynthesizerName {
+		^"SH-01A";
+	}
+
+	getDefaultVariableName {
+		^"~sh01a";
 	}
 
 	*randomisePatch {
@@ -121,7 +133,7 @@ Sh01a : Synthesizer {
 		patch.describe();
     }
 
-	*sendPatch {
+	*sendPatch { // Probably no longer needed - experiment with removing
 		|midiout,patch|
 		super.sendPatch(midiout,patch);
 		patch.kvps.keys.do({
