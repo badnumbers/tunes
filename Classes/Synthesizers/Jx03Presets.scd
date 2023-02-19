@@ -4,6 +4,20 @@ patch.name = "Cute Grumpy";
 patch.kvps[1220]=0;patch.kvps[1208]=5;patch.kvps[1218]=1;patch.kvps[1304]=81.0;patch.kvps[1206]=0;patch.kvps[1504]=112.0;patch.kvps[1300]=225.0;patch.kvps[1402]=128;patch.kvps[1224]=0;patch.kvps[1500]=165.0;patch.kvps[1200]=1;patch.kvps[1502]=194.0;patch.kvps[1708]=12;patch.kvps[1706]=0;patch.kvps[1600]=0;patch.kvps[1222]=8.0;patch.kvps[1308]=48.0;patch.kvps[1100]=0;patch.kvps[1210]=2;patch.kvps[1314]=224;patch.kvps[1226]=1;patch.kvps[1214]=130.0;patch.kvps[1216]=3;patch.kvps[1506]=156.0;patch.kvps[1202]=2;patch.kvps[1700]=0;patch.kvps[1310]=0;patch.kvps[1702]=128;patch.kvps[1400]=1;patch.kvps[1212]=128;patch.kvps[1204]=0;patch.kvps[1302]=0;patch.kvps[1104]=128.0;patch.kvps[1312]=0.0;patch.kvps[1306]=2.0;patch.kvps[1102]=104.0;
 ~jx03.setWorkingPatch(patch);
 )
+(
+Pdef(\jx03,
+	Pbind(
+		\type,\midi,
+		\midiout,d,
+		\chan,~jx03.midiChannel,
+		\amp,0.8,
+		\midinote,Pseq([[50,62,78],[54,66,81],[52,64,84],[48,60,82],[50,62,78],[54,66,81],[48,60,76],[66,78,82]],inf),
+		\dur, Pseq([6,2,4,4,6,2,4,4],inf),
+		\legato,0.5
+	)
+).play(TempoClock(1.7));
+)
+Pdef(\jx03).stop;
 
 (
 var patch = Jx03Patch();
@@ -53,9 +67,69 @@ Pdef(\jx03,
 		\midiout,d,
 		\chan,~jx03.midiChannel,
 		\amp,0.8,
-		\midinote,Pseq([[49,61,68,75],[51,63,73,80],[49,61,68,75],[46,58,63,73]],inf).trace,
-		\dur, 4
+		\midinote,Pseq([[49,61,68,75],[51,63,73,80],[49,61,68,75],[46,58,63,73]],inf),
+		\dur, 4,
+		\legato, 0.5
 	)
-).play;
+).play(TempoClock(1.3));
 )
 Pdef(\jx03).stop;
+
+(
+var patch = Jx03Patch();
+patch.name = "Lament";
+patch.kvps[1304]=108.42352941176;patch.kvps[1314]=129.63137254902;patch.kvps[1402]=128;patch.kvps[1102]=55.717647058824;patch.kvps[1206]=0;patch.kvps[1306]=76.298039215686;patch.kvps[1702]=128;patch.kvps[1204]=0;patch.kvps[1200]=3;patch.kvps[1504]=130.5137254902;patch.kvps[1500]=36.141176470588;patch.kvps[1210]=0;patch.kvps[1606]=14.066666666667;patch.kvps[1220]=0;patch.kvps[1708]=12;patch.kvps[1700]=0;patch.kvps[1216]=5;patch.kvps[1308]=144.56862745098;patch.kvps[1100]=0;patch.kvps[1600]=0;patch.kvps[1502]=144.06274509804;patch.kvps[1602]=8.8666666666667;patch.kvps[1226]=1;patch.kvps[1706]=0;patch.kvps[1506]=81.819607843137;patch.kvps[1104]=0;patch.kvps[1300]=255.0;patch.kvps[1222]=4.0156862745098;patch.kvps[1302]=0;patch.kvps[1310]=0;patch.kvps[1214]=128;patch.kvps[1218]=1;patch.kvps[1224]=0;patch.kvps[1202]=1;patch.kvps[1312]=0;patch.kvps[1604]=10.866666666667;patch.kvps[1400]=1;patch.kvps[1212]=204.80392156863;patch.kvps[1208]=4;
+~jx03.setWorkingPatch(patch);
+)
+
+(
+var patch = Jx03Patch();
+patch.name = "Space cadet";
+patch.kvps[1304]=52.203921568627;patch.kvps[1314]=224;patch.kvps[1402]=255.0;patch.kvps[1102]=61.741176470588;patch.kvps[1206]=0;patch.kvps[1306]=156.61568627451;patch.kvps[1702]=128;patch.kvps[1204]=0;patch.kvps[1200]=2;patch.kvps[1504]=45.678431372549;patch.kvps[1500]=0.0;patch.kvps[1210]=2;patch.kvps[1606]=12.4;patch.kvps[1220]=1;patch.kvps[1708]=12;patch.kvps[1700]=0;patch.kvps[1216]=1;patch.kvps[1308]=94.36862745098;patch.kvps[1100]=0;patch.kvps[1600]=1;patch.kvps[1502]=166.14901960784;patch.kvps[1602]=5.6666666666667;patch.kvps[1226]=0;patch.kvps[1706]=0;patch.kvps[1506]=196.26666666667;patch.kvps[1104]=0;patch.kvps[1300]=200.78823529412;patch.kvps[1222]=242.95294117647;patch.kvps[1302]=0;patch.kvps[1310]=0;patch.kvps[1214]=128;patch.kvps[1218]=1;patch.kvps[1224]=66.258823529412;patch.kvps[1202]=2;patch.kvps[1312]=0.0;patch.kvps[1604]=5.4;patch.kvps[1400]=1;patch.kvps[1212]=114.44705882353;patch.kvps[1208]=4;
+~jx03.setWorkingPatch(patch);
+)
+(
+Pdef(\jx03,
+	Pseq([
+		Pbind(
+			\type,\midi,
+			\midiout,d,
+			\chan,~jx03.midiChannel,
+			\amp,0.8,
+			\midinote,Pseq([38]),
+			\dur, Pseq([0.5]),
+			\legato, Pseq([4])
+		),
+		Pseq([
+			Ppar([
+				Pbind(
+					\type,\midi,
+					\midiout,d,
+					\chan,~jx03.midiChannel,
+					\amp,0.8,
+					\midinote,Pseq([50,42,54,38,50,40,52,43,55,38]),
+					\dur, Pseq([3.5,0.5,3.5,0.5,3.5,0.5,1.5,0.5,1.5,0.5]),
+					\legato, Pseq([0.5,4,0.5,4,0.5,4,0.7,4,0.7,4])
+				),
+				Pbind(
+					\type,\midi,
+					\midiout,d,
+					\chan,~jx03.midiChannel,
+					\amp,0.6,
+					\midinote,Pseq([\,67,69,72,\,\,\,\, 70,\,\,\,\,\,\,\, \,67,69,72,\,\,\,\, 67,\,\,\,70,\,\,\]),
+					\dur, Pseq([0.5],32),
+					\legato, Pseq([\,0.5,0.5,4,\,\,\,\, 6,\,\,\,\,\,\,\, \,0.5,0.5,4,\,\,\,\, 3,\,\,\,3,\,\,\])
+				)
+			])
+		],inf),
+	])
+).play(TempoClock(1.5));
+)
+Pdef(\jx03).stop;
+
+(
+var patch = Jx03Patch();
+patch.name = "Something very bad is about to happen";
+patch.kvps[1304]=66.258823529412;patch.kvps[1314]=141.67843137255;patch.kvps[1402]=128;patch.kvps[1102]=128;patch.kvps[1206]=0;patch.kvps[1306]=140.55294117647;patch.kvps[1702]=128;patch.kvps[1204]=1;patch.kvps[1200]=2;patch.kvps[1504]=0.0;patch.kvps[1500]=178.70196078431;patch.kvps[1210]=2;patch.kvps[1606]=11.8;patch.kvps[1220]=0;patch.kvps[1708]=12;patch.kvps[1700]=1;patch.kvps[1216]=4;patch.kvps[1308]=104.40784313725;patch.kvps[1100]=0;patch.kvps[1600]=1;patch.kvps[1502]=188.23529411765;patch.kvps[1602]=11.0;patch.kvps[1226]=1;patch.kvps[1706]=3;patch.kvps[1506]=85.835294117647;patch.kvps[1104]=0;patch.kvps[1300]=128;patch.kvps[1222]=0.0;patch.kvps[1302]=0;patch.kvps[1310]=1;patch.kvps[1214]=172.67843137255;patch.kvps[1218]=0;patch.kvps[1224]=0;patch.kvps[1202]=2;patch.kvps[1312]=8.0313725490196;patch.kvps[1604]=11.6;patch.kvps[1400]=0;patch.kvps[1212]=128;patch.kvps[1208]=3;
+~jx03.setWorkingPatch(patch);
+)
