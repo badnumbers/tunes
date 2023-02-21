@@ -84,6 +84,23 @@ ScGuiControlSurface {
 		.background_(backgroundColour);
 	}
 
+	addSlider {
+		|parent,rect,parameterNumber,orientation=\vertical|
+		var slider = Slider(parent,rect)
+		.orientation_(orientation)
+		.knobColor_(Color.red)
+		.thumbSize_(25)
+		.step_(1/127)
+		.action_({
+			|slider|
+			this.synthesizer.modifyWorkingPatch(parameterNumber,defaultControlSpec.map(slider.value),this.class.name);
+		});
+		this.synthesizer.addUpdateAction(this.class.name, parameterNumber, {
+			|newvalue|
+			slider.value = defaultControlSpec.unmap(newvalue);
+		});
+	}
+
 	addToggleButton {
 		|parent,rect,parameterNumber,midiMappings,backgroundColour,borderColour,clickColour,offColour,onColour|
 		var button;
