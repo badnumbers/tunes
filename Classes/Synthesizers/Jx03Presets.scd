@@ -133,3 +133,43 @@ patch.name = "Something very bad is about to happen";
 patch.kvps[1304]=66.258823529412;patch.kvps[1314]=141.67843137255;patch.kvps[1402]=128;patch.kvps[1102]=128;patch.kvps[1206]=0;patch.kvps[1306]=140.55294117647;patch.kvps[1702]=128;patch.kvps[1204]=1;patch.kvps[1200]=2;patch.kvps[1504]=0.0;patch.kvps[1500]=178.70196078431;patch.kvps[1210]=2;patch.kvps[1606]=11.8;patch.kvps[1220]=0;patch.kvps[1708]=12;patch.kvps[1700]=1;patch.kvps[1216]=4;patch.kvps[1308]=104.40784313725;patch.kvps[1100]=0;patch.kvps[1600]=1;patch.kvps[1502]=188.23529411765;patch.kvps[1602]=11.0;patch.kvps[1226]=1;patch.kvps[1706]=3;patch.kvps[1506]=85.835294117647;patch.kvps[1104]=0;patch.kvps[1300]=128;patch.kvps[1222]=0.0;patch.kvps[1302]=0;patch.kvps[1310]=1;patch.kvps[1214]=172.67843137255;patch.kvps[1218]=0;patch.kvps[1224]=0;patch.kvps[1202]=2;patch.kvps[1312]=8.0313725490196;patch.kvps[1604]=11.6;patch.kvps[1400]=0;patch.kvps[1212]=128;patch.kvps[1208]=3;
 ~jx03.setWorkingPatch(patch);
 )
+
+(
+var patch = Jx03Patch();
+patch.name = "Different high and low";
+patch.kvps[1304]=255;patch.kvps[1314]=224;patch.kvps[1402]=128;patch.kvps[1102]=128;patch.kvps[1206]=0;patch.kvps[1306]=0;patch.kvps[1702]=128;patch.kvps[1204]=0;patch.kvps[1200]=3;patch.kvps[1504]=128;patch.kvps[1500]=0;patch.kvps[1210]=2;patch.kvps[1606]=0;patch.kvps[1220]=0;patch.kvps[1708]=12;patch.kvps[1700]=0;patch.kvps[1216]=1;patch.kvps[1308]=0;patch.kvps[1100]=0;patch.kvps[1600]=2;patch.kvps[1502]=128;patch.kvps[1602]=0;patch.kvps[1226]=1;patch.kvps[1706]=0;patch.kvps[1506]=128;patch.kvps[1104]=0;patch.kvps[1300]=168;patch.kvps[1222]=0;patch.kvps[1302]=0;patch.kvps[1310]=0;patch.kvps[1214]=128;patch.kvps[1218]=0;patch.kvps[1224]=0;patch.kvps[1202]=2;patch.kvps[1312]=0;patch.kvps[1604]=0;patch.kvps[1400]=1;patch.kvps[1212]=168;patch.kvps[1208]=5;
+~jx03.setWorkingPatch(patch);
+)
+
+(
+var patch = Jx03Patch();
+patch.name = "Fragile saw";
+patch.kvps[1304]=255;patch.kvps[1314]=224;patch.kvps[1402]=128;patch.kvps[1102]=11.545098039216;patch.kvps[1206]=0;patch.kvps[1306]=0;patch.kvps[1702]=128;patch.kvps[1204]=0;patch.kvps[1200]=3;patch.kvps[1504]=128;patch.kvps[1500]=0;patch.kvps[1210]=2;patch.kvps[1606]=0;patch.kvps[1220]=0;patch.kvps[1708]=12;patch.kvps[1700]=0;patch.kvps[1216]=1;patch.kvps[1308]=0;patch.kvps[1100]=0;patch.kvps[1600]=0;patch.kvps[1502]=128;patch.kvps[1602]=0;patch.kvps[1226]=1;patch.kvps[1706]=0;patch.kvps[1506]=128;patch.kvps[1104]=0;patch.kvps[1300]=228;patch.kvps[1222]=30.117647058824;patch.kvps[1302]=0;patch.kvps[1310]=1;patch.kvps[1214]=234;patch.kvps[1218]=1;patch.kvps[1224]=0;patch.kvps[1202]=2;patch.kvps[1312]=0;patch.kvps[1604]=0;patch.kvps[1400]=1;patch.kvps[1212]=246;patch.kvps[1208]=3;
+~jx03.setWorkingPatch(patch);
+)
+
+(
+var patch = Jx03Patch();
+patch.name = "80s chorus";
+patch.kvps[1304]=255;patch.kvps[1314]=224;patch.kvps[1402]=128;patch.kvps[1102]=128;patch.kvps[1206]=0;patch.kvps[1306]=0;patch.kvps[1702]=128;patch.kvps[1204]=0;patch.kvps[1200]=3;patch.kvps[1504]=128;patch.kvps[1500]=0;patch.kvps[1210]=2;patch.kvps[1606]=0;patch.kvps[1220]=0;patch.kvps[1708]=12;patch.kvps[1700]=0;patch.kvps[1216]=1;patch.kvps[1308]=0;patch.kvps[1100]=0;patch.kvps[1600]=2;patch.kvps[1502]=128;patch.kvps[1602]=0;patch.kvps[1226]=1;patch.kvps[1706]=0;patch.kvps[1506]=128;patch.kvps[1104]=0;patch.kvps[1300]=152;patch.kvps[1222]=0;patch.kvps[1302]=0;patch.kvps[1310]=0;patch.kvps[1214]=51;patch.kvps[1218]=0;patch.kvps[1224]=60;patch.kvps[1202]=2;patch.kvps[1312]=0;patch.kvps[1604]=0;patch.kvps[1400]=1;patch.kvps[1212]=2;patch.kvps[1208]=2;
+~jx03.setWorkingPatch(patch);
+)
+(
+Pdef(\jx03,
+	Pbind(
+		\type,\midi,
+		\midiout,d,
+		\chan,~jx03.midiChannel,
+		\amp,0.8,
+		\midinote,Pseq([
+			Pseq([54,58,61,68,\]),
+			Pseq([51,54,58,65,\]),
+			Pseq([47,51,54,61,\]),
+			Pseq([49,53,56,63,\])
+		],inf),
+		\dur, Pseq([0.5,0.5,0.5,0.5,2],inf),
+		\legato, Pseq([4.5,4,3.5,3,\],inf),
+	)
+).play(TempoClock(2));
+)
+Pdef(\jx03).stop;
