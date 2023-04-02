@@ -1,4 +1,4 @@
-Jx03Sysex {
+Fm2Sysex {
 	// See https://github.com/asb2m10/dexed/blob/master/Documentation/sysex-format.txt
 	classvar <operator6EnvelopeGeneratorRate1 = 0;
 	classvar <operator6EnvelopeGeneratorRate2 = 1;
