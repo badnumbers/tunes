@@ -143,7 +143,7 @@ Fm2Sysex {
 	classvar <lfoAmplitudeModulationDepth = 140;
 	classvar <lfoKeySync = 141;
 	classvar <lfoWaveform = 142;
-	classvar <lfoPitchModulationSensitivity = 143;
+	classvar <pitchModulationSensitivity = 143;
 	classvar <transpose = 144;
 	classvar <voiceNameCharacter1 = 145;
 	classvar <voiceNameCharacter2 = 146;
