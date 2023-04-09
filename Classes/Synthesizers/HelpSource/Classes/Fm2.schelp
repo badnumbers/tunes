@@ -1,0 +1,332 @@
+TITLE:: Fm2
+summary:: Representation of the Volca FM2 desktop synthesiser by Korg, itself a replica of the Yamaha DX-7
+categories:: External Control
+related:: Classes/Jx03 Classes/Hydrasynth, Classes/Microvolt, Classes/OhCoast, Classes/Sh01a, Classes/Tb03, Classes/Td3, Classes/UnoSynth
+
+DESCRIPTION::
+Contains information about working with a FM2, such as its controller CC numbers.
+
+CLASSMETHODS::
+
+METHOD:: chorusCcNo
+The MIDI CC number that is used to control which chorus algorithm to use.
+table::
+    ## Value || Notes
+    ## 0 || Off
+    ## 1 || Chorus 1
+    ## 2 || Chorus 2
+    ## 3 || Chorus 3
+::
+
+note::
+Changing chorus via CC number doesn't work unless you have installed firmware 1.10 by following the instructions here: http://eg.roland.com/support/by_product/jx-03/updates_drivers/352051
+::
+
+returns:: 93.
+
+METHOD:: dcoEnvDepthCcNo
+The MIDI CC number that is used to control the JX-03's DC0 frequency envelope modulation depth.
+
+returns:: 25.
+
+METHOD:: dcoEnvPolarityCcNo
+The MIDI CC number that is used to control the JX-03's DC0 frequency envelope polarity.
+table::
+## Value || Waveform
+## 0 || Inverted
+## 1 || Normal
+::
+returns:: 26.
+
+METHOD:: dcoLfoDepthCcNo
+The MIDI CC number that is used to control the JX-03's DCO frequency LFO modulation depth.
+
+returns:: 20.
+
+METHOD:: dco1FreqModEnvSwitchCcNo
+The MIDI CC number that is used to control whether DCO1's frequency is modulated by the envelope.
+table::
+## Value || On / off
+## 0 || Off
+## 1 || On
+::
+
+returns:: 16.
+
+METHOD:: dco1FreqModLfoSwitchCcNo
+The MIDI CC number that is used to control whether DCO1's frequency is modulated by the LFO.
+table::
+## Value || On / off
+## 0 || Off
+## 1 || On
+::
+
+returns:: 15.
+
+METHOD:: dco1RangeCcNo
+The MIDI CC number that is used to control the JX-03's DC01 range.
+table::
+## Value || Waveform
+## 0 || 64'
+## 1 || 32'
+## 2 || 16'
+## 3 || 8'
+## 4 || 4'
+## 5 || 2'
+::
+
+returns:: 13.
+
+METHOD:: dco1WaveformCcNo
+The MIDI CC number that is used to control the JX-03's DC01 waveform.
+table::
+## Value || Waveform
+## 0 || Sine
+## 1 || Triangle
+## 2 || Sawtooth
+## 3 || Pulsewidth
+## 4 || Square
+## 5 || Pink noise
+::
+
+returns:: 14.
+
+METHOD:: dco2CrossModCcNo
+The MIDI CC number that is used to select the JX-03's DC02 cross mod algorithm.
+table::
+## Value || Algorithm
+## 0 || Off
+## 1 || Syn 1
+## 2 || Syn 2
+## 3 || Met 1
+## 4 || Met 2
+## 5 || Ring modulation
+::
+
+returns:: 21.
+
+METHOD:: dco2FineTuneCcNo
+The MIDI CC number that is used to control the JX-03's DC02 fine tune.
+
+returns:: 20.
+
+METHOD:: dco2FreqModEnvSwitchCcNo
+The MIDI CC number that is used to control whether DCO2's frequency is modulated by the envelope.
+table::
+## Value || On / off
+## 0 || Off
+## 1 || On
+::
+
+returns:: 23.
+
+METHOD:: dco2FreqModLfoSwitchCcNo
+The MIDI CC number that is used to control whether DCO2's frequency is modulated by the LFO.
+table::
+## Value || On / off
+## 0 || Off
+## 1 || On
+::
+
+returns:: 22.
+
+METHOD:: dco2RangeCcNo
+The MIDI CC number that is used to control the JX-03's DC02 range.
+table::
+## Value || Waveform
+## 0 || 64'
+## 1 || 32'
+## 2 || 16'
+## 3 || 8'
+## 4 || 4'
+## 5 || 2'
+::
+
+returns:: 17.
+
+METHOD:: dco2TuneCcNo
+The MIDI CC number that is used to control the JX-03's DC02 tune.
+
+returns:: 19.
+
+METHOD:: dco2WaveformCcNo
+The MIDI CC number that is used to control the JX-03's DC02 waveform.
+table::
+## Value || Waveform
+## 0 || Sine
+## 1 || Triangle
+## 2 || Sawtooth
+## 3 || Pulsewidth
+## 4 || Square
+## 5 || Pink noise
+::
+
+returns:: 18.
+
+METHOD:: delayFeedbackCcNo
+The MIDI CC number that is used to control the JX-03's delay feedback.
+
+returns:: 83.
+
+METHOD:: delayLevelCcNo
+The MIDI CC number that is used to control the JX-03's delay level.
+
+returns:: 91.
+
+METHOD:: delayTimeCcNo
+The MIDI CC number that is used to control the JX-03's delay time.
+
+returns:: 82.
+
+METHOD:: envAttackCcNo
+The MIDI CC number that is used to control the JX-03's envelope attack.
+
+returns:: 73.
+
+METHOD:: envDecayCcNo
+The MIDI CC number that is used to control the JX-03's envelope decay.
+
+returns:: 75.
+
+METHOD:: envSustainCcNo
+The MIDI CC number that is used to control the JX-03's envelope sustain.
+
+returns:: 27.
+
+METHOD:: envReleaseCcNo
+The MIDI CC number that is used to control the JX-03's envelope release.
+
+returns:: 72.
+
+METHOD:: expressionPedalCcNo
+The MIDI CC number that is used to control the JX-03's expression pedal amount.
+
+returns:: 11.
+
+METHOD:: lfoDelayTimeCcNo
+The MIDI CC number that is used to control the JX-03's LFO delay time.
+
+returns:: 9.
+
+METHOD:: lfoRateCcNo
+The MIDI CC number that is used to control the JX-03's LFO rate.
+
+returns:: 3.
+
+METHOD:: lfoWaveformCcNo
+The MIDI CC number that is used to control the JX-03's LFO waveform.
+table::
+## Value || Waveform
+## 0 || Sine
+## 1 || Ascending ramp
+## 2 || Descending ramp
+## 3 || Square
+## 4 || Random
+## 5 || Noise
+::
+
+returns:: 12.
+
+METHOD:: midiChannel
+The MIDI channel that the JX-03 is configured to listen on.
+
+returns:: 5, unless assigned a different value.
+
+METHOD:: randomisePatch
+Generates a random patch of the provided code::PatchType::.
+
+ARGUMENT:: midiout
+An instance of code::MIDIOut:: used for sending the random patch parameters to the synthesiser.
+
+ARGUMENT:: patchType
+The type of patch to generate.
+
+ARGUMENT:: writeToPostWindow
+Whether the randomly generated values should be written to the post window. Defaults to teletype::false::.
+
+METHOD:: setChorus
+Sets the chorus algorithm used by the JX-03. This is a wrapper around using MIDI CC 99.
+
+ARGUMENT:: midiout
+The code::midiout:: to use to send the MIDI message to the JX-03.
+
+ARGUMENT:: algorithm
+The chorus algorithm. Set code::nil:: or 0 to turn chorus off, or 1-3 to choose between the three chorus algorithms.
+
+note::
+Changing chorus via CC number doesn't work unless you have installed firmware 1.10 by following the instructions here: http://eg.roland.com/support/by_product/jx-03/updates_drivers/352051
+::
+
+METHOD:: vcfCutoffCcNo
+The MIDI CC number that is used to control the JX-03's VCF cutoff.
+
+returns:: 74.
+
+METHOD:: vcfEnvModDepthCcNo
+The MIDI CC number that is used to control the JX-03's VCF envelope modulation depth.
+
+returns:: 31.
+
+METHOD:: vcfEnvPolarityCcNo
+The MIDI CC number that is used to control the JX-03's VCF envelope polarity.
+table::
+## Value || Waveform
+## 0 || Inverted
+## 1 || Normal
+::
+
+returns:: 35.
+
+METHOD:: vcfLfoModDepthCcNo
+The MIDI CC number that is used to control the JX-03's VCF LFO modulation depth.
+
+returns:: 28.
+
+METHOD:: vcfResonanceCcNo
+The MIDI CC number that is used to control the JX-03's VCF resonance.
+
+returns:: 71.
+
+METHOD:: vcfSourceMixCcNo
+The MIDI CC number that is used to control the JX-03's VCF source mix.
+
+returns:: 27.
+
+INSTANCEMETHODS::
+
+EXAMPLES::
+
+code::
+(
+/*
+MIDIClient.init;
+d = MIDIOut.newByName("Scarlett 18i8 USB", "Scarlett 18i8 USB MIDI 1").latency_(Server.default.latency);
+*/
+
+Pdef(\jx03,
+    Ppar([
+        Pbind(
+            \type, \midi,
+            \midicmd, \noteOn,
+            \midiout, d,
+            \chan, Jx03.midiChannel,
+            \octave, 3,
+            \degree, 0,
+            \dur, 1/4,
+			\amp, 1
+        ),
+        Pbind(
+            \type, \midi,
+            \midiout, d,
+            \chan, Jx03.midiChannel,
+            \midicmd, \control,
+            \ctlNum, Jx03.vcfCutoffCcNo,
+            \control, Pseg([10,120,10,120],[2,2],\sin,inf),
+            \dur, 1/64
+        )
+    ])
+);
+Pdef(\jx03).play;
+)
+Pdef(\jx03).stop;
+::

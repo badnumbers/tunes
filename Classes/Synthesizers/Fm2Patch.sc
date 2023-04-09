@@ -146,7 +146,7 @@ Fm2Patch : Patch {
 		kvps.add(Fm2Sysex.pitchEnvelopeGeneratorLevel3 -> 50);
 		kvps.add(Fm2Sysex.pitchEnvelopeGeneratorLevel4 -> 50);
 
-		kvps.add(Fm2Sysex.algorithm -> 32); // Additive
+		kvps.add(Fm2Sysex.algorithm -> 31); // Additive
 		kvps.add(Fm2Sysex.feedback -> 0);
 		kvps.add(Fm2Sysex.operatorKeySync -> 0); // Off - oscillator phase is not reset to 0 with each note
 		kvps.add(Fm2Sysex.lfoSpeed -> 50);
