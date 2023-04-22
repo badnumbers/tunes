@@ -49,7 +49,7 @@ Synthesizer {
 
 	// Gets the SC GUI class intended for this Synthesizer.
 	*getGuiType {
-		Error("This Synthesizer does not have a GUI class defined.").throw;
+		Error("This Synthesizer does not have a GUI class defined. Fix this by overriding getGuitype() in the synthesizer class.").throw;
 	}
 
 	getMidiMessageType {

@@ -14,6 +14,7 @@ Fm2ScGuiControlSurface : ScGuiControlSurface {
 
 	init {
 		|synthesizer|
+		var carousel;
 		lightgrey = Color(0.5,0.5,0.5);
 
 		name = "FM2";
@@ -43,6 +44,13 @@ Fm2ScGuiControlSurface : ScGuiControlSurface {
 		.align_(\center)
 		.mouseUpAction_({this.synthesizer.setWorkingPatch(this.synthesizer.prWorkingPatch)});
 
+		StaticText(window,Rect(380,710,100,30))
+		.background_(lightgrey)
+		.string_("Do a thing")
+		.stringColor_(Color.black)
+		.align_(\center)
+		.mouseUpAction_({this.synthesizer.modifyWorkingPatch(Fm2Sysex.algorithm, 17)});
+
 		StaticText(window,Rect(680,710,100,30))
 		.background_(lightgrey)
 		.string_("Write")
@@ -57,12 +65,27 @@ Fm2ScGuiControlSurface : ScGuiControlSurface {
 		.align_(\center)
 		.mouseUpAction_({this.openStethoscope(this.synthesizer.audioInputChannels[0],this.synthesizer.audioInputChannels.size)});
 
-		this.addDropDownListWithLabel(window,100,100,"Algorithm",Fm2Sysex.algorithm,[
-			[ "1", [0] ], [ "2", [1] ], [ "3", [2] ], [ "4", [3] ], [ "5", [4] ], [ "6", [5] ], [ "7", [6] ], [ "8", [7] ]
-			,[ "9", [8] ], [ "10", [9] ], [ "11", [10] ], [ "12", [11] ], [ "13", [12] ], [ "14", [13] ], [ "15", [14] ], [ "16", [15] ]
-			,[ "17", [16] ], [ "18", [17] ], [ "19", [18] ], [ "20", [19] ], [ "21", [20] ], [ "22", [21] ], [ "23", [22] ], [ "24", [23] ]
-			,[ "25", [24] ], [ "26", [25] ], [ "27", [26] ], [ "28", [27] ], [ "29", [28] ], [ "30", [29] ], [ "31", [30] ], [ "32", [31] ]
-		]);
+		carousel = ScGuiCarousel(window, Rect(50, 500, 500, 100), 17);
+		32.do({
+			|index|
+			var view = StaticText(carousel.view, Rect((index * 100) + 10, 10, 80, 80)).background_(Color.cyan).string_(index + 1);
+			carousel.addTile(
+				ScGuiCarouselTile(
+					view
+					,index,
+					{
+						view.background_(Color.red);
+					},
+					{
+						view.background_(Color.cyan);
+					}
+				)
+			);
+		});
+		this.synthesizer.addUpdateAction(this.class.name, Fm2Sysex.algorithm, {
+			|newvalue|
+			carousel.value = newvalue;
+		});
 	}
 
 	setDefaultControlSpec {
