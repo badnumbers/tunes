@@ -27,6 +27,9 @@ ScGuiCarousel : ScGuiControl {
 
 	value_ {
 		|newValue|
+		var leftpoint;
+		var widthOfTilesUpToHere = 0;
+		var maximumRightPosition = 0;
 		Validator.validateMethodParameterType(newValue, Integer, "newValue", "ScGuiCarousel", "value_");
 
 		prValue = newValue;
@@ -40,13 +43,17 @@ ScGuiCarousel : ScGuiControl {
 			Error(format("The parameter newValue passed to ScGuiCarousel.value_ must be greater than the number of tiles. The value % was passed and the number of tiles is %.", newValue, prTiles.size)).throw;
 		});
 
-		// TODO: Select the correct view in the carousel
 		prTiles.do({
 			|tile|
 			tile.deselect()
 		});
 
 		prTiles[newValue].select();
+		leftpoint = prTiles[newValue].view.bounds.left + (prTiles[newValue].view.bounds.width / 2) - (prView.bounds.width / 2);
+		maximumRightPosition = prTiles[prTiles.size - 1].view.bounds.left + prTiles[prTiles.size - 1].view.bounds.width - prView.bounds.width;
+		if (leftpoint > maximumRightPosition, {leftpoint = maximumRightPosition});
+
+		prView.visibleOrigin = leftpoint@0;
 	}
 
 	view {

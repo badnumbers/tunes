@@ -44,12 +44,30 @@ Fm2ScGuiControlSurface : ScGuiControlSurface {
 		.align_(\center)
 		.mouseUpAction_({this.synthesizer.setWorkingPatch(this.synthesizer.prWorkingPatch)});
 
-		StaticText(window,Rect(380,710,100,30))
+		StaticText(window,Rect(380,710,40,30))
 		.background_(lightgrey)
-		.string_("Do a thing")
+		.string_("1")
 		.stringColor_(Color.black)
 		.align_(\center)
-		.mouseUpAction_({this.synthesizer.modifyWorkingPatch(Fm2Sysex.algorithm, 17)});
+		.mouseUpAction_({this.synthesizer.modifyWorkingPatch(Fm2Sysex.algorithm, 0)});
+		StaticText(window,Rect(430,710,40,30))
+		.background_(lightgrey)
+		.string_("10")
+		.stringColor_(Color.black)
+		.align_(\center)
+		.mouseUpAction_({this.synthesizer.modifyWorkingPatch(Fm2Sysex.algorithm, 9)});
+		StaticText(window,Rect(480,710,40,30))
+		.background_(lightgrey)
+		.string_("20")
+		.stringColor_(Color.black)
+		.align_(\center)
+		.mouseUpAction_({this.synthesizer.modifyWorkingPatch(Fm2Sysex.algorithm, 19)});
+		StaticText(window,Rect(530,710,40,30))
+		.background_(lightgrey)
+		.string_("32")
+		.stringColor_(Color.black)
+		.align_(\center)
+		.mouseUpAction_({this.synthesizer.modifyWorkingPatch(Fm2Sysex.algorithm, 31)});
 
 		StaticText(window,Rect(680,710,100,30))
 		.background_(lightgrey)
