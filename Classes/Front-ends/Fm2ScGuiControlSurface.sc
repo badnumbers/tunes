@@ -1,6 +1,7 @@
 Fm2ScGuiControlSurface : ScGuiControlSurface {
 	var controlSpec0To1;
 	var controlSpec0To3;
+	var controlSpec0To5;
 	var controlSpec0To7;
 	var controlSpec0To14;
 	var controlSpec0To31;
@@ -33,10 +34,12 @@ Fm2ScGuiControlSurface : ScGuiControlSurface {
 
 	init {
 		|synthesizer|
-		var operatorTabset, carousel;
+		var operatorTabset, globalTabset, carousel;
 		var operator1Tab, operator2Tab, operator3Tab, operator4Tab, operator5Tab, operator6Tab;
+		var globalTab, algorithmTab, lfoTab, pitchEnvelopeTab;
 		controlSpec0To1 = ControlSpec(0,1,\lin,1/1);
 		controlSpec0To3 = ControlSpec(0,3,\lin,1/3);
+		controlSpec0To5 = ControlSpec(0,5,\lin,1/5);
 		controlSpec0To7 = ControlSpec(0,7,\lin,1/7);
 		controlSpec0To14 = ControlSpec(0,14,\lin,1/14);
 		controlSpec0To31 = ControlSpec(0,31,\lin,1/31);
@@ -46,7 +49,7 @@ Fm2ScGuiControlSurface : ScGuiControlSurface {
 
 		name = "FM2";
 		background = Color.black;
-		windowheight = 900;
+		windowheight = 1000;
 		windowwidth = 1200;
 		super.init(synthesizer);
 
@@ -75,90 +78,89 @@ Fm2ScGuiControlSurface : ScGuiControlSurface {
 		operator6Tab = operatorTabset.addTab("Operator 6");
 		this.initOperatorTab(operator6Tab, 6);
 
-		StaticText(window,Rect(50,860,100,30))
+		globalTabset = ScGuiTabSet(
+			parent: window,
+			foregroundcolour: Color.black,
+			backgroundcolour: darkgrey,
+			left: 50,
+			top: 730,
+			width: 1100,
+			buttonheight: 50,
+			bodyheight: 150,
+			borderwidth: 5,
+			bordercolour: darkgrey);
+
+		globalTab = globalTabset.addTab("Global");
+		this.initGlobalTab(globalTab);
+
+		algorithmTab = globalTabset.addTab("Algorithm");
+		this.initAlgorithmTab(algorithmTab);
+
+		lfoTab = globalTabset.addTab("LFO");
+		this.initLfoTab(lfoTab);
+
+		pitchEnvelopeTab = globalTabset.addTab("Pitch envelope");
+		this.initPitchEnvelopeTab(pitchEnvelopeTab);
+
+		StaticText(window,Rect(50,960,100,30))
 		.background_(lightgrey)
 		.string_("Initialise")
 		.stringColor_(Color.black)
 		.align_(\center)
 		.mouseUpAction_({this.synthesizer.initialisePatch()});
 
-		StaticText(window,Rect(160,860,100,30))
+		StaticText(window,Rect(160,960,100,30))
 		.background_(lightgrey)
 		.string_("Randomise")
 		.stringColor_(Color.black)
 		.align_(\center)
 		.mouseUpAction_({this.synthesizer.randomisePatch(0)});
 
-		StaticText(window,Rect(270,860,100,30))
+		StaticText(window,Rect(270,960,100,30))
 		.background_(lightgrey)
 		.string_("Send")
 		.stringColor_(Color.black)
 		.align_(\center)
 		.mouseUpAction_({this.synthesizer.setWorkingPatch(this.synthesizer.prWorkingPatch)});
 
-		StaticText(window,Rect(380,860,40,30))
+		StaticText(window,Rect(380,960,40,30))
 		.background_(lightgrey)
 		.string_("1")
 		.stringColor_(Color.black)
 		.align_(\center)
-		.mouseUpAction_({this.synthesizer.modifyWorkingPatch(Fm2Sysex.algorithm, 0)});
-		StaticText(window,Rect(430,860,40,30))
+		.mouseUpAction_({this.synthesizer.modifyWorkingPatch(Fm2Sysex.algorithm, 0, this.class.name)});
+		StaticText(window,Rect(430,960,40,30))
 		.background_(lightgrey)
 		.string_("10")
 		.stringColor_(Color.black)
 		.align_(\center)
-		.mouseUpAction_({this.synthesizer.modifyWorkingPatch(Fm2Sysex.algorithm, 9)});
-		StaticText(window,Rect(480,860,40,30))
+		.mouseUpAction_({this.synthesizer.modifyWorkingPatch(Fm2Sysex.algorithm, 9, this.class.name)});
+		StaticText(window,Rect(480,960,40,30))
 		.background_(lightgrey)
 		.string_("20")
 		.stringColor_(Color.black)
 		.align_(\center)
-		.mouseUpAction_({this.synthesizer.modifyWorkingPatch(Fm2Sysex.algorithm, 19)});
-		StaticText(window,Rect(530,860,40,30))
+		.mouseUpAction_({this.synthesizer.modifyWorkingPatch(Fm2Sysex.algorithm, 19, this.class.name)});
+		StaticText(window,Rect(530,960,40,30))
 		.background_(lightgrey)
 		.string_("32")
 		.stringColor_(Color.black)
 		.align_(\center)
-		.mouseUpAction_({this.synthesizer.modifyWorkingPatch(Fm2Sysex.algorithm, 31)});
+		.mouseUpAction_({this.synthesizer.modifyWorkingPatch(Fm2Sysex.algorithm, 31, this.class.name)});
 
-		StaticText(window,Rect(680,860,100,30))
+		StaticText(window,Rect(680,960,100,30))
 		.background_(lightgrey)
 		.string_("Write")
 		.stringColor_(Color.black)
 		.align_(\center)
 		.mouseUpAction_({this.synthesizer.writeWorkingPatch()});
 
-		StaticText(window,Rect(790,860,100,30))
+		StaticText(window,Rect(790,960,100,30))
 		.background_(lightgrey)
 		.string_("Scope")
 		.stringColor_(Color.black)
 		.align_(\center)
 		.mouseUpAction_({this.openStethoscope(this.synthesizer.audioInputChannels[0],this.synthesizer.audioInputChannels.size)});
-
-		carousel = ScGuiCarousel(window, Rect(50, 720, 1100, 100), Color.black).mouseUpAction_({
-			this.synthesizer.modifyWorkingPatch(Fm2Sysex.algorithm,carousel.value,this.class.name);
-		});
-		32.do({
-			|index|
-			var view = StaticText(carousel.view, Rect((index * 100) + 10, 10, 80, 80)).background_(Color.cyan).string_(index + 1);
-			carousel.addTile(
-				ScGuiCarouselTile(
-					view
-					,view
-					,index,
-					{
-						view.background_(Color.red);
-					},
-					{
-						view.background_(Color.cyan);
-					}
-				)
-			);
-		});
-		this.synthesizer.addUpdateAction(this.class.name, Fm2Sysex.algorithm, {
-			|newvalue|
-			carousel.value = newvalue;
-		});
 	}
 
 	initOperatorTab {
@@ -204,6 +206,65 @@ Fm2ScGuiControlSurface : ScGuiControlSurface {
 		this.addKnobWithLabel(container, 850, 400, Fm2Sysex.operator1FineFrequency + sysexOffset, "Fine freq", false);
 
 		this.addKnobWithLabel(container, 850, 550, Fm2Sysex.operator1Detune + sysexOffset, "Detune", false, controlSpec0To14);
+	}
+
+	initGlobalTab {
+		|tab|
+		var container = View(tab.body,Rect(0,0,tab.body.bounds.width,tab.body.bounds.height));
+		this.addKnobWithLabel(container, 50, 25, Fm2Sysex.feedback, "Feedback", false, controlSpec0To7);
+	}
+
+	initAlgorithmTab {
+		|tab|
+		var container = View(tab.body,Rect(0,0,tab.body.bounds.width,tab.body.bounds.height));
+		var carousel = ScGuiCarousel(container, Rect(25, 25, 1050, 100), Color.black).mouseUpAction_({
+			this.synthesizer.modifyWorkingPatch(Fm2Sysex.algorithm,carousel.value,this.class.name);
+		});
+		32.do({
+			|index|
+			var view = StaticText(carousel.view, Rect((index * 100) + 10, 10, 80, 80)).background_(Color.cyan).string_(index + 1);
+			carousel.addTile(
+				ScGuiCarouselTile(
+					view
+					,view
+					,index,
+					{
+						view.background_(Color.red);
+					},
+					{
+						view.background_(Color.cyan);
+					}
+				)
+			);
+		});
+		this.synthesizer.addUpdateAction(this.class.name, Fm2Sysex.algorithm, {
+			|newvalue|
+			carousel.value = newvalue;
+		});
+	}
+
+	initLfoTab {
+		|tab|
+		var container = View(tab.body,Rect(0,0,tab.body.bounds.width,tab.body.bounds.height));
+		this.addKnobWithLabel(container, 50, 25, Fm2Sysex.lfoSpeed, "Speed", false);
+		this.addKnobWithLabel(container, 150, 25, Fm2Sysex.lfoDelay, "Delay", false);
+		this.addKnobWithLabel(container, 250, 25, Fm2Sysex.lfoWaveform, "Waveform", false, controlSpec0To5);
+		this.addKnobWithLabel(container, 350, 25, Fm2Sysex.lfoPitchModulationDepth, "Pitch mod", false, controlSpec0To5);
+		this.addKnobWithLabel(container, 450, 25, Fm2Sysex.lfoAmplitudeModulationDepth, "Amp mod", false, controlSpec0To5);
+		this.addKnobWithLabel(container, 550, 25, Fm2Sysex.lfoKeySync, "Key sync", false, controlSpec0To1);
+	}
+
+	initPitchEnvelopeTab {
+		|tab|
+		var container = View(tab.body,Rect(0,0,tab.body.bounds.width,tab.body.bounds.height));
+		this.addKnobWithLabel(container, 50, 25, Fm2Sysex.pitchEnvelopeGeneratorRate1, "Rate 1", false);
+		this.addKnobWithLabel(container, 150, 25, Fm2Sysex.pitchEnvelopeGeneratorLevel1, "Level 1", false);
+		this.addKnobWithLabel(container, 250, 25, Fm2Sysex.pitchEnvelopeGeneratorRate2, "Rate 2", false);
+		this.addKnobWithLabel(container, 350, 25, Fm2Sysex.pitchEnvelopeGeneratorLevel2, "Level 2", false);
+		this.addKnobWithLabel(container, 450, 25, Fm2Sysex.pitchEnvelopeGeneratorRate3, "Rate 3", false);
+		this.addKnobWithLabel(container, 550, 25, Fm2Sysex.pitchEnvelopeGeneratorLevel3, "Level 3", false);
+		this.addKnobWithLabel(container, 650, 25, Fm2Sysex.pitchEnvelopeGeneratorRate4, "Rate 4", false);
+		this.addKnobWithLabel(container, 750, 25, Fm2Sysex.pitchEnvelopeGeneratorLevel4, "Level 4", false);
 	}
 
 	setDefaultControlSpec {

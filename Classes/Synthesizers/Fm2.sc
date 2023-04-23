@@ -24,8 +24,8 @@ Fm2 : Synthesizer {
 
 	modifyWorkingPatch {
 		|parameterNumber, parameterValue, actor|
-		Validator.validateMethodParameterType(parameterNumber, Integer, "parameterNumber", "Synthesizer", "modifyWorkingPatch");
-		Validator.validateMethodParameterType(parameterValue, Integer, "parameterValue", "Synthesizer", "modifyWorkingPatch");
+		Validator.validateMethodParameterType(parameterNumber, Integer, "parameterNumber", "FM2", "modifyWorkingPatch");
+		Validator.validateMethodParameterType(parameterValue, Integer, "parameterValue", "FM2", "modifyWorkingPatch");
 		Validator.validateMethodParameterType(actor, Symbol, "actor", "Synthesizer", "modifyWorkingPatch");
 
 		postln(format("Updating the FM2's parameter number % to the value %.", parameterNumber, parameterValue));
