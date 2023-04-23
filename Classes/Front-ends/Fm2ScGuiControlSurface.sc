@@ -83,7 +83,9 @@ Fm2ScGuiControlSurface : ScGuiControlSurface {
 		.align_(\center)
 		.mouseUpAction_({this.openStethoscope(this.synthesizer.audioInputChannels[0],this.synthesizer.audioInputChannels.size)});
 
-		carousel = ScGuiCarousel(window, Rect(50, 500, 500, 100), 17);
+		carousel = ScGuiCarousel(window, Rect(50, 500, 500, 100), 17).mouseUpAction_({
+			this.synthesizer.modifyWorkingPatch(Fm2Sysex.algorithm,carousel.value,this.class.name);
+		});
 		32.do({
 			|index|
 			var view = StaticText(carousel.view, Rect((index * 100) + 10, 10, 80, 80)).background_(Color.cyan).string_(index + 1);

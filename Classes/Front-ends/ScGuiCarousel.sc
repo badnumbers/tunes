@@ -1,4 +1,5 @@
 ScGuiCarousel : ScGuiControl {
+	var prMouseUpAction;
 	var prTiles;
 	var prValue;
 	var prView;
@@ -9,6 +10,7 @@ ScGuiCarousel : ScGuiControl {
 
 		tile.clickableView.mouseUpAction_({
 			this.value_(tile.value, moveCarousel: false);
+			prMouseUpAction.value();
 		});
 		prTiles = prTiles ?? Array();
 		prTiles = prTiles.add(tile);
@@ -18,6 +20,14 @@ ScGuiCarousel : ScGuiControl {
 		super.init(parent);
 		prView = ScrollView(parent,bounds);
 		prValue = value;
+	}
+
+	mouseUpAction_ {
+		|newValue|
+		if (newValue.class != Function, {
+			Error(format("The value passed to %.mouseUpAction_() must be an instance of Function. An instance of % was provided.", this.class,newValue.class)).throw;
+		});
+		prMouseUpAction = newValue;
 	}
 
 	*new { |parent, bounds, value|
