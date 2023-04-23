@@ -16,10 +16,10 @@ ScGuiCarousel : ScGuiControl {
 		prTiles = prTiles.add(tile);
 	}
 
-	init { |parent, bounds, value|
+	init { |parent, bounds, backgroundColour|
 		super.init(parent);
-		prView = ScrollView(parent,bounds);
-		prValue = value;
+		postln(format("The background colour is %", backgroundColour));
+		prView = ScrollView(parent,bounds).background_(backgroundColour);
 	}
 
 	mouseUpAction_ {
@@ -30,8 +30,11 @@ ScGuiCarousel : ScGuiControl {
 		prMouseUpAction = newValue;
 	}
 
-	*new { |parent, bounds, value|
-		^super.new.init(parent, bounds, value);
+	*new { |parent, bounds, backgroundColour|
+		Validator.validateMethodParameterType(bounds, Rect, "bounds", "ScGuiCarousel", "new");
+		Validator.validateMethodParameterType(backgroundColour, Color, "backgroundColour", "ScGuiCarousel", "new");
+
+		^super.new.init(parent, bounds, backgroundColour);
 	}
 
 	value {
@@ -44,6 +47,7 @@ ScGuiCarousel : ScGuiControl {
 		var widthOfTilesUpToHere = 0;
 		var maximumRightPosition = 0;
 		Validator.validateMethodParameterType(newValue, Integer, "newValue", "ScGuiCarousel", "value_");
+		Validator.validateMethodParameterType(moveCarousel, Boolean, "moveCarousel", "ScGuiCarousel", "value_");
 
 		prValue = newValue;
 		postln(format("The new value of the carousel is %", newValue));
