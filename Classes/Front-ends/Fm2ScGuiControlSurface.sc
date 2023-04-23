@@ -90,6 +90,7 @@ Fm2ScGuiControlSurface : ScGuiControlSurface {
 			carousel.addTile(
 				ScGuiCarouselTile(
 					view
+					,view
 					,index,
 					{
 						view.background_(Color.red);

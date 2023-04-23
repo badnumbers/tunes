@@ -1,36 +1,42 @@
 ScGuiCarouselTile {
-	var prCarousel;
+	var prClickableView;
 	var prDeselectFunc;
 	var prSelectFunc;
 	var prValue;
 	var prView;
 
-	carousel_ { |newvalue|
-        prCarousel= newvalue;
+	clickableView {
+        ^prClickableView;
     }
 
 	deselect {
 		prDeselectFunc.value();
 	}
 
-	init { |view, value, selectFunc, deselectFunc|
+	init { |view, clickableView, value, selectFunc, deselectFunc|
 		Validator.validateMethodParameterType(view, View, "view", "ScGuiCarouselTile", "init");
+		Validator.validateMethodParameterType(clickableView, View, "clickableView", "ScGuiCarouselTile", "init");
 		Validator.validateMethodParameterType(value, Integer, "value", "ScGuiCarouselTile", "init");
 		Validator.validateMethodParameterType(selectFunc, Function, "selectFunc", "ScGuiCarouselTile", "init");
 		Validator.validateMethodParameterType(deselectFunc, Function, "deselectFunc", "ScGuiCarouselTile", "init");
 
 		prView = view;
+		prClickableView = clickableView;
 		prValue = value;
 		prSelectFunc = selectFunc;
 		prDeselectFunc = deselectFunc;
 	}
 
-	*new { |carousel, view, value, selectFunc, deselectFunc|
-		^super.new.init(carousel, view, value, selectFunc, deselectFunc);
+	*new { | view, clickableView, value, selectFunc, deselectFunc|
+		^super.new.init( view, clickableView, value, selectFunc, deselectFunc);
 	}
 
 	select {
-		prSelectFunc.value;
+		prSelectFunc.value();
+	}
+
+	value {
+		^prValue;
 	}
 
 	 view {

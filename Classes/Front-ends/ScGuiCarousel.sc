@@ -7,6 +7,9 @@ ScGuiCarousel : ScGuiControl {
 		|tile|
 		Validator.validateMethodParameterType(tile, ScGuiCarouselTile, "tile", "ScGuiCarousel", "addTile");
 
+		tile.clickableView.mouseUpAction_({
+			this.value_(tile.value, moveCarousel: false);
+		});
 		prTiles = prTiles ?? Array();
 		prTiles = prTiles.add(tile);
 	}
@@ -26,7 +29,7 @@ ScGuiCarousel : ScGuiControl {
 	}
 
 	value_ {
-		|newValue|
+		|newValue, moveCarousel = true|
 		var leftpoint;
 		var widthOfTilesUpToHere = 0;
 		var maximumRightPosition = 0;
@@ -45,15 +48,17 @@ ScGuiCarousel : ScGuiControl {
 
 		prTiles.do({
 			|tile|
-			tile.deselect()
+			tile.deselect();
 		});
 
 		prTiles[newValue].select();
-		leftpoint = prTiles[newValue].view.bounds.left + (prTiles[newValue].view.bounds.width / 2) - (prView.bounds.width / 2);
-		maximumRightPosition = prTiles[prTiles.size - 1].view.bounds.left + prTiles[prTiles.size - 1].view.bounds.width - prView.bounds.width;
-		if (leftpoint > maximumRightPosition, {leftpoint = maximumRightPosition});
 
-		prView.visibleOrigin = leftpoint@0;
+		if (moveCarousel, {
+			leftpoint = prTiles[newValue].view.bounds.left + (prTiles[newValue].view.bounds.width / 2) - (prView.bounds.width / 2);
+			maximumRightPosition = prTiles[prTiles.size - 1].view.bounds.left + prTiles[prTiles.size - 1].view.bounds.width - prView.bounds.width;
+			if (leftpoint > maximumRightPosition, {leftpoint = maximumRightPosition});
+			prView.visibleOrigin = leftpoint@0;
+		});
 	}
 
 	view {
