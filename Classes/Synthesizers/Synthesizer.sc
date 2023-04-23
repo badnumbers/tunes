@@ -39,7 +39,7 @@ Synthesizer {
 	generateRandomValue
 	{
 		|lo,hi,curve=0,clipMin=0,clipMax=127|
-		var randomValue = 1.0.rand.lincurve(0,1,lo,hi,curve).clip(clipMin,clipMax).round.asInt;
+		var randomValue = 1.0.rand.lincurve(0,1,lo,hi,curve).clip(clipMin,clipMax).round.asInteger;
 		^randomValue;
 	}
 

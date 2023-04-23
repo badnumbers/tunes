@@ -28,6 +28,7 @@ Fm2 : Synthesizer {
 		Validator.validateMethodParameterType(parameterValue, Integer, "parameterValue", "Synthesizer", "modifyWorkingPatch");
 		Validator.validateMethodParameterType(actor, Symbol, "actor", "Synthesizer", "modifyWorkingPatch");
 
+		postln(format("Updating the FM2's parameter number % to the value %.", parameterNumber, parameterValue));
 		prWorkingPatch.kvps[parameterNumber] = parameterValue;
 		if (actor.isNil, {
 			invokeUpdateActionsFunc.value({|subscriber| true}, parameterNumber, parameterValue);
@@ -46,7 +47,7 @@ Fm2 : Synthesizer {
 		|patch|
 		var start,payload,checksum,end,finalMessage;
 
-		Validator.validateMethodParameterType(patch, this.class, "patch", "Synthesizer", "setWorkingPatch");
+		Validator.validateMethodParameterType(patch, Fm2Patch, "patch", "Fm2", "setWorkingPatch");
 		start = Int8Array[240,67,0,0,1,27];
 		payload = Int8Array.newClear(155);
 		payload[Fm2Sysex.operator6EnvelopeGeneratorRate1] = prWorkingPatch.kvps[Fm2Sysex.operator6EnvelopeGeneratorRate1];

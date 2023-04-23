@@ -18,7 +18,6 @@ ScGuiCarousel : ScGuiControl {
 
 	init { |parent, bounds, backgroundColour|
 		super.init(parent);
-		postln(format("The background colour is %", backgroundColour));
 		prView = ScrollView(parent,bounds).background_(backgroundColour);
 	}
 
@@ -50,7 +49,6 @@ ScGuiCarousel : ScGuiControl {
 		Validator.validateMethodParameterType(moveCarousel, Boolean, "moveCarousel", "ScGuiCarousel", "value_");
 
 		prValue = newValue;
-		postln(format("The new value of the carousel is %", newValue));
 
 		if (newValue < 0, {
 			Error(format("The parameter newValue passed to ScGuiCarousel.value_ must not be less than 0. The value % was passed.", newValue)).throw;

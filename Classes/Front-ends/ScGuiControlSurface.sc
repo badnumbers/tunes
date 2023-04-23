@@ -65,7 +65,7 @@ ScGuiControlSurface {
 		.step_(1/127)
 		.action_({
 			|knob|
-			this.synthesizer.modifyWorkingPatch(parameterNumber,effectiveControlSpec.map(knob.value),this.class.name);
+			this.synthesizer.modifyWorkingPatch(parameterNumber,effectiveControlSpec.map(knob.value).round.asInteger,this.class.name);
 		});
 
 		this.synthesizer.addUpdateAction(this.class.name, parameterNumber, {

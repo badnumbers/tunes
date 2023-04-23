@@ -1,4 +1,9 @@
 Fm2ScGuiControlSurface : ScGuiControlSurface {
+	var controlSpec0To1;
+	var controlSpec0To3;
+	var controlSpec0To7;
+	var controlSpec0To14;
+	var controlSpec0To31;
 	var <darkgrey;
 	var <lightgrey;
 	var <orange;
@@ -8,6 +13,13 @@ Fm2ScGuiControlSurface : ScGuiControlSurface {
 		var container = View(parent, Rect(left, top, 200, 50)).background_(Color.black);
 		this.addControlLabel(container, Rect(0,0,200,25), labelText, \center, Color.white);
 		this.addDropDownList(container, Rect(0,25,200,25),parameterNumber,midiMappings);
+	}
+
+	addKnobWithLabel {
+		|parent,left,top,parameterNumber,labelText,centred,controlSpec|
+		var container = View(parent, Rect(left, top, 100, 100)).background_(Color.black);
+		this.addControlLabel(container, Rect(0,0,100,25), labelText, \center, Color.white);
+		this.addKnob(container,Rect(10,25,80,80),parameterNumber,centred,this.darkgrey,this.orange,Color.black,Color.white,controlSpec);
 	}
 
 	addSectionLabel {
@@ -23,6 +35,11 @@ Fm2ScGuiControlSurface : ScGuiControlSurface {
 		|synthesizer|
 		var operatorTabset, carousel;
 		var operator1Tab, operator2Tab, operator3Tab, operator4Tab, operator5Tab, operator6Tab;
+		controlSpec0To1 = ControlSpec(0,1,\lin,1/1);
+		controlSpec0To3 = ControlSpec(0,3,\lin,1/3);
+		controlSpec0To7 = ControlSpec(0,7,\lin,1/7);
+		controlSpec0To14 = ControlSpec(0,14,\lin,1/14);
+		controlSpec0To31 = ControlSpec(0,31,\lin,1/31);
 		darkgrey = Color(0.8,0.8,0.8);
 		lightgrey = Color(0.5,0.5,0.5);
 		orange = Color(0.8,0.2,0.14);
@@ -147,7 +164,46 @@ Fm2ScGuiControlSurface : ScGuiControlSurface {
 	initOperatorTab {
 		|tab, operatorNumber|
 		var container = View(tab.body,Rect(0,0,tab.body.bounds.width,tab.body.bounds.height));
+		var sysexOffset = (operatorNumber - 1) * -21;
+
 		this.addSectionLabel(container,Rect(0,25,300,50), format("Envelope", operatorNumber));
+
+		this.addKnobWithLabel(container, 50, 100, Fm2Sysex.operator1EnvelopeGeneratorRate1 + sysexOffset, "Rate 1", false);
+		this.addKnobWithLabel(container, 150, 100, Fm2Sysex.operator1EnvelopeGeneratorLevel1 + sysexOffset, "Level 1", false);
+
+		this.addKnobWithLabel(container, 50, 250, Fm2Sysex.operator1EnvelopeGeneratorRate2 + sysexOffset, "Rate 2", false);
+		this.addKnobWithLabel(container, 150, 250, Fm2Sysex.operator1EnvelopeGeneratorLevel2 + sysexOffset, "Level 2", false);
+
+		this.addKnobWithLabel(container, 50, 400, Fm2Sysex.operator1EnvelopeGeneratorRate3 + sysexOffset, "Rate 3", false);
+		this.addKnobWithLabel(container, 150, 400, Fm2Sysex.operator1EnvelopeGeneratorLevel3 + sysexOffset, "Level 3", false);
+
+		this.addKnobWithLabel(container, 50, 550, Fm2Sysex.operator1EnvelopeGeneratorRate4 + sysexOffset, "Rate 4", false);
+		this.addKnobWithLabel(container, 150, 550, Fm2Sysex.operator1EnvelopeGeneratorLevel4 + sysexOffset, "Level 4", false);
+
+		this.addSectionLabel(container,Rect(400,25,300,50), format("Scaling", operatorNumber));
+
+		this.addKnobWithLabel(container, 400, 100, Fm2Sysex.operator1KeyboardLevelScaleBreakpoint + sysexOffset, "Breakpoint", false);
+
+		this.addKnobWithLabel(container, 400, 250, Fm2Sysex.operator1KeyboardLevelScaleLeftDepth + sysexOffset, "Left depth", false);
+		this.addKnobWithLabel(container, 500, 250, Fm2Sysex.operator1KeyboardLevelScaleRightDepth + sysexOffset, "Right depth", false);
+
+		this.addKnobWithLabel(container, 400, 400, Fm2Sysex.operator1KeyboardLevelScaleLeftCurve + sysexOffset, "Left curve", false, controlSpec0To3);
+		this.addKnobWithLabel(container, 500, 400, Fm2Sysex.operator1KeyboardLevelScaleRightCurve + sysexOffset, "Right curve", false, controlSpec0To3);
+
+		this.addKnobWithLabel(container, 400, 550, Fm2Sysex.operator1KeyboardRateScaling + sysexOffset, "Rate scaling", false, controlSpec0To7);
+
+		this.addSectionLabel(container,Rect(750,25,300,50), format("Other", operatorNumber));
+
+		this.addKnobWithLabel(container, 750, 100, Fm2Sysex.operator1AmplitudeModulationSensitivity + sysexOffset, "Amp Mod Sens", false, controlSpec0To3);
+		this.addKnobWithLabel(container, 850, 100, Fm2Sysex.operator1KeyVelocitySensitivity + sysexOffset, "Key Vel Sens", false, controlSpec0To7);
+
+		this.addKnobWithLabel(container, 750, 250, Fm2Sysex.operator1OutputLevel + sysexOffset, "Output level", false);
+		this.addKnobWithLabel(container, 850, 250, Fm2Sysex.operator1KeyVelocitySensitivity + sysexOffset, "Operator mode", false, controlSpec0To1);
+
+		this.addKnobWithLabel(container, 750, 400, Fm2Sysex.operator1CoarseFrequency + sysexOffset, "Coarse freq", false, controlSpec0To31);
+		this.addKnobWithLabel(container, 850, 400, Fm2Sysex.operator1FineFrequency + sysexOffset, "Fine freq", false);
+
+		this.addKnobWithLabel(container, 850, 550, Fm2Sysex.operator1Detune + sysexOffset, "Detune", false, controlSpec0To14);
 	}
 
 	setDefaultControlSpec {
