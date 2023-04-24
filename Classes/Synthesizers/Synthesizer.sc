@@ -153,7 +153,7 @@ Synthesizer {
 	// Used by writeWorkingPatch() and writeSavedPatches().
 	prWritePatch {
 		|patch|
-		Validator.validateMethodParameterType(patch, this.class, "patch", "Synthesizer", "prWritePatch");
+		Validator.validateMethodParameterType(patch, Patch, "patch", "Synthesizer", "prWritePatch");
 
 		postln(format("patch.name = %;", if (patch.name.isNil, "\"Unnamed patch\"", format("\"%\"", patch.name))));
 		patch.kvps.keys.do({

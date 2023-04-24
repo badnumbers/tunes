@@ -151,8 +151,8 @@ Fm2Patch : Patch {
 		kvps.add(Fm2Sysex.operatorKeySync -> 0); // Off - oscillator phase is not reset to 0 with each note
 		kvps.add(Fm2Sysex.lfoSpeed -> 50);
 		kvps.add(Fm2Sysex.lfoDelay -> 0);
-		kvps.add(Fm2Sysex.lfoPitchModulationDepth -> 50);
-		kvps.add(Fm2Sysex.lfoAmplitudeModulationDepth -> 50);
+		kvps.add(Fm2Sysex.lfoPitchModulationDepth -> 0);
+		kvps.add(Fm2Sysex.lfoAmplitudeModulationDepth -> 0);
 		kvps.add(Fm2Sysex.lfoKeySync -> 0); // Off - LFO phase is not reset with each note
 		kvps.add(Fm2Sysex.lfoWaveform -> 0); // Triangle
 		kvps.add(Fm2Sysex.pitchModulationSensitivity -> 50);
@@ -168,6 +168,13 @@ Fm2Patch : Patch {
 		kvps.add(Fm2Sysex.voiceNameCharacter8 -> 84); // T
 		kvps.add(Fm2Sysex.voiceNameCharacter9 -> 67); // C
 		kvps.add(Fm2Sysex.voiceNameCharacter10 -> 72); // H
+
+		kvps.add(Fm2.modulatorAttackCcNo -> 64);
+		kvps.add(Fm2.modulatorDecayCcNo	-> 64);
+		kvps.add(Fm2.carrierAttackCcNo -> 64);
+		kvps.add(Fm2.carrierDecayCcNo -> 64);
+		kvps.add(Fm2.chorusDepthCcNo -> 0);
+		kvps.add(Fm2.reverbDepthCcNo -> 0);
 	}
 
 	describe {

@@ -1,4 +1,10 @@
 Fm2 : Synthesizer {
+	classvar <modulatorAttackCcNo = 1042;
+	classvar <modulatorDecayCcNo = 1043;
+	classvar <carrierAttackCcNo = 1044;
+	classvar <carrierDecayCcNo = 1045;
+	classvar <chorusDepthCcNo = 1093;
+	classvar <reverbDepthCcNo = 1095;
 	var <audioInputChannels = #[0,1];
 	var <>midiChannel = 1;
 
@@ -20,21 +26,6 @@ Fm2 : Synthesizer {
 
 	getDefaultVariableName {
 		^"~fm2";
-	}
-
-	modifyWorkingPatch {
-		|parameterNumber, parameterValue, actor|
-		Validator.validateMethodParameterType(parameterNumber, Integer, "parameterNumber", "FM2", "modifyWorkingPatch");
-		Validator.validateMethodParameterType(parameterValue, Integer, "parameterValue", "FM2", "modifyWorkingPatch");
-		Validator.validateMethodParameterType(actor, Symbol, "actor", "Synthesizer", "modifyWorkingPatch");
-
-		postln(format("Updating the FM2's parameter number % to the value %.", parameterNumber, parameterValue));
-		prWorkingPatch.kvps[parameterNumber] = parameterValue;
-		if (actor.isNil, {
-			invokeUpdateActionsFunc.value({|subscriber| true}, parameterNumber, parameterValue);
-		}, {
-			invokeUpdateActionsFunc.value({|subscriber| subscriber != actor}, parameterNumber, parameterValue);
-		});
 	}
 
 	randomisePatch {
@@ -217,10 +208,23 @@ Fm2 : Synthesizer {
 		finalMessage = start ++ payload ++ checksum ++ end;
 
 		prMidiout.sysex(finalMessage);
+
+		super.updateParameterInHardwareSynth(modulatorAttackCcNo - 1000, prWorkingPatch.kvps[modulatorAttackCcNo]);
+		super.updateParameterInHardwareSynth(modulatorDecayCcNo - 1000, prWorkingPatch.kvps[modulatorDecayCcNo]);
+		super.updateParameterInHardwareSynth(carrierAttackCcNo - 1000, prWorkingPatch.kvps[carrierAttackCcNo]);
+		super.updateParameterInHardwareSynth(carrierDecayCcNo - 1000, prWorkingPatch.kvps[carrierDecayCcNo]);
+		super.updateParameterInHardwareSynth(chorusDepthCcNo - 1000, prWorkingPatch.kvps[chorusDepthCcNo]);
+		super.updateParameterInHardwareSynth(reverbDepthCcNo - 1000, prWorkingPatch.kvps[reverbDepthCcNo]);
 	}
 
 	updateParameterInHardwareSynth {
 		|key,newvalue|
-		postln("The FM2 cannot do realtime parameter updates.");
+
+		if (key > 1000, {
+			postln("It's a CC so updating");
+			super.updateParameterInHardwareSynth(key - 1000, newvalue, this.class.name);
+		},{
+			postln("The FM2 cannot do realtime parameter updates.");
+		});
 	}
 }

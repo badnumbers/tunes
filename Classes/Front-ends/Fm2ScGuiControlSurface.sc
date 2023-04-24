@@ -5,6 +5,8 @@ Fm2ScGuiControlSurface : ScGuiControlSurface {
 	var controlSpec0To7;
 	var controlSpec0To14;
 	var controlSpec0To31;
+	var controlSpec0To48;
+	var controlSpec0To127;
 	var <darkgrey;
 	var <lightgrey;
 	var <orange;
@@ -36,13 +38,15 @@ Fm2ScGuiControlSurface : ScGuiControlSurface {
 		|synthesizer|
 		var operatorTabset, globalTabset, carousel;
 		var operator1Tab, operator2Tab, operator3Tab, operator4Tab, operator5Tab, operator6Tab;
-		var globalTab, algorithmTab, lfoTab, pitchEnvelopeTab;
+		var globalTab, algorithmTab, lfoTab, pitchEnvelopeTab, fm2Tab;
 		controlSpec0To1 = ControlSpec(0,1,\lin,1/1);
 		controlSpec0To3 = ControlSpec(0,3,\lin,1/3);
 		controlSpec0To5 = ControlSpec(0,5,\lin,1/5);
 		controlSpec0To7 = ControlSpec(0,7,\lin,1/7);
 		controlSpec0To14 = ControlSpec(0,14,\lin,1/14);
 		controlSpec0To31 = ControlSpec(0,31,\lin,1/31);
+		controlSpec0To48 = ControlSpec(0,48,\lin,1/48);
+		controlSpec0To127 = ControlSpec(0,127,\lin,1/127);
 		darkgrey = Color(0.8,0.8,0.8);
 		lightgrey = Color(0.5,0.5,0.5);
 		orange = Color(0.8,0.2,0.14);
@@ -101,6 +105,9 @@ Fm2ScGuiControlSurface : ScGuiControlSurface {
 
 		pitchEnvelopeTab = globalTabset.addTab("Pitch envelope");
 		this.initPitchEnvelopeTab(pitchEnvelopeTab);
+
+		fm2Tab = globalTabset.addTab("FM2");
+		this.initFm2Tab(fm2Tab);
 
 		StaticText(window,Rect(50,960,100,30))
 		.background_(lightgrey)
@@ -200,7 +207,7 @@ Fm2ScGuiControlSurface : ScGuiControlSurface {
 		this.addKnobWithLabel(container, 850, 100, Fm2Sysex.operator1KeyVelocitySensitivity + sysexOffset, "Key Vel Sens", false, controlSpec0To7);
 
 		this.addKnobWithLabel(container, 750, 250, Fm2Sysex.operator1OutputLevel + sysexOffset, "Output level", false);
-		this.addKnobWithLabel(container, 850, 250, Fm2Sysex.operator1KeyVelocitySensitivity + sysexOffset, "Operator mode", false, controlSpec0To1);
+		this.addKnobWithLabel(container, 850, 250, Fm2Sysex.operator1Mode + sysexOffset, "Operator mode", false, controlSpec0To1);
 
 		this.addKnobWithLabel(container, 750, 400, Fm2Sysex.operator1CoarseFrequency + sysexOffset, "Coarse freq", false, controlSpec0To31);
 		this.addKnobWithLabel(container, 850, 400, Fm2Sysex.operator1FineFrequency + sysexOffset, "Fine freq", false);
@@ -212,6 +219,9 @@ Fm2ScGuiControlSurface : ScGuiControlSurface {
 		|tab|
 		var container = View(tab.body,Rect(0,0,tab.body.bounds.width,tab.body.bounds.height));
 		this.addKnobWithLabel(container, 50, 25, Fm2Sysex.feedback, "Feedback", false, controlSpec0To7);
+		this.addKnobWithLabel(container, 150, 25, Fm2Sysex.operatorKeySync, "Op Key Sync", false, controlSpec0To1);
+		this.addKnobWithLabel(container, 250, 25, Fm2Sysex.pitchModulationSensitivity, "Pitch Mod Sens", false, controlSpec0To7);
+		this.addKnobWithLabel(container, 350, 25, Fm2Sysex.transpose, "Transpose", false, controlSpec0To48);
 	}
 
 	initAlgorithmTab {
@@ -249,8 +259,8 @@ Fm2ScGuiControlSurface : ScGuiControlSurface {
 		this.addKnobWithLabel(container, 50, 25, Fm2Sysex.lfoSpeed, "Speed", false);
 		this.addKnobWithLabel(container, 150, 25, Fm2Sysex.lfoDelay, "Delay", false);
 		this.addKnobWithLabel(container, 250, 25, Fm2Sysex.lfoWaveform, "Waveform", false, controlSpec0To5);
-		this.addKnobWithLabel(container, 350, 25, Fm2Sysex.lfoPitchModulationDepth, "Pitch mod", false, controlSpec0To5);
-		this.addKnobWithLabel(container, 450, 25, Fm2Sysex.lfoAmplitudeModulationDepth, "Amp mod", false, controlSpec0To5);
+		this.addKnobWithLabel(container, 350, 25, Fm2Sysex.lfoPitchModulationDepth, "Pitch mod", false);
+		this.addKnobWithLabel(container, 450, 25, Fm2Sysex.lfoAmplitudeModulationDepth, "Amp mod", false);
 		this.addKnobWithLabel(container, 550, 25, Fm2Sysex.lfoKeySync, "Key sync", false, controlSpec0To1);
 	}
 
@@ -265,6 +275,17 @@ Fm2ScGuiControlSurface : ScGuiControlSurface {
 		this.addKnobWithLabel(container, 550, 25, Fm2Sysex.pitchEnvelopeGeneratorLevel3, "Level 3", false);
 		this.addKnobWithLabel(container, 650, 25, Fm2Sysex.pitchEnvelopeGeneratorRate4, "Rate 4", false);
 		this.addKnobWithLabel(container, 750, 25, Fm2Sysex.pitchEnvelopeGeneratorLevel4, "Level 4", false);
+	}
+
+	initFm2Tab {
+		|tab|
+		var container = View(tab.body,Rect(0,0,tab.body.bounds.width,tab.body.bounds.height));
+		this.addKnobWithLabel(container, 50, 25, Fm2.modulatorAttackCcNo, "Modulator attack", false, controlSpec0To127);
+		this.addKnobWithLabel(container, 150, 25, Fm2.modulatorDecayCcNo, "Modulator decay", false, controlSpec0To127);
+		this.addKnobWithLabel(container, 250, 25, Fm2.carrierAttackCcNo, "Carrier attack", false, controlSpec0To127);
+		this.addKnobWithLabel(container, 350, 25, Fm2.carrierDecayCcNo, "Carrier decay", false, controlSpec0To127);
+		this.addKnobWithLabel(container, 450, 25, Fm2.chorusDepthCcNo, "Chorus depth", false, controlSpec0To127);
+		this.addKnobWithLabel(container, 550, 25, Fm2.reverbDepthCcNo, "Reverb depth", false, controlSpec0To127);
 	}
 
 	setDefaultControlSpec {
