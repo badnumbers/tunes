@@ -39,6 +39,8 @@ Fm2 : Synthesizer {
 		var start,payload,checksum,end,finalMessage;
 
 		Validator.validateMethodParameterType(patch, Fm2Patch, "patch", "Fm2", "setWorkingPatch");
+		prWorkingPatch = patch;
+
 		start = Int8Array[240,67,0,0,1,27];
 		payload = Int8Array.newClear(155);
 		payload[Fm2Sysex.operator6EnvelopeGeneratorRate1] = prWorkingPatch.kvps[Fm2Sysex.operator6EnvelopeGeneratorRate1];
