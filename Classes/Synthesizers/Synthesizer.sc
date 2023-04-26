@@ -202,7 +202,7 @@ Synthesizer {
 	// Saves the supplied patch to the list of saved patches.
 	saveSpecificPatch {
 		|patch|
-		Validator.validateMethodParameterType(patch, this.class, "patch", "Synthesizer", "saveSpecificPatch");
+		Validator.validateMethodParameterType(patch, Patch, "patch", "Synthesizer", "saveSpecificPatch");
 
 		prPatchDictionary = prPatchDictionary.add(patch.name -> patch);
 	}
@@ -211,7 +211,7 @@ Synthesizer {
 	// Used by loadPatch and randomisePatch.
 	setWorkingPatch {
 		|patch|
-		Validator.validateMethodParameterType(patch, this.class, "patch", "Synthesizer", "setWorkingPatch");
+		Validator.validateMethodParameterType(patch, Patch, "patch", "Synthesizer", "setWorkingPatch");
 
 		prWorkingPatch = patch;
 		prWorkingPatch.kvps.keys.do({
