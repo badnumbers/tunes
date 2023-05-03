@@ -173,3 +173,35 @@ Pdef(\jx03,
 ).play(TempoClock(2));
 )
 Pdef(\jx03).stop;
+
+(
+var patch = Jx03Patch();
+patch.name = "Tender nostalgia";
+patch.kvps[1304]=16;patch.kvps[1314]=192;patch.kvps[1402]=255;patch.kvps[1102]=16;patch.kvps[1206]=0;patch.kvps[1306]=126;patch.kvps[1702]=128;patch.kvps[1204]=1;patch.kvps[1200]=3;patch.kvps[1504]=128;patch.kvps[1500]=0;patch.kvps[1210]=0;patch.kvps[1606]=13;patch.kvps[1220]=0;patch.kvps[1708]=12;patch.kvps[1700]=0;patch.kvps[1216]=5;patch.kvps[1308]=82;patch.kvps[1100]=0;patch.kvps[1600]=1;patch.kvps[1502]=168;patch.kvps[1602]=9;patch.kvps[1226]=1;patch.kvps[1706]=0;patch.kvps[1506]=182;patch.kvps[1104]=66;patch.kvps[1300]=128;patch.kvps[1222]=16;patch.kvps[1302]=0;patch.kvps[1310]=1;patch.kvps[1214]=128;patch.kvps[1218]=0;patch.kvps[1224]=0;patch.kvps[1202]=3;patch.kvps[1312]=0;patch.kvps[1604]=11;patch.kvps[1400]=1;patch.kvps[1212]=54;patch.kvps[1208]=2;
+~jx03.setWorkingPatch(patch);
+)
+(
+Pdef(\jx03,
+	Ppar([
+		Pbind(
+			\type,\midi,
+			\midiout,d,
+			\chan,~jx03.midiChannel,
+			\amp,0.7,
+			\legato, 0.9,
+			\midinote,Pseq([64,69,67,69,72,69,67,62,64,69,67,69,65,67,69,72]),
+			\dur,Pseq([1.5,1,0.5,1,0.5,0.5,0.5,2.5,1.5,1,0.5,1,0.5,0.5,0.5,2.5])
+		),
+		Pbind(
+			\type,\midi,
+			\midiout,d,
+			\chan,~jx03.midiChannel,
+			\amp,0.6,
+			\legato, 0.8,
+			\midinote,Pseq([[84,88,91],[81,84,89],[84,88,91],[81,84,89]]),
+			\dur,Pseq([4,4,4,4])
+		)
+	],inf)
+).play(TempoClock(1.8));
+)
+Pdef(\jx03).stop;
