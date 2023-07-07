@@ -131,7 +131,7 @@ Synthesizer {
 		|parameterNumber, parameterValue, actor|
 		Validator.validateMethodParameterType(parameterNumber, Integer, "parameterNumber", "Synthesizer", "modifyWorkingPatch");
 		Validator.validateMethodParameterType(parameterValue, Integer, "parameterValue", "Synthesizer", "modifyWorkingPatch");
-		Validator.validateMethodParameterType(actor, Symbol, "actor", "Synthesizer", "modifyWorkingPatch");
+		Validator.validateMethodParameterType(actor, Symbol, "actor", "Synthesizer", "modifyWorkingPatch", allowNil: true);
 
 		prWorkingPatch.kvps[parameterNumber] = parameterValue;
 		if (actor.isNil, {
