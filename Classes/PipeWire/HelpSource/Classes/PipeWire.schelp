@@ -1,0 +1,19 @@
+TITLE:: PipeWire
+summary:: Utilities for working with PipeWire.
+categories:: Core
+
+DESCRIPTION::
+A set of utilities for working with PipeWire.
+
+CLASSMETHODS::
+
+METHOD:: setSuperColliderAsMixer
+Runs the bash script in the same directory as CODE::PipeWire.sc:: called CODE::supercollider.sh::. This script removes the direct connections between the soundcard inputs and outputs so that all hardware synthesizer audio goes via SuperCollider.
+
+NOTE::
+After running this method, you will not hear any sound from the hardware synthesizers unless:
+LIST::
+## the SuperCollider server is running
+## you run some SynthDefs to capture their input.
+::
+::
