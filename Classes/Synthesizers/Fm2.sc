@@ -30,7 +30,7 @@ Fm2 : Synthesizer {
 
 	randomisePatch {
         |midiout,patchType,writeToPostWindow=false|
-		var patch = Jx03Patch();
+		var patch = Fm2Patch();
 		this.setWorkingPatch(patch);
     }
 
@@ -226,7 +226,7 @@ Fm2 : Synthesizer {
 			postln("It's a CC so updating");
 			super.updateParameterInHardwareSynth(key - 1000, newvalue, this.class.name);
 		},{
-			postln("The FM2 cannot do realtime parameter updates.");
+			postln(format("Setting parameter number % to the value %.", key, newvalue));
 		});
 	}
 }
