@@ -1,0 +1,196 @@
+TITLE:: ScGuiControlSurface
+summary:: Base class for designing control surfaces for hardware synthesizers.
+categories:: External Control
+related:: Classes/Synthesizers/Synthesizer.
+
+DESCRIPTION::
+Base class for designing control surfaces for hardware synthesizers. Should not be used directly.
+
+
+CLASSMETHODS::
+
+METHOD:: new
+(describe method here)
+
+ARGUMENT:: synthesizer
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: getPatchType
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+
+INSTANCEMETHODS::
+
+METHOD:: setDefaultControlSpec
+This method is called from the code::init:: method of code::ScGuiControlSurface::. Override it if you don't want your control surface to use controls which go from 0 to 127 linearly as the default.
+
+METHOD:: addSlider
+Adds a horizontal or vertical slider to the control surface.
+
+ARGUMENT:: parent
+The code::View:: to which the slider should be added.
+
+ARGUMENT:: rect
+An instance of code::Rect::defining the bounds of the slider.
+
+ARGUMENT:: parameterNumber
+The parameter number of the parameter the slider controls. Refer to the code::Patch:: for the hardware synthesizer you are controlling.
+
+ARGUMENT:: orientation
+One of the values code::\horizontal:: or code::\vertical::.
+
+METHOD:: synthesizer
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: addControlLabel
+(describe method here)
+
+ARGUMENT:: parent
+(describe argument here)
+
+ARGUMENT:: rect
+(describe argument here)
+
+ARGUMENT:: labelText
+(describe argument here)
+
+ARGUMENT:: alignment
+(describe argument here)
+
+ARGUMENT:: textColour
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: addKnob
+(describe method here)
+
+ARGUMENT:: parent
+(describe argument here)
+
+ARGUMENT:: rect
+(describe argument here)
+
+ARGUMENT:: parameterNumber
+(describe argument here)
+
+ARGUMENT:: centred
+(describe argument here)
+
+ARGUMENT:: mainKnobColour
+(describe argument here)
+
+ARGUMENT:: valueIndicatorColour
+(describe argument here)
+
+ARGUMENT:: deviationIndicatorColour
+(describe argument here)
+
+ARGUMENT:: backgroundOfDeviationIndicatorColour
+(describe argument here)
+
+ARGUMENT:: controlSpec
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: addSectionLabel
+(describe method here)
+
+ARGUMENT:: parent
+(describe argument here)
+
+ARGUMENT:: rect
+(describe argument here)
+
+ARGUMENT:: text
+(describe argument here)
+
+ARGUMENT:: textColour
+(describe argument here)
+
+ARGUMENT:: backgroundColour
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: addDropDownList
+(describe method here)
+
+ARGUMENT:: parent
+(describe argument here)
+
+ARGUMENT:: rect
+(describe argument here)
+
+ARGUMENT:: parameterNumber
+(describe argument here)
+
+ARGUMENT:: midiMappings
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: openStethoscope
+(describe method here)
+
+ARGUMENT:: audioChannelIndex
+(describe argument here)
+
+ARGUMENT:: numChannels
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: addToggleButton
+(describe method here)
+
+ARGUMENT:: parent
+(describe argument here)
+
+ARGUMENT:: rect
+(describe argument here)
+
+ARGUMENT:: parameterNumber
+(describe argument here)
+
+ARGUMENT:: midiMappings
+(describe argument here)
+
+ARGUMENT:: backgroundColour
+(describe argument here)
+
+ARGUMENT:: borderColour
+(describe argument here)
+
+ARGUMENT:: clickColour
+(describe argument here)
+
+ARGUMENT:: offColour
+(describe argument here)
+
+ARGUMENT:: onColour
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: init
+(describe method here)
+
+ARGUMENT:: synthesizer
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+
+EXAMPLES::
+
+code::
+(some example code)
+::
