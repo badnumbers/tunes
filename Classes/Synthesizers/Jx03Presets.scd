@@ -205,3 +205,17 @@ Pdef(\jx03,
 ).play(TempoClock(1.8));
 )
 Pdef(\jx03).stop;
+
+(
+var patch = Jx03Patch();
+patch.name = "Neil 1";
+patch.kvps[1304]=104;patch.kvps[1314]=224;patch.kvps[1402]=128;patch.kvps[1102]=128;patch.kvps[1206]=1;patch.kvps[1306]=100;patch.kvps[1702]=84;patch.kvps[1204]=0;patch.kvps[1200]=3;patch.kvps[1504]=214;patch.kvps[1500]=0;patch.kvps[1210]=4;patch.kvps[1606]=13;patch.kvps[1220]=1;patch.kvps[1708]=12;patch.kvps[1700]=1;patch.kvps[1216]=1;patch.kvps[1308]=0;patch.kvps[1100]=0;patch.kvps[1600]=1;patch.kvps[1502]=128;patch.kvps[1602]=11;patch.kvps[1226]=0;patch.kvps[1706]=0;patch.kvps[1506]=229;patch.kvps[1104]=86;patch.kvps[1300]=0;patch.kvps[1222]=0;patch.kvps[1302]=0;patch.kvps[1310]=1;patch.kvps[1214]=200;patch.kvps[1218]=0;patch.kvps[1224]=40;patch.kvps[1202]=4;patch.kvps[1312]=0;patch.kvps[1604]=12;patch.kvps[1400]=1;patch.kvps[1212]=118;patch.kvps[1208]=5;
+~jx03.setWorkingPatch(patch);
+)
+
+(
+var patch = Jx03Patch();
+patch.name = "Neil 2";
+patch.kvps[1304]=108;patch.kvps[1314]=224;patch.kvps[1402]=128;patch.kvps[1102]=198;patch.kvps[1206]=1;patch.kvps[1306]=155;patch.kvps[1702]=84;patch.kvps[1204]=0;patch.kvps[1200]=3;patch.kvps[1504]=255;patch.kvps[1500]=64;patch.kvps[1210]=4;patch.kvps[1606]=13;patch.kvps[1220]=1;patch.kvps[1708]=12;patch.kvps[1700]=1;patch.kvps[1216]=1;patch.kvps[1308]=64;patch.kvps[1100]=1;patch.kvps[1600]=1;patch.kvps[1502]=56;patch.kvps[1602]=11;patch.kvps[1226]=0;patch.kvps[1706]=0;patch.kvps[1506]=183;patch.kvps[1104]=86;patch.kvps[1300]=255;patch.kvps[1222]=0;patch.kvps[1302]=165;patch.kvps[1310]=1;patch.kvps[1214]=200;patch.kvps[1218]=1;patch.kvps[1224]=40;patch.kvps[1202]=4;patch.kvps[1312]=64;patch.kvps[1604]=12;patch.kvps[1400]=1;patch.kvps[1212]=118;patch.kvps[1208]=5;
+~jx03.setWorkingPatch(patch);
+)
