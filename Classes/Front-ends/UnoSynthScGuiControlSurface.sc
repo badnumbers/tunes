@@ -13,21 +13,7 @@ UnoSynthScGuiControlSurface : ScGuiControlSurface {
 		var labelRect;
 		var height = 300, sliderHeight = 30, sliderContainerHeight = 50;
 		var container = View(parent,Rect(left,top,width,height));
-		var slider = Slider(container,Rect(0,(sliderContainerHeight-sliderHeight)/2,width,sliderHeight))
-		.orientation_(\horizontal)
-		.knobColor_(Color.red)
-		.thumbSize_(25)
-		.step_(1/127)
-		.action_({
-			|slider|
-			this.synthesizer.modifyWorkingPatch(parameterNumber,this.defaultControlSpec.map(slider.value),this.class.name);
-			postln(format("Value updated to %.", this.defaultControlSpec.map(slider.value)));
-		});
-		this.synthesizer.addUpdateAction(this.class.name, parameterNumber, {
-			|newvalue|
-			slider.value = this.defaultControlSpec.unmap(newvalue);
-			postln(format("Setting the control % to the value %.", labelText, newvalue));
-		});
+		this.addSlider(container, Rect(0,(sliderContainerHeight-sliderHeight)/2,width,sliderHeight), parameterNumber, \horizontal);
 		if (labelAlignment == \left,{
 			labelRect = Rect(0,sliderContainerHeight,50,50);
 		},{
@@ -41,19 +27,10 @@ UnoSynthScGuiControlSurface : ScGuiControlSurface {
 		var knobSide = 100;
 		var knobExternalMargin = 20;
 		var container = View(parent, Rect(left, top, knobSide + knobExternalMargin, knobSide + knobExternalMargin + 50));
-		var knob = Knob(container,Rect(knobExternalMargin,knobExternalMargin,knobSide,knobSide))
-		.color_(knobcolors)
-		.mode_(\vert)
-		.step_(1/127)
-		.action_({
-			|knob|
-			this.synthesizer.modifyWorkingPatch(parameterNumber,this.defaultControlSpec.map(knob.value),this.class.name);
-		});
-		this.synthesizer.addUpdateAction(this.class.name, parameterNumber, {
-			|newvalue|
-			knob.value = this.defaultControlSpec.unmap(newvalue);
-			postln(format("Setting the control % to the value %.", labelText, newvalue));
-		});
+		super.addKnob(container,Rect(knobExternalMargin,knobExternalMargin,knobSide,knobSide),parameterNumber,False,Color.black,
+			darkgrey,
+			lightgrey,
+			Color.red);
 		StaticText(container,Rect(0,knobSide + knobExternalMargin,knobSide + knobExternalMargin,50)).string_(labelText).align_(\center).stringColor_(this.lightgrey);
 	}
 
@@ -108,20 +85,7 @@ UnoSynthScGuiControlSurface : ScGuiControlSurface {
 		|parent,left,top,width,parameterNumber,labelText|
 		var height = 300, sliderWidth = 30;
 		var container = View(parent, Rect(left, top, width, height));
-		var slider = Slider(container,Rect((width - sliderWidth) / 2,0,sliderWidth,height-50))
-		.orientation_(\vertical)
-		.knobColor_(Color.red)
-		.thumbSize_(25)
-		.step_(1/127)
-		.action_({
-			|slider|
-			this.synthesizer.modifyWorkingPatch(parameterNumber,this.defaultControlSpec.map(slider.value),this.class.name);
-		});
-		this.synthesizer.addUpdateAction(this.class.name, parameterNumber, {
-			|newvalue|
-			slider.value = this.defaultControlSpec.unmap(newvalue);
-			postln(format("Setting the control % to the value %.", labelText, newvalue));
-		});
+		this.addSlider(container, Rect((width - sliderWidth) / 2,0,sliderWidth,height-50), parameterNumber, \vertical);
 		StaticText(container,Rect(0,height-50,width,50)).string_(labelText).align_(\center).stringColor_(this.lightgrey);
 	}
 
