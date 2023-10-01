@@ -93,7 +93,7 @@ ScGuiControlSurface {
 		.step_(1/127)
 		.action_({
 			|slider|
-			this.synthesizer.modifyWorkingPatch(parameterNumber,defaultControlSpec.map(slider.value),this.class.name);
+			this.synthesizer.modifyWorkingPatch(parameterNumber,defaultControlSpec.map(slider.value).round.asInteger,this.class.name);
 		});
 		this.synthesizer.addUpdateAction(this.class.name, parameterNumber, {
 			|newvalue|
