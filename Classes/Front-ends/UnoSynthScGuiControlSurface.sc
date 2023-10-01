@@ -23,11 +23,11 @@ UnoSynthScGuiControlSurface : ScGuiControlSurface {
 	}
 
 	addKnob {
-		|parent,left,top,parameterNumber,labelText|
+		|parent,left,top,parameterNumber,labelText,centred=false|
 		var knobSide = 100;
 		var knobExternalMargin = 20;
 		var container = View(parent, Rect(left, top, knobSide + knobExternalMargin, knobSide + knobExternalMargin + 50));
-		super.addKnob(container,Rect(knobExternalMargin,knobExternalMargin,knobSide,knobSide),parameterNumber,False,Color.black,
+		super.addKnob(container,Rect(knobExternalMargin,knobExternalMargin,knobSide,knobSide),parameterNumber,centred,Color.black,
 			darkgrey,
 			lightgrey,
 			Color.red);
@@ -204,12 +204,12 @@ UnoSynthScGuiControlSurface : ScGuiControlSurface {
 		|tab|
 		var container = View(tab.body,Rect(0,0,tab.body.bounds.width,tab.body.bounds.height));
 		this.addSectionLabel(container,Rect(0,0,240,50),"Route filter envelope to Oscillator 1");
-		this.addKnob(container,0,50,UnoSynth.filterEnvToOsc1PwmCcNo,"PWM");
-		this.addKnob(container,140,50,UnoSynth.filterEnvToOsc1WaveCcNo,"WAVE");
+		this.addKnob(container,0,50,UnoSynth.filterEnvToOsc1PwmCcNo,"PWM",true);
+		this.addKnob(container,140,50,UnoSynth.filterEnvToOsc1WaveCcNo,"WAVE",true);
 
 		this.addSectionLabel(container,Rect(600,0,240,50),"Route filter envelope to Oscillator 2");
-		this.addKnob(container,560,50,UnoSynth.filterEnvToOsc2WaveCcNo,"WAVE");
-		this.addKnob(container,700,50,UnoSynth.filterEnvToOsc2PwmCcNo,"PWM");
+		this.addKnob(container,560,50,UnoSynth.filterEnvToOsc2WaveCcNo,"WAVE",true);
+		this.addKnob(container,700,50,UnoSynth.filterEnvToOsc2PwmCcNo,"PWM",true);
 
 		this.addSectionLabel(container,Rect(0,350,840,50),"Route velocity to");
 		this.addKnob(container,140,400,UnoSynth.velocityToVolumeCcNo,"VOLUME");

@@ -34,10 +34,10 @@ UnoSynthPatch : Patch {
 		kvps.add(UnoSynth.filterSustainCcNo-> 127); // Max
 		kvps.add(UnoSynth.filterReleaseCcNo-> 0); // Min
 
-		kvps.add(UnoSynth.filterEnvToOsc1PwmCcNo-> 0); // Min
-		kvps.add(UnoSynth.filterEnvToOsc1WaveCcNo-> 0); // Min
-		kvps.add(UnoSynth.filterEnvToOsc2PwmCcNo-> 0); // Min
-		kvps.add(UnoSynth.filterEnvToOsc2WaveCcNo-> 0); // Min
+		kvps.add(UnoSynth.filterEnvToOsc1PwmCcNo-> 64); // Centred
+		kvps.add(UnoSynth.filterEnvToOsc1WaveCcNo-> 64); // Centred
+		kvps.add(UnoSynth.filterEnvToOsc2PwmCcNo-> 64); // Centred
+		kvps.add(UnoSynth.filterEnvToOsc2WaveCcNo-> 64); // Centred
 
 		// LFO
 		kvps.add(UnoSynth.lfoRateCcNo -> 58); // Mid
