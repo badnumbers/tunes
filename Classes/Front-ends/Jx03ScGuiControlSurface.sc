@@ -105,28 +105,28 @@ Jx03ScGuiControlSurface : ScGuiControlSurface {
 		.string_("Initialise")
 		.stringColor_(Color.black)
 		.align_(\center)
-		.mouseUpAction_({this.synthesizer.initialisePatch()});
+		.mouseUpAction_({super.prSynthesizer.initialisePatch()});
 
 		StaticText(window,Rect(160,710,100,30))
 		.background_(lightgrey)
 		.string_("Randomise")
 		.stringColor_(Color.black)
 		.align_(\center)
-		.mouseUpAction_({this.synthesizer.randomisePatch(0)});
+		.mouseUpAction_({super.prSynthesizer.randomisePatch(0)});
 
 		StaticText(window,Rect(680,710,100,30))
 		.background_(lightgrey)
 		.string_("Write")
 		.stringColor_(Color.black)
 		.align_(\center)
-		.mouseUpAction_({this.synthesizer.writeWorkingPatch()});
+		.mouseUpAction_({super.prSynthesizer.writeWorkingPatch()});
 
 		StaticText(window,Rect(790,710,100,30))
 		.background_(lightgrey)
 		.string_("Scope")
 		.stringColor_(Color.black)
 		.align_(\center)
-		.mouseUpAction_({this.openStethoscope(this.synthesizer.audioInputChannels[0],this.synthesizer.audioInputChannels.size)});
+		.mouseUpAction_({this.openStethoscope(super.prSynthesizer.audioInputChannels[0],super.prSynthesizer.audioInputChannels.size)});
 	}
 
 	initOscillatorsTab {

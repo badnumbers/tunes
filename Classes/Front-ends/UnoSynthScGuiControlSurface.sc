@@ -71,9 +71,9 @@ UnoSynthScGuiControlSurface : ScGuiControlSurface {
 			borderWidth:5)
 		.mouseUpAction_({
 			postln(format("Running the mouse up action for toggle button %. Sending CC value %.",labelText,onOffConvertToMidiCcFunc.value(button.value)));
-			this.synthesizer.modifyWorkingPatch(parameterNumber,onOffConvertToMidiCcFunc.value(button.value),this.class.name);
+			super.prSynthesizer.modifyWorkingPatch(parameterNumber,onOffConvertToMidiCcFunc.value(button.value),this.class.name);
 		});
-		this.synthesizer.addUpdateAction(this.class.name, parameterNumber, {
+		super.prSynthesizer.addUpdateAction(this.class.name, parameterNumber, {
 			|newvalue|
 			button.value = onOffConvertFromMidiCcFunc.value(newvalue);
 			postln(format("Setting toggle button % to %.",labelText,button.value));
@@ -112,6 +112,7 @@ UnoSynthScGuiControlSurface : ScGuiControlSurface {
 		windowheight = 750;
 		windowwidth = 940;
 		super.init(synthesizer);
+
 		tabset = ScGuiTabSet(
 			parent: window,
 			foregroundcolour: Color.black,
@@ -141,21 +142,21 @@ UnoSynthScGuiControlSurface : ScGuiControlSurface {
 		.string_("Init patch")
 		.stringColor_(Color.black)
 		.align_(\center)
-		.mouseUpAction_({this.synthesizer.initialisePatch()});
+		.mouseUpAction_({super.prSynthesizer.initialisePatch()});
 
 		StaticText(window,Rect(680,710,100,30))
 		.background_(lightgrey)
 		.string_("Write patch")
 		.stringColor_(Color.black)
 		.align_(\center)
-		.mouseUpAction_({this.synthesizer.writeWorkingPatch()});
+		.mouseUpAction_({super.prSynthesizer.writeWorkingPatch()});
 
 		StaticText(window,Rect(790,710,100,30))
 		.background_(lightgrey)
 		.string_("Scope")
 		.stringColor_(Color.black)
 		.align_(\center)
-		.mouseUpAction_({this.openStethoscope(this.synthesizer.audioInputChannels[0],this.synthesizer.audioInputChannels.size)});
+		.mouseUpAction_({this.openStethoscope(super.prSynthesizer.audioInputChannels[0],super.prSynthesizer.audioInputChannels.size)});
 	}
 
 	initOscillatorsTab {
@@ -231,7 +232,6 @@ UnoSynthScGuiControlSurface : ScGuiControlSurface {
 
 		this.addSectionLabel(container,Rect(350,0,140,50),"LFO");
 		this.addKnob(container,350,50,UnoSynth.lfoRateCcNo,"RATE");
-
 		lfoWaveChooserConvertFromMidiCcFunc = {
 			|midiCcValue|
 			var dropDownListValue;
@@ -260,11 +260,10 @@ UnoSynthScGuiControlSurface : ScGuiControlSurface {
 			"Sine","Triangle","Ascending sawtooth","Descending sawtooth","Square","Random (smooth)","Random (sample and hold)"
 		])
 		.action_({
-			|selectedItem|
-			this.synthesizer.modifyWorkingPatch(UnoSynth.lfoWaveCcNo,lfoWaveChooserConvertToMidiCcFunc.value(selectedItem.value),this.class.name);
+			|selectedItem|super.prSynthesizer.modifyWorkingPatch(UnoSynth.lfoWaveCcNo,lfoWaveChooserConvertToMidiCcFunc.value(selectedItem.value),this.class.name);
 			postln(format("Value updated to %.", lfoWaveChooserConvertToMidiCcFunc.value(selectedItem.value)));
 		});
-		this.synthesizer.addUpdateAction(this.class.name, UnoSynth.lfoWaveCcNo, {
+		super.prSynthesizer.addUpdateAction(this.class.name, UnoSynth.lfoWaveCcNo, {
 			|newvalue|
 			postln(format("In update action for LFO wave"));
 			lfoWaveChooser.value = lfoWaveChooserConvertFromMidiCcFunc.value(newvalue);

@@ -3,7 +3,7 @@ ScGuiControlSurface {
 	var defaultControlSpec;
 	var updateables;
 	var name;
-	var <>synthesizer;
+	var <prSynthesizer;
 	var window;
 	var windowheight = 200;
 	var windowwidth = 300;
@@ -42,9 +42,9 @@ ScGuiControlSurface {
 		popupMenu = PopUpMenu(parent,rect).items_(midiMappings.collect(_[0]))
 		.action_({
 			|selectedItem|
-			this.synthesizer.modifyWorkingPatch(parameterNumber,convertToMidiFunc.value(selectedItem.value),this.class.name);
+			prSynthesizer.modifyWorkingPatch(parameterNumber,convertToMidiFunc.value(selectedItem.value),this.class.name);
 		});
-		this.synthesizer.addUpdateAction(this.class.name, parameterNumber, {
+		prSynthesizer.addUpdateAction(this.class.name, parameterNumber, {
 			|newvalue|
 			popupMenu.value = convertFromMidiFunc.value(newvalue);
 		});
@@ -65,10 +65,10 @@ ScGuiControlSurface {
 		.step_(1/127)
 		.action_({
 			|knob|
-			this.synthesizer.modifyWorkingPatch(parameterNumber,effectiveControlSpec.map(knob.value).round.asInteger,this.class.name);
+			prSynthesizer.modifyWorkingPatch(parameterNumber,effectiveControlSpec.map(knob.value).round.asInteger,this.class.name);
 		});
 
-		this.synthesizer.addUpdateAction(this.class.name, parameterNumber, {
+		prSynthesizer.addUpdateAction(this.class.name, parameterNumber, {
 			|newvalue|
 			knob.value = effectiveControlSpec.unmap(newvalue);
 		});
@@ -93,9 +93,9 @@ ScGuiControlSurface {
 		.step_(1/127)
 		.action_({
 			|slider|
-			this.synthesizer.modifyWorkingPatch(parameterNumber,defaultControlSpec.map(slider.value).round.asInteger,this.class.name);
+			prSynthesizer.modifyWorkingPatch(parameterNumber,defaultControlSpec.map(slider.value).round.asInteger,this.class.name);
 		});
-		this.synthesizer.addUpdateAction(this.class.name, parameterNumber, {
+		prSynthesizer.addUpdateAction(this.class.name, parameterNumber, {
 			|newvalue|
 			slider.value = defaultControlSpec.unmap(newvalue);
 		});
@@ -137,9 +137,9 @@ ScGuiControlSurface {
 			externalMargin:10,
 			borderWidth:5)
 		.mouseUpAction_({
-			this.synthesizer.modifyWorkingPatch(parameterNumber,convertToMidiFunc.value(button.value),this.class.name);
+			prSynthesizer.modifyWorkingPatch(parameterNumber,convertToMidiFunc.value(button.value),this.class.name);
 		});
-		this.synthesizer.addUpdateAction(this.class.name, parameterNumber, {
+		prSynthesizer.addUpdateAction(this.class.name, parameterNumber, {
 			|newvalue|
 			button.value = convertFromMidiFunc.value(newvalue);
 		});
@@ -153,15 +153,15 @@ ScGuiControlSurface {
 		|synthesizer|
 		Validator.validateMethodParameterType(synthesizer, Synthesizer, "synthesizer", "ScGuiControlSurface", "init");
 
-		this.synthesizer = synthesizer;
+		prSynthesizer = synthesizer;
 		this.setDefaultControlSpec();
 		updateables = Dictionary();
 		window = Window(name, Rect(0, 0, windowwidth, windowheight)).background_(background);
 		window.front;
 		window.addToOnClose({
 			postln("In window.onClose");
-			this.synthesizer.gui = nil;
-			postln(format("this.synthesizer.gui",this.synthesizer.gui));
+			prSynthesizer.gui = nil;
+			postln(format("prSynthesizer.gui",prSynthesizer.gui));
 		}); // Simply doesn't work; event is never fired
 	}
 
