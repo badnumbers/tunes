@@ -92,7 +92,7 @@ UnoSynth : Synthesizer {
 		},{
 			// We'll mix the oscillators
 			osc1Level = patch.set(UnoSynth.osc1LevelCcNo, this.generateRandomValue(121,127,0,120,127));
-			patch.set(UnoSynth.osc2LevelCcNo, osc1Level.lincurve(120,127,120,0,4).round);
+			patch.set(UnoSynth.osc2LevelCcNo, osc1Level.lincurve(120,127,120,0,4).round.asInteger);
 		});
 
 		patch.set(UnoSynth.osc1WaveCcNo, this.generateRandomValue(0,127,0,0,127));
