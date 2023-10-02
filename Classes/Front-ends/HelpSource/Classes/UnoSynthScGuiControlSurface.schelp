@@ -1,11 +1,10 @@
 TITLE:: UnoSynthScGuiControlSurface
-summary:: Blah blah blah
+summary:: Control surface for the UnoSynth.
 categories:: Undocumented classes
 related:: Classes/SomeRelatedClass, Reference/SomeRelatedStuff, etc.
 
 DESCRIPTION::
-(put long description here)
-
+Control surface for the LINK::Classes/UnoSynth::.
 
 CLASSMETHODS::
 

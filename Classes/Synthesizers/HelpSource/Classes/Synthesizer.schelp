@@ -108,6 +108,9 @@ Stores the Working Patch in the Patch Dictionary to enable you to create other P
 ARGUMENT:: patchname
 The name to give the patch.
 
+METHOD:: showGui
+Opens the LINK::Classes/ScGuiControlSurface:: used to control this synthesizer.
+
 METHOD:: writeWorkingPatch
 Writes code to the console window which can be run later to recreate the Working Patch. This is how Patches can be saved permanently.
 

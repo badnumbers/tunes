@@ -1,7 +1,7 @@
 TITLE:: ScGuiControlSurface
 summary:: Base class for designing control surfaces for hardware synthesizers.
 categories:: External Control
-related:: Classes/Synthesizers/Synthesizer.
+related:: Classes/Synthesizer.
 
 DESCRIPTION::
 Base class for designing control surfaces for hardware synthesizers. Should not be used directly.
@@ -10,12 +10,13 @@ Base class for designing control surfaces for hardware synthesizers. Should not 
 CLASSMETHODS::
 
 METHOD:: new
-(describe method here)
+Creates an instance of this LINK::Classes/ScGuiControlSurface::.
 
 ARGUMENT:: synthesizer
-(describe argument here)
+An instance of a subclass of LINK::Classes/Synthesizer:: which enables control of the hardware synthesizer this control surface represents.
 
-returns:: (describe returnvalue here)
+NOTE::
+You shouldn't call this constructor directly in your code. Instead, the control surface should be created by calling CODE::showGui:: on an instance of LINK::Classes/Synthesizer::.::
 
 METHOD:: getPatchType
 (describe method here)
@@ -35,7 +36,7 @@ ARGUMENT:: parent
 The code::View:: to which the slider should be added.
 
 ARGUMENT:: rect
-An instance of code::Rect::defining the bounds of the slider.
+An instance of code::Rect:: defining the bounds of the slider.
 
 ARGUMENT:: parameterNumber
 The parameter number of the parameter the slider controls. Refer to the code::Patch:: for the hardware synthesizer you are controlling.
