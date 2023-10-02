@@ -171,7 +171,7 @@ UnoSynthScGuiControlSurface : ScGuiControlSurface {
 		var container = View(tab.body,Rect(0,0,tab.body.bounds.width,tab.body.bounds.height));
 		this.addSectionLabel(container,Rect(0,0,240,50),"Oscillator 1");
 		this.addKnob(container,0,50,UnoSynth.osc1WaveCcNo,"WAVE");
-		this.addKnob(container,0,200,UnoSynth.osc1TuneCcNo,"TUNE");
+		this.addKnob(container,0,200,UnoSynth.osc1TuneCcNo,"TUNE", true);
 		this.addVerticalSlider(container,140,70,100,UnoSynth.osc1LevelCcNo,"LEVEL");
 
 		this.addSectionLabel(container,Rect(280,0,280,50),"Amplitude envelope");
@@ -183,7 +183,7 @@ UnoSynthScGuiControlSurface : ScGuiControlSurface {
 		this.addSectionLabel(container,Rect(600,0,240,50),"Oscillator 2");
 		this.addVerticalSlider(container,600,70,100,UnoSynth.osc2LevelCcNo,"LEVEL");
 		this.addKnob(container,700,50,UnoSynth.osc2WaveCcNo,"WAVE");
-		this.addKnob(container,700,200,UnoSynth.osc2TuneCcNo,"TUNE");
+		this.addKnob(container,700,200,UnoSynth.osc2TuneCcNo,"TUNE", true);
 
 		this.addSectionLabel(container,Rect(0,400,840,50),"Noise");
 		this.addHorizontalSlider(container,0,450,840,UnoSynth.noiseLevelCcNo,"LEVEL",\left);
@@ -203,7 +203,7 @@ UnoSynthScGuiControlSurface : ScGuiControlSurface {
 		this.addVerticalSlider(container,490,70,70,UnoSynth.filterReleaseCcNo,"RELEASE");
 
 		this.addKnob(container,700,50,UnoSynth.filterModeCcNo,"LP - HP - BP");
-		this.addKnob(container,700,200,UnoSynth.envAmtCcNo,"ENV AMT");
+		this.addKnob(container,700,200,UnoSynth.envAmtCcNo,"ENV AMT", true);
 		this.addKnob(container,700,350,UnoSynth.filterCutoffKeytrackCcNo,"KEYTRACK");
 	}
 
