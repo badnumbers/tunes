@@ -1,4 +1,5 @@
 Fm2ScGuiControlSurface : ScGuiControlSurface {
+	var algorithmSpecs;
 	var controlSpec0To1;
 	var controlSpec0To3;
 	var controlSpec0To5;
@@ -57,6 +58,8 @@ Fm2ScGuiControlSurface : ScGuiControlSurface {
 		windowwidth = 1200;
 		super.init(synthesizer);
 
+		this.initAlgorithmSpecs();
+
 		operatorTabset = ScGuiTabSet(
 			parent: window,
 			foregroundcolour: Color.black,
@@ -114,60 +117,390 @@ Fm2ScGuiControlSurface : ScGuiControlSurface {
 		.string_("Initialise")
 		.stringColor_(Color.black)
 		.align_(\center)
-		.mouseUpAction_({this.synthesizer.initialisePatch()});
+		.mouseUpAction_({super.prSynthesizer.initialisePatch()});
 
 		StaticText(window,Rect(160,960,100,30))
 		.background_(lightgrey)
 		.string_("Randomise")
 		.stringColor_(Color.black)
 		.align_(\center)
-		.mouseUpAction_({this.synthesizer.randomisePatch(0)});
+		.mouseUpAction_({super.prSynthesizer.randomisePatch(0)});
 
 		StaticText(window,Rect(270,960,100,30))
 		.background_(lightgrey)
 		.string_("Send")
 		.stringColor_(Color.black)
 		.align_(\center)
-		.mouseUpAction_({this.synthesizer.setWorkingPatch(this.synthesizer.prWorkingPatch)});
+		.mouseUpAction_({super.prSynthesizer.setWorkingPatch(super.prSynthesizer.prWorkingPatch)});
 
 		StaticText(window,Rect(380,960,40,30))
 		.background_(lightgrey)
 		.string_("1")
 		.stringColor_(Color.black)
 		.align_(\center)
-		.mouseUpAction_({this.synthesizer.modifyWorkingPatch(Fm2Sysex.algorithm, 0, this.class.name)});
+		.mouseUpAction_({super.prSynthesizer.modifyWorkingPatch(Fm2Sysex.algorithm, 0, this.class.name)});
 		StaticText(window,Rect(430,960,40,30))
 		.background_(lightgrey)
 		.string_("10")
 		.stringColor_(Color.black)
 		.align_(\center)
-		.mouseUpAction_({this.synthesizer.modifyWorkingPatch(Fm2Sysex.algorithm, 9, this.class.name)});
+		.mouseUpAction_({super.prSynthesizer.modifyWorkingPatch(Fm2Sysex.algorithm, 9, this.class.name)});
 		StaticText(window,Rect(480,960,40,30))
 		.background_(lightgrey)
 		.string_("20")
 		.stringColor_(Color.black)
 		.align_(\center)
-		.mouseUpAction_({this.synthesizer.modifyWorkingPatch(Fm2Sysex.algorithm, 19, this.class.name)});
+		.mouseUpAction_({super.prSynthesizer.modifyWorkingPatch(Fm2Sysex.algorithm, 19, this.class.name)});
 		StaticText(window,Rect(530,960,40,30))
 		.background_(lightgrey)
 		.string_("32")
 		.stringColor_(Color.black)
 		.align_(\center)
-		.mouseUpAction_({this.synthesizer.modifyWorkingPatch(Fm2Sysex.algorithm, 31, this.class.name)});
+		.mouseUpAction_({super.prSynthesizer.modifyWorkingPatch(Fm2Sysex.algorithm, 31, this.class.name)});
 
 		StaticText(window,Rect(680,960,100,30))
 		.background_(lightgrey)
 		.string_("Write")
 		.stringColor_(Color.black)
 		.align_(\center)
-		.mouseUpAction_({this.synthesizer.writeWorkingPatch()});
+		.mouseUpAction_({super.prSynthesizer.writeWorkingPatch()});
 
 		StaticText(window,Rect(790,960,100,30))
 		.background_(lightgrey)
 		.string_("Scope")
 		.stringColor_(Color.black)
 		.align_(\center)
-		.mouseUpAction_({this.openStethoscope(this.synthesizer.audioInputChannels[0],this.synthesizer.audioInputChannels.size)});
+		.mouseUpAction_({this.openStethoscope(super.prSynthesizer.audioInputChannels[0],super.prSynthesizer.audioInputChannels.size)});
+	}
+
+	initAlgorithmSpecs {
+		algorithmSpecs = [
+			(
+				connections: [2@1, 6@5, 5@4, 4@3],
+				feedback: [6],
+				number: 1,
+				operatorCoordinates: [0@3, 0@2, 1@3, 1@2, 1@1, 1@0],
+				width: 2
+			),
+			(
+				connections: [2@1, 6@5, 5@4, 4@3],
+				feedback: [2],
+				number: 2,
+				operatorCoordinates: [0@3, 0@2, 1@3, 1@2, 1@1, 1@0],
+				width: 2
+			),
+			(
+				connections: [3@1, 2@1, 6@5, 5@4],
+				feedback: [6],
+				number: 3,
+				operatorCoordinates: [0@3, 0@2, 0@1, 1@3, 1@2, 1@1],
+				width: 2
+			),
+			(
+				connections: [3@1, 2@1, 6@5, 5@4],
+				feedback: [6,4],
+				number: 4,
+				operatorCoordinates: [0@3, 0@2, 0@1, 1@3, 1@2, 1@1],
+				width: 2
+			),
+			(
+				connections: [2@1, 4@3, 6@5],
+				feedback: [6],
+				number: 5,
+				operatorCoordinates: [0@3, 0@2, 1@3, 1@2, 2@3, 2@2],
+				width: 3
+			),
+			(
+				connections: [2@1, 4@3, 6@5],
+				feedback: [6,5],
+				number: 6,
+				operatorCoordinates: [0@3, 0@2, 1@3, 1@2, 2@3, 2@2],
+				width: 3
+			),
+			(
+				connections: [2@1, 4@3, 5@3, 6@5],
+				feedback: [6],
+				number: 7,
+				operatorCoordinates: [0@3, 0@2, 1@3, 1@2, 2@2, 2@1],
+				width: 3
+			),
+			(
+				connections: [2@1, 4@3, 5@3, 6@5],
+				feedback: [4],
+				number: 8,
+				operatorCoordinates: [0@3, 0@2, 1@3, 1@2, 2@2, 2@1],
+				width: 3
+			),
+			(
+				connections: [2@1, 4@3, 5@3, 6@5],
+				feedback: [2],
+				number: 9,
+				operatorCoordinates: [0@3, 0@2, 1@3, 1@2, 2@2, 2@1],
+				width: 3
+			),
+			(
+				connections: [5@4, 6@4, 3@2, 2@1],
+				feedback: [3],
+				number: 10,
+				operatorCoordinates: [2@3, 2@2, 2@1, 1@3, 0@2, 1@2],
+				width: 3
+			),
+			(
+				connections: [5@4, 6@4, 3@2, 2@1],
+				feedback: [6],
+				number: 11,
+				operatorCoordinates: [2@3, 2@2, 2@1, 1@3, 0@2, 1@2],
+				width: 3
+
+			),
+			(
+				connections: [4@3, 5@3, 6@3, 2@1],
+				feedback: [2],
+				number: 12,
+				operatorCoordinates: [3@3, 3@2, 1@3, 0@2, 1@2, 2@2],
+				width: 4
+			),
+			(
+				connections: [4@3, 5@3, 6@3, 2@1],
+				feedback: [6],
+				number: 13,
+				operatorCoordinates: [3@3, 3@2, 1@3, 0@2, 1@2, 2@2],
+				width: 4
+			),
+			(
+				connections: [2@1, 5@4, 4@3, 6@4],
+				feedback: [6],
+				number: 14,
+				operatorCoordinates: [0@3, 0@2, 1@3, 1@2, 1@1, 2@1],
+				width: 3
+			),
+			(
+				connections: [2@1, 5@4, 4@3, 6@4],
+				feedback: [2],
+				number: 15,
+				operatorCoordinates: [0@3, 0@2, 1@3, 1@2, 1@1, 2@1],
+				width: 3
+			),
+			(
+				connections: [2@1, 4@3, 3@1, 6@5, 5@1],
+				feedback: [6],
+				number: 16,
+				operatorCoordinates: [1@3, 0@2, 1@2, 1@1, 2@2, 2@1],
+				width: 3
+			),
+			(
+				connections: [2@1, 4@3, 3@1, 6@5, 5@1],
+				feedback: [2],
+				number: 17,
+				operatorCoordinates: [1@3, 0@2, 1@2, 1@1, 2@2, 2@1],
+				width: 3
+			),
+			(
+				connections: [2@1, 3@1, 4@1, 5@4, 6@5],
+				feedback: [3],
+				number: 18,
+				operatorCoordinates: [1@3, 0@2, 1@2, 2@2, 2@1, 2@0],
+				width: 3
+			),
+			(
+				connections: [3@2, 2@1, 6@4, 6@5],
+				feedback: [6],
+				number: 19,
+				operatorCoordinates: [0@3, 0@2, 0@1, 1@3, 2@3, 1@2],
+				width: 3
+			),
+			(
+				connections: [3@1, 3@2, 5@4, 6@4],
+				feedback: [3],
+				number: 20,
+				operatorCoordinates: [0@3, 1@3, 0@2, 3@3, 2@2, 3@2],
+				width: 4
+			),
+			(
+				connections: [3@1, 3@2, 6@4, 6@5],
+				feedback: [3],
+				number: 21,
+				operatorCoordinates: [0@3, 1@3, 0@2, 2@3, 3@3, 2@2],
+				width: 4
+			),
+			(
+				connections: [2@1, 6@3, 6@4, 6@5],
+				feedback: [6],
+				number: 22,
+				operatorCoordinates: [0@3, 0@2, 1@3, 2@3, 3@3, 2@2],
+				width: 4
+			),
+			(
+				connections: [3@2, 6@4, 6@5],
+				feedback: [6],
+				number: 23,
+				operatorCoordinates: [0@3, 1@3, 1@2, 2@3, 3@3, 2@2],
+				width: 4
+			),
+			(
+				connections: [6@3, 6@4, 6@5],
+				feedback: [6],
+				number: 24,
+				operatorCoordinates: [0@3, 1@3, 2@3, 3@3, 4@3, 3@2],
+				width: 5
+			),
+			(
+				connections: [6@4, 6@5],
+				feedback: [6],
+				number: 25,
+				operatorCoordinates: [0@3, 1@3, 2@3, 3@3, 4@3, 3@2],
+				width: 5
+			),
+			(
+				connections: [3@2, 5@4, 6@4],
+				feedback: [6],
+				number: 26,
+				operatorCoordinates: [0@3, 1@3, 1@2, 2@3, 2@2, 3@2],
+				width: 4
+			),
+			(
+				connections: [3@2, 5@4, 6@4],
+				feedback: [3],
+				number: 27,
+				operatorCoordinates: [0@3, 1@3, 1@2, 2@3, 2@2, 3@2],
+				width: 4
+			),
+			(
+				connections: [2@1, 5@4, 4@3],
+				feedback: [5],
+				number: 28,
+				operatorCoordinates: [0@3, 0@2, 1@3, 1@2, 1@1, 2@3],
+				width: 3
+			),
+			(
+				connections: [4@3, 6@5],
+				feedback: [6],
+				number: 29,
+				operatorCoordinates: [0@3, 1@3, 2@3, 2@2, 3@3, 3@2],
+				width: 4
+			),
+			(
+				connections: [5@4, 4@3],
+				feedback: [5],
+				number: 30,
+				operatorCoordinates: [0@3, 1@3, 2@3, 2@2, 2@1, 3@3],
+				width: 4
+			),
+			(
+				connections: [6@5],
+				feedback: [6],
+				number: 31,
+				operatorCoordinates: [0@3, 1@3, 2@3, 3@3, 4@3, 4@2],
+				width: 5
+			),
+			(
+				connections: [],
+				feedback: [6],
+				number: 32,
+				operatorCoordinates: [0@3, 1@3, 2@3, 3@3, 4@3, 5@3, 6@3],
+				width: 6
+			)
+		];
+	}
+
+	initAlgorithmTab {
+		|tab|
+		var scalingFactor = 2;
+		var leftPosition = 0;
+		var container = View(tab.body,Rect(0,0,tab.body.bounds.width,tab.body.bounds.height));
+		var carousel = ScGuiCarousel(container, Rect(25, 25, 1050, 100), Color.black).mouseUpAction_({
+			super.prSynthesizer.modifyWorkingPatch(Fm2Sysex.algorithm,carousel.value,this.class.name);
+		});
+		algorithmSpecs.do({
+			|algorithm,index|
+			var connectionsDrawFunc = Array.newClear(algorithm.connections.size);
+			var feedbackDrawFunc;
+			var counter = 0;
+			var operatorColour = Color.white;
+			var terminalOperatorColour = Color.white;
+			var connectionColour = Color.white;
+			var algorithmView = UserView(carousel.view, Rect(leftPosition,0,algorithm.width * 10 * scalingFactor,scalingFactor * 4 * 10)).background_(Color.black);
+			StaticText(algorithmView, Rect(scalingFactor * 2, scalingFactor * 2, scalingFactor * 10, scalingFactor * 5)).string_(algorithm.number).font_(Font(size: scalingFactor * 6, bold: true)).stringColor_(Color.white);
+			algorithm.operatorCoordinates.do({
+				|operator|
+				var opColour, operatorView;
+				opColour = operatorColour;
+				if (operator.y == 3, { opColour = terminalOperatorColour; });
+				counter = counter + 1;
+				operatorView = View(algorithmView, Rect((operator.x * (scalingFactor * 10)) + (scalingFactor * 2), (operator.y * (scalingFactor * 10)) + (scalingFactor * 2), (scalingFactor * 6), (scalingFactor * 6))).background_(opColour);
+				StaticText(operatorView, Rect(scalingFactor * 1.5, 0, scalingFactor * 5, scalingFactor * 5)).string_(counter).font_(Font().size_(scalingFactor * 5));
+			});
+			algorithm.connections.do({
+				|connection,index|
+				connectionsDrawFunc[index] = {
+					Pen.width = scalingFactor;
+					Pen.strokeColor_(connectionColour);
+					Pen.moveTo(algorithm.operatorCoordinates[connection.x - 1] * 10 * scalingFactor + (scalingFactor * 5));
+					Pen.lineTo(algorithm.operatorCoordinates[connection.y - 1] * 10 * scalingFactor + (scalingFactor * 5));
+					Pen.stroke;
+				};
+
+			});
+			feedbackDrawFunc = {
+				var feedbackHeight = algorithm.operatorCoordinates[algorithm.feedback.wrapAt(-1) - 1].y - algorithm.operatorCoordinates[algorithm.feedback.at(0) - 1].y + 1;
+				var currentPoint = algorithm.operatorCoordinates[algorithm.feedback.at(0) - 1] * 10 * scalingFactor + (scalingFactor * 5);
+				postln(format("Number %: feedback height is %", algorithm.number, feedbackHeight));
+				Pen.width = scalingFactor;
+				Pen.strokeColor_(connectionColour);
+				Pen.moveTo(currentPoint);
+				currentPoint = Point(currentPoint.x, currentPoint.y - (scalingFactor * 5));
+				Pen.lineTo(currentPoint);
+				currentPoint = Point(currentPoint.x + (scalingFactor * 5), currentPoint.y);
+				Pen.lineTo(currentPoint);
+				currentPoint = Point(currentPoint.x, currentPoint.y + (scalingFactor * 10 * feedbackHeight));
+				Pen.lineTo(currentPoint);
+				currentPoint = Point(currentPoint.x - (scalingFactor * 5), currentPoint.y);
+				Pen.lineTo(currentPoint);
+				currentPoint = Point(currentPoint.x, currentPoint.y - (scalingFactor * 5));
+				Pen.lineTo(currentPoint);
+				Pen.stroke;
+			};
+			algorithmView.drawFunc = {
+				feedbackDrawFunc.value;
+				connectionsDrawFunc.do({|func|func.value();});
+			};
+			algorithmView.refresh;
+			carousel.addTile(
+				ScGuiCarouselTile(
+					algorithmView
+					,algorithmView
+					,index,
+					{
+						postln(format("Algorithm % selected", algorithm.number));
+					},
+					{
+						postln(format("Algorithm % deselected", algorithm.number));
+					}
+				)
+			);
+			leftPosition = leftPosition + (algorithm.width * 10 * scalingFactor) + (5 * scalingFactor);
+		});
+		/*32.do({
+			|index|
+			var view = StaticText(carousel.view, Rect((index * 100) + 10, 10, 80, 80)).background_(Color.cyan).string_(index + 1);
+			carousel.addTile(
+				ScGuiCarouselTile(
+					view
+					,view
+					,index,
+					{
+						view.background_(Color.red);
+					},
+					{
+						view.background_(Color.cyan);
+					}
+				)
+			);
+		});*/
+		super.prSynthesizer.addUpdateAction(this.class.name, Fm2Sysex.algorithm, {
+			|newvalue|
+			carousel.value = newvalue;
+		});
 	}
 
 	initOperatorTab {
@@ -222,35 +555,6 @@ Fm2ScGuiControlSurface : ScGuiControlSurface {
 		this.addKnobWithLabel(container, 150, 25, Fm2Sysex.operatorKeySync, "Op Key Sync", false, controlSpec0To1);
 		this.addKnobWithLabel(container, 250, 25, Fm2Sysex.pitchModulationSensitivity, "Pitch Mod Sens", false, controlSpec0To7);
 		this.addKnobWithLabel(container, 350, 25, Fm2Sysex.transpose, "Transpose", false, controlSpec0To48);
-	}
-
-	initAlgorithmTab {
-		|tab|
-		var container = View(tab.body,Rect(0,0,tab.body.bounds.width,tab.body.bounds.height));
-		var carousel = ScGuiCarousel(container, Rect(25, 25, 1050, 100), Color.black).mouseUpAction_({
-			this.synthesizer.modifyWorkingPatch(Fm2Sysex.algorithm,carousel.value,this.class.name);
-		});
-		32.do({
-			|index|
-			var view = StaticText(carousel.view, Rect((index * 100) + 10, 10, 80, 80)).background_(Color.cyan).string_(index + 1);
-			carousel.addTile(
-				ScGuiCarouselTile(
-					view
-					,view
-					,index,
-					{
-						view.background_(Color.red);
-					},
-					{
-						view.background_(Color.cyan);
-					}
-				)
-			);
-		});
-		this.synthesizer.addUpdateAction(this.class.name, Fm2Sysex.algorithm, {
-			|newvalue|
-			carousel.value = newvalue;
-		});
 	}
 
 	initLfoTab {
