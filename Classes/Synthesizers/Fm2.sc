@@ -217,6 +217,11 @@ Fm2 : Synthesizer {
 		super.updateParameterInHardwareSynth(carrierDecayCcNo - 1000, prWorkingPatch.kvps[carrierDecayCcNo]);
 		super.updateParameterInHardwareSynth(chorusDepthCcNo - 1000, prWorkingPatch.kvps[chorusDepthCcNo]);
 		super.updateParameterInHardwareSynth(reverbDepthCcNo - 1000, prWorkingPatch.kvps[reverbDepthCcNo]);
+
+		prWorkingPatch.kvps.keys.do({
+			|parameterNumber|
+			invokeUpdateActionsFunc.value({|actor| true}, parameterNumber, prWorkingPatch.kvps[parameterNumber]);
+		});
 	}
 
 	updateParameterInHardwareSynth {
