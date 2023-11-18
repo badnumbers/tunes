@@ -14,9 +14,9 @@ Fm2ScGuiControlSurface : ScGuiControlSurface {
 
 	addDropDownListWithLabel {
 		|parent,left,top,labelText,parameterNumber,midiMappings|
-		var container = View(parent, Rect(left, top, 200, 50)).background_(Color.black);
-		this.addControlLabel(container, Rect(0,0,200,25), labelText, \center, Color.white);
-		this.addDropDownList(container, Rect(0,25,200,25),parameterNumber,midiMappings);
+		var container = View(parent, Rect(left, top, 100, 50)).background_(Color.black);
+		this.addControlLabel(container, Rect(0,0,100,25), labelText, \center, Color.white);
+		this.addDropDownList(container, Rect(0,25,100,25),parameterNumber,midiMappings);
 	}
 
 	addKnobWithLabel {
@@ -55,7 +55,7 @@ Fm2ScGuiControlSurface : ScGuiControlSurface {
 		name = "FM2";
 		background = Color.black;
 		windowheight = 1000;
-		windowwidth = 1200;
+		windowwidth = 1900;
 		super.init(synthesizer);
 
 		this.initAlgorithmSpecs();
@@ -64,11 +64,11 @@ Fm2ScGuiControlSurface : ScGuiControlSurface {
 			parent: window,
 			foregroundcolour: Color.black,
 			backgroundcolour: darkgrey,
-			left: 50,
+			left: 1200,
 			top: 50,
-			width: 1100,
+			width: 650,
 			buttonheight: 50,
-			bodyheight: 600,
+			bodyheight: 825,
 			borderwidth: 5,
 			bordercolour: darkgrey);
 
@@ -508,44 +508,44 @@ Fm2ScGuiControlSurface : ScGuiControlSurface {
 		var container = View(tab.body,Rect(0,0,tab.body.bounds.width,tab.body.bounds.height));
 		var sysexOffset = (operatorNumber - 1) * -21;
 
-		this.addSectionLabel(container,Rect(0,25,300,50), format("Envelope", operatorNumber));
+		this.addSectionLabel(container,Rect(25,25,300,50), format("Frequencies", operatorNumber));
 
-		this.addKnobWithLabel(container, 50, 100, Fm2Sysex.operator1EnvelopeGeneratorRate1 + sysexOffset, "Rate 1", false);
-		this.addKnobWithLabel(container, 150, 100, Fm2Sysex.operator1EnvelopeGeneratorLevel1 + sysexOffset, "Level 1", false);
+		this.addKnobWithLabel(container, 25, 75, Fm2Sysex.operator1OutputLevel + sysexOffset, "Output level", false);
+		this.addDropDownListWithLabel(container,125,75,"Coarse freq",Fm2Sysex.operator1CoarseFrequency + sysexOffset,
+			(0..31).collect({ |number| [ (number + 1).asString, [ number ] ] }));
+		this.addKnobWithLabel(container, 225, 75, Fm2Sysex.operator1FineFrequency + sysexOffset, "Fine freq", false);
+		this.addKnobWithLabel(container, 325, 75, Fm2Sysex.operator1Detune + sysexOffset, "Detune", false, controlSpec0To14);
 
-		this.addKnobWithLabel(container, 50, 250, Fm2Sysex.operator1EnvelopeGeneratorRate2 + sysexOffset, "Rate 2", false);
-		this.addKnobWithLabel(container, 150, 250, Fm2Sysex.operator1EnvelopeGeneratorLevel2 + sysexOffset, "Level 2", false);
+		this.addKnobWithLabel(container, 25, 175, Fm2Sysex.operator1AmplitudeModulationSensitivity + sysexOffset, "Amp Mod Sens", false, controlSpec0To3);
+		this.addKnobWithLabel(container, 125, 175, Fm2Sysex.operator1KeyVelocitySensitivity + sysexOffset, "Key Vel Sens", false, controlSpec0To7);
+		this.addDropDownListWithLabel(container,225,175,"Operator mode",Fm2Sysex.operator1Mode + sysexOffset,
+			[ [ "Ratio", [0] ], [ "Fixed", [1] ] ]);
 
-		this.addKnobWithLabel(container, 50, 400, Fm2Sysex.operator1EnvelopeGeneratorRate3 + sysexOffset, "Rate 3", false);
-		this.addKnobWithLabel(container, 150, 400, Fm2Sysex.operator1EnvelopeGeneratorLevel3 + sysexOffset, "Level 3", false);
+		this.addSectionLabel(container,Rect(25,325,300,50), format("Envelope", operatorNumber));
 
-		this.addKnobWithLabel(container, 50, 550, Fm2Sysex.operator1EnvelopeGeneratorRate4 + sysexOffset, "Rate 4", false);
-		this.addKnobWithLabel(container, 150, 550, Fm2Sysex.operator1EnvelopeGeneratorLevel4 + sysexOffset, "Level 4", false);
+		this.addKnobWithLabel(container, 25, 375, Fm2Sysex.operator1EnvelopeGeneratorRate1 + sysexOffset, "Rate 1", false);
+		this.addKnobWithLabel(container, 125, 375, Fm2Sysex.operator1EnvelopeGeneratorRate2 + sysexOffset, "Rate 2", false);
+		this.addKnobWithLabel(container, 225, 375, Fm2Sysex.operator1EnvelopeGeneratorRate3 + sysexOffset, "Rate 3", false);
+		this.addKnobWithLabel(container, 325, 375, Fm2Sysex.operator1EnvelopeGeneratorRate4 + sysexOffset, "Rate 4", false);
 
-		this.addSectionLabel(container,Rect(400,25,300,50), format("Scaling", operatorNumber));
+		this.addKnobWithLabel(container, 25, 475, Fm2Sysex.operator1EnvelopeGeneratorLevel1 + sysexOffset, "Level 1", false);
+		this.addKnobWithLabel(container, 125, 475, Fm2Sysex.operator1EnvelopeGeneratorLevel2 + sysexOffset, "Level 2", false);
+		this.addKnobWithLabel(container, 225, 475, Fm2Sysex.operator1EnvelopeGeneratorLevel3 + sysexOffset, "Level 3", false);
+		this.addKnobWithLabel(container, 325, 475, Fm2Sysex.operator1EnvelopeGeneratorLevel4 + sysexOffset, "Level 4", false);
 
-		this.addKnobWithLabel(container, 400, 100, Fm2Sysex.operator1KeyboardLevelScaleBreakpoint + sysexOffset, "Breakpoint", false);
+		this.addSectionLabel(container,Rect(25,625,300,50), format("Scaling", operatorNumber));
 
-		this.addKnobWithLabel(container, 400, 250, Fm2Sysex.operator1KeyboardLevelScaleLeftDepth + sysexOffset, "Left depth", false);
-		this.addKnobWithLabel(container, 500, 250, Fm2Sysex.operator1KeyboardLevelScaleRightDepth + sysexOffset, "Right depth", false);
+		this.addKnobWithLabel(container, 25, 675, Fm2Sysex.operator1KeyboardLevelScaleBreakpoint + sysexOffset, "Breakpoint", false);
 
-		this.addKnobWithLabel(container, 400, 400, Fm2Sysex.operator1KeyboardLevelScaleLeftCurve + sysexOffset, "Left curve", false, controlSpec0To3);
-		this.addKnobWithLabel(container, 500, 400, Fm2Sysex.operator1KeyboardLevelScaleRightCurve + sysexOffset, "Right curve", false, controlSpec0To3);
+		this.addKnobWithLabel(container, 125, 675, Fm2Sysex.operator1KeyboardLevelScaleLeftDepth + sysexOffset, "Left depth", false);
+		this.addDropDownListWithLabel(container,225,675,"Left curve",Fm2Sysex.operator1KeyboardLevelScaleLeftCurve + sysexOffset,
+			[ [ "- Linear", [0] ], [ "- Exponential", [1] ], [ "+ Linear", [2] ], [ "+ Exponential", [3] ] ]);
+		this.addKnobWithLabel(container, 325, 675, Fm2Sysex.operator1KeyboardLevelScaleRightDepth + sysexOffset, "Right depth", false);
+		this.addDropDownListWithLabel(container,425,675,"Right curve",Fm2Sysex.operator1KeyboardLevelScaleRightCurve + sysexOffset,
+			[ [ "- Linear", [0] ], [ "- Exponential", [1] ], [ "+ Linear", [2] ], [ "+ Exponential", [3] ] ]);
 
-		this.addKnobWithLabel(container, 400, 550, Fm2Sysex.operator1KeyboardRateScaling + sysexOffset, "Rate scaling", false, controlSpec0To7);
-
-		this.addSectionLabel(container,Rect(750,25,300,50), format("Other", operatorNumber));
-
-		this.addKnobWithLabel(container, 750, 100, Fm2Sysex.operator1AmplitudeModulationSensitivity + sysexOffset, "Amp Mod Sens", false, controlSpec0To3);
-		this.addKnobWithLabel(container, 850, 100, Fm2Sysex.operator1KeyVelocitySensitivity + sysexOffset, "Key Vel Sens", false, controlSpec0To7);
-
-		this.addKnobWithLabel(container, 750, 250, Fm2Sysex.operator1OutputLevel + sysexOffset, "Output level", false);
-		this.addKnobWithLabel(container, 850, 250, Fm2Sysex.operator1Mode + sysexOffset, "Operator mode", false, controlSpec0To1);
-
-		this.addKnobWithLabel(container, 750, 400, Fm2Sysex.operator1CoarseFrequency + sysexOffset, "Coarse freq", false, controlSpec0To31);
-		this.addKnobWithLabel(container, 850, 400, Fm2Sysex.operator1FineFrequency + sysexOffset, "Fine freq", false);
-
-		this.addKnobWithLabel(container, 850, 550, Fm2Sysex.operator1Detune + sysexOffset, "Detune", false, controlSpec0To14);
+		this.addKnobWithLabel(container, 25
+			, 775, Fm2Sysex.operator1KeyboardRateScaling + sysexOffset, "Rate scaling", false, controlSpec0To7);
 	}
 
 	initGlobalTab {
