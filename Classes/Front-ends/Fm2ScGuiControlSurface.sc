@@ -11,6 +11,10 @@ Fm2ScGuiControlSurface : ScGuiControlSurface {
 	var <darkgrey;
 	var <lightgrey;
 	var <orange;
+	var <dx7Pink;
+	var <dx7Teal;
+	var <dx7Purple;
+	var <dx7Brown;
 
 	addDropDownListWithLabel {
 		|parent,left,top,labelText,parameterNumber,midiMappings|
@@ -51,6 +55,10 @@ Fm2ScGuiControlSurface : ScGuiControlSurface {
 		darkgrey = Color(0.8,0.8,0.8);
 		lightgrey = Color(0.5,0.5,0.5);
 		orange = Color(0.8,0.2,0.14);
+		dx7Pink = Color.fromHexString("#fb6582");
+		dx7Teal = Color.fromHexString("#02c9bd");
+		dx7Purple = Color.fromHexString("#9599e3");
+		dx7Brown = Color.fromHexString("#d08c74");
 
 		name = "FM2";
 		background = Color.black;
@@ -471,32 +479,18 @@ Fm2ScGuiControlSurface : ScGuiControlSurface {
 					,algorithmView
 					,index,
 					{
-						postln(format("Algorithm % selected", algorithm.number));
+						algorithmView.background_(dx7Teal);
 					},
 					{
-						postln(format("Algorithm % deselected", algorithm.number));
+						algorithmView.background_(Color.black);
+					},
+					{
+						algorithmView.background_(Color.gray);
 					}
 				)
 			);
 			leftPosition = leftPosition + (algorithm.width * 10 * scalingFactor) + (5 * scalingFactor);
 		});
-		/*32.do({
-			|index|
-			var view = StaticText(carousel.view, Rect((index * 100) + 10, 10, 80, 80)).background_(Color.cyan).string_(index + 1);
-			carousel.addTile(
-				ScGuiCarouselTile(
-					view
-					,view
-					,index,
-					{
-						view.background_(Color.red);
-					},
-					{
-						view.background_(Color.cyan);
-					}
-				)
-			);
-		});*/
 		super.prSynthesizer.addUpdateAction(this.class.name, Fm2Sysex.algorithm, {
 			|newvalue|
 			carousel.value = newvalue;
