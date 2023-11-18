@@ -44,6 +44,7 @@ Sh01aPatch : Patch {
 		// Sundries
 		kvps.add(Sh01a.portamentoCcNo -> 0); // Min
 		kvps.add(Sh01a.polyphonyModeCcNo -> 0); // Monophonic
+		kvps.add(Sh01a.vcoModSensitivityCcNo -> 10); // Oscillator pitch is somewhat sensitive to mod wheel
     }
 
 	describe {
@@ -86,6 +87,7 @@ Sh01aPatch : Patch {
 		postln("Sundries:");
 		postln(format("  Portamento: %", kvps[Sh01a.portamentoCcNo]));
 		postln(format("  Polyphony Mode: %", this.prGetPolyphonyModeDescription(kvps[Sh01a.polyphonyModeCcNo])));
+		postln(format("  VCO mod sensitivity: %", kvps[Sh01a.vcoModSensitivityCcNo]));
 	}
 
 	prGetEnvTriggerModeDescription {
