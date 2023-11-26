@@ -43,7 +43,7 @@ PerformVeScGuiControlSurface : ScGuiControlSurface {
 	init {
 		|synthesizer|
 		var tabset;
-		var doubleTab, echoTab, sampleTab;
+		var doubleTab, morphTab, echoTab, sampleTab;
 		backgroundYellow = Color.fromHexString("fae06d");
 		darkgrey = Color(0.8,0.8,0.8);
 		lightGrey = Color(0.5,0.5,0.5);
@@ -76,6 +76,9 @@ PerformVeScGuiControlSurface : ScGuiControlSurface {
 
 		doubleTab = tabset.addTab("DOUBLE");
 		this.initDoubleTab(doubleTab);
+
+		morphTab = tabset.addTab("MORPH");
+		this.initMorphTab(morphTab);
 
 		echoTab = tabset.addTab("ECHO");
 		this.initEchoTab(echoTab);
@@ -121,6 +124,21 @@ PerformVeScGuiControlSurface : ScGuiControlSurface {
 		this.addDropDownListWithLabel(container,50,100,"Double Style",PerformVe.doubleStyleCcNo,[
 			[ "2 Voices Unison", [0] ], [ "2 Voices Octave Down", [1] ], [ "2 Voices Octave Up", [2] ], [ "2 Voices; 1 Up, 1 Down", [3] ]
 		]);
+	}
+
+	initMorphTab {
+		|tab|
+		var container = View(tab.body,Rect(0,0,tab.body.bounds.width,tab.body.bounds.height));
+
+		this.addToggleButtonWithLabel(container,50,0,PerformVe.morphEnabledCcNo,"Enabled");
+		this.addDropDownListWithLabel(container,50,100,"Morph Style",PerformVe.morphStyleCcNo,[
+			[ "Notes Natural", [0] ], [ "Notes Instrumental", [1] ], [ "Vocoder 1: Simple Saw", [2] ], [ "Vocoder 2: 2 Osc Saw", [3] ], [ "Vocoder 3: 2 Saw Detune", [4] ], [ "Vocoder 4: Narrow Pulse", [5] ], [ "Vocoder 5: Pulse Detune I", [6] ], [ "Vocoder 6: Pulse Detune II", [7] ], [ "Vocoder 7: 1 Voice PWM", [8] ], [ "Vocoder 8: Square Detune", [9] ], [ "Vocoder 9: Pulse Fifths", [10] ]
+		]);
+		this.addDropDownListWithLabel(container,50,150,"Morph Mode",PerformVe.morphModeCcNo,[
+			[ "Poly, Release 0", [0] ], [ "Poly, Release 1", [1] ], [ "Poly, Release 2", [2] ], [ "Poly, Release 3", [3] ], [ "Poly, Release 4", [4] ], [ "Poly, Release 5", [5] ], [ "Poly, Release 6", [6] ], [ "Poly, Release 7", [7] ], [ "Poly, Release 8", [8] ], [ "Poly, Release 9", [9] ], [ "Poly, Release 10", [10] ], [ "Poly, Release 11", [11] ], [ "Poly, Release 12", [12] ], [ "Mono, Portamento 0", [13] ], [ "Mono, Portamento 1", [14] ], [ "Mono, Portamento 2", [15] ], [ "Mono, Portamento 3", [16] ], [ "Mono, Portamento 4", [17] ], [ "Mono, Portamento 5", [18] ], [ "Mono, Portamento 6", [19] ], [ "Mono, Portamento 7", [20] ], [ "Mono, Portamento 8", [21] ], [ "Mono, Portamento 9", [22] ], [ "Mono, Portamento 10", [23] ], [ "Mono, Portamento 11", [24] ], [ "Mono, Portamento 12", [25] ]
+		]);
+		this.addKnobWithLabel(container,50,200,PerformVe.morphShiftCcNo,"Shift",true,ControlSpec(0,72,\lin,1/72));
+		this.addKnobWithLabel(container,50,300,PerformVe.morphGenderCcNo,"Gender",true);
 	}
 
 	initEchoTab {
