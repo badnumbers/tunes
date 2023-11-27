@@ -33,7 +33,7 @@ PerformVe : Synthesizer {
 	classvar <sustainPedalCcNo = 64;
 	classvar <envelopeReleaseCcNo = 72;
 	classvar <envelopeAttackCcNo = 73;
-	classvar <sampleEnableCcNo = 80;
+	classvar <sampleEnabledCcNo = 80;
 	classvar <looperKickTriggerCcNo = 81;
 	classvar <looperSnareTriggerCcNo = 82;
 	classvar <looperHiHatTriggerCcNo = 83;

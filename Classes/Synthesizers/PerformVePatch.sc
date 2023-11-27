@@ -39,7 +39,7 @@ PerformVePatch : Patch {
 		kvps.add(PerformVe.sustainPedalCcNo -> 0); // Off
 		kvps.add(PerformVe.envelopeReleaseCcNo -> 0);
 		kvps.add(PerformVe.envelopeAttackCcNo -> 0);
-		kvps.add(PerformVe.sampleEnableCcNo -> 0);
+		kvps.add(PerformVe.sampleEnabledCcNo -> 0);
 		kvps.add(PerformVe.looperKickTriggerCcNo -> 0); // Off
 		kvps.add(PerformVe.looperSnareTriggerCcNo -> 0); // Off
 		kvps.add(PerformVe.looperHiHatTriggerCcNo -> 0); // Off

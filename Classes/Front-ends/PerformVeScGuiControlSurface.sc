@@ -43,7 +43,7 @@ PerformVeScGuiControlSurface : ScGuiControlSurface {
 	init {
 		|synthesizer|
 		var tabset;
-		var doubleTab, morphTab, echoTab, sampleTab;
+		var doubleTab, hardTuneTab, morphTab, echoTab, filterTab, sampleTab, xfxTab;
 		backgroundYellow = Color.fromHexString("fae06d");
 		darkgrey = Color(0.8,0.8,0.8);
 		lightGrey = Color(0.5,0.5,0.5);
@@ -80,8 +80,17 @@ PerformVeScGuiControlSurface : ScGuiControlSurface {
 		morphTab = tabset.addTab("MORPH");
 		this.initMorphTab(morphTab);
 
+		hardTuneTab = tabset.addTab("HARDTUNE");
+		this.initHardTuneTab(hardTuneTab);
+
 		echoTab = tabset.addTab("ECHO");
 		this.initEchoTab(echoTab);
+
+		filterTab = tabset.addTab("FILTER");
+		this.initFilterTab(filterTab);
+
+		xfxTab = tabset.addTab("XFX");
+		this.initXfxTab(xfxTab);
 
 		sampleTab = tabset.addTab("SAMPLE");
 		this.initSampleTab(sampleTab);
@@ -119,10 +128,47 @@ PerformVeScGuiControlSurface : ScGuiControlSurface {
 		|tab|
 		var container = View(tab.body,Rect(0,0,tab.body.bounds.width,tab.body.bounds.height));
 
-		this.addToggleButtonWithLabel(container,50,250,PerformVe.doubleEnabledCcNo,"Enabled");
-		this.addKnobWithLabel(container,325,475,PerformVe.doubleLevelCcNo,"Level",false);
-		this.addDropDownListWithLabel(container,50,100,"Double Style",PerformVe.doubleStyleCcNo,[
+		this.addToggleButtonWithLabel(container,50,0,PerformVe.doubleEnabledCcNo,"Enabled");
+		this.addKnobWithLabel(container,50,100,PerformVe.doubleLevelCcNo,"Level",false);
+		this.addDropDownListWithLabel(container,50,200,"Double Style",PerformVe.doubleStyleCcNo,[
 			[ "2 Voices Unison", [0] ], [ "2 Voices Octave Down", [1] ], [ "2 Voices Octave Up", [2] ], [ "2 Voices; 1 Up, 1 Down", [3] ]
+		]);
+	}
+
+	initEchoTab {
+		|tab|
+		var container = View(tab.body,Rect(0,0,tab.body.bounds.width,tab.body.bounds.height));
+
+		this.addToggleButtonWithLabel(container,50,0,PerformVe.echoEnabledCcNo,"Enabled");
+		this.addKnobWithLabel(container,50,100,PerformVe.reverbCcNo,"Reverb",false);
+		this.addDropDownListWithLabel(container,50,200,"Reverb Style",PerformVe.reverbStyleCcNo,[
+			[ "Hall", [0] ], [ "Arena", [1] ], [ "Spring", [2] ], [ "Plate", [3] ]
+		]);
+		this.addKnobWithLabel(container,50,300,PerformVe.delayCcNo,"Delay",false);
+		this.addDropDownListWithLabel(container,50,400,"Delay Div",PerformVe.delayDivCcNo,[
+			[ "Half Note Ping Pong", [0] ], [ "Half Note", [1] ], [ "Dotted Quarter Note Ping Pong", [2] ], [ "Dotted Quarter Note", [3] ], [ "Quarter Note Ping Pong", [4] ], [ "Quarter Note", [5] ], [ "Dotted Eighth Note Ping Pong", [6] ], [ "Dotted Eighth Note", [7] ], [ "Eighth Note Ping Pong", [8] ], [ "Eighth Note", [9] ], [ "Sixteenth Note Ping Pong", [10] ], [ "Sixteenth Note", [11] ], [ "Slapback", [12] ]
+		]);
+	}
+
+	initFilterTab {
+		|tab|
+		var container = View(tab.body,Rect(0,0,tab.body.bounds.width,tab.body.bounds.height));
+
+		this.addToggleButtonWithLabel(container,50,0,PerformVe.filterEnabledCcNo,"Enabled");
+		this.addKnobWithLabel(container,50,100,PerformVe.filterModCcNo,"Filter Mod",true);
+		this.addDropDownListWithLabel(container,50,200,"Filter Style",PerformVe.filterStyleCcNo,[
+			[ "LPF / HPF", [0] ], [ "Radio", [1] ], [ "Megaphone", [2] ], [ "Amp", [3] ], [ "Buzz Cut", [4] ]
+		]);
+	}
+
+	initHardTuneTab {
+		|tab|
+		var container = View(tab.body,Rect(0,0,tab.body.bounds.width,tab.body.bounds.height));
+
+		this.addToggleButtonWithLabel(container,50,0,PerformVe.hardTuneEnabledCcNo,"Enabled");
+		this.addKnobWithLabel(container,50,100,PerformVe.hardTuneAmountCcNo,"Amount",false);
+		this.addDropDownListWithLabel(container,50,200,"Key",PerformVe.hardTuneKeyCcNo,[
+			[ "Natural Play Pop Major", [0] ], [ "C Pop Major", [1] ], [ "C# Pop Major", [2] ], [ "D Pop Major", [3] ], [ "D# Pop Major", [4] ], [ "E Pop Major", [5] ], [ "F Pop Major", [6] ], [ "F# Pop Major", [7] ], [ "G Pop Major", [8] ], [ "G# Pop Major", [9] ], [ "A Pop Major", [10] ], [ "A# Pop Major", [11] ], [ "B Pop Major", [12] ], [ "Chromatic", [13] ]
 		]);
 	}
 
@@ -141,24 +187,29 @@ PerformVeScGuiControlSurface : ScGuiControlSurface {
 		this.addKnobWithLabel(container,50,300,PerformVe.morphGenderCcNo,"Gender",true);
 	}
 
-	initEchoTab {
-		|tab|
-		var container = View(tab.body,Rect(0,0,tab.body.bounds.width,tab.body.bounds.height));
-
-
-		this.addSectionLabel(container,Rect(0,25,300,50),"SECTION LABEL");
-		this.addToggleButtonWithLabel(container,50,250,PerformVe.echoEnabledCcNo,"Enabled");
-		this.addKnobWithLabel(container,325,475,PerformVe.reverbCcNo,"Reverb",false);
-	}
-
 	initSampleTab {
 		|tab|
 		var container = View(tab.body,Rect(0,0,tab.body.bounds.width,tab.body.bounds.height));
 
-		this.addSectionLabel(container,Rect(0,25,300,50),"SECTION LABEL");
+		this.addToggleButtonWithLabel(container,50,0,PerformVe.sampleEnabledCcNo,"Enabled");
 		this.addDropDownListWithLabel(container,50,100,"Sample Mode",PerformVe.sampleModeCcNo,[
 			[ "Staccato No Loop", [0] ], [ "Legato No Loop", [1] ], [ "Staccato Loop", [2] ], [ "Legato Loop", [3] ]
 		]);
+		this.addKnobWithLabel(container,50,200,PerformVe.notesVoiceSmoothingCcNo,"Voice smoothing",false);
+		this.addKnobWithLabel(container,50,300,PerformVe.envelopeAttackCcNo,"Envelope attack",false);
+		this.addKnobWithLabel(container,50,400,PerformVe.envelopeReleaseCcNo,"Envelope release",false);
+	}
+
+	initXfxTab {
+		|tab|
+		var container = View(tab.body,Rect(0,0,tab.body.bounds.width,tab.body.bounds.height));
+
+		this.addToggleButtonWithLabel(container,50,0,PerformVe.xfxEnabledCcNo,"Enabled");
+		this.addDropDownListWithLabel(container,50,100,"XFX Style",PerformVe.xfxStyleCcNo,[
+			[ "Stutter", [0] ], [ "Mono Chopper", [1] ], [ "Stereo Chopper", [2] ], [ "Ring Mod", [3] ], [ "Negative Flange", [4] ], [ "Positive Flange", [5] ], [ "Sidechain Pumping", [6] ]
+		]);
+		this.addKnobWithLabel(container,50,200,PerformVe.xfxMod1CcNo,"Mod 1",false);
+		this.addKnobWithLabel(container,50,300,PerformVe.xfxMod2CcNo,"Mod 2",false);
 	}
 
 	setDefaultControlSpec {
