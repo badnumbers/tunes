@@ -5,6 +5,7 @@ PerformVeScGuiControlSurface : ScGuiControlSurface {
 	var litGreen;
 	var <orange;
 	var knobcolors;
+	var loadSampleVolume;
 
 	addDropDownListWithLabel {
 		|parent,left,top,labelText,parameterNumber,midiMappings|
@@ -16,10 +17,8 @@ PerformVeScGuiControlSurface : ScGuiControlSurface {
 	addKnobWithLabel {
 		|parent,left,top,parameterNumber,labelText,centred,controlSpec|
 		var container = View(parent, Rect(left, top, 100, 100)).background_(backgroundYellow);
-		if (parameterNumber.isNil == false, {
-			this.addControlLabel(container, Rect(0,0,100,25), labelText, \center, Color.black);
-			this.addKnob(container,Rect(10,25,80,80),parameterNumber,centred,Color.black,litGreen,backgroundYellow,Color.black,controlSpec);
-		});
+		this.addControlLabel(container, Rect(0,0,100,25), labelText, \center, Color.black);
+		this.addKnob(container,Rect(10,25,80,80),parameterNumber,centred,Color.black,litGreen,backgroundYellow,Color.black,controlSpec);
 	}
 
 	addSectionLabel {
@@ -109,6 +108,13 @@ PerformVeScGuiControlSurface : ScGuiControlSurface {
 		.align_(\center)
 		.mouseUpAction_({super.prSynthesizer.randomisePatch(0)});
 
+		StaticText(window,Rect(270,710,100,30))
+		.background_(lightGrey)
+		.string_("Load sample")
+		.stringColor_(Color.black)
+		.align_(\center)
+		.mouseUpAction_({this.loadSample()});
+
 		StaticText(window,Rect(680,710,100,30))
 		.background_(lightGrey)
 		.string_("Write")
@@ -189,6 +195,7 @@ PerformVeScGuiControlSurface : ScGuiControlSurface {
 
 	initSampleTab {
 		|tab|
+		var loadSampleVolumeContainer;
 		var container = View(tab.body,Rect(0,0,tab.body.bounds.width,tab.body.bounds.height));
 
 		this.addToggleButtonWithLabel(container,50,0,PerformVe.sampleEnabledCcNo,"Enabled");
@@ -198,6 +205,18 @@ PerformVeScGuiControlSurface : ScGuiControlSurface {
 		this.addKnobWithLabel(container,50,200,PerformVe.notesVoiceSmoothingCcNo,"Voice smoothing",false);
 		this.addKnobWithLabel(container,50,300,PerformVe.envelopeAttackCcNo,"Envelope attack",false);
 		this.addKnobWithLabel(container,50,400,PerformVe.envelopeReleaseCcNo,"Envelope release",false);
+
+		loadSampleVolumeContainer = View(container, Rect(250, 250, 100, 100)).background_(backgroundYellow);
+		this.addControlLabel(loadSampleVolumeContainer, Rect(0,0,100,25), "Load sample volume", \center, Color.black);
+		Knob(loadSampleVolumeContainer,Rect(10,25,80,80))
+		.color_([Color.black,litGreen,backgroundYellow,Color.black])
+		.centered_(False)
+		.mode_(\vert)
+		.action_({
+			|knob|
+			loadSampleVolume = knob.value;
+		})
+		.valueAction_(0.5);
 	}
 
 	initXfxTab {
@@ -208,11 +227,20 @@ PerformVeScGuiControlSurface : ScGuiControlSurface {
 		this.addDropDownListWithLabel(container,50,100,"XFX Style",PerformVe.xfxStyleCcNo,[
 			[ "Stutter", [0] ], [ "Mono Chopper", [1] ], [ "Stereo Chopper", [2] ], [ "Ring Mod", [3] ], [ "Negative Flange", [4] ], [ "Positive Flange", [5] ], [ "Sidechain Pumping", [6] ]
 		]);
-		this.addKnobWithLabel(container,50,200,PerformVe.xfxMod1CcNo,"Mod 1",false);
-		this.addKnobWithLabel(container,50,300,PerformVe.xfxMod2CcNo,"Mod 2",false);
 	}
 
-	setDefaultControlSpec {
-		defaultControlSpec = ControlSpec(0,255,\lin,1/255);
+	loadSample {
+		Buffer.loadDialog(Server.default, action: {
+			|buffer|
+			~routine = Routine({
+				prSynthesizer.modifyWorkingPatch(PerformVe.sampleRecordSwitchCcNo, 127, nil);
+				postln("Playing the sample into the Perform VE...");
+				{ var audio = PlayBuf.ar(1, buffer, BufRateScale.kr(buffer), doneAction: Done.freeSelf) * loadSampleVolume; Out.ar(2, audio); }.play;
+				buffer.duration.wait;
+				prSynthesizer.modifyWorkingPatch(PerformVe.sampleRecordSwitchCcNo, 0, nil);
+				postln("Finished!");
+				buffer.free;
+			}).play;
+		});
 	}
 }
