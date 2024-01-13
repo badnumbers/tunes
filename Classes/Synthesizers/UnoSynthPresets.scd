@@ -41,3 +41,10 @@ patch.name = "Angry wobbles"; // Needs a very low pitch
 patch.kvps[103]=23;patch.kvps[22]=60;patch.kvps[79]=0;patch.kvps[17]=64;patch.kvps[5]=0;patch.kvps[67]=58;patch.kvps[45]=51;patch.kvps[48]=4;patch.kvps[105]=64;patch.kvps[18]=64;patch.kvps[13]=0;patch.kvps[68]=0;patch.kvps[23]=87;patch.kvps[71]=0;patch.kvps[21]=26;patch.kvps[15]=0;patch.kvps[102]=127;patch.kvps[51]=0;patch.kvps[90]=0;patch.kvps[16]=40;patch.kvps[73]=0;patch.kvps[104]=41;patch.kvps[12]=127;patch.kvps[27]=0;patch.kvps[26]=0;patch.kvps[66]=0;patch.kvps[69]=25;patch.kvps[44]=0;patch.kvps[24]=0;patch.kvps[50]=127;patch.kvps[81]=53;patch.kvps[25]=98;patch.kvps[77]=0;patch.kvps[80]=67;patch.kvps[75]=0;patch.kvps[49]=0;patch.kvps[74]=0;patch.kvps[47]=0;patch.kvps[46]=0;patch.kvps[78]=0;patch.kvps[92]=0;patch.kvps[19]=0;patch.kvps[70]=0;patch.kvps[20]=25;patch.kvps[76]=0;patch.kvps[14]=0;patch.kvps[72]=0;patch.kvps[89]=0;patch.kvps[91]=0;patch.kvps[7]=64;
 ~unosynth.setWorkingPatch(patch);
 )
+
+(
+var patch = UnoSynthPatch();
+patch.name = "Trinity";
+patch.kvps[103]=0;patch.kvps[22]=124;patch.kvps[79]=0;patch.kvps[17]=73;patch.kvps[5]=0;patch.kvps[67]=58;patch.kvps[45]=0;patch.kvps[48]=64;patch.kvps[105]=64;patch.kvps[18]=55;patch.kvps[13]=127;patch.kvps[68]=0;patch.kvps[23]=15;patch.kvps[71]=0;patch.kvps[21]=31;patch.kvps[15]=56;patch.kvps[102]=127;patch.kvps[51]=64;patch.kvps[90]=0;patch.kvps[16]=23;patch.kvps[73]=0;patch.kvps[104]=0;patch.kvps[12]=127;patch.kvps[27]=10;patch.kvps[26]=108;patch.kvps[66]=0;patch.kvps[69]=0;patch.kvps[44]=3;patch.kvps[24]=1;patch.kvps[50]=64;patch.kvps[81]=0;patch.kvps[25]=4;patch.kvps[77]=0;patch.kvps[80]=0;patch.kvps[75]=0;patch.kvps[49]=64;patch.kvps[74]=0;patch.kvps[47]=0;patch.kvps[46]=0;patch.kvps[78]=0;patch.kvps[92]=0;patch.kvps[19]=0;patch.kvps[70]=0;patch.kvps[20]=48;patch.kvps[76]=0;patch.kvps[14]=11;patch.kvps[72]=0;patch.kvps[89]=0;patch.kvps[91]=0;patch.kvps[7]=64;
+~unoSynth.setWorkingPatch(patch);
+)
