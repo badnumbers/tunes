@@ -14,7 +14,7 @@ PerformVe : Synthesizer {
 	classvar <delayDivCcNo = 27;
 	classvar <reverbStyleCcNo = 28;
 	classvar <leadLevelCcNo = 41;
-	var <>midiChannel = 0;
+	var <>midiChannel = 8;
 	classvar <midiLevelCcNo = 42;
 	classvar <morphShiftCcNo = 43;
 	classvar <morphGenderCcNo = 44;
