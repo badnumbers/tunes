@@ -115,6 +115,13 @@ PerformVeScGuiControlSurface : ScGuiControlSurface {
 		.align_(\center)
 		.mouseUpAction_({this.loadSample()});
 
+		StaticText(window,Rect(380,710,100,30))
+		.background_(lightGrey)
+		.string_("Set input level")
+		.stringColor_(Color.black)
+		.align_(\center)
+		.mouseUpAction_({this.setInputLevel()});
+
 		StaticText(window,Rect(680,710,100,30))
 		.background_(lightGrey)
 		.string_("Write")
@@ -238,6 +245,19 @@ PerformVeScGuiControlSurface : ScGuiControlSurface {
 				{ var audio = PlayBuf.ar(1, buffer, BufRateScale.kr(buffer), doneAction: Done.freeSelf) * loadSampleVolume; Out.ar(2, audio); }.play;
 				buffer.duration.wait;
 				prSynthesizer.modifyWorkingPatch(PerformVe.sampleRecordSwitchCcNo, 0, nil);
+				postln("Finished!");
+				buffer.free;
+			}).play;
+		});
+	}
+
+	setInputLevel {
+		Buffer.loadDialog(Server.default, action: {
+			|buffer|
+			~routine = Routine({
+				postln("Playing the sample into the Perform VE...");
+				{ var audio = PlayBuf.ar(1, buffer, BufRateScale.kr(buffer), doneAction: Done.freeSelf) * loadSampleVolume; Out.ar(2, audio); }.play;
+				buffer.duration.wait;
 				postln("Finished!");
 				buffer.free;
 			}).play;
