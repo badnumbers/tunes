@@ -1,4 +1,4 @@
-TITLE:: SuperColliderSynthesizer
+TITLE:: ScSynthesizer
 summary:: A synthesizer implemented in SuperCollider
 
 DESCRIPTION::
@@ -7,10 +7,10 @@ SuperColliderSynthesizer represents the CODE::SynthDef:: and also a user interfa
 CLASSMETHODS::
 
 METHOD:: new
-Creates a new instance of LINK::Classes/SuperColliderSynthesizer:.
+Creates a new instance of LINK::Classes/ScSynthesizer.
 
 ARGUMENT:: synthDef
-An instance of CODE::SynthDef:: to be used by the LINK::Classes/SuperColliderSynthesizer: to create its CODE::Synth:: instance.
+An instance of CODE::SynthDef:: to be used by the LINK::Classes/ScSynthesizer to create its CODE::Synth:: instance.
 
 INSTANCEMETHODS::
 
@@ -24,7 +24,7 @@ METHOD:: synth
 Lazily creates and returns an instance of this synth.
 
 METHOD:: synthDefName
-Returns the name of the CODE::SynthDef:: inside this LINK::Classes/SuperColliderSynthesizer:.
+Returns the name of the CODE::SynthDef:: inside this LINK::Classes/ScSynthesizer.
 
 EXAMPLES::
 

@@ -1,4 +1,4 @@
-SuperColliderSynthesizer {
+ScSynthesizer {
 	var prGui;
 	var prSynth;
 	var prSynthDef;
@@ -14,8 +14,8 @@ SuperColliderSynthesizer {
 
 	init {
 		|synthDef, gui|
-		Validator.validateMethodParameterType(synthDef, SynthDef, "synthDef", "SuperColliderSynthesizer", "init");
-		Validator.validateMethodParameterType(gui, SuperColliderSynthesizerGui, "gui", "SuperColliderSynthesizer", "init");
+		Validator.validateMethodParameterType(synthDef, SynthDef, "synthDef", "ScSynthesizer", "init");
+		Validator.validateMethodParameterType(gui, ScSynthesizerGui, "gui", "ScSynthesizer", "init");
 		prSynthDef = synthDef;
 		prSynthDef.add;
 		prGui = gui;
@@ -23,8 +23,8 @@ SuperColliderSynthesizer {
 
 	*new {
 		|synthDef,gui|
-		Validator.validateMethodParameterType(synthDef, SynthDef, "synthDef", "SuperColliderSynthesizer", "new");
-		Validator.validateMethodParameterType(gui, SuperColliderSynthesizerGui, "gui", "SuperColliderSynthesizer", "new");
+		Validator.validateMethodParameterType(synthDef, SynthDef, "synthDef", "ScSynthesizer", "new");
+		Validator.validateMethodParameterType(gui, ScSynthesizerGui, "gui", "ScSynthesizer", "new");
 		^super.new.init(synthDef, gui);
     }
 

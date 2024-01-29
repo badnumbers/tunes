@@ -1,5 +1,5 @@
 (
-~snare = SuperColliderSynthesizer(
+~snare = ScSynthesizer(
 	SynthDef(\fm,
 		{
 			|carrierfreq=200, modulator1freq=314, modulator2freq=192,modulator3freq=350,t_trig,amp,ratescale=0.2|
@@ -16,12 +16,12 @@
 			Out.ar(0, carrier);
 		}
 	),
-	SuperColliderSynthesizerGui(800,200,"FM Snare",[
-		SuperColliderSynthesizerGuiControl(\carrierfreq, Rect(0,0,100,100), Rect(0,100,100,25), "Carrier Freq", ControlSpec(100,1000,\exp)),
-		SuperColliderSynthesizerGuiControl(\modulator1freq, Rect(150,0,100,100), Rect(150,100,100,25), "Mod 1 Freq", ControlSpec(100,1000,\exp)),
-		SuperColliderSynthesizerGuiControl(\modulator2freq, Rect(300,0,100,100), Rect(300,100,100,25), "Mod 2 Freq", ControlSpec(100,1000,\exp)),
-		SuperColliderSynthesizerGuiControl(\modulator3freq, Rect(450,0,100,100), Rect(450,100,100,25), "Mod 3 Freq", ControlSpec(100,1000,\exp)),
-		SuperColliderSynthesizerGuiControl(\ratescale, Rect(600,0,100,100), Rect(600,100,100,25), "Rate Scale", ControlSpec(0.1,4,\exp)),
+	ScSynthesizerGui(800,200,"FM Snare",[
+		ScSynthesizerGuiControl(\carrierfreq, Rect(0,0,100,100), Rect(0,100,100,25), "Carrier Freq", ControlSpec(100,1000,\exp)),
+		ScSynthesizerGuiControl(\modulator1freq, Rect(150,0,100,100), Rect(150,100,100,25), "Mod 1 Freq", ControlSpec(100,1000,\exp)),
+		ScSynthesizerGuiControl(\modulator2freq, Rect(300,0,100,100), Rect(300,100,100,25), "Mod 2 Freq", ControlSpec(100,1000,\exp)),
+		ScSynthesizerGuiControl(\modulator3freq, Rect(450,0,100,100), Rect(450,100,100,25), "Mod 3 Freq", ControlSpec(100,1000,\exp)),
+		ScSynthesizerGuiControl(\ratescale, Rect(600,0,100,100), Rect(600,100,100,25), "Rate Scale", ControlSpec(0.1,4,\exp)),
 	])
 );
 )
