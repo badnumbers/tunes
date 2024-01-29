@@ -1,0 +1,62 @@
+TITLE:: ScSynthesizerGui
+summary:: (put short description here)
+categories:: Undocumented classes
+related:: Classes/SomeRelatedClass, Reference/SomeRelatedStuff, etc.
+
+DESCRIPTION::
+(put long description here)
+
+
+CLASSMETHODS::
+
+METHOD:: new
+(describe method here)
+
+ARGUMENT:: controlRectWidth
+(describe argument here)
+
+ARGUMENT:: controlRectHeight
+(describe argument here)
+
+ARGUMENT:: windowLabel
+(describe argument here)
+
+ARGUMENT:: controlsArray
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+
+INSTANCEMETHODS::
+
+METHOD:: show
+(describe method here)
+
+ARGUMENT:: synth
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: init
+(describe method here)
+
+ARGUMENT:: controlRectWidth
+(describe argument here)
+
+ARGUMENT:: controlRectHeight
+(describe argument here)
+
+ARGUMENT:: windowLabel
+(describe argument here)
+
+ARGUMENT:: controlsArray
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+
+EXAMPLES::
+
+code::
+(some example code)
+::
