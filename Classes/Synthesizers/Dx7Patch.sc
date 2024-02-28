@@ -1,4 +1,4 @@
-Fm2Patch : Patch {
+Dx7Patch : Patch {
 	*new {
         ^super.new.init();
     }
@@ -168,13 +168,6 @@ Fm2Patch : Patch {
 		kvps.add(Fm2Sysex.voiceNameCharacter8 -> 84); // T
 		kvps.add(Fm2Sysex.voiceNameCharacter9 -> 67); // C
 		kvps.add(Fm2Sysex.voiceNameCharacter10 -> 72); // H
-
-		kvps.add(Fm2.modulatorAttackCcNo -> 64);
-		kvps.add(Fm2.modulatorDecayCcNo	-> 64);
-		kvps.add(Fm2.carrierAttackCcNo -> 64);
-		kvps.add(Fm2.carrierDecayCcNo -> 64);
-		kvps.add(Fm2.chorusDepthCcNo -> 0);
-		kvps.add(Fm2.reverbDepthCcNo -> 0);
 	}
 
 	describe {

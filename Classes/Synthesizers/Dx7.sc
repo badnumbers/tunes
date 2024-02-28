@@ -1,4 +1,4 @@
-Fm2 : Synthesizer {
+Dx7 : Synthesizer {
 	classvar <modulatorAttackCcNo = 1042;
 	classvar <modulatorDecayCcNo = 1043;
 	classvar <carrierAttackCcNo = 1044;
