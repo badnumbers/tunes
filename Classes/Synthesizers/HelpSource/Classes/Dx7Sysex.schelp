@@ -1,0 +1,795 @@
+ TITLE:: Dx7Sysex
+summary:: (put short description here)
+categories:: Undocumented classes
+related:: Classes/SomeRelatedClass, Reference/SomeRelatedStuff, etc.
+
+DESCRIPTION::
+(put long description here)
+
+
+CLASSMETHODS::
+
+METHOD:: pitchEnvelopeGeneratorRate2
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator2KeyboardRateScaling
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator6EnvelopeGeneratorLevel2
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator6Detune
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator5FineFrequency
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator3EnvelopeGeneratorRate1
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator1EnvelopeGeneratorRate3
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: lfoSpeed
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator6KeyboardLevelScaleLeftDepth
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: lfoDelay
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator5EnvelopeGeneratorLevel2
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator1KeyboardRateScaling
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator4EnvelopeGeneratorRate4
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: pitchEnvelopeGeneratorLevel2
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator4AmplitudeModulationSensitivity
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator1EnvelopeGeneratorRate4
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator3KeyVelocitySensitivity
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator5KeyboardLevelScaleRightCurve
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operatorKeySync
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator4CoarseFrequency
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator6KeyVelocitySensitivity
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: transpose
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator2KeyboardLevelScaleRightDepth
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator5OutputLevel
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator1FineFrequency
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: pitchModulationSensitivity
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator4EnvelopeGeneratorLevel2
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator1EnvelopeGeneratorLevel3
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator1AmplitudeModulationSensitivity
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator3EnvelopeGeneratorRate4
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator4KeyboardLevelScaleLeftCurve
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator6EnvelopeGeneratorRate2
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator6KeyboardLevelScaleBreakpoint
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: voiceNameCharacter4
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator3EnvelopeGeneratorLevel3
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator5EnvelopeGeneratorRate1
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator1KeyVelocitySensitivity
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: voiceNameCharacter3
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator3EnvelopeGeneratorRate2
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator6Mode
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: pitchEnvelopeGeneratorRate4
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator2Mode
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator2EnvelopeGeneratorRate1
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator4KeyboardLevelScaleBreakpoint
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator4Detune
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator3KeyboardLevelScaleBreakpoint
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: voiceNameCharacter9
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator3CoarseFrequency
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator6EnvelopeGeneratorRate4
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator3KeyboardLevelScaleRightDepth
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator3AmplitudeModulationSensitivity
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator5KeyboardLevelScaleRightDepth
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator6OutputLevel
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator5KeyboardRateScaling
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator2AmplitudeModulationSensitivity
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator6EnvelopeGeneratorLevel1
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator2KeyboardLevelScaleBreakpoint
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator1KeyboardLevelScaleRightDepth
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: pitchEnvelopeGeneratorRate3
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator1KeyboardLevelScaleRightCurve
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator4FineFrequency
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: voiceNameCharacter2
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator5EnvelopeGeneratorRate3
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator1Mode
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: lfoKeySync
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator3Detune
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator1EnvelopeGeneratorRate1
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator1EnvelopeGeneratorRate2
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: lfoAmplitudeModulationDepth
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: algorithm
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: voiceNameCharacter5
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator5KeyboardLevelScaleBreakpoint
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator6KeyboardLevelScaleRightCurve
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator1KeyboardLevelScaleLeftDepth
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator4OutputLevel
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator1Detune
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator2EnvelopeGeneratorRate4
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: voiceNameCharacter1
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator5KeyboardLevelScaleLeftDepth
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: voiceNameCharacter6
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator3KeyboardLevelScaleLeftCurve
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator2EnvelopeGeneratorLevel3
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator6AmplitudeModulationSensitivity
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator2KeyboardLevelScaleLeftDepth
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: lfoPitchModulationDepth
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: voiceNameCharacter7
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator6KeyboardLevelScaleRightDepth
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator5EnvelopeGeneratorLevel4
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator6KeyboardLevelScaleLeftCurve
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator3KeyboardLevelScaleRightCurve
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator3FineFrequency
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator5KeyboardLevelScaleLeftCurve
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator1KeyboardLevelScaleLeftCurve
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator5EnvelopeGeneratorRate2
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator5EnvelopeGeneratorLevel1
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: pitchEnvelopeGeneratorRate1
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator3KeyboardLevelScaleLeftDepth
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator1EnvelopeGeneratorLevel4
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator5Detune
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator2EnvelopeGeneratorLevel1
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: feedback
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator4EnvelopeGeneratorRate2
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator5Mode
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: lfoWaveform
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator4KeyVelocitySensitivity
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: pitchEnvelopeGeneratorLevel1
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator2FineFrequency
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: pitchEnvelopeGeneratorLevel4
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator4EnvelopeGeneratorLevel3
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator4KeyboardLevelScaleRightCurve
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator3EnvelopeGeneratorLevel4
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator6EnvelopeGeneratorLevel4
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator6FineFrequency
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator4Mode
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator3Mode
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator6EnvelopeGeneratorRate3
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator4KeyboardRateScaling
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator1CoarseFrequency
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator6EnvelopeGeneratorLevel3
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator4KeyboardLevelScaleLeftDepth
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator2EnvelopeGeneratorRate3
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator2KeyboardLevelScaleRightCurve
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator2OutputLevel
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator1KeyboardLevelScaleBreakpoint
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator5EnvelopeGeneratorLevel3
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator2CoarseFrequency
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator1EnvelopeGeneratorLevel1
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator3KeyboardRateScaling
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator2Detune
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator1EnvelopeGeneratorLevel2
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: voiceNameCharacter10
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator4EnvelopeGeneratorRate3
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator2KeyVelocitySensitivity
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator4EnvelopeGeneratorLevel4
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator6KeyboardRateScaling
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator4KeyboardLevelScaleRightDepth
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator2EnvelopeGeneratorLevel2
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator5AmplitudeModulationSensitivity
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator3OutputLevel
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator2KeyboardLevelScaleLeftCurve
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator2EnvelopeGeneratorLevel4
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator4EnvelopeGeneratorRate1
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator4EnvelopeGeneratorLevel1
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator5KeyVelocitySensitivity
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator3EnvelopeGeneratorLevel2
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: pitchEnvelopeGeneratorLevel3
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator5EnvelopeGeneratorRate4
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator6CoarseFrequency
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator6EnvelopeGeneratorRate1
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator3EnvelopeGeneratorRate3
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator2EnvelopeGeneratorRate2
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator5CoarseFrequency
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator1OutputLevel
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: voiceNameCharacter8
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: operator3EnvelopeGeneratorLevel1
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+
+INSTANCEMETHODS::
+
+
+EXAMPLES::
+
+code::
+(some example code)
+::
