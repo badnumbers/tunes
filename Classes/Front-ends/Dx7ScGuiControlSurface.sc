@@ -93,14 +93,14 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 		}
 
 	*getPatchType {
-		^Fm2Patch;
+		^Dx7Patch;
 	}
 
 	init {
 		|synthesizer|
 		var operatorTabset, globalTabset, carousel;
 		var operator1Tab, operator2Tab, operator3Tab, operator4Tab, operator5Tab, operator6Tab;
-		var globalTab, algorithmTab, lfoTab, pitchEnvelopeTab, fm2Tab;
+		var globalTab, algorithmTab, lfoTab, pitchEnvelopeTab;
 		controlSpec0To1 = ControlSpec(0,1,\lin,1/1);
 		controlSpec0To3 = ControlSpec(0,3,\lin,1/3);
 		controlSpec0To5 = ControlSpec(0,5,\lin,1/5);
@@ -117,7 +117,7 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 		dx7Purple = Color.fromHexString("#9599e3");
 		dx7Brown = Color.fromHexString("#d08c74");
 
-		name = "FM2";
+		name = "DX7";
 		background = Color.black;
 		windowheight = 1000;
 		windowwidth = 1900;
@@ -174,9 +174,6 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 		pitchEnvelopeTab = globalTabset.addTab("Pitch envelope");
 		this.initPitchEnvelopeTab(pitchEnvelopeTab);
 
-		fm2Tab = globalTabset.addTab("FM2");
-		this.initFm2Tab(fm2Tab);
-
 		this.initPresetOverview(window);
 
 		StaticText(window,Rect(50,960,100,30))
@@ -205,25 +202,25 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 		.string_("1")
 		.stringColor_(Color.black)
 		.align_(\center)
-		.mouseUpAction_({super.prSynthesizer.modifyWorkingPatch(Fm2Sysex.algorithm, 0, this.class.name)});
+		.mouseUpAction_({super.prSynthesizer.modifyWorkingPatch(Dx7Sysex.algorithm, 0, this.class.name)});
 		StaticText(window,Rect(430,960,40,30))
 		.background_(lightgrey)
 		.string_("10")
 		.stringColor_(Color.black)
 		.align_(\center)
-		.mouseUpAction_({super.prSynthesizer.modifyWorkingPatch(Fm2Sysex.algorithm, 9, this.class.name)});
+		.mouseUpAction_({super.prSynthesizer.modifyWorkingPatch(Dx7Sysex.algorithm, 9, this.class.name)});
 		StaticText(window,Rect(480,960,40,30))
 		.background_(lightgrey)
 		.string_("20")
 		.stringColor_(Color.black)
 		.align_(\center)
-		.mouseUpAction_({super.prSynthesizer.modifyWorkingPatch(Fm2Sysex.algorithm, 19, this.class.name)});
+		.mouseUpAction_({super.prSynthesizer.modifyWorkingPatch(Dx7Sysex.algorithm, 19, this.class.name)});
 		StaticText(window,Rect(530,960,40,30))
 		.background_(lightgrey)
 		.string_("32")
 		.stringColor_(Color.black)
 		.align_(\center)
-		.mouseUpAction_({super.prSynthesizer.modifyWorkingPatch(Fm2Sysex.algorithm, 31, this.class.name)});
+		.mouseUpAction_({super.prSynthesizer.modifyWorkingPatch(Dx7Sysex.algorithm, 31, this.class.name)});
 
 		StaticText(window,Rect(680,960,100,30))
 		.background_(lightgrey)
@@ -476,7 +473,7 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 		var leftPosition = 0;
 		var container = View(tab.body,Rect(0,0,tab.body.bounds.width,tab.body.bounds.height));
 		var carousel = ScGuiCarousel(container, Rect(25, 25, 1050, 100), Color.black).mouseUpAction_({
-			super.prSynthesizer.modifyWorkingPatch(Fm2Sysex.algorithm,carousel.value,this.class.name);
+			super.prSynthesizer.modifyWorkingPatch(Dx7Sysex.algorithm,carousel.value,this.class.name);
 		});
 		algorithmSpecs.do({
 			|algorithm,index|
@@ -499,7 +496,7 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 			);
 			leftPosition = leftPosition + (algorithm.width * 10 * scalingFactor) + (5 * scalingFactor);
 		});
-		super.prSynthesizer.addUpdateAction(this.class.name, Fm2Sysex.algorithm, {
+		super.prSynthesizer.addUpdateAction(this.class.name, Dx7Sysex.algorithm, {
 			|newvalue|
 			carousel.value = newvalue;
 		});
@@ -512,91 +509,80 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 
 		this.addSectionLabel(container,Rect(25,25,300,50), format("Frequencies", operatorNumber));
 
-		this.addKnobWithLabel(container, 25, 75, Fm2Sysex.operator1OutputLevel + sysexOffset, "Output level", false);
-		this.addDropDownListWithLabel(container,125,75,"Coarse freq",Fm2Sysex.operator1CoarseFrequency + sysexOffset,
+		this.addKnobWithLabel(container, 25, 75, Dx7Sysex.operator1OutputLevel + sysexOffset, "Output level", false);
+		this.addDropDownListWithLabel(container,125,75,"Coarse freq",Dx7Sysex.operator1CoarseFrequency + sysexOffset,
 			(0..31).collect({ |number| [ (number + 1).asString, [ number ] ] }));
-		this.addKnobWithLabel(container, 225, 75, Fm2Sysex.operator1FineFrequency + sysexOffset, "Fine freq", false);
-		this.addKnobWithLabel(container, 325, 75, Fm2Sysex.operator1Detune + sysexOffset, "Detune", false, controlSpec0To14);
+		this.addKnobWithLabel(container, 225, 75, Dx7Sysex.operator1FineFrequency + sysexOffset, "Fine freq", false);
+		this.addKnobWithLabel(container, 325, 75, Dx7Sysex.operator1Detune + sysexOffset, "Detune", false, controlSpec0To14);
 
-		this.addKnobWithLabel(container, 25, 175, Fm2Sysex.operator1AmplitudeModulationSensitivity + sysexOffset, "Amp Mod Sens", false, controlSpec0To3);
-		this.addKnobWithLabel(container, 125, 175, Fm2Sysex.operator1KeyVelocitySensitivity + sysexOffset, "Key Vel Sens", false, controlSpec0To7);
-		this.addDropDownListWithLabel(container,225,175,"Operator mode",Fm2Sysex.operator1Mode + sysexOffset,
+		this.addKnobWithLabel(container, 25, 175, Dx7Sysex.operator1AmplitudeModulationSensitivity + sysexOffset, "Amp Mod Sens", false, controlSpec0To3);
+		this.addKnobWithLabel(container, 125, 175, Dx7Sysex.operator1KeyVelocitySensitivity + sysexOffset, "Key Vel Sens", false, controlSpec0To7);
+		this.addDropDownListWithLabel(container,225,175,"Operator mode",Dx7Sysex.operator1Mode + sysexOffset,
 			[ [ "Ratio", [0] ], [ "Fixed", [1] ] ]);
 
 		this.addSectionLabel(container,Rect(25,325,300,50), format("Envelope", operatorNumber));
 
-		this.addKnobWithLabel(container, 25, 375, Fm2Sysex.operator1EnvelopeGeneratorRate1 + sysexOffset, "Rate 1", false);
-		this.addKnobWithLabel(container, 125, 375, Fm2Sysex.operator1EnvelopeGeneratorRate2 + sysexOffset, "Rate 2", false);
-		this.addKnobWithLabel(container, 225, 375, Fm2Sysex.operator1EnvelopeGeneratorRate3 + sysexOffset, "Rate 3", false);
-		this.addKnobWithLabel(container, 325, 375, Fm2Sysex.operator1EnvelopeGeneratorRate4 + sysexOffset, "Rate 4", false);
+		this.addKnobWithLabel(container, 25, 375, Dx7Sysex.operator1EnvelopeGeneratorRate1 + sysexOffset, "Rate 1", false);
+		this.addKnobWithLabel(container, 125, 375, Dx7Sysex.operator1EnvelopeGeneratorRate2 + sysexOffset, "Rate 2", false);
+		this.addKnobWithLabel(container, 225, 375, Dx7Sysex.operator1EnvelopeGeneratorRate3 + sysexOffset, "Rate 3", false);
+		this.addKnobWithLabel(container, 325, 375, Dx7Sysex.operator1EnvelopeGeneratorRate4 + sysexOffset, "Rate 4", false);
 
-		this.addKnobWithLabel(container, 25, 475, Fm2Sysex.operator1EnvelopeGeneratorLevel1 + sysexOffset, "Level 1", false);
-		this.addKnobWithLabel(container, 125, 475, Fm2Sysex.operator1EnvelopeGeneratorLevel2 + sysexOffset, "Level 2", false);
-		this.addKnobWithLabel(container, 225, 475, Fm2Sysex.operator1EnvelopeGeneratorLevel3 + sysexOffset, "Level 3", false);
-		this.addKnobWithLabel(container, 325, 475, Fm2Sysex.operator1EnvelopeGeneratorLevel4 + sysexOffset, "Level 4", false);
+		this.addKnobWithLabel(container, 25, 475, Dx7Sysex.operator1EnvelopeGeneratorLevel1 + sysexOffset, "Level 1", false);
+		this.addKnobWithLabel(container, 125, 475, Dx7Sysex.operator1EnvelopeGeneratorLevel2 + sysexOffset, "Level 2", false);
+		this.addKnobWithLabel(container, 225, 475, Dx7Sysex.operator1EnvelopeGeneratorLevel3 + sysexOffset, "Level 3", false);
+		this.addKnobWithLabel(container, 325, 475, Dx7Sysex.operator1EnvelopeGeneratorLevel4 + sysexOffset, "Level 4", false);
 
 		this.addSectionLabel(container,Rect(25,625,300,50), format("Scaling", operatorNumber));
 
-		this.addKnobWithLabel(container, 25, 675, Fm2Sysex.operator1KeyboardLevelScaleBreakpoint + sysexOffset, "Breakpoint", false);
+		this.addKnobWithLabel(container, 25, 675, Dx7Sysex.operator1KeyboardLevelScaleBreakpoint + sysexOffset, "Breakpoint", false);
 
-		this.addKnobWithLabel(container, 125, 675, Fm2Sysex.operator1KeyboardLevelScaleLeftDepth + sysexOffset, "Left depth", false);
-		this.addDropDownListWithLabel(container,225,675,"Left curve",Fm2Sysex.operator1KeyboardLevelScaleLeftCurve + sysexOffset,
+		this.addKnobWithLabel(container, 125, 675, Dx7Sysex.operator1KeyboardLevelScaleLeftDepth + sysexOffset, "Left depth", false);
+		this.addDropDownListWithLabel(container,225,675,"Left curve",Dx7Sysex.operator1KeyboardLevelScaleLeftCurve + sysexOffset,
 			[ [ "- Linear", [0] ], [ "- Exponential", [1] ], [ "+ Linear", [2] ], [ "+ Exponential", [3] ] ]);
-		this.addKnobWithLabel(container, 325, 675, Fm2Sysex.operator1KeyboardLevelScaleRightDepth + sysexOffset, "Right depth", false);
-		this.addDropDownListWithLabel(container,425,675,"Right curve",Fm2Sysex.operator1KeyboardLevelScaleRightCurve + sysexOffset,
+		this.addKnobWithLabel(container, 325, 675, Dx7Sysex.operator1KeyboardLevelScaleRightDepth + sysexOffset, "Right depth", false);
+		this.addDropDownListWithLabel(container,425,675,"Right curve",Dx7Sysex.operator1KeyboardLevelScaleRightCurve + sysexOffset,
 			[ [ "- Linear", [0] ], [ "- Exponential", [1] ], [ "+ Linear", [2] ], [ "+ Exponential", [3] ] ]);
 
 		this.addKnobWithLabel(container, 25
-			, 775, Fm2Sysex.operator1KeyboardRateScaling + sysexOffset, "Rate scaling", false, controlSpec0To7);
+			, 775, Dx7Sysex.operator1KeyboardRateScaling + sysexOffset, "Rate scaling", false, controlSpec0To7);
 	}
 
 	initGlobalTab {
 		|tab|
 		var container = View(tab.body,Rect(0,0,tab.body.bounds.width,tab.body.bounds.height));
-		this.addKnobWithLabel(container, 50, 25, Fm2Sysex.feedback, "Feedback", false, controlSpec0To7);
-		this.addKnobWithLabel(container, 150, 25, Fm2Sysex.operatorKeySync, "Op Key Sync", false, controlSpec0To1);
-		this.addKnobWithLabel(container, 250, 25, Fm2Sysex.pitchModulationSensitivity, "Pitch Mod Sens", false, controlSpec0To7);
-		this.addKnobWithLabel(container, 350, 25, Fm2Sysex.transpose, "Transpose", false, controlSpec0To48);
+		this.addKnobWithLabel(container, 50, 25, Dx7Sysex.feedback, "Feedback", false, controlSpec0To7);
+		this.addKnobWithLabel(container, 150, 25, Dx7Sysex.operatorKeySync, "Op Key Sync", false, controlSpec0To1);
+		this.addKnobWithLabel(container, 250, 25, Dx7Sysex.pitchModulationSensitivity, "Pitch Mod Sens", false, controlSpec0To7);
+		this.addKnobWithLabel(container, 350, 25, Dx7Sysex.transpose, "Transpose", false, controlSpec0To48);
 	}
 
 	initLfoTab {
 		|tab|
 		var container = View(tab.body,Rect(0,0,tab.body.bounds.width,tab.body.bounds.height));
-		this.addKnobWithLabel(container, 50, 25, Fm2Sysex.lfoSpeed, "Speed", false);
-		this.addKnobWithLabel(container, 150, 25, Fm2Sysex.lfoDelay, "Delay", false);
-		this.addKnobWithLabel(container, 250, 25, Fm2Sysex.lfoWaveform, "Waveform", false, controlSpec0To5);
-		this.addKnobWithLabel(container, 350, 25, Fm2Sysex.lfoPitchModulationDepth, "Pitch mod", false);
-		this.addKnobWithLabel(container, 450, 25, Fm2Sysex.lfoAmplitudeModulationDepth, "Amp mod", false);
-		this.addKnobWithLabel(container, 550, 25, Fm2Sysex.lfoKeySync, "Key sync", false, controlSpec0To1);
+		this.addKnobWithLabel(container, 50, 25, Dx7Sysex.lfoSpeed, "Speed", false);
+		this.addKnobWithLabel(container, 150, 25, Dx7Sysex.lfoDelay, "Delay", false);
+		this.addKnobWithLabel(container, 250, 25, Dx7Sysex.lfoWaveform, "Waveform", false, controlSpec0To5);
+		this.addKnobWithLabel(container, 350, 25, Dx7Sysex.lfoPitchModulationDepth, "Pitch mod", false);
+		this.addKnobWithLabel(container, 450, 25, Dx7Sysex.lfoAmplitudeModulationDepth, "Amp mod", false);
+		this.addKnobWithLabel(container, 550, 25, Dx7Sysex.lfoKeySync, "Key sync", false, controlSpec0To1);
 	}
 
 	initPitchEnvelopeTab {
 		|tab|
 		var container = View(tab.body,Rect(0,0,tab.body.bounds.width,tab.body.bounds.height));
-		this.addKnobWithLabel(container, 50, 25, Fm2Sysex.pitchEnvelopeGeneratorRate1, "Rate 1", false);
-		this.addKnobWithLabel(container, 150, 25, Fm2Sysex.pitchEnvelopeGeneratorLevel1, "Level 1", false);
-		this.addKnobWithLabel(container, 250, 25, Fm2Sysex.pitchEnvelopeGeneratorRate2, "Rate 2", false);
-		this.addKnobWithLabel(container, 350, 25, Fm2Sysex.pitchEnvelopeGeneratorLevel2, "Level 2", false);
-		this.addKnobWithLabel(container, 450, 25, Fm2Sysex.pitchEnvelopeGeneratorRate3, "Rate 3", false);
-		this.addKnobWithLabel(container, 550, 25, Fm2Sysex.pitchEnvelopeGeneratorLevel3, "Level 3", false);
-		this.addKnobWithLabel(container, 650, 25, Fm2Sysex.pitchEnvelopeGeneratorRate4, "Rate 4", false);
-		this.addKnobWithLabel(container, 750, 25, Fm2Sysex.pitchEnvelopeGeneratorLevel4, "Level 4", false);
+		this.addKnobWithLabel(container, 50, 25, Dx7Sysex.pitchEnvelopeGeneratorRate1, "Rate 1", false);
+		this.addKnobWithLabel(container, 150, 25, Dx7Sysex.pitchEnvelopeGeneratorLevel1, "Level 1", false);
+		this.addKnobWithLabel(container, 250, 25, Dx7Sysex.pitchEnvelopeGeneratorRate2, "Rate 2", false);
+		this.addKnobWithLabel(container, 350, 25, Dx7Sysex.pitchEnvelopeGeneratorLevel2, "Level 2", false);
+		this.addKnobWithLabel(container, 450, 25, Dx7Sysex.pitchEnvelopeGeneratorRate3, "Rate 3", false);
+		this.addKnobWithLabel(container, 550, 25, Dx7Sysex.pitchEnvelopeGeneratorLevel3, "Level 3", false);
+		this.addKnobWithLabel(container, 650, 25, Dx7Sysex.pitchEnvelopeGeneratorRate4, "Rate 4", false);
+		this.addKnobWithLabel(container, 750, 25, Dx7Sysex.pitchEnvelopeGeneratorLevel4, "Level 4", false);
 	}
 
 	initPresetOverview {
 		|parent|
 		var container = View(parent, Rect(0, 0, 500, 500)).background_(Color.green);
-	}
-
-	initFm2Tab {
-		|tab|
-		var container = View(tab.body,Rect(0,0,tab.body.bounds.width,tab.body.bounds.height));
-		this.addKnobWithLabel(container, 50, 25, Fm2.modulatorAttackCcNo, "Modulator attack", false, controlSpec0To127);
-		this.addKnobWithLabel(container, 150, 25, Fm2.modulatorDecayCcNo, "Modulator decay", false, controlSpec0To127);
-		this.addKnobWithLabel(container, 250, 25, Fm2.carrierAttackCcNo, "Carrier attack", false, controlSpec0To127);
-		this.addKnobWithLabel(container, 350, 25, Fm2.carrierDecayCcNo, "Carrier decay", false, controlSpec0To127);
-		this.addKnobWithLabel(container, 450, 25, Fm2.chorusDepthCcNo, "Chorus depth", false, controlSpec0To127);
-		this.addKnobWithLabel(container, 550, 25, Fm2.reverbDepthCcNo, "Reverb depth", false, controlSpec0To127);
 	}
 
 	setDefaultControlSpec {
