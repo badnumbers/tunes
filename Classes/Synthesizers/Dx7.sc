@@ -32,7 +32,7 @@ Dx7 : Synthesizer {
 		|patch|
 		var start,payload,checksum,end,finalMessage;
 
-		Validator.validateMethodParameterType(patch, Fm2Patch, "patch", "Fm2", "setWorkingPatch");
+		Validator.validateMethodParameterType(patch, Dx7Patch, "patch", "Dx7", "setWorkingPatch");
 		prWorkingPatch = patch;
 
 		start = Int8Array[240,67,0,0,1,27];
@@ -214,6 +214,11 @@ Dx7 : Synthesizer {
 	updateParameterInHardwareSynth {
 		|key,newvalue|
 
-		prMidiout.sysex(Int8Array[240, 67, 16 + midiChannel, 0, 121, 127, 247])
+		var pageNumber = 0, parameterNumber = key;
+		if (key > 127, {
+			pageNumber = 1;
+			parameterNumber = parameterNumber - 128;
+		});
+		prMidiout.sysex(Int8Array[240, 67, 16 + midiChannel, pageNumber, parameterNumber, newvalue, 247])
 	}
 }
