@@ -15,6 +15,7 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 	var <dx7Teal;
 	var <dx7Purple;
 	var <dx7Brown;
+	var prFactoryPresets;
 
 	addDropDownListWithLabel {
 		|parent,left,top,labelText,parameterNumber,midiMappings|
@@ -241,7 +242,9 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 		.string_("Load patch")
 		.stringColor_(Color.black)
 		.align_(\center)
-		.mouseUpAction_({this.loadSysexFile()});
+		.mouseUpAction_({this.loadSysexFileFromDialog()});
+
+		this.initFactoryPresetDropDowns(window);
 	}
 
 	initAlgorithmSpecs {
@@ -509,6 +512,60 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 		});
 	}
 
+	initFactoryPresetDropDowns {
+		|window|
+		var patchSelector, bankSelector;
+		if (prFactoryPresets.isNil, {
+			this.initFactoryPresets();
+			if (prFactoryPresets.keys.size == 0, {
+				^nil;
+			});
+		});
+
+		patchSelector = PopUpMenu(window,Rect(1210,960,100,30))
+		.action_({
+			|selectedItem|
+			if (selectedItem.value > 0, { // The user something other than 'Please select...'
+				this.prLoadAndSendSysexFile(prFactoryPresets[bankSelector.item][selectedItem.value-1].filepath); // We have to subtract one because of the 'Please select...' item
+			});
+		});
+
+		bankSelector = PopUpMenu(window,Rect(1100,960,100,30)).items_(prFactoryPresets.keys.asArray.sort)
+		.action_({
+			|selectedItem|
+			patchSelector.items_(["Please select..."] ++ prFactoryPresets[selectedItem.item].collect({
+				|patch|
+				patch.filename;
+			}));
+		}).
+		valueAction_(0); // Trigger the action to load the first bank's presets
+	}
+
+	initFactoryPresets {
+		// I'm using this site as the authority about bank and patch names and numbers: https://yamahablackboxes.com/collection/yamaha-dx7-synthesizer/patches/
+		// And downloading the patches from this site: https://patches.fm/
+		var guiFolder, subfolders, bankFolders;
+		guiFolder = PathName(PathName(this.class.filenameSymbol.asString).pathOnly);
+		subfolders = guiFolder.folders.select({|item|item.folderName == "Dx7FactoryPresets"});
+		if (subfolders.size != 1, {
+			postln("No directory called Dx7FactoryPresets was found inside Classes/Front-ends.")
+			^nil;
+		});
+
+		prFactoryPresets = Dictionary();
+		bankFolders = subfolders[0].folders;
+		bankFolders.do({
+			|folderPath|
+			var bankArray = Array();
+			folderPath.files.do({
+				|filePath|
+				bankArray = bankArray.add((filename: filePath.fileNameWithoutExtension[4..], filepath:filePath.fullPath));
+			});
+			prFactoryPresets.put(folderPath.folderName, bankArray);
+
+		});
+	}
+
 	initOperatorTab {
 		|tab, operatorNumber|
 		var container = View(tab.body,Rect(0,0,tab.body.bounds.width,tab.body.bounds.height));
@@ -592,170 +649,175 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 		var container = View(parent, Rect(0, 0, 500, 500)).background_(Color.green);
 	}
 
-	loadSysexFile {
+	prLoadAndSendSysexFile {
+		|path|
+		var patch = Dx7Patch();
+		var filecontents = File.new(path, "rb");
+		var sysex = Int8Array();
+		filecontents.do({|el| sysex = sysex.add(el.ascii); });
+		this.prValidateSysex(sysex);
+		patch.kvps[Dx7Sysex.operator6EnvelopeGeneratorRate1] = sysex[6];
+		patch.kvps[Dx7Sysex.operator6EnvelopeGeneratorRate2] = sysex[7];
+		patch.kvps[Dx7Sysex.operator6EnvelopeGeneratorRate3] = sysex[8];
+		patch.kvps[Dx7Sysex.operator6EnvelopeGeneratorRate4] = sysex[9];
+		patch.kvps[Dx7Sysex.operator6EnvelopeGeneratorLevel1] = sysex[10];
+		patch.kvps[Dx7Sysex.operator6EnvelopeGeneratorLevel2] = sysex[11];
+		patch.kvps[Dx7Sysex.operator6EnvelopeGeneratorLevel3] = sysex[12];
+		patch.kvps[Dx7Sysex.operator6EnvelopeGeneratorLevel4] = sysex[13];
+		patch.kvps[Dx7Sysex.operator6KeyboardLevelScaleBreakpoint] = sysex[14];
+		patch.kvps[Dx7Sysex.operator6KeyboardLevelScaleLeftDepth] = sysex[15];
+		patch.kvps[Dx7Sysex.operator6KeyboardLevelScaleRightDepth] = sysex[16];
+		patch.kvps[Dx7Sysex.operator6KeyboardLevelScaleLeftCurve] = sysex[17];
+		patch.kvps[Dx7Sysex.operator6KeyboardLevelScaleRightCurve] = sysex[18];
+		patch.kvps[Dx7Sysex.operator6KeyboardRateScaling] = sysex[19];
+		patch.kvps[Dx7Sysex.operator6AmplitudeModulationSensitivity] = sysex[20];
+		patch.kvps[Dx7Sysex.operator6KeyVelocitySensitivity] = sysex[21];
+		patch.kvps[Dx7Sysex.operator6OutputLevel] = sysex[22];
+		patch.kvps[Dx7Sysex.operator6Mode] = sysex[23];
+		patch.kvps[Dx7Sysex.operator6CoarseFrequency] = sysex[24];
+		patch.kvps[Dx7Sysex.operator6FineFrequency] = sysex[25];
+		patch.kvps[Dx7Sysex.operator6Detune] = sysex[26];
+		patch.kvps[Dx7Sysex.operator5EnvelopeGeneratorRate1] = sysex[27];
+		patch.kvps[Dx7Sysex.operator5EnvelopeGeneratorRate2] = sysex[28];
+		patch.kvps[Dx7Sysex.operator5EnvelopeGeneratorRate3] = sysex[29];
+		patch.kvps[Dx7Sysex.operator5EnvelopeGeneratorRate4] = sysex[30];
+		patch.kvps[Dx7Sysex.operator5EnvelopeGeneratorLevel1] = sysex[31];
+		patch.kvps[Dx7Sysex.operator5EnvelopeGeneratorLevel2] = sysex[32];
+		patch.kvps[Dx7Sysex.operator5EnvelopeGeneratorLevel3] = sysex[33];
+		patch.kvps[Dx7Sysex.operator5EnvelopeGeneratorLevel4] = sysex[34];
+		patch.kvps[Dx7Sysex.operator5KeyboardLevelScaleBreakpoint] = sysex[35];
+		patch.kvps[Dx7Sysex.operator5KeyboardLevelScaleLeftDepth] = sysex[36];
+		patch.kvps[Dx7Sysex.operator5KeyboardLevelScaleRightDepth] = sysex[37];
+		patch.kvps[Dx7Sysex.operator5KeyboardLevelScaleLeftCurve] = sysex[38];
+		patch.kvps[Dx7Sysex.operator5KeyboardLevelScaleRightCurve] = sysex[39];
+		patch.kvps[Dx7Sysex.operator5KeyboardRateScaling] = sysex[40];
+		patch.kvps[Dx7Sysex.operator5AmplitudeModulationSensitivity] = sysex[41];
+		patch.kvps[Dx7Sysex.operator5KeyVelocitySensitivity] = sysex[42];
+		patch.kvps[Dx7Sysex.operator5OutputLevel] = sysex[43];
+		patch.kvps[Dx7Sysex.operator5Mode] = sysex[44];
+		patch.kvps[Dx7Sysex.operator5CoarseFrequency] = sysex[45];
+		patch.kvps[Dx7Sysex.operator5FineFrequency] = sysex[46];
+		patch.kvps[Dx7Sysex.operator5Detune] = sysex[47];
+		patch.kvps[Dx7Sysex.operator4EnvelopeGeneratorRate1] = sysex[48];
+		patch.kvps[Dx7Sysex.operator4EnvelopeGeneratorRate2] = sysex[49];
+		patch.kvps[Dx7Sysex.operator4EnvelopeGeneratorRate3] = sysex[50];
+		patch.kvps[Dx7Sysex.operator4EnvelopeGeneratorRate4] = sysex[51];
+		patch.kvps[Dx7Sysex.operator4EnvelopeGeneratorLevel1] = sysex[52];
+		patch.kvps[Dx7Sysex.operator4EnvelopeGeneratorLevel2] = sysex[53];
+		patch.kvps[Dx7Sysex.operator4EnvelopeGeneratorLevel3] = sysex[54];
+		patch.kvps[Dx7Sysex.operator4EnvelopeGeneratorLevel4] = sysex[55];
+		patch.kvps[Dx7Sysex.operator4KeyboardLevelScaleBreakpoint] = sysex[56];
+		patch.kvps[Dx7Sysex.operator4KeyboardLevelScaleLeftDepth] = sysex[57];
+		patch.kvps[Dx7Sysex.operator4KeyboardLevelScaleRightDepth] = sysex[58];
+		patch.kvps[Dx7Sysex.operator4KeyboardLevelScaleLeftCurve] = sysex[59];
+		patch.kvps[Dx7Sysex.operator4KeyboardLevelScaleRightCurve] = sysex[60];
+		patch.kvps[Dx7Sysex.operator4KeyboardRateScaling] = sysex[61];
+		patch.kvps[Dx7Sysex.operator4AmplitudeModulationSensitivity] = sysex[62];
+		patch.kvps[Dx7Sysex.operator4KeyVelocitySensitivity] = sysex[63];
+		patch.kvps[Dx7Sysex.operator4OutputLevel] = sysex[64];
+		patch.kvps[Dx7Sysex.operator4Mode] = sysex[65];
+		patch.kvps[Dx7Sysex.operator4CoarseFrequency] = sysex[66];
+		patch.kvps[Dx7Sysex.operator4FineFrequency] = sysex[67];
+		patch.kvps[Dx7Sysex.operator4Detune] = sysex[68];
+		patch.kvps[Dx7Sysex.operator3EnvelopeGeneratorRate1] = sysex[69];
+		patch.kvps[Dx7Sysex.operator3EnvelopeGeneratorRate2] = sysex[70];
+		patch.kvps[Dx7Sysex.operator3EnvelopeGeneratorRate3] = sysex[71];
+		patch.kvps[Dx7Sysex.operator3EnvelopeGeneratorRate4] = sysex[72];
+		patch.kvps[Dx7Sysex.operator3EnvelopeGeneratorLevel1] = sysex[73];
+		patch.kvps[Dx7Sysex.operator3EnvelopeGeneratorLevel2] = sysex[74];
+		patch.kvps[Dx7Sysex.operator3EnvelopeGeneratorLevel3] = sysex[75];
+		patch.kvps[Dx7Sysex.operator3EnvelopeGeneratorLevel4] = sysex[76];
+		patch.kvps[Dx7Sysex.operator3KeyboardLevelScaleBreakpoint] = sysex[77];
+		patch.kvps[Dx7Sysex.operator3KeyboardLevelScaleLeftDepth] = sysex[78];
+		patch.kvps[Dx7Sysex.operator3KeyboardLevelScaleRightDepth] = sysex[79];
+		patch.kvps[Dx7Sysex.operator3KeyboardLevelScaleLeftCurve] = sysex[80];
+		patch.kvps[Dx7Sysex.operator3KeyboardLevelScaleRightCurve] = sysex[81];
+		patch.kvps[Dx7Sysex.operator3KeyboardRateScaling] = sysex[82];
+		patch.kvps[Dx7Sysex.operator3AmplitudeModulationSensitivity] = sysex[83];
+		patch.kvps[Dx7Sysex.operator3KeyVelocitySensitivity] = sysex[84];
+		patch.kvps[Dx7Sysex.operator3OutputLevel] = sysex[85];
+		patch.kvps[Dx7Sysex.operator3Mode] = sysex[86];
+		patch.kvps[Dx7Sysex.operator3CoarseFrequency] = sysex[87];
+		patch.kvps[Dx7Sysex.operator3FineFrequency] = sysex[88];
+		patch.kvps[Dx7Sysex.operator3Detune] = sysex[89];
+		patch.kvps[Dx7Sysex.operator2EnvelopeGeneratorRate1] = sysex[90];
+		patch.kvps[Dx7Sysex.operator2EnvelopeGeneratorRate2] = sysex[91];
+		patch.kvps[Dx7Sysex.operator2EnvelopeGeneratorRate3] = sysex[92];
+		patch.kvps[Dx7Sysex.operator2EnvelopeGeneratorRate4] = sysex[93];
+		patch.kvps[Dx7Sysex.operator2EnvelopeGeneratorLevel1] = sysex[94];
+		patch.kvps[Dx7Sysex.operator2EnvelopeGeneratorLevel2] = sysex[95];
+		patch.kvps[Dx7Sysex.operator2EnvelopeGeneratorLevel3] = sysex[96];
+		patch.kvps[Dx7Sysex.operator2EnvelopeGeneratorLevel4] = sysex[97];
+		patch.kvps[Dx7Sysex.operator2KeyboardLevelScaleBreakpoint] = sysex[98];
+		patch.kvps[Dx7Sysex.operator2KeyboardLevelScaleLeftDepth] = sysex[99];
+		patch.kvps[Dx7Sysex.operator2KeyboardLevelScaleRightDepth] = sysex[100];
+		patch.kvps[Dx7Sysex.operator2KeyboardLevelScaleLeftCurve] = sysex[101];
+		patch.kvps[Dx7Sysex.operator2KeyboardLevelScaleRightCurve] = sysex[102];
+		patch.kvps[Dx7Sysex.operator2KeyboardRateScaling] = sysex[103];
+		patch.kvps[Dx7Sysex.operator2AmplitudeModulationSensitivity] = sysex[104];
+		patch.kvps[Dx7Sysex.operator2KeyVelocitySensitivity] = sysex[105];
+		patch.kvps[Dx7Sysex.operator2OutputLevel] = sysex[106];
+		patch.kvps[Dx7Sysex.operator2Mode] = sysex[107];
+		patch.kvps[Dx7Sysex.operator2CoarseFrequency] = sysex[108];
+		patch.kvps[Dx7Sysex.operator2FineFrequency] = sysex[109];
+		patch.kvps[Dx7Sysex.operator2Detune] = sysex[110];
+		patch.kvps[Dx7Sysex.operator1EnvelopeGeneratorRate1] = sysex[111];
+		patch.kvps[Dx7Sysex.operator1EnvelopeGeneratorRate2] = sysex[112];
+		patch.kvps[Dx7Sysex.operator1EnvelopeGeneratorRate3] = sysex[113];
+		patch.kvps[Dx7Sysex.operator1EnvelopeGeneratorRate4] = sysex[114];
+		patch.kvps[Dx7Sysex.operator1EnvelopeGeneratorLevel1] = sysex[115];
+		patch.kvps[Dx7Sysex.operator1EnvelopeGeneratorLevel2] = sysex[116];
+		patch.kvps[Dx7Sysex.operator1EnvelopeGeneratorLevel3] = sysex[117];
+		patch.kvps[Dx7Sysex.operator1EnvelopeGeneratorLevel4] = sysex[118];
+		patch.kvps[Dx7Sysex.operator1KeyboardLevelScaleBreakpoint] = sysex[119];
+		patch.kvps[Dx7Sysex.operator1KeyboardLevelScaleLeftDepth] = sysex[120];
+		patch.kvps[Dx7Sysex.operator1KeyboardLevelScaleRightDepth] = sysex[121];
+		patch.kvps[Dx7Sysex.operator1KeyboardLevelScaleLeftCurve] = sysex[122];
+		patch.kvps[Dx7Sysex.operator1KeyboardLevelScaleRightCurve] = sysex[123];
+		patch.kvps[Dx7Sysex.operator1KeyboardRateScaling] = sysex[124];
+		patch.kvps[Dx7Sysex.operator1AmplitudeModulationSensitivity] = sysex[125];
+		patch.kvps[Dx7Sysex.operator1KeyVelocitySensitivity] = sysex[126];
+		patch.kvps[Dx7Sysex.operator1OutputLevel] = sysex[127];
+		patch.kvps[Dx7Sysex.operator1Mode] = sysex[128];
+		patch.kvps[Dx7Sysex.operator1CoarseFrequency] = sysex[129];
+		patch.kvps[Dx7Sysex.operator1FineFrequency] = sysex[130];
+		patch.kvps[Dx7Sysex.operator1Detune] = sysex[131];
+		patch.kvps[Dx7Sysex.pitchEnvelopeGeneratorRate1] = sysex[132];
+		patch.kvps[Dx7Sysex.pitchEnvelopeGeneratorRate2] = sysex[133];
+		patch.kvps[Dx7Sysex.pitchEnvelopeGeneratorRate3] = sysex[134];
+		patch.kvps[Dx7Sysex.pitchEnvelopeGeneratorRate4] = sysex[135];
+		patch.kvps[Dx7Sysex.pitchEnvelopeGeneratorLevel1] = sysex[136];
+		patch.kvps[Dx7Sysex.pitchEnvelopeGeneratorLevel2] = sysex[137];
+		patch.kvps[Dx7Sysex.pitchEnvelopeGeneratorLevel3] = sysex[138];
+		patch.kvps[Dx7Sysex.pitchEnvelopeGeneratorLevel4] = sysex[139];
+		patch.kvps[Dx7Sysex.algorithm] = sysex[140];
+		patch.kvps[Dx7Sysex.feedback] = sysex[141];
+		patch.kvps[Dx7Sysex.operatorKeySync] = sysex[142];
+		patch.kvps[Dx7Sysex.lfoSpeed] = sysex[143];
+		patch.kvps[Dx7Sysex.lfoDelay] = sysex[144];
+		patch.kvps[Dx7Sysex.lfoPitchModulationDepth] = sysex[145];
+		patch.kvps[Dx7Sysex.lfoAmplitudeModulationDepth] = sysex[146];
+		patch.kvps[Dx7Sysex.lfoKeySync] = sysex[147];
+		patch.kvps[Dx7Sysex.lfoWaveform] = sysex[148];
+		patch.kvps[Dx7Sysex.pitchModulationSensitivity] = sysex[149];
+		patch.kvps[Dx7Sysex.transpose] = sysex[150];
+		patch.kvps[Dx7Sysex.voiceNameCharacter1] = sysex[151];
+		patch.kvps[Dx7Sysex.voiceNameCharacter2] = sysex[152];
+		patch.kvps[Dx7Sysex.voiceNameCharacter3] = sysex[153];
+		patch.kvps[Dx7Sysex.voiceNameCharacter4] = sysex[154];
+		patch.kvps[Dx7Sysex.voiceNameCharacter5] = sysex[155];
+		patch.kvps[Dx7Sysex.voiceNameCharacter6] = sysex[156];
+		patch.kvps[Dx7Sysex.voiceNameCharacter7] = sysex[157];
+		patch.kvps[Dx7Sysex.voiceNameCharacter8] = sysex[158];
+		patch.kvps[Dx7Sysex.voiceNameCharacter9] = sysex[159];
+		patch.kvps[Dx7Sysex.voiceNameCharacter10] = sysex[160];
+		super.prSynthesizer.setWorkingPatch(patch);
+	}
+
+	loadSysexFileFromDialog {
 		Dialog.openPanel({
 			|path|
-			var patch = Dx7Patch();
-			var filecontents = File.new(path, "rb");
-			var sysex = Int8Array();
-			filecontents.do({|el| sysex = sysex.add(el.ascii); });
-			this.prValidateSysex(sysex);
-			patch.kvps[Dx7Sysex.operator6EnvelopeGeneratorRate1] = sysex[6];
-			patch.kvps[Dx7Sysex.operator6EnvelopeGeneratorRate2] = sysex[7];
-			patch.kvps[Dx7Sysex.operator6EnvelopeGeneratorRate3] = sysex[8];
-			patch.kvps[Dx7Sysex.operator6EnvelopeGeneratorRate4] = sysex[9];
-			patch.kvps[Dx7Sysex.operator6EnvelopeGeneratorLevel1] = sysex[10];
-			patch.kvps[Dx7Sysex.operator6EnvelopeGeneratorLevel2] = sysex[11];
-			patch.kvps[Dx7Sysex.operator6EnvelopeGeneratorLevel3] = sysex[12];
-			patch.kvps[Dx7Sysex.operator6EnvelopeGeneratorLevel4] = sysex[13];
-			patch.kvps[Dx7Sysex.operator6KeyboardLevelScaleBreakpoint] = sysex[14];
-			patch.kvps[Dx7Sysex.operator6KeyboardLevelScaleLeftDepth] = sysex[15];
-			patch.kvps[Dx7Sysex.operator6KeyboardLevelScaleRightDepth] = sysex[16];
-			patch.kvps[Dx7Sysex.operator6KeyboardLevelScaleLeftCurve] = sysex[17];
-			patch.kvps[Dx7Sysex.operator6KeyboardLevelScaleRightCurve] = sysex[18];
-			patch.kvps[Dx7Sysex.operator6KeyboardRateScaling] = sysex[19];
-			patch.kvps[Dx7Sysex.operator6AmplitudeModulationSensitivity] = sysex[20];
-			patch.kvps[Dx7Sysex.operator6KeyVelocitySensitivity] = sysex[21];
-			patch.kvps[Dx7Sysex.operator6OutputLevel] = sysex[22];
-			patch.kvps[Dx7Sysex.operator6Mode] = sysex[23];
-			patch.kvps[Dx7Sysex.operator6CoarseFrequency] = sysex[24];
-			patch.kvps[Dx7Sysex.operator6FineFrequency] = sysex[25];
-			patch.kvps[Dx7Sysex.operator6Detune] = sysex[26];
-			patch.kvps[Dx7Sysex.operator5EnvelopeGeneratorRate1] = sysex[27];
-			patch.kvps[Dx7Sysex.operator5EnvelopeGeneratorRate2] = sysex[28];
-			patch.kvps[Dx7Sysex.operator5EnvelopeGeneratorRate3] = sysex[29];
-			patch.kvps[Dx7Sysex.operator5EnvelopeGeneratorRate4] = sysex[30];
-			patch.kvps[Dx7Sysex.operator5EnvelopeGeneratorLevel1] = sysex[31];
-			patch.kvps[Dx7Sysex.operator5EnvelopeGeneratorLevel2] = sysex[32];
-			patch.kvps[Dx7Sysex.operator5EnvelopeGeneratorLevel3] = sysex[33];
-			patch.kvps[Dx7Sysex.operator5EnvelopeGeneratorLevel4] = sysex[34];
-			patch.kvps[Dx7Sysex.operator5KeyboardLevelScaleBreakpoint] = sysex[35];
-			patch.kvps[Dx7Sysex.operator5KeyboardLevelScaleLeftDepth] = sysex[36];
-			patch.kvps[Dx7Sysex.operator5KeyboardLevelScaleRightDepth] = sysex[37];
-			patch.kvps[Dx7Sysex.operator5KeyboardLevelScaleLeftCurve] = sysex[38];
-			patch.kvps[Dx7Sysex.operator5KeyboardLevelScaleRightCurve] = sysex[39];
-			patch.kvps[Dx7Sysex.operator5KeyboardRateScaling] = sysex[40];
-			patch.kvps[Dx7Sysex.operator5AmplitudeModulationSensitivity] = sysex[41];
-			patch.kvps[Dx7Sysex.operator5KeyVelocitySensitivity] = sysex[42];
-			patch.kvps[Dx7Sysex.operator5OutputLevel] = sysex[43];
-			patch.kvps[Dx7Sysex.operator5Mode] = sysex[44];
-			patch.kvps[Dx7Sysex.operator5CoarseFrequency] = sysex[45];
-			patch.kvps[Dx7Sysex.operator5FineFrequency] = sysex[46];
-			patch.kvps[Dx7Sysex.operator5Detune] = sysex[47];
-			patch.kvps[Dx7Sysex.operator4EnvelopeGeneratorRate1] = sysex[48];
-			patch.kvps[Dx7Sysex.operator4EnvelopeGeneratorRate2] = sysex[49];
-			patch.kvps[Dx7Sysex.operator4EnvelopeGeneratorRate3] = sysex[50];
-			patch.kvps[Dx7Sysex.operator4EnvelopeGeneratorRate4] = sysex[51];
-			patch.kvps[Dx7Sysex.operator4EnvelopeGeneratorLevel1] = sysex[52];
-			patch.kvps[Dx7Sysex.operator4EnvelopeGeneratorLevel2] = sysex[53];
-			patch.kvps[Dx7Sysex.operator4EnvelopeGeneratorLevel3] = sysex[54];
-			patch.kvps[Dx7Sysex.operator4EnvelopeGeneratorLevel4] = sysex[55];
-			patch.kvps[Dx7Sysex.operator4KeyboardLevelScaleBreakpoint] = sysex[56];
-			patch.kvps[Dx7Sysex.operator4KeyboardLevelScaleLeftDepth] = sysex[57];
-			patch.kvps[Dx7Sysex.operator4KeyboardLevelScaleRightDepth] = sysex[58];
-			patch.kvps[Dx7Sysex.operator4KeyboardLevelScaleLeftCurve] = sysex[59];
-			patch.kvps[Dx7Sysex.operator4KeyboardLevelScaleRightCurve] = sysex[60];
-			patch.kvps[Dx7Sysex.operator4KeyboardRateScaling] = sysex[61];
-			patch.kvps[Dx7Sysex.operator4AmplitudeModulationSensitivity] = sysex[62];
-			patch.kvps[Dx7Sysex.operator4KeyVelocitySensitivity] = sysex[63];
-			patch.kvps[Dx7Sysex.operator4OutputLevel] = sysex[64];
-			patch.kvps[Dx7Sysex.operator4Mode] = sysex[65];
-			patch.kvps[Dx7Sysex.operator4CoarseFrequency] = sysex[66];
-			patch.kvps[Dx7Sysex.operator4FineFrequency] = sysex[67];
-			patch.kvps[Dx7Sysex.operator4Detune] = sysex[68];
-			patch.kvps[Dx7Sysex.operator3EnvelopeGeneratorRate1] = sysex[69];
-			patch.kvps[Dx7Sysex.operator3EnvelopeGeneratorRate2] = sysex[70];
-			patch.kvps[Dx7Sysex.operator3EnvelopeGeneratorRate3] = sysex[71];
-			patch.kvps[Dx7Sysex.operator3EnvelopeGeneratorRate4] = sysex[72];
-			patch.kvps[Dx7Sysex.operator3EnvelopeGeneratorLevel1] = sysex[73];
-			patch.kvps[Dx7Sysex.operator3EnvelopeGeneratorLevel2] = sysex[74];
-			patch.kvps[Dx7Sysex.operator3EnvelopeGeneratorLevel3] = sysex[75];
-			patch.kvps[Dx7Sysex.operator3EnvelopeGeneratorLevel4] = sysex[76];
-			patch.kvps[Dx7Sysex.operator3KeyboardLevelScaleBreakpoint] = sysex[77];
-			patch.kvps[Dx7Sysex.operator3KeyboardLevelScaleLeftDepth] = sysex[78];
-			patch.kvps[Dx7Sysex.operator3KeyboardLevelScaleRightDepth] = sysex[79];
-			patch.kvps[Dx7Sysex.operator3KeyboardLevelScaleLeftCurve] = sysex[80];
-			patch.kvps[Dx7Sysex.operator3KeyboardLevelScaleRightCurve] = sysex[81];
-			patch.kvps[Dx7Sysex.operator3KeyboardRateScaling] = sysex[82];
-			patch.kvps[Dx7Sysex.operator3AmplitudeModulationSensitivity] = sysex[83];
-			patch.kvps[Dx7Sysex.operator3KeyVelocitySensitivity] = sysex[84];
-			patch.kvps[Dx7Sysex.operator3OutputLevel] = sysex[85];
-			patch.kvps[Dx7Sysex.operator3Mode] = sysex[86];
-			patch.kvps[Dx7Sysex.operator3CoarseFrequency] = sysex[87];
-			patch.kvps[Dx7Sysex.operator3FineFrequency] = sysex[88];
-			patch.kvps[Dx7Sysex.operator3Detune] = sysex[89];
-			patch.kvps[Dx7Sysex.operator2EnvelopeGeneratorRate1] = sysex[90];
-			patch.kvps[Dx7Sysex.operator2EnvelopeGeneratorRate2] = sysex[91];
-			patch.kvps[Dx7Sysex.operator2EnvelopeGeneratorRate3] = sysex[92];
-			patch.kvps[Dx7Sysex.operator2EnvelopeGeneratorRate4] = sysex[93];
-			patch.kvps[Dx7Sysex.operator2EnvelopeGeneratorLevel1] = sysex[94];
-			patch.kvps[Dx7Sysex.operator2EnvelopeGeneratorLevel2] = sysex[95];
-			patch.kvps[Dx7Sysex.operator2EnvelopeGeneratorLevel3] = sysex[96];
-			patch.kvps[Dx7Sysex.operator2EnvelopeGeneratorLevel4] = sysex[97];
-			patch.kvps[Dx7Sysex.operator2KeyboardLevelScaleBreakpoint] = sysex[98];
-			patch.kvps[Dx7Sysex.operator2KeyboardLevelScaleLeftDepth] = sysex[99];
-			patch.kvps[Dx7Sysex.operator2KeyboardLevelScaleRightDepth] = sysex[100];
-			patch.kvps[Dx7Sysex.operator2KeyboardLevelScaleLeftCurve] = sysex[101];
-			patch.kvps[Dx7Sysex.operator2KeyboardLevelScaleRightCurve] = sysex[102];
-			patch.kvps[Dx7Sysex.operator2KeyboardRateScaling] = sysex[103];
-			patch.kvps[Dx7Sysex.operator2AmplitudeModulationSensitivity] = sysex[104];
-			patch.kvps[Dx7Sysex.operator2KeyVelocitySensitivity] = sysex[105];
-			patch.kvps[Dx7Sysex.operator2OutputLevel] = sysex[106];
-			patch.kvps[Dx7Sysex.operator2Mode] = sysex[107];
-			patch.kvps[Dx7Sysex.operator2CoarseFrequency] = sysex[108];
-			patch.kvps[Dx7Sysex.operator2FineFrequency] = sysex[109];
-			patch.kvps[Dx7Sysex.operator2Detune] = sysex[110];
-			patch.kvps[Dx7Sysex.operator1EnvelopeGeneratorRate1] = sysex[111];
-			patch.kvps[Dx7Sysex.operator1EnvelopeGeneratorRate2] = sysex[112];
-			patch.kvps[Dx7Sysex.operator1EnvelopeGeneratorRate3] = sysex[113];
-			patch.kvps[Dx7Sysex.operator1EnvelopeGeneratorRate4] = sysex[114];
-			patch.kvps[Dx7Sysex.operator1EnvelopeGeneratorLevel1] = sysex[115];
-			patch.kvps[Dx7Sysex.operator1EnvelopeGeneratorLevel2] = sysex[116];
-			patch.kvps[Dx7Sysex.operator1EnvelopeGeneratorLevel3] = sysex[117];
-			patch.kvps[Dx7Sysex.operator1EnvelopeGeneratorLevel4] = sysex[118];
-			patch.kvps[Dx7Sysex.operator1KeyboardLevelScaleBreakpoint] = sysex[119];
-			patch.kvps[Dx7Sysex.operator1KeyboardLevelScaleLeftDepth] = sysex[120];
-			patch.kvps[Dx7Sysex.operator1KeyboardLevelScaleRightDepth] = sysex[121];
-			patch.kvps[Dx7Sysex.operator1KeyboardLevelScaleLeftCurve] = sysex[122];
-			patch.kvps[Dx7Sysex.operator1KeyboardLevelScaleRightCurve] = sysex[123];
-			patch.kvps[Dx7Sysex.operator1KeyboardRateScaling] = sysex[124];
-			patch.kvps[Dx7Sysex.operator1AmplitudeModulationSensitivity] = sysex[125];
-			patch.kvps[Dx7Sysex.operator1KeyVelocitySensitivity] = sysex[126];
-			patch.kvps[Dx7Sysex.operator1OutputLevel] = sysex[127];
-			patch.kvps[Dx7Sysex.operator1Mode] = sysex[128];
-			patch.kvps[Dx7Sysex.operator1CoarseFrequency] = sysex[129];
-			patch.kvps[Dx7Sysex.operator1FineFrequency] = sysex[130];
-			patch.kvps[Dx7Sysex.operator1Detune] = sysex[131];
-			patch.kvps[Dx7Sysex.pitchEnvelopeGeneratorRate1] = sysex[132];
-			patch.kvps[Dx7Sysex.pitchEnvelopeGeneratorRate2] = sysex[133];
-			patch.kvps[Dx7Sysex.pitchEnvelopeGeneratorRate3] = sysex[134];
-			patch.kvps[Dx7Sysex.pitchEnvelopeGeneratorRate4] = sysex[135];
-			patch.kvps[Dx7Sysex.pitchEnvelopeGeneratorLevel1] = sysex[136];
-			patch.kvps[Dx7Sysex.pitchEnvelopeGeneratorLevel2] = sysex[137];
-			patch.kvps[Dx7Sysex.pitchEnvelopeGeneratorLevel3] = sysex[138];
-			patch.kvps[Dx7Sysex.pitchEnvelopeGeneratorLevel4] = sysex[139];
-			patch.kvps[Dx7Sysex.algorithm] = sysex[140];
-			patch.kvps[Dx7Sysex.feedback] = sysex[141];
-			patch.kvps[Dx7Sysex.operatorKeySync] = sysex[142];
-			patch.kvps[Dx7Sysex.lfoSpeed] = sysex[143];
-			patch.kvps[Dx7Sysex.lfoDelay] = sysex[144];
-			patch.kvps[Dx7Sysex.lfoPitchModulationDepth] = sysex[145];
-			patch.kvps[Dx7Sysex.lfoAmplitudeModulationDepth] = sysex[146];
-			patch.kvps[Dx7Sysex.lfoKeySync] = sysex[147];
-			patch.kvps[Dx7Sysex.lfoWaveform] = sysex[148];
-			patch.kvps[Dx7Sysex.pitchModulationSensitivity] = sysex[149];
-			patch.kvps[Dx7Sysex.transpose] = sysex[150];
-			patch.kvps[Dx7Sysex.voiceNameCharacter1] = sysex[151];
-			patch.kvps[Dx7Sysex.voiceNameCharacter2] = sysex[152];
-			patch.kvps[Dx7Sysex.voiceNameCharacter3] = sysex[153];
-			patch.kvps[Dx7Sysex.voiceNameCharacter4] = sysex[154];
-			patch.kvps[Dx7Sysex.voiceNameCharacter5] = sysex[155];
-			patch.kvps[Dx7Sysex.voiceNameCharacter6] = sysex[156];
-			patch.kvps[Dx7Sysex.voiceNameCharacter7] = sysex[157];
-			patch.kvps[Dx7Sysex.voiceNameCharacter8] = sysex[158];
-			patch.kvps[Dx7Sysex.voiceNameCharacter9] = sysex[159];
-			patch.kvps[Dx7Sysex.voiceNameCharacter10] = sysex[160];
-			super.prSynthesizer.setWorkingPatch(patch);
+			this.prLoadAndSendSysexFile(path);
 		},{
 		});
 	}
@@ -763,7 +825,6 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 	prValidateSysex {
 		|sysex|
 		var sum;
-		sysex.do({|fj|fj.postln;});
 		if (sysex.class != Int8Array, {
 			Error(format("The '%' parameter of %.%() must be a %. The value %, which has the class %, was provided.", "sysex", this.class.name, "prValidateSysex", Int8Array, sysex, sysex.class)).throw;
 		});
