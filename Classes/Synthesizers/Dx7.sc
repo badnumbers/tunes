@@ -1,5 +1,5 @@
 Dx7 : Synthesizer {
-	var <audioInputChannels = 0;
+	var <audioInputChannels = #[0];
 	var <>midiChannel = 8;
 
 	*getGuiType {
@@ -22,6 +22,22 @@ Dx7 : Synthesizer {
 		^"~dx7";
 	}
 
+	prCalculateSysexChecksum {
+		|databytes|
+		var checksum;
+		Validator.validateMethodParameterType(databytes, Int8Array, "databytes", this.class.name, "prCalculateSysexChecksum");
+
+		if (databytes.size != 155, {
+			Error(format("The byte array passed to %.% should be the parameter data for the sysex and should have 155 values.", this.class.name, "prCalculateSysexChecksum")).throw;
+		});
+
+		checksum = databytes.sum;
+		checksum = checksum & 0xff;
+		checksum = checksum.bitNot + 1;
+		checksum = checksum & 0x7f;
+		^checksum;
+	}
+
 	randomisePatch {
         |midiout,patchType,writeToPostWindow=false|
 		var patch = Dx7Patch();
@@ -34,8 +50,7 @@ Dx7 : Synthesizer {
 
 		Validator.validateMethodParameterType(patch, Dx7Patch, "patch", "Dx7", "setWorkingPatch");
 		prWorkingPatch = patch;
-
-		start = Int8Array[240,67,0,0,1,27];
+		start = Int8Array[240,67,midiChannel,0,1,27];
 		payload = Int8Array.newClear(155);
 		payload[Dx7Sysex.operator6EnvelopeGeneratorRate1] = prWorkingPatch.kvps[Dx7Sysex.operator6EnvelopeGeneratorRate1];
 		payload[Dx7Sysex.operator6EnvelopeGeneratorRate2] = prWorkingPatch.kvps[Dx7Sysex.operator6EnvelopeGeneratorRate2];
@@ -193,21 +208,17 @@ Dx7 : Synthesizer {
 		payload[Dx7Sysex.voiceNameCharacter9] = prWorkingPatch.kvps[Dx7Sysex.voiceNameCharacter9];
 		payload[Dx7Sysex.voiceNameCharacter10] = prWorkingPatch.kvps[Dx7Sysex.voiceNameCharacter10];
 
-		checksum = payload.sum;
-		checksum = checksum & 0xff;
-		checksum = checksum.bitNot + 1;
-		checksum = checksum & 0x7f;
-		checksum = Int8Array[checksum];
+		checksum = Int8Array[this.prCalculateSysexChecksum(payload)];
 
 		end = Int8Array[247];
 
 		finalMessage = start ++ payload ++ checksum ++ end;
-
 		prMidiout.sysex(finalMessage);
 
+		// Update the GUI but don't send parameter changes to the hardware
 		prWorkingPatch.kvps.keys.do({
 			|parameterNumber|
-			invokeUpdateActionsFunc.value({|actor| true}, parameterNumber, prWorkingPatch.kvps[parameterNumber]);
+			invokeUpdateActionsFunc.value({|actor| actor != \hardware}, parameterNumber, prWorkingPatch.kvps[parameterNumber]);
 		});
 	}
 
@@ -219,6 +230,6 @@ Dx7 : Synthesizer {
 			pageNumber = 1;
 			parameterNumber = parameterNumber - 128;
 		});
-		prMidiout.sysex(Int8Array[240, 67, 16 + midiChannel, pageNumber, parameterNumber, newvalue, 247])
+		prMidiout.sysex(Int8Array[240, 67, 16 + midiChannel, pageNumber, parameterNumber, newvalue, 247]);
 	}
 }
