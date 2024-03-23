@@ -12,7 +12,13 @@ Creates a new instance of LINK::Classes/ScSynthesizer::.
 ARGUMENT:: synthDef
 An instance of CODE::SynthDef:: to be used by the LINK::Classes/ScSynthesizer:: to create its CODE::Synth:: instance.
 
+ARGUMENT:: gui
+An instance of LINK::Classes/ScSynthesizerGui:: to be used to modify the parameters of the LINK::Classes/ScSynthesizer::.
+
 INSTANCEMETHODS::
+
+METHOD:: defName
+Returns the name of the CODE::SynthDef:: inside this LINK::Classes/ScSynthesizer::.
 
 METHOD:: free
 Frees the instance of the synth if there is one.
@@ -22,9 +28,6 @@ Displays the GUI to control this synth.
 
 METHOD:: synth
 Lazily creates and returns an instance of this synth.
-
-METHOD:: synthDefName
-Returns the name of the CODE::SynthDef:: inside this LINK::Classes/ScSynthesizer::.
 
 EXAMPLES::
 

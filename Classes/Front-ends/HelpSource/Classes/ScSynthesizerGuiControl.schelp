@@ -66,6 +66,4 @@ returns:: (describe returnvalue here)
 
 EXAMPLES::
 
-code::
-(some example code)
-::
+See the Examples for LINK::Classes/ScSynthesizer::.

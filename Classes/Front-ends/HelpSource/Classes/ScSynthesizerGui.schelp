@@ -1,62 +1,40 @@
 TITLE:: ScSynthesizerGui
-summary:: (put short description here)
+summary:: The GUI for an ScSynthesizer.
 categories:: Undocumented classes
-related:: Classes/SomeRelatedClass, Reference/SomeRelatedStuff, etc.
+related:: Classes/ScSynthesizer, Classes/ScSynthesizerGuiControl
 
 DESCRIPTION::
-(put long description here)
+The LINK::Classes/ScSynthesizerGui:: is used in the construction of the LINK::Classes/ScSynthesizer::. It provides a GUI that can be used to modify the parameters of the synth as it plays.
 
 
 CLASSMETHODS::
 
 METHOD:: new
-(describe method here)
+Creates a new instance of LINK::Classes/ScSynthesizerGui::.
 
 ARGUMENT:: controlRectWidth
-(describe argument here)
+The width of the section of the GUI that the controls will be placed in.
 
 ARGUMENT:: controlRectHeight
-(describe argument here)
+The height of the section of the GUI that the controls will be placed in.
 
 ARGUMENT:: windowLabel
-(describe argument here)
+The label to be written to the GUI title bar.
 
 ARGUMENT:: controlsArray
-(describe argument here)
-
-returns:: (describe returnvalue here)
+An array of instances of LINK::Classes/ScSynthesizerGuiControl:: which describe the controls to be drawn onto the GUI.
 
 
 INSTANCEMETHODS::
+private:: init
 
 METHOD:: show
-(describe method here)
+Renders the GUI.
 
 ARGUMENT:: synth
-(describe argument here)
-
-returns:: (describe returnvalue here)
-
-METHOD:: init
-(describe method here)
-
-ARGUMENT:: controlRectWidth
-(describe argument here)
-
-ARGUMENT:: controlRectHeight
-(describe argument here)
-
-ARGUMENT:: windowLabel
-(describe argument here)
-
-ARGUMENT:: controlsArray
-(describe argument here)
-
-returns:: (describe returnvalue here)
+The synth whose parameters the GUI will control.
 
 
 EXAMPLES::
 
-code::
-(some example code)
-::
+See the Examples for LINK::Classes/ScSynthesizer::.
