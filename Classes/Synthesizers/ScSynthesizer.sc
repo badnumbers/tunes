@@ -3,8 +3,12 @@ ScSynthesizer {
 	var prSynth;
 	var prSynthDef;
 
+	defName {
+		^prSynthDef.name;
+	}
+
 	free {
-		if (prSynth.isInstanceOf(Synth), {
+		if (prSynth.class == Synth, {
 			if (prSynth.isPlaying, {
 				prSynth.free;
 			});
@@ -45,9 +49,5 @@ ScSynthesizer {
 			});
 		});
 		^prSynth;
-	}
-
-	synthDefName {
-		^prSynthDef.name;
 	}
 }
