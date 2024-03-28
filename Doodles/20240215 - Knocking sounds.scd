@@ -8,7 +8,7 @@ g.synths = Group();
 g.effects = Group.after(g.synths);
 g.master = Group.after(g.effects);
 ~dx7 = ~dx7 ?? Dx7(d);
-p = p ?? ();
+p = (); p.hydrasynth = Array.newClear(100); p.dx7 = Array.newClear(100); p.rev2 = Array.newClear(100);
 )
 
 b.knockreverb.scope;
@@ -24,7 +24,7 @@ patch.kvps[152]=32;patch.kvps[153]=49;patch.kvps[35]=0;patch.kvps[101]=0;patch.k
 (
 SynthDef(\knock,
 	{
-		|pitchmod = 2, freq1, freq2, freq3, freq4, freq5, freq6, freq7, freq8, freq9, freq10, t_trig=1, amp=1, out=0|
+		|pitchmod = 2, freq1, freq2, freq3, freq4, freq5, freq6, freq7, freq8, freq9, freq10, t_trig=1, amp=1, out=0, pan=0|
 		var pitchenv = Env([1,pitchmod,1],[0,0.005],-12).kr(Done.none, t_trig);
 		var audio = SinOsc.ar(freq1 * pitchenv, mul: 0.1);
 		audio = audio + SinOsc.ar(freq2 * pitchenv, mul: 0.1);
@@ -37,12 +37,12 @@ SynthDef(\knock,
 		audio = audio + SinOsc.ar(freq9 * pitchenv, mul: 0.1);
 		audio = audio + SinOsc.ar(freq10 * pitchenv, mul: 0.1);
 		audio = (audio * Env([0,amp,0],[0.0001,0.1],-5).kr(Done.none, t_trig)).tanh;
-		Out.ar(b.knockreverb,audio!2);
+		Out.ar(b.knockreverb,Pan2.ar(audio, pan));
 	}
 ).add;
 SynthDef(\shake,
 	{
-		|freq1, freq2, freq3, freq4, freq5, t_trig=1, amp=1, out=0|
+		|freq1, freq2, freq3, freq4, freq5, t_trig=1, amp=1, out=0, pan=0|
 		var noise = WhiteNoise.ar;
 		var audio;
 		var rq = 1;
@@ -55,7 +55,7 @@ SynthDef(\shake,
 		audio = audio + BPF.ar(noise, lfo.linlin(-1,1,freq5*lfomin,freq1*lfomax), rq);
 		audio = LPF.ar(audio, 1500);
 		audio = audio * Env([0,amp,0],[0.3,1],-12).kr(Done.none, t_trig);
-		Out.ar(b.knockreverb,audio!2);
+		Out.ar(b.knockreverb,Pan2.ar(audio, pan));
 	}
 ).add;
 )
@@ -63,8 +63,9 @@ SynthDef(\shake,
 (
 f.dx7.free;
 f.dx7 = {
-	var audio = SoundIn.ar(0) * 0.5;
-	audio = HPF.ar(audio, 200) ! 2;
+	var audio = SoundIn.ar(0);
+	audio = HPF.ar(audio, 200);
+	audio = Pan2.ar(audio, -0.7);
 	audio = NHHall.ar(audio, 6) * 0.5 + audio;
 	Out.ar(b.master, audio);
 }.play(g.synths);
@@ -72,7 +73,7 @@ f.rev2.free;
 f.rev2 = {
 	var audio = SoundIn.ar([4,5]) * 1;
 	audio = LPF.ar(audio, 2800);
-	audio = NHHall.ar(audio, 4)* 0.25 + audio;
+	audio = NHHall.ar(audio, 5)* 0.25 + audio;
 	Out.ar(b.master, audio);
 }.play(g.synths);
 f.microvolt.free;
@@ -80,7 +81,7 @@ f.microvolt = {
 	var audio = SoundIn.ar(2) * 1 ! 2;
 	audio = OteySoundBoard.ar(audio);
 	Out.ar(b.master, audio);
-}.play(g.hardware);
+}.play(g.synths);
 f.thump.free;
 f.thump = Synth(\knock, [\out,b.knockreverb], g.synths);
 f.knock2.free;
@@ -98,7 +99,7 @@ f.master.free;
 f.master = {
 	var audio = In.ar(b.master,2);
 	var env = Env([0, 0, LFNoise0.kr(0.1).range(0.0015
-		,0.0020), 0, 0], [0, LFNoise0.kr(0.1).range(8,14), LFNoise0.kr(0.1).range(0.4,0.6), 0],'sin',3,0);
+		,0.0020), 0, 0], [0, LFNoise0.kr(0.1).range(6,10), LFNoise0.kr(0.1).range(0.4,0.6), 0],'sin',3,0);
 	audio = CombC.ar(audio, 1, env.ar(Done.none, 1) + 0.02 + SinOsc.ar(0.5).range(0,0.0005), 0.1);
 	audio;
 }.play(g.master);
@@ -115,7 +116,9 @@ Pdef(\thump,
 		\pitchmod,Pfunc({0.4.rand +
 			0.7}),\freq1,thump.freqs[0],\freq2,thump.freqs[1],\freq3,thump.freqs[2],\freq4,thump.freqs[3],\freq5,thump.freqs[4],\freq6,thump.freqs[5],\freq7,thump.freqs[6],\freq8,thump.freqs[7],\freq9,thump.freqs[8],\freq10,thump.freqs[9],
 		\dur, Pseq([0.75, 0.25],inf),
-		\amp, Pseq([1,0.3],inf),
+		\timingOffset, -0.1 * c.beatDur,
+		\amp, Pseq([1,0.3],inf) * 0.6,
+		\pan, Pbrown(0.1,0.5,0.02),
 		\maybe, Ppatlace([Pseq([1],inf), Pbrown(0.0,1.2,0.5,inf)], inf),
 		\trig, Pif(Pkey(\maybe) >= 1, 1, 0)
 	)
@@ -123,30 +126,32 @@ Pdef(\thump,
 knock2.freqs = [998,1084,823,1091,1021,984,849,809,1055,1082]; //10.collect({ var freq = 400.rand + 800; freq.postln; });{ 400.rand + 400 };
 knock2.frmin = 0.95;
 knock2.frmax = 1.05; // freq randomness min and max
-Pdef(\knock2,
+Pdef(\tap,
 	Pbind(
 		\type,\set,\args, #[],
 		\id, Pfunc({f.knock2}),
 		\instrument, \knock,
 		\freq1,knock2.freqs[0]*Pwhite(knock2.frmin,knock2.frmax),\freq2,knock2.freqs[1]*Pwhite(knock2.frmin,knock2.frmax),\freq3,knock2.freqs[2]*Pwhite(knock2.frmin,knock2.frmax),\freq4,knock2.freqs[3]*Pwhite(knock2.frmin,knock2.frmax),\freq5,knock2.freqs[4]*Pwhite(knock2.frmin,knock2.frmax),\freq6,knock2.freqs[5]*Pwhite(knock2.frmin,knock2.frmax),\freq7,knock2.freqs[6]*Pwhite(knock2.frmin,knock2.frmax),\freq8,knock2.freqs[7]*Pwhite(knock2.frmin,knock2.frmax),\freq9,knock2.freqs[8]*Pwhite(knock2.frmin,knock2.frmax),\freq10,knock2.freqs[9]*Pwhite(knock2.frmin,knock2.frmax),
 		\dur, Pseq([0.5,1.35,0.15],inf),
-		\timingOffset, Pseq([0.1,0.2,0.4],inf) * c.beatDur,
-		\amp,Pseq([0.05,0.15,0.3],inf) * Pwhite(0.3,0.7,inf),
+		\timingOffset, Pseq([0,0.1,0.3],inf) * c.beatDur,
+		\amp,Pseq([0.05,0.15,0.3],inf) * Pwhite(0.3,0.7,inf) * 2,
+		\pan, Pbrown(-0.4,0.1,0.02),
 		\pitchmod,{2.0.rand+1}.value * Pkey(\amp).linlin(0.01,0.2,0.5,0.8),
 		\trig,1
 	)
 );
 knock3.freqs = [273,251,300,309,271,220,325,331,369,208]; //10.collect({ var freq = 300.rand + 100; freq.postln; });
-Pdef(\knock3,
+Pdef(\knock,
 	Pbind(
 		\type,\set,\args, #[],
 		\id, Pfunc({f.knock3}),
 		\instrument, \knock,
 		\freq1,knock3.freqs[0],\freq2,knock3.freqs[1],\freq3,knock3.freqs[2],\freq4,knock3.freqs[3],\freq5,knock3.freqs[4],\freq6,knock3.freqs[5],\freq7,knock3.freqs[6],\freq8,knock3.freqs[7],\freq9,knock3.freqs[8],\freq10,knock3.freqs[9],
 		\dur, Pseq([0.15,0.35,0.5],inf),
-		\timingOffset, Pseq([0.92,0.9,0.89],inf) * c.beatDur * Pbrown(0.99,1.02,0.05) - 0.35,
-		\pitchmod,Pbrown(1.5,2.1,0.3),
+		\timingOffset, Pseq([0.82,0.8,0.79],inf) * c.beatDur * Pbrown(0.99,1.02,0.05) - 0.35,
+		\pitchmod,Pbrown(-0.2,0.3,0.02),
 		\amp, Pseq([0.2,0.35,0.25],inf) * Pbrown(0.8,1.1,0.2) * 1.5,
+		\pan, 0.1,
 		\trig, 1
 	)
 );
@@ -162,7 +167,8 @@ Pdef(\shake,
 		\freq4,Pfunc({shake.rando.value}),
 		\freq5,Pfunc({shake.rando.value}),
 		\amp,0.1,
-		\timingOffset, c.beatDur * 0.2,
+		\timingOffset, c.beatDur * 0.1,
+		\pan, Pbrown(0.1,0.5,0.02),
 		\trig,1
 	)
 );
@@ -182,11 +188,11 @@ Pdef(\microvolt,
 Pdef(\thump).play;
 Pdef(\thump).stop;
 
-Pdef(\knock2).play;
-Pdef(\knock2).stop;
+Pdef(\tap).play;
+Pdef(\tap).stop;
 
-Pdef(\knock3).play;
-545pPdef(\knock3).stop;
+Pdef(\knock).play;
+Pdef(\knock).stop;
 
 Pdef(\shake).play;
 Pdef(\shake).stop;
@@ -195,34 +201,78 @@ Pdef(\microvolt).play;
 Pdef(\microvolt).stop;
 
 (
-Pdef(\thump).stop;Pdef(\knock2).stop;Pdef(\knock3).stop;Pdef(\shake).stop;
+Pdef(\thump).stop;Pdef(\tap).stop;Pdef(\knock).stop;Pdef(\shake).stop;
 )
 
 (
+var protoEvent = (
+	type:\midi,
+	midiout:d,
+	scale:Scale.minor,
+	ctranspose:3
+);
 var convertFromBase7 = {
 	|event, num|
 	var numberOfDegrees, degree, octave, answer;
-	postln(format("The type of event is %.", event.class));
-	postln(format("The type of event.scale is %.", event.scale.class));
+	num = num - 1;
 	numberOfDegrees = event.scale.size;
 	degree = num % 10;
 	octave = num - degree / 10;
 	answer = (octave * 12 + event.scale[degree]).asInteger;
 	answer;
 };
-
-Pdef(\mapping,
-	Pbind(
-		\type,\midi,
-		\midiout,d,
-		\chan,Hydrasynth.midiChannel,
-		\scale, Scale.minor,
-		\ctranspose, 3,
-		\pitch, Pseq([52,53,54,50]),
-		\dur, Pseq([q,q,h,w]),
-		\legato, 1.1,
-		\midinote, Pfunc({|ev|convertFromBase7.value(ev,ev.pitch)}),
-		)
-).play;
+p.hydrasynth[0] = Pbind(
+	\type,\midi,
+	\chan,Hydrasynth.midiChannel,
+	\pitch, Pseq([53,54,55,51, 53,61,57,55, 56,54,54, 55,52,52, 53,51,51, 44,45,47,51, 45,47,51,53,52]),
+	\dur, Pseq([q,q,h,5.5, h,q,q,h, 1.5,h,2, 1.5,h,2, 1.5,h,2.5, q,q,q,6, q,q,q,2,2]),
+	\legato, Pseq([1.1, 1.1, 0.9, 0.5, 1.1,1.1,1.1,0.6, 0.9,0.7,0.65, 0.9,0.6,0.65, 0.9,0.6,0.65, 1.1,1.1,1.1,0.25, 1.1,1.1,1.1,0.9,0.8]) * Pbrown(0.9,1.1,0.1),
+	\midinote, Pfunc({|ev|convertFromBase7.value(ev,ev.pitch)}),
+	\amp, Pseq([60,50,75,30, 55,90,70,50, 50,20,40, 50,15,35, 40,10,30, 25,30,60,50, 30,45,40,55,35]).linlin(0,127,0,1) * Pbrown(0.8,1.2,0.1),
+	\offset, Pseq([0.05,0.01,-0.04,0, 0,0,0,0, 0,0.05,0, 0,0.05,0, 0,0.05,0, 0.05,0.03,0.01,-0.01, 0.05,0.03,0.01,-0.01,0]),
+	\timingOffset, c.beatDur * 0.3 + Pkey(\offset) * Pbrown(0.8,1.2,0.1)
+);
+p.dx7[0] = Pbind(
+	\chan,8,
+	\pitch, Pseq([53,52,47,44, 41,46,37,45, 47,52,53, 51,52]),
+	\dur, Pseq([2,w,w,4, 2,2,2,2, 3,w,6, 1,1]),
+	\legato, Pseq([0.8,0.8,0.8,0.8, 0.8,0.8,0.8,0.8, 0.8,0.8,0.8, 0.8,0.8]) * Pbrown(0.9,1.1,0.1),
+	\midinote, Pfunc({|ev|convertFromBase7.value(ev,ev.pitch)}),
+	\amp, Pseq([64,64,64,64, 64,64,64,64, 64,64,64, 64,64]).linlin(0,127,0,1) * Pbrown(0.8,1.2,0.1),
+	\offset, Pseq([0,0,0,0, 0,0,0,0, 0,0,0, 0,0]),
+	\timingOffset, c.beatDur * -0.1 + Pkey(\offset) * Pbrown(0.8,1.2,0.1)
+);
+p.dx7[1] = Pbind(
+	\chan,8,
+	\pitch, Pseq([53,52,47,44, 41,46,37,45, 47,52,54,55,53, 52,51,47]),
+	\dur, Pseq([2,w,w,4, 2,2,2,2, 3,w,2,2,3, 1,2,2]),
+	\legato, Pseq([0.8,0.8,0.8,0.8, 0.8,0.8,0.8,0.8, 0.8,0.8,0.8,0.8,0.8, 0.8,0.8,0.8]) * Pbrown(0.9,1.1,0.1),
+	\midinote, Pfunc({|ev|convertFromBase7.value(ev,ev.pitch)}),
+	\amp, Pseq([64,64,64,64, 64,64,64,64, 64,64,64,64,64, 64,64,64]).linlin(0,127,0,1) * Pbrown(0.8,1.2,0.1),
+	\offset, Pseq([0,0,0,0, 0,0,0,0, 0,0,0,0,0, 0,0,0]),
+	\timingOffset, c.beatDur * -0.1 + Pkey(\offset) * Pbrown(0.8,1.2,0.1)
+);
+p.dx7[2] = Pbind(
+	\chan,8,
+	\pitch, Pseq([53,52,47,44, 41,46,37,45, 47,52,54,55,51, 46,51,47]),
+	\dur, Pseq([2,w,w,4, 2,2,2,2, 3,w,2,2,3, 1,2,2]),
+	\legato, Pseq([0.8,0.8,0.8,0.8, 0.8,0.8,0.8,0.8, 0.8,0.8,0.8,0.8,0.8, 0.8,0.8,0.8]) * Pbrown(0.9,1.1,0.1),
+	\midinote, Pfunc({|ev|convertFromBase7.value(ev,ev.pitch)}),
+	\amp, Pseq([64,64,64,64, 64,64,64,64, 64,64,64,64,64, 64,64,64]).linlin(0,127,0,1) * Pbrown(0.8,1.2,0.1),
+	\offset, Pseq([0,0,0,0, 0,0,0,0, 0,0,0,0,0, 0,0,0]),
+	\timingOffset, c.beatDur * -0.1 + Pkey(\offset) * Pbrown(0.8,1.2,0.1)
+);
+Pdef(\dx7,Pseq([p.dx7[1],p.dx7[2]],inf)).play(protoEvent:protoEvent);
+Pdef(\hydrasynth,Pseq([p.hydrasynth[0]],inf)).play(protoEvent:protoEvent);
+Pdef(\thump).play;Pdef(\tap).play;Pdef(\knock).play;Pdef(\shake).play;
 )
-Pdef(\mapping).stop;
+
+Pdef(\dx7).stop;Pdef(\hydrasynth).stop;Pdef(\thump).stop;Pdef(\tap).stop;Pdef(\knock).stop;Pdef(\shake).stop;
+
+
+(
+MIDIdef.noteOn(\amp,{
+	|velocity|
+});
+)
+MIDIdef.freeAll;
