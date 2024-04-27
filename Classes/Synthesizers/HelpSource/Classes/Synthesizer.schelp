@@ -10,9 +10,9 @@ NOTE::
 This class is not intended to be used directly, but instead is accessed via its subclasses such as LINK::Classes/Tb03:: and LINK::Classes/Sh01a::.
 ::
 
-A key concept is the Patch, which is a set of parameters describing a patch which is saved in memory.
+A key concept is the CODE::Patch::, which is a set of parameters describing a patch which is saved in memory.
 
-The Patch you are actively working with is called the Working Patch. At any point you can save the Working Patch by calling CODE::saveWorkingPatch::. This stores the patch in an in-memory Patch Dictionary. You can then recall a saved Patch from the Patch Dictionary by name by calling using by calling CODE::loadPatch::, which will overwrite the Working Patch with the recalled saved Patch.
+The CODE::Patch:: you are actively working with is called the STRONG:: Working Patch::. At any point you can save the STRONG:: Working Patch:: by calling LINK::#-saveWorkingPatch::. This stores the CODE::Patch:: in an in-memory STRONG::Patch Dictionary::. You can then recall a saved CODE::Patch:: from the STRONG::Patch Dictionary:: by name by calling LINK::#-loadPatch::, which will overwrite the STRONG::Working Patch:: with the recalled saved CODE::Patch::.
 
 CLASSMETHODS::
 
@@ -20,14 +20,14 @@ METHOD:: new
 Creates an instance of this LINK::Classes/Synthesizer::.
 
 ARGUMENT:: midiout
-An instance of CODE::MIDIOut:: to be used by the LINK::Classes/Synthesizer:: to send updates to the hardware synth.
+An instance of LINK::Classes/MIDIOut:: to be used by the CODE::Synthesizer:: to send updates to the hardware synth. This could have been created earlier by calling LINK::Classes/Setup#*midi::.
 
 PRIVATE::getDefaultVariableName,getGuiType,getTouchOscControlSurfaceType
 
 INSTANCEMETHODS::
 
 METHOD:: describeWorkingPatch
-Writes a description of the Working Patch to the post window including all parameter values.
+Writes a description of the STRONG::Working Patch:: to the post window including all parameter values.
 
 For example, describing a LINK::Classes/Tb03:: Patch might result in output similar to the following:
 
@@ -45,19 +45,19 @@ Delay Feedback: 0
 ::
 
 METHOD:: initialisePatch
-Updates the Working Patch with default parameter values and sends it to the hardware synth.
+Updates the STRONG::Working Patch:: with default parameter values and sends it to the hardware synth.
 
 METHOD:: listSavedPatches
-Writes the names of saved Patches to the post window.
+Writes the names of saved CODE::Patches:: to the post window.
 
 METHOD:: loadPatch
-Loads the Patch with the specified name from the Patch Dictionary into the Working Patch.
+Loads the CODE::Patch:: with the specified name from the STRONG::Patch Dictionary:: into the STRONG::Working Patch::.
 
 ARGUMENT:: patchname
-A CODE::Symbol:: which is the name of the Patch to load.
+A LINK::Classes/Symbol:: which is the name of the CODE::Patch:: to load.
 
 METHOD:: modifyWorkingPatch
-Updates the Working Patch by changing the value of one of its parameters. This changed value is sent to the hardware synth.
+Updates the STRONG::Working Patch:: by changing the value of one of its parameters. This changed value is sent to the hardware synth.
 
 For example, the following code will change the CUTOFF FREQ parameter in the LINK::Classes/Tb03:: to the maximum (and make the same change in the hardware synth itself):
 
@@ -75,35 +75,39 @@ ARGUMENT:: actor
 The origin of the update, and consequently the place the update will not be written to. For example, if the update was caused by turning a knob on the hardware synthesizer, specifying CODE::\hardware:: as this parameter would prevent the update being written back to the hardware synth again. You will usually not specify this parameter.
 
 METHOD:: randomisePatch
-Replaces the Working Patch with a randomly-generated one. In LINK::Classes/Synthesizer:: only a base method, intended for overriding, is provided. Unless overridden, this method simply validates its inputs.
+Replaces the STRONG::Working Patch:: with a randomly-generated one. In CODE::Synthesizer:: only a base method, intended for overriding, is provided. Unless overridden, this method simply validates its inputs.
 
 ARGUMENT:: patchType
-The type of Patch to generate. This isn't implemented yet; just provide CODE::0::.
+The type of CODE::Patch:: to generate. This isn't implemented yet; just provide CODE::0::.
 
 METHOD:: recordMidiParameters
-Sets up a CODE::Mididef:: which records MIDI data from the hardware synth and uses it to overwrite parameters in the Working Patch. This means that changes to settings in the hardware synth (e.g. cutoff or resonance) are reflected in the Working Patch.
+Sets up a LINK::Classes/MIDIdef:: which records MIDI data from the hardware synth and uses it to overwrite parameters in the STRONG::Working Patch::. This means that changes to settings in the hardware synth (e.g. cutoff or resonance) are reflected in the STRONG::Working Patch::.
 
+NOTE::
 In order for this to work, these things must have been done:
 NUMBEREDLIST::
 ## The MIDI output socket of the hardware synth must be physically connected to the MIDI interface using a cable.
 ## The MIDI output port of the MIDI interface must be virtually connected to SuperCollider's MIDI input port in JACK or PipeWire.
 ::
-
-METHOD:: registerTouchOscControlSurface
-Creates an CODE::OSCdef:: for each parameter the Touch OSC control surface can modify (see CODE::getControlParameters:: in LINK::Classes/TouchOscControlSurface::). This OSCdef captures the OSC data from the control surface and uses it to update the Working Patch, and in turn sends the new parameter value to the hardware synth itself.
-
-In order for this to work, these things must have been done:
-NUMBEREDLIST::
-## Touch OSC must be showing a suitable Layout for the LINK::Classes/Synthesizer::, with control URLs in the form STRONG::/controls/{parameter name}::, where STRONG::{parameter name}:: is the name of the corresponding property of the LINK::Classes/Synthesizer:: (e.g. CODE::cutoffFreqCcNo:: in LINK::Classes/Tb03::).
-## Touch OSC must be configured with the IP address of the machine that SuperCollider is running on, as obtained by running a terminal command such as the following:
 ::
 
+METHOD:: registerTouchOscControlSurface
+Creates an LINK::Classes/OSCdef:: for each parameter the Touch OSC control surface can modify (see LINK::Classes/TouchOscControlSurface#-getControlParameters::). This LINK::Classes/OSCdef:: captures the OSC data from the control surface and uses it to update the STRONG::Working Patch::, and in turn sends the new parameter value to the hardware synth itself.
+
+NOTE::
+In order for this to work, these things must have been done:
+NUMBEREDLIST::
+## Touch OSC must be showing a suitable Layout for the CODE::Synthesizer::, with control URLs in the form STRONG::/controls/{parameter name}::, where STRONG::{parameter name}:: is the name of the corresponding property of the CODE::Synthesizer:: (e.g. CODE::cutoffFreqCcNo:: in LINK::Classes/Tb03::).
+## Touch OSC must be configured with the IP address of the machine that SuperCollider is running on, as obtained by running a terminal command such as the following:
+::
 CODE::
 hostname -I
 ::
+::
+
 
 METHOD:: saveWorkingPatch
-Stores the Working Patch in the Patch Dictionary to enable you to create other Patches without losing this one. To save the Patch permanently, call CODE::writeWorkingPatch():: and save the code which was written to the output window.
+Stores the STRONG::Working Patch:: in the STRONG::Patch Dictionary:: to enable you to create other CODE::Patches:: without losing this one. To save the CODE::Patch:: permanently, call LINK::#-writeWorkingPatch:: and save the code which was written to the output window.
 
 ARGUMENT:: patchname
 The name to give the patch.
@@ -112,9 +116,9 @@ METHOD:: showGui
 Opens the LINK::Classes/ScGuiControlSurface:: used to control this synthesizer.
 
 METHOD:: writeWorkingPatch
-Writes code to the console window which can be run later to recreate the Working Patch. This is how Patches can be saved permanently.
+Writes code to the console window which can be run later to recreate the STRONG::Working Patch::. This is how CODE::Patches:: can be saved permanently.
 
-For example, writing a LINK::Classes/Tb03:: Patch might result in output similar to the following:
+For example, writing a LINK::Classes/Tb03:: CODE::Patch:: might result in output similar to the following:
 
 CODE::
 (
@@ -128,7 +132,7 @@ patch.kvps[74]=126.0;patch.kvps[104]=64;patch.kvps[12]=64;patch.kvps[71]=119.0;p
 METHOD:: writeSavedPatches
 Writes code to the console window which can be run later to recreate all the saved patches. This is how patches can be saved permanently.
 
-See CODE::writeWorkingPatch:: for an example of the output.
+See LINK::#-writeWorkingPatch:: for an example of the output.
 
 PRIVATE::addUpdateAction,chooseRandomValue,generateRandomValue,getMidiParametersFromMididef,getSynthesizerName,prWritePatch,saveSpecificPatch,setWorkingPatch
 
