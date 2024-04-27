@@ -139,8 +139,7 @@ The following example is for the LINK::Classes/Tb03::.
 ::
 
 CODE::
-MIDIClient.init;
-d = MIDIOut.newByName("Scarlett 18i8 USB", "Scarlett 18i8 USB MIDI 1").latency_(Server.default.latency);
+Setup.midi;
 
 ~tb03 = Tb03(d);
 ~tb03.listSavedPatches(); // There are no saved patches yet
