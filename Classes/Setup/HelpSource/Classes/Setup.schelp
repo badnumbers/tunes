@@ -8,7 +8,7 @@ A set of utility methods for setting SuperCollider up.
 CLASSMETHODS::
 
 METHOD:: midi
-Checks to see whether CODE::Library.at(\d):: is already set to an instance of CODE::MIDIOut::. If it is not, it runs CODE::MIDIClient.init:: and sets CODE::Library.at(\d):: to be a CODE::MIDIOut:: corresponding to the Focusrite Scarlett soundcard.
+Checks to see whether CODE::Library.at(\d):: is already set to an instance of CODE::MIDIOut::. If it is, it does nothing. If it is not, it runs CODE::MIDIClient.init:: and sets CODE::Library.at(\d):: to be a CODE::MIDIOut:: corresponding to the Focusrite Scarlett soundcard.
 
 NOTE::
 CODE::Library.at(\d):: is typically later assigned to the interpreter variable CODE::d::.
