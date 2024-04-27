@@ -26,6 +26,7 @@ then
 fi
 
 aconnect 'KeyStep Pro' 'Scarlett 18i8 USB'
+aconnect 'Keystation 61 MK3' 'Scarlett 18i8 USB'
 # Enter the output > input pairs below
 # Separate the output and input with |||
 connections=(
