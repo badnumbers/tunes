@@ -1,0 +1,98 @@
+TITLE:: Project
+SUMMARY:: Allows a series of files to be run in a particular order.
+CATEGORIES:: Core
+
+DESCRIPTION::
+The purpose of this class is to help manage large projects by splitting them into separate files which can then be:
+LIST::
+## run (if specified)
+## opened in the IDE (if specified)
+::
+
+In order to achieve this a STRONG::project file:: should be created. This is a normal TELETYPE::.scd:: script file which:
+LIST::
+## instantiates the CODE::Project::
+## includes the other files in the project by calling LINK::#-includeFile:: for each of them
+## sets the project up by calling LINK::#-setupProject::
+::
+
+At the bottom of the page there is an example of a STRONG::project file::.
+
+CLASSMETHODS::
+
+METHOD:: new
+Creates an instance of this CODE::Project::. Internally the CODE::Project:: instance contains a LINK::Classes/Condition:: which is used to synchronise the execution of the project files.
+
+INSTANCEMETHODS::
+
+METHOD:: includeFile
+Includes the file in the project so that it will be run and / or opened when the LINK::#-setupProject:: method is run.
+
+NOTE::
+The file to be included must be in the same directory as the file declaring the CODE::Project:: instance, i.e. the STRONG::project file::.
+Only files with the TELETYPE::.scd:: extension are permitted.
+::
+
+ARGUMENT:: filename
+The filename of the file to be included. This can be provided with or without the TELETYPE::.scd:: extension.
+
+ARGUMENT:: openInIde
+If CODE::true::, the file is opened in the IDE when LINK::#-setupProject:: is run. If CODE::false::, it is not. Defaults to CODE::true::.
+
+ARGUMENT:: runContents
+If CODE::true::, the code in the file is run when LINK::#-setupProject:: is run. If CODE::false::, it is not. Defaults to CODE::true::.
+
+METHOD:: setupProject
+Firstly, calls LINK::Classes/Setup#*server::. and LINK::Classes/Setup#*midi:: in order to boot the LINK::Classes/Server:: and setup a LINK::Classes/MIDIOut:: if that hasn't already been done.
+
+Secondly, runs and / or opens each file in the order in which it was included in the project by calling LINK::#-includeFile::.
+
+NOTE::
+When a file is run, if the code in the file returns a LINK::Classes/Function::, that LINK::Classes/Function:: is called and passed the internal instance of LINK::Classes/Condition::. This LINK::Classes/Condition:: can then be used to synchronise the LINK::Classes/Server:: so that you can ensure that, for example, any created LINK::Classes/SynthDef::s have been registered on the server before LINK::Classes/Synth::s are created which use them.
+
+For example, a file containing the following code would just be run:
+
+CODE::
+postln("HELLO WORLD!");
+::
+
+Whereas a file containing the following code would be run (declaring the LINK::Classes/Function::), and EMPHASIS::then:: the LINK::Classes/Function:: returned by the code would be called by the CODE::Project:: and passed the LINK::Classes/Condition:::
+
+CODE::
+postln("SENDING SYNTHDEF AND INSTANTIATING SYNTH!");
+{
+	|condition|
+	SynthDef(\my_synthdef,
+		{
+			|freq, gate = 1|
+			var audio = SinOsc.ar(freq) * Env.perc.kr(Done.freeSelf, gate);
+			Out.ar(0,audio);
+		}
+	).add;
+	Server.default.sync(condition);
+	Synth(\my_synthdef, [\freq, 200]);
+}
+::
+
+In the case of this code, the LINK::Classes/Condition:: is used to synchronise the LINK::Classes/Server:: so that the LINK::Classes/SynthDef:: is registered before the LINK::Classes/Synth:: is created.
+::
+
+EXAMPLES::
+
+NOTE::
+This is an example of the contents of a STRONG::project file::.
+::
+
+CODE::
+(
+var project = Project();
+project.includeFile("buses"); // Create the buses
+project.includeFile("groups"); // Create the groups
+project.includeFile("hardware"); // Set patches on the hardware synths
+project.includeFile("synthdefs"); // Create some SynthDefs - be sure that this file returns a function so that the server is synchronised before moving on...
+project.includeFile("synths"); // Instantiate some synths
+project.includeFile("patterns"); // Create some patterns to play on the synths
+project.includeFile("control", runContents: false); // Some code to start and stop the patterns - we don't want to run this just yet, but we do want the file open
+project.setupProject(); // Now run all the files
+)
+::
