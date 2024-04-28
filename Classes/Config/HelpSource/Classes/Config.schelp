@@ -1,0 +1,71 @@
+TITLE:: Config
+SUMMARY:: Configuration for a music production setup.
+CATEGORIES:: Core
+RELATED:: Classes/HardwareSynthesizerConfig, Classes/MIDIConfig, Classes/ServerConfig
+
+DESCRIPTION::
+A utility class for managing the configuration for a music production setup.
+
+This is based on a STRONG::Configuration File:: called TELETYPE::config.yaml:: expected to be at in the user's config directory (which can be found using LINK::Classes/Platform#*userConfigDir::).
+
+The expected structure of the STRONG::Configuration File:: is something like the following:
+
+CODE::
+HardwareSynthesizers:
+  - Key: "tb03"
+    Name: "TB-03"
+    MIDIChannels:
+      - 2
+    InputBusChannels:
+      - 14
+  - Key: "sh01a"
+    Name: "SH-01A"
+    MIDIChannels:
+      - 3
+    InputBusChannels:
+      - 15
+MIDI:
+  DeviceName: "Scarlett 18i8 USB"
+  PortName: "Scarlett 18i8 USB MIDI 1"
+Server:
+  NumInputBusChannels: 20
+  NumOutputBusChannels: 2
+::
+
+It is recommended that once the STRONG::Configuration File:: is created, CODE::startup.scd:: (which is also found in user's config directory) is modified to call LINK::#*load::. This will provide an early warning of any problems in the STRONG::Configuration File::.
+
+NOTE::
+Various other classes depend on a valid STRONG::Configuration File:: and will throw errors if the file is absent or invalid, for example:
+LIST::
+## LINK::Classes/Synthesizer::
+## LINK::Classes/Setup::
+::
+::
+
+CLASSMETHODS::
+
+METHOD:: hardwareSynthesizers
+If the configuration has not been loaded yet, calls LINK::#*load::. Then returns an LINK::Classes/Dictionary:: of instances of LINK::Classes/HardwareSynthesizerConfig:: containing the configuration for hardware synthesizers read from the STRONG::Configuration File::.
+
+The key used by the dictionary is the TELETYPE::Key:: property for each hardware synthesizer taken from the STRONG::Configuration File::.
+
+NOTE::
+If the STRONG::Configuration File:: does not contain the STRONG::HardwareSynthesizers:: section then an empty CODE::Dictionary:: is returned.
+::
+
+METHOD:: load
+Loads the configuration from the STRONG::Configuration File:: in the user's config directory (i.e. CODE::config.yaml:: in LINK::Classes/Platform#*userConfigDir::).
+
+METHOD:: midi
+If the configuration has not been loaded yet, calls LINK::#*load::. Then returns a LINK::Classes/MIDIConfig:: containing the MIDI configuration read from the STRONG::Configuration File::.
+
+NOTE::
+If the STRONG::Configuration File:: does not contain the STRONG::MIDI:: section then CODE::nil:: is returned.
+::
+
+METHOD:: server
+If the configuration has not been loaded yet, calls LINK::#*load::. Then returns a LINK::Classes/ServerConfig:: containing the server configuration read from the STRONG::Configuration File::.
+
+NOTE::
+If the STRONG::Configuration File:: does not contain the STRONG::Server:: section then CODE::nil:: is returned.
+::

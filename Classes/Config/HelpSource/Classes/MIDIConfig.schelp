@@ -1,0 +1,25 @@
+TITLE:: MIDIConfig
+SUMMARY:: Contains the configuration for the MIDI output of a music production setup.
+CATEGORIES:: Core
+RELATED:: Classes/Config
+
+DESCRIPTION::
+This class contains the configuration for the MIDI output of a music production setup. It is used to instantiate a LINK::Classes/MIDIOut:: which can be used to send MIDI data to hardware synthesizers.
+
+CLASSMETHODS::
+METHOD:: new
+Creates a new instance of CODE::MIDIConfig::.
+
+ARGUMENT:: deviceName
+The device name for the LINK::Classes/MIDIOut:: to be created.
+
+ARGUMENT:: portName
+The port name for the LINK::Classes/MIDIOut:: to be created.
+
+INSTANCEMETHODS::
+
+METHOD:: deviceName
+The device name for the LINK::Classes/MIDIOut:: to be created.
+
+METHOD:: portName
+The port name for the LINK::Classes/MIDIOut:: to be created.

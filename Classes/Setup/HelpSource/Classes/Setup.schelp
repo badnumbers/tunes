@@ -8,14 +8,18 @@ A set of utility methods for setting SuperCollider up.
 CLASSMETHODS::
 
 METHOD:: midi
-Checks to see whether CODE::Library.at(\d):: is already set to an instance of CODE::MIDIOut::. If it is, it does nothing. If it is not, it runs CODE::MIDIClient.init:: and sets CODE::Library.at(\d):: to be a CODE::MIDIOut:: corresponding to the Focusrite Scarlett soundcard.
+Checks to see whether CODE::Library.at(\d):: is already set to an instance of CODE::MIDIOut::. If it is, it does nothing. If it is not, it runs CODE::MIDIClient.init:: and sets CODE::Library.at(\d):: to be a CODE::MIDIOut:: corresponding to the device name and port name returned by LINK::Classes/Config#*midi::.
 
 NOTE::
-CODE::Library.at(\d):: is typically later assigned to the interpreter variable CODE::d::.
+If LINK::Classes/Config#*midi:: does not return MIDI configuration, because the STRONG::Configuration File:: is missing or does not contain a valid STRONG::MIDI:: section, then this method will throw an error.
 ::
 
 METHOD:: server
-If CODE::Server.default:: is already a running server, frees all nodes. If CODE::Server.default:: is not a running server, it boots it with 20 input channels and 2 output channels.
+If CODE::Server.default:: is already a running server, frees all nodes. If CODE::Server.default:: is not a running server, it boots it with the number of input and output bus channels as specified in LINK::Classes/Config#*server::.
+
+NOTE::
+If the STRONG::Configuration File:: is missing or does not contain a valid STRONG::Server:: section, then LINK::Classes/Config#*server:: will return the default of 2 input and output bus channels, so that's what will be used to boot the server.
+::
 
 ARGUMENT:: condition
-An instance of CODE::Condition:: used to synchronise the server boot with other activity.
+An instance of CODE::Condition:: used to synchronise the server boot with other activity. If CODE::nil:: is provided then no synchronisation will occur.

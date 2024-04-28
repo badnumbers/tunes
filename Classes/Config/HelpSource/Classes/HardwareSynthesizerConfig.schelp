@@ -1,0 +1,28 @@
+TITLE:: HardwareSynthesizerConfig
+SUMMARY:: Contains the configuration for a hardware synthesizer.
+CATEGORIES:: Core
+RELATED:: Classes/Config
+
+CLASSMETHODS::
+METHOD:: new
+Creates a new instance of CODE::HardwareSynthesizerConfig::.
+
+ARGUMENT:: name
+The name of the hardware synthesizer, for example "TB-303".
+
+ARGUMENT:: midiChannels
+An LINK::Classes/Array:: of (most likely) one MIDI channels that the hardware synthesizer is configured to receive MIDI on.
+
+ARGUMENT:: inputBusChannels
+An LINK::Classes/Array:: of (most likely) one (for a mono synthesizer) or two (for a stereo synthesizer) input bus channels that the hardware synthesizer's audio can be read from.
+
+INSTANCEMETHODS::
+
+METHOD:: inputBusChannels
+An LINK::Classes/Array:: of (most likely) one (for a mono synthesizer) or two (for a stereo synthesizer) input bus channels that the hardware synthesizer's audio can be read from.
+
+METHOD:: midiChannels
+An LINK::Classes/Array:: of (most likely) one MIDI channels that the hardware synthesizer is configured to receive MIDI on.
+
+METHOD:: name
+The name of the hardware synthesizer, for example "TB-303".

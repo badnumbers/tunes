@@ -1,0 +1,25 @@
+TITLE:: ServerConfig
+SUMMARY:: Contains the configuration for a SuperCollider Server.
+CATEGORIES:: Core
+RELATED:: Classes/Config
+
+DESCRIPTION::
+This class contains the configuration for the SuperCollider LINK::Classes/Server::. It is used to boot the CODE::Server:: with the correct data.
+
+CLASSMETHODS::
+METHOD:: new
+Creates a new instance of CODE::ServerConfig::.
+
+ARGUMENT:: numInputBusChannels
+The number of input bus channels to be assigned when the LINK::Classes/Server:: is booted.
+
+ARGUMENT:: numOutputBusChannels
+The number of output bus channels to be assigned when the LINK::Classes/Server:: is booted.
+
+INSTANCEMETHODS::
+
+METHOD:: numInputBusChannels
+The number of input bus channels to be assigned when the LINK::Classes/Server:: is booted.
+
+METHOD:: numOutputBusChannels
+The number of output bus channels to be assigned when the LINK::Classes/Server:: is booted.
