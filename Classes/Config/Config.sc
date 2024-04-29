@@ -34,17 +34,20 @@ Config {
 					},{
 						config["HardwareSynthesizers"].do({
 							|item, index|
-							var addSynthesizer = false;
+							var addSynthesizer = true;
 							if (item.isMemberOf(Dictionary) == false, {
 								warn(format("Item % in the 'HardwareSynthesizers' section of the configuration file at % is not a YAML mapping. This item will not be added to the configuration. See the help file for the Config class for guidance.", index + 1, Platform.userConfigDir +/+ configFileName));
+								addSynthesizer = false;
 							}, {
-								["Key","Name"].do({
+								["Class","Name"].do({
 									|key|
 									if (item[key].isNil, {
 										warn(format("Item % in the 'HardwareSynthesizers' section of the configuration file at % does not have a property called '%'. This item will not be added to the configuration. See the help file for the Config class for guidance.", index + 1, Platform.userConfigDir +/+ configFileName, key));
+										addSynthesizer = false;
 									},{
 										if (item[key].isMemberOf(String) == false, {
 											warn(format("Item % in the 'HardwareSynthesizers' section of the configuration file at % has a '%' property but its value is expected to be a String. This item will not be added to the configuration. See the help file for the Config class for guidance.", index + 1, Platform.userConfigDir +/+ configFileName, key));
+											addSynthesizer = false;
 										});
 									});
 								});
@@ -60,9 +63,11 @@ Config {
 									});
 									if (item[key].isNil, {
 										warn(format("Item % in the 'HardwareSynthesizers' section of the configuration file at % does not have a property called '%'. This item will not be added to the configuration. See the help file for the Config class for guidance.", index + 1, Platform.userConfigDir +/+ configFileName, key));
+								addSynthesizer = false;
 									},{
 										if (item[key].isMemberOf(Array) == false, {
 											warn(format("Item % in the 'HardwareSynthesizers' section of the configuration file at % has a '%' property but its value is expected to be a String. This item will not be added to the configuration. See the help file for the Config class for guidance.", index + 1, Platform.userConfigDir +/+ configFileName, key));
+											addSynthesizer = false;
 										},{
 											item[key].do({
 												|maybeanumber|
@@ -71,9 +76,11 @@ Config {
 													number = maybeanumber.asInteger;
 													if ((number < lowerlimit) || (number > upperlimit), {
 														warn(format("Item % in the 'HardwareSynthesizers' section of the configuration file at % has a '%' property but not everything in it is in the range % to %. This item will not be added to the configuration. See the help file for the Config class for guidance.", index + 1, Platform.userConfigDir +/+ configFileName, key, lowerlimit, upperlimit));
+														addSynthesizer = false;
 													});
 												}, {
 													warn(format("Item % in the 'HardwareSynthesizers' section of the configuration file at % has a '%' property but not everything in it is a number. This item will not be added to the configuration. See the help file for the Config class for guidance.", index + 1, Platform.userConfigDir +/+ configFileName, key));
+													addSynthesizer = false;
 												});
 											});
 										});
@@ -81,7 +88,7 @@ Config {
 								});
 							});
 							if (addSynthesizer, {
-								prHardwareSynthesizers.put(item["Key"], HardwareSynthesizerConfig(item["Name"], item["MIDIChannels"], item["InputBusChannels"]));
+								prHardwareSynthesizers.put(item["Class"].asSymbol, HardwareSynthesizerConfig(item["Name"], item["MIDIChannels"].collect({_ - 1}), item["InputBusChannels"]));
 							});
 						});
 					});
