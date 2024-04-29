@@ -18,7 +18,7 @@ METHOD:: server
 If CODE::Server.default:: is already a running server, frees all nodes. If CODE::Server.default:: is not a running server, it boots it with the number of input and output bus channels as specified in LINK::Classes/Config#*server::.
 
 NOTE::
-If the STRONG::Configuration File:: is missing or does not contain a valid STRONG::Server:: section, then LINK::Classes/Config#*server:: will return the default of 2 input and output bus channels, so that's what will be used to boot the server.
+If the STRONG::Configuration File:: is missing or does not contain a valid STRONG::Server:: section, then the CODE::Server:: will be booted with the default of 2 input and output bus channels.
 ::
 
 ARGUMENT:: condition
