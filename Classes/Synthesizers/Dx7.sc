@@ -1,5 +1,4 @@
 Dx7 : Synthesizer {
-	var <audioInputChannels = #[0];
 	var <>midiChannel = 8;
 
 	*getGuiType {
@@ -20,6 +19,11 @@ Dx7 : Synthesizer {
 
 	getDefaultVariableName {
 		^"~dx7";
+	}
+
+	init {
+		|midiout|
+		super.init(midiout);
 	}
 
 	prCalculateSysexChecksum {

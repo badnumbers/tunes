@@ -1,6 +1,9 @@
 Synthesizer {
 	var <gui;
+	var <inputBusChannels;
 	var invokeUpdateActionsFunc;
+	var <midiChannel;
+	var <midiChannels;
 	var <>prMidiout;
 	var prNoSavedPatchesMessage = "To save the working patch, call saveWorkingPatch().";
 	var prPatchDictionary;
@@ -86,6 +89,14 @@ Synthesizer {
 				this.updateParameterInHardwareSynth(key,newvalue);
 			});
 		});
+
+		if (Config.hardwareSynthesizers[this.class.name].isNil, {
+			Error(format("No config was found for the Synthesizer with the class %. See the helpfile for the Config class for details.", this.class.name)).throw;
+		});
+
+		inputBusChannels = Config.hardwareSynthesizers[this.class.name].inputBusChannels;
+		midiChannels = Config.hardwareSynthesizers[this.class.name].midiChannels;
+		midiChannel = midiChannels[0];
 
 		invokeUpdateActionsFunc = {
 			|actorFilter, parameterNumber, parameterValue|
