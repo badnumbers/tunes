@@ -47,6 +47,11 @@ Delay Feedback: 0
 METHOD:: initialisePatch
 Updates the STRONG::Working Patch:: with default parameter values and sends it to the hardware synth.
 
+METHOD:: inputBusChannels
+An LINK::Classes/Array:: of zero-based integers indicating the soundcard input ports that the hardware synthesizer is connected to.
+
+This is read from the STRONG::Configuration File:: (see LINK::Classes/Config::).
+
 METHOD:: listSavedPatches
 Writes the names of saved CODE::Patches:: to the post window.
 
@@ -55,6 +60,16 @@ Loads the CODE::Patch:: with the specified name from the STRONG::Patch Dictionar
 
 ARGUMENT:: patchname
 A LINK::Classes/Symbol:: which is the name of the CODE::Patch:: to load.
+
+METHOD:: midiChannels
+An LINK::Classes/Array:: of zero-based integers indicating the MIDI channels that this Synthesizer is set to receive on. The CODE::Array:: typically only contains one value, but some hardware synthesizers, for example multitimbral ones, may have more than one.
+
+NOTE::
+In the STRONG::Configuration File::, the MIDI channels are 1-based (i.e. they go from 1 to 16). However, when the STRONG::Configuration File:: is read, the MIDI channels become zero-based for compatbility with SuperCollider's MIDI classes.
+::
+
+METHOD:: midiChannel
+This is the first value in the LINK::#-midiChannels:: array, provided for convenience. The assumption is that when a synthesizer receives MIDI on more than one channel, one of them should be treated as the default.
 
 METHOD:: modifyWorkingPatch
 Updates the STRONG::Working Patch:: by changing the value of one of its parameters. This changed value is sent to the hardware synth.

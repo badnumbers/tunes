@@ -8,9 +8,9 @@ A set of utilities for working with PipeWire.
 CLASSMETHODS::
 
 METHOD:: disconnectFromSoundcard
-Disconnects the hardware synthesizer represented by the supplied instance of LINK::Synthesizer:: from the soundcard inputs. This is so that SuperCollider can exclusively process the synthesizer's audio.
+Disconnects the hardware synthesizer represented by the supplied instance of LINK::Classes/Synthesizer:: from the soundcard inputs. This is so that SuperCollider can exclusively process the synthesizer's audio.
 
-This is done by reading the LINK::Synthesizer::'s CODE::audioInputChannels:: property and disconnecting those port numbers in PipeWire.
+This is done by reading the LINK::Classes/Synthesizer#*inputBusChannels:: property and disconnecting those port numbers in PipeWire.
 
 NOTE::
 After running this method, you will not hear any sound from this particular hardware synthesizer unless:
@@ -21,7 +21,7 @@ LIST::
 ::
 
 ARGUMENT:: synthesizer
-An instance of LINK::Synthesizer::.
+An instance of LINK::Classes/Synthesizer::.
 
 METHOD:: setSuperColliderAsMixer
 Runs the bash script in the same directory as CODE::PipeWire.sc:: called CODE::supercollider.sh::. This script removes the direct connections between the soundcard inputs and outputs so that all hardware synthesizer audio goes via SuperCollider.
