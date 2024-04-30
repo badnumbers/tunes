@@ -88,7 +88,7 @@ Config {
 								});
 							});
 							if (addSynthesizer, {
-								prHardwareSynthesizers.put(item["Class"].asSymbol, HardwareSynthesizerConfig(item["Name"], item["MIDIChannels"].collect({_ - 1}), item["InputBusChannels"]));
+								prHardwareSynthesizers.put(item["Class"].asSymbol, HardwareSynthesizerConfig(item["Name"], item["MIDIChannels"].collect(_.asInteger - 1), item["InputBusChannels"].collect(_.asInteger)));
 							});
 						});
 					});
