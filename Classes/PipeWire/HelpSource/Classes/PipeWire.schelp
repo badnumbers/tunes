@@ -7,10 +7,41 @@ A set of utilities for working with PipeWire.
 
 CLASSMETHODS::
 
-METHOD:: disconnectFromSoundcard
-Disconnects the hardware synthesizer represented by the supplied instance of LINK::Classes/Synthesizer:: from the soundcard inputs. This is so that SuperCollider can exclusively process the synthesizer's audio.
+METHOD:: connectToSoundcard
+Connects the hardware synthesizer represented by the supplied instance of LINK::Classes/Synthesizer:: to the soundcard.
 
-This is done by reading the LINK::Classes/Synthesizer#*inputBusChannels:: property and disconnecting those port numbers in PipeWire.
+This is done by reading the LINK::Classes/Synthesizer#-inputBusChannels:: property and connecting those port numbers in PipeWire.
+
+The logic for making the connections is as follows:
+
+TABLE::
+    ## Number of input bus channels || Behaviour ||
+    ## 0 || Nothing is done. ||
+    ## 1 || The synthesizer's input is connected to both the left and the right output channels of the soundcard. ||
+    ## 2 || The synthesizer's first input is connected to left output channel of the soundcard and the second input is connected to the right channel. ||
+    ## More than 2 || Nothing is done. ||
+::
+
+ARGUMENT:: synthesizer
+An instance of LINK::Classes/Synthesizer::.
+
+METHOD:: connectAllToSoundcard
+For all hardware synthesizers configured in LINK::Classes/Config#-hardwareSynthesizers::, connects the synthesizer to the soundcard.
+
+The logic for making the connections for each synthesizer is as follows:
+
+TABLE::
+    ## Number of input bus channels || Behaviour ||
+    ## 0 || Nothing is done. ||
+    ## 1 || The synthesizer's input is connected to both the left and the right output channels of the soundcard. ||
+    ## 2 || The synthesizer's first input is connected to left output channel of the soundcard and the second input is connected to the right channel. ||
+    ## More than 2 || Nothing is done. ||
+::
+
+METHOD:: disconnectFromSoundcard
+Disconnects the hardware synthesizer represented by the supplied instance of LINK::Classes/Synthesizer:: from the soundcard.
+
+This is done by reading the LINK::Classes/Synthesizer#-inputBusChannels:: property and disconnecting those port numbers in PipeWire.
 
 NOTE::
 After running this method, you will not hear any sound from this particular hardware synthesizer unless:
@@ -23,8 +54,8 @@ LIST::
 ARGUMENT:: synthesizer
 An instance of LINK::Classes/Synthesizer::.
 
-METHOD:: setSuperColliderAsMixer
-Runs the bash script in the same directory as CODE::PipeWire.sc:: called CODE::supercollider.sh::. This script removes the direct connections between the soundcard inputs and outputs so that all hardware synthesizer audio goes via SuperCollider.
+METHOD:: disconnectAllFromSoundcard
+For all hardware synthesizers configured in LINK::Classes/Config#-hardwareSynthesizers::, disconnects the synthesizer from the soundcard.
 
 NOTE::
 After running this method, you will not hear any sound from the hardware synthesizers unless:
