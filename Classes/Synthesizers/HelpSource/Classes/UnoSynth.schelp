@@ -1,5 +1,5 @@
 TITLE:: UnoSynth
-summary:: Representation of the UnoSynth desktop synthesiser by IK Multimedia
+summary:: Representation of the UnoSynth desktop synthesizer by IK Multimedia
 categories:: External Control
 related:: Classes/UnoSynthScGuiControlSurface, Classes/UnoSynthPatch, Classes/Hydrasynth, Classes/Jx03, Classes/Microvolt, Classes/OhCoast, Classes/Sh01a, Classes/Tb03, Classes/Td3
 
