@@ -1,5 +1,6 @@
 TITLE:: ScSynthesizer
-summary:: A synthesizer implemented in SuperCollider
+SUMMARY:: A synthesizer implemented in SuperCollider
+CATEGORIES:: Control
 
 DESCRIPTION::
 LINK::Classes/ScSynthesizer:: represents the CODE::SynthDef:: and also a user interface to control it.

@@ -1,7 +1,7 @@
 TITLE:: Synthesizer
-summary:: A base class for other classes which describe a particular hardware synthesizer
-categories:: External control
-related:: Classes/Microvolt, Classes/OhCoast, Classes/Sh01a, Classes/Tb03, Classes/UnoSynth
+SUMMARY:: A base class for other classes which describe a particular hardware synthesizer
+CATEGORIES:: External Control
+RELATED:: Classes/Microvolt, Classes/OhCoast, Classes/Sh01a, Classes/Tb03, Classes/UnoSynth
 
 DESCRIPTION::
 A base class for other classes which describe a hardware synthesizer.
