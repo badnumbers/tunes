@@ -49,7 +49,7 @@ Pdef(\oc,
         Pbind(
             \type, \midi,
             \midicmd, \noteOn,
-            \midiout, Library(\d),
+            \midiout, Library.at(\d),
             \chan, OhCoast.midiAChannel,
             \degree, Pseq({7.rand2}!16,inf),
 			\multiply, Pseq({127.rand}!16,inf),

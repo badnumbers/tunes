@@ -60,7 +60,7 @@ Pdef(\hy,
 		Pbind(
 			\type, \midi,
 			\midicmd, \noteOn,
-			\midiout, Library(\d),
+			\midiout, Library.at(\d),
 			\chan, Hydrasynth.midiChannel,
 			\octave, 3,
 			\scale, Scale.phrygian,
@@ -69,7 +69,7 @@ Pdef(\hy,
 		),
 		Pbind(
 			\type, \midi,
-			\midiout, Library(\d),
+			\midiout, Library.at(\d),
 			\chan, Hydrasynth.midiChannel,
 			\midicmd, \control,
 			\ctlNum, 0, // Depends on the corresponding patching being done in the Hydrasynth's mod matrix

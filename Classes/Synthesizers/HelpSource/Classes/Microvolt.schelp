@@ -30,7 +30,7 @@ Pdef(\mv,
 		Pbind(
 			\type, \midi,
 			\midicmd, \noteOn,
-			\midiout, Library(\d),
+			\midiout, Library.at(\d),
 			\chan, Microvolt.midiChannel,
 			\octave, 3,
 			\scale, Scale.phrygian,
@@ -39,7 +39,7 @@ Pdef(\mv,
 		),
 		Pbind(
 			\type, \midi,
-			\midiout, Library(\d),
+			\midiout, Library.at(\d),
 			\chan, Microvolt.midiChannel,
 			\midicmd, \control,
 			\ctlNum, Microvolt.modCcNo, // Depends on the corresponding patching being done on the Microvolt
