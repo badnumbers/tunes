@@ -15,7 +15,7 @@ This is done by reading the LINK::Classes/Synthesizer#*inputBusChannels:: proper
 NOTE::
 After running this method, you will not hear any sound from this particular hardware synthesizer unless:
 LIST::
-## the SuperCollider server is running
+## the LINK::Classes/Server:: is running
 ## you run a SynthDef to capture its input.
 ::
 ::
@@ -29,7 +29,7 @@ Runs the bash script in the same directory as CODE::PipeWire.sc:: called CODE::s
 NOTE::
 After running this method, you will not hear any sound from the hardware synthesizers unless:
 LIST::
-## the SuperCollider server is running
+## the LINK::Classes/Server:: is running
 ## you run some SynthDefs to capture their input.
 ::
 ::
