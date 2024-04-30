@@ -12,13 +12,13 @@ The expected structure of the STRONG::Configuration File:: is something like the
 
 CODE::
 HardwareSynthesizers:
-  - Key: "tb03"
+  - Key: "Tb03"
     Name: "TB-03"
     MIDIChannels:
       - 2
     InputBusChannels:
       - 14
-  - Key: "sh01a"
+  - Key: "Sh01a"
     Name: "SH-01A"
     MIDIChannels:
       - 3
