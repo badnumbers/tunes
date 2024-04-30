@@ -38,11 +38,6 @@ The MIDI CC number that is used to control the TB-03's envelope modulation depth
 
 returns:: 12.
 
-METHOD:: midiChannel
-The MIDI channel that the TB-03 is configured to listen on.
-
-returns:: 1, unless assigned a different value.
-
 METHOD:: overdriveCcNo
 The MIDI CC number that is used to control the TB-03's overdrive level.
 
@@ -62,9 +57,6 @@ table::
 
 ARGUMENT:: midiout
 An instance of code::MIDIOut:: used for sending each CC value to the TB-03.
-
-ARGUMENT:: writeToPostWindow
-Whether the new value should be written to the post window. Defaults to false.
 
 METHOD:: resonanceCcNo
 The MIDI CC number that is used to control the TB-03's filter resonance.
