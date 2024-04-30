@@ -1,6 +1,4 @@
 Dx7 : Synthesizer {
-	var <>midiChannel = 8;
-
 	*getGuiType {
 		^Dx7ScGuiControlSurface;
 	}
