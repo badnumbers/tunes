@@ -22,17 +22,15 @@ EXAMPLES::
 
 code::
 (
-/*
-MIDIClient.init;
-d = MIDIOut.newByName("Scarlett 18i8 USB", "Scarlett 18i8 USB MIDI 1").latency_(Server.default.latency);
-*/
+Setup.server;
+Setup.midi;
 
 Pdef(\mv,
 	Ppar([
 		Pbind(
 			\type, \midi,
 			\midicmd, \noteOn,
-			\midiout, d,
+			\midiout, Library(\d),
 			\chan, Microvolt.midiChannel,
 			\octave, 3,
 			\scale, Scale.phrygian,
@@ -41,7 +39,7 @@ Pdef(\mv,
 		),
 		Pbind(
 			\type, \midi,
-			\midiout, d,
+			\midiout, Library(\d),
 			\chan, Microvolt.midiChannel,
 			\midicmd, \control,
 			\ctlNum, Microvolt.modCcNo, // Depends on the corresponding patching being done on the Microvolt

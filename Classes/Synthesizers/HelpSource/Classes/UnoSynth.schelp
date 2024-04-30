@@ -434,17 +434,15 @@ EXAMPLES::
 
 code::
 (
-/*
-MIDIClient.init;
-d = MIDIOut.newByName("Scarlett 18i8 USB", "Scarlett 18i8 USB MIDI 1").latency_(Server.default.latency);
-*/
+Setup.server;
+Setup.midi;
 
 Pdef(\unosynth,
 	Ppar([
 		Pbind(
 			\type, \midi,
 			\midicmd, \noteOn,
-			\midiout, d,
+			\midiout, Library(\d),
 			\chan, UnoSynth.midiChannel,
 			\octave, 3,
 			\degree, 0,
@@ -453,7 +451,7 @@ Pdef(\unosynth,
 		),
 		Pbind(
 			\type, \midi,
-			\midiout, d,
+			\midiout, Library(\d),
 			\chan, UnoSynth.midiChannel,
 			\midicmd, \control,
 			\ctlNum, UnoSynth.cutoffCcNo,

@@ -52,17 +52,15 @@ EXAMPLES::
 
 code::
 (
-/*
-MIDIClient.init;
-d = MIDIOut.newByName("Scarlett 18i8 USB", "Scarlett 18i8 USB MIDI 1").latency_(Server.default.latency);
-*/
+Setup.server;
+Setup.midi;
 
 Pdef(\hy,
 	Ppar([
 		Pbind(
 			\type, \midi,
 			\midicmd, \noteOn,
-			\midiout, d,
+			\midiout, Library(\d),
 			\chan, Hydrasynth.midiChannel,
 			\octave, 3,
 			\scale, Scale.phrygian,
@@ -71,7 +69,7 @@ Pdef(\hy,
 		),
 		Pbind(
 			\type, \midi,
-			\midiout, d,
+			\midiout, Library(\d),
 			\chan, Hydrasynth.midiChannel,
 			\midicmd, \control,
 			\ctlNum, 0, // Depends on the corresponding patching being done in the Hydrasynth's mod matrix

@@ -224,17 +224,15 @@ EXAMPLES::
 
 code::
 (
-/*
-MIDIClient.init;
-d = MIDIOut.newByName("Scarlett 18i8 USB", "Scarlett 18i8 USB MIDI 1").latency_(Server.default.latency);
-*/
+Setup.server;
+Setup.midi;
 
 Pdef(\sh01a,
 	Ppar([
 		Pbind(
 			\type, \midi,
 			\midicmd, \noteOn,
-			\midiout, d,
+			\midiout, Library(\d),
 			\chan, Sh01a.midiChannel,
 			\octave, 3,
 			\degree, 0,
@@ -243,7 +241,7 @@ Pdef(\sh01a,
 		),
 		Pbind(
 			\type, \midi,
-			\midiout, d,
+			\midiout, Library(\d),
 			\chan, Sh01a.midiChannel,
 			\midicmd, \control,
 			\ctlNum, Sh01a.vcfFreqCcNo,
