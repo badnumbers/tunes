@@ -47,7 +47,7 @@ CLASSMETHODS::
 METHOD:: hardwareSynthesizers
 If the configuration has not been loaded yet, calls LINK::#*load::. Then returns an LINK::Classes/Dictionary:: of instances of LINK::Classes/HardwareSynthesizerConfig:: containing the configuration for hardware synthesizers read from the STRONG::Configuration File::.
 
-The key used by the dictionary is the TELETYPE::Key:: property for each hardware synthesizer taken from the STRONG::Configuration File::.
+The key used by the dictionary is the TELETYPE::Class:: property for each hardware synthesizer taken from the STRONG::Configuration File::, which should also match the name of the subclass of LINK::Classes/Synthesizer:: which represents that synthesizer.
 
 NOTE::
 If the STRONG::Configuration File:: does not contain the STRONG::HardwareSynthesizers:: section then an empty CODE::Dictionary:: is returned.
