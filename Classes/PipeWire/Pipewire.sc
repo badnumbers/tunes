@@ -8,8 +8,7 @@ PipeWire {
 		|synthesizer|
 		var pipe,line, audioInputChannels;
 		Validator.validateMethodParameterType(synthesizer, Synthesizer, "synthesizer", "PipeWire", "deleteConnection");
-		audioInputChannels = synthesizer.audioInputChannels();
-		audioInputChannels.do({
+		synthesizer.inputBusChannels.do({
 			|audioInputChannel|
 			var inputPort = format(pr_InputPortFormat, audioInputChannel);
 			pipe = Pipe.new(format("pw-link -d % %", inputPort, pr_OutputPortLeft), "r");
