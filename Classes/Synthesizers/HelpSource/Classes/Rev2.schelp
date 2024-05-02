@@ -5,3 +5,7 @@ RELATED:: Classes/Dx7, Classes/Jx03, Classes/Hydrasynth, Classes/Microvolt, Clas
 
 DESCRIPTION::
 Contains information about working with a Prophet REV2.
+
+NOTE::
+This class does not support patch management for the REV2. Patches should be managed in the hardware itself.
+::
