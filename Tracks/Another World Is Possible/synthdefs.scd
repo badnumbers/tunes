@@ -41,10 +41,19 @@ postln("SENDING SYNTHDEFS");
 	SynthDef(\dx7_fx,
 		{
 			|out=0, pan=0|
-			var audio = SoundIn.ar(0);
+			var audio = SoundIn.ar(~dx7.inputBusChannels);
 			audio = HPF.ar(audio, 200);
 			audio = Pan2.ar(audio, -0.7);
 			audio = NHHall.ar(audio, 6) * 0.5 + audio;
+			Out.ar(out, audio);
+		}
+	).add;
+	SynthDef(\rev2_fx,
+		{
+			|out=0|
+			var audio = SoundIn.ar([~rev2.inputBusChannels]) * 1;
+			audio = LPF.ar(audio, 2800);
+			audio = NHHall.ar(audio, 5)* 0.15 + audio;
 			Out.ar(out, audio);
 		}
 	).add;
