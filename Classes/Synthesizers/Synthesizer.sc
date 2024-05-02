@@ -78,17 +78,6 @@ Synthesizer {
 		Validator.validateMethodParameterType(midiout, MIDIOut, "midiout", "Synthesizer", "init");
 
 		prMidiout = midiout;
-		prWorkingPatch = this.class.getPatchType().new;
-		prPatchDictionary = Dictionary();
-		prUpdateActions = Dictionary();
-		prUpdateActions.add(\hardware -> Dictionary());
-		prWorkingPatch.kvps.keys.do({
-			|key|
-			this.addUpdateAction(\hardware, key, {
-				|newvalue|
-				this.updateParameterInHardwareSynth(key,newvalue);
-			});
-		});
 
 		if (Config.hardwareSynthesizers[this.class.name].isNil, {
 			Error(format("No config was found for the Synthesizer with the class %. See the helpfile for the Config class for details.", this.class.name)).throw;
@@ -98,14 +87,28 @@ Synthesizer {
 		midiChannels = Config.hardwareSynthesizers[this.class.name].midiChannels;
 		midiChannel = midiChannels[0];
 
-		invokeUpdateActionsFunc = {
-			|actorFilter, parameterNumber, parameterValue|
-			var actionKeys;
-			prUpdateActions.keys.select(actorFilter).do({
-				|actor| // The actor, e.g. hardware synth or control surface
-				prUpdateActions.at(actor).at(parameterNumber).value(parameterValue);
+		if (this.class.getPatchType().notNil, {
+			prWorkingPatch = this.class.getPatchType().new;
+			prPatchDictionary = Dictionary();
+			prUpdateActions = Dictionary();
+			prUpdateActions.add(\hardware -> Dictionary());
+			prWorkingPatch.kvps.keys.do({
+				|key|
+				this.addUpdateAction(\hardware, key, {
+					|newvalue|
+					this.updateParameterInHardwareSynth(key,newvalue);
+				});
 			});
-		};
+
+			invokeUpdateActionsFunc = {
+				|actorFilter, parameterNumber, parameterValue|
+				var actionKeys;
+				prUpdateActions.keys.select(actorFilter).do({
+					|actor| // The actor, e.g. hardware synth or control surface
+					prUpdateActions.at(actor).at(parameterNumber).value(parameterValue);
+				});
+			};
+		});
 	}
 
 	initialisePatch {

@@ -1,4 +1,8 @@
 Rev2 : Synthesizer {
+	*getPatchType {
+		^nil;
+	}
+
 	getSynthesizerName {
 		^"REV2";
 	}
