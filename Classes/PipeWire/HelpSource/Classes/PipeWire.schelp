@@ -26,7 +26,7 @@ ARGUMENT:: synthesizer
 An instance of LINK::Classes/Synthesizer::.
 
 METHOD:: connectAllToSoundcard
-For all hardware synthesizers configured in LINK::Classes/Config#-hardwareSynthesizers::, connects the synthesizer to the soundcard.
+For all hardware synthesizers configured in LINK::Classes/Config#*hardwareSynthesizers::, connects the synthesizer to the soundcard.
 
 The logic for making the connections for each synthesizer is as follows:
 
@@ -55,7 +55,7 @@ ARGUMENT:: synthesizer
 An instance of LINK::Classes/Synthesizer::.
 
 METHOD:: disconnectAllFromSoundcard
-For all hardware synthesizers configured in LINK::Classes/Config#-hardwareSynthesizers::, disconnects the synthesizer from the soundcard.
+For all hardware synthesizers configured in LINK::Classes/Config#*hardwareSynthesizers::, disconnects the synthesizer from the soundcard.
 
 NOTE::
 After running this method, you will not hear any sound from the hardware synthesizers unless:
