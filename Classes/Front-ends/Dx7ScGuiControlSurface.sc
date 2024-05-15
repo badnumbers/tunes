@@ -42,24 +42,28 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 		|algorithmView,leftPosition,scalingFactor,algorithm,index|
 		var algorithmNumberDrawFunc;
 		var connectionsDrawFunc = Array.newClear(algorithm.connections.size);
+		var operatorsDrawFunc = Array.newClear(algorithm.operatorCoordinates.size);
 		var feedbackDrawFunc;
 		var counter = 0;
 		var operatorColour = Color.white;
 		var terminalOperatorColour = Color.white;
 		var connectionColour = Color.white;
-		//StaticText(algorithmView, Rect(scalingFactor * 2, scalingFactor * 2, scalingFactor * 10, scalingFactor * 5)).string_(algorithm.number).font_(Font(size: scalingFactor * 6, bold: true)).stringColor_(Color.white);
 		algorithmNumberDrawFunc = {
 			Pen.stringAtPoint(algorithm.number.asString, 0@0, Font(size: scalingFactor * 6, bold: true), Color.white);
-			Pen.stroke;
 		};
 		algorithm.operatorCoordinates.do({
-			|operator|
+			|operator, index|
 			var opColour, operatorView;
 			opColour = operatorColour;
 			if (operator.y == 3, { opColour = terminalOperatorColour; });
-			counter = counter + 1;
-			operatorView = View(algorithmView, Rect((operator.x * (scalingFactor * 10)) + (scalingFactor * 2), (operator.y * (scalingFactor * 10)) + (scalingFactor * 2), (scalingFactor * 6), (scalingFactor * 6))).background_(opColour);
-			StaticText(operatorView, Rect(scalingFactor * 1.5, 0, scalingFactor * 5, scalingFactor * 5)).string_(counter).font_(Font().size_(scalingFactor * 5));
+			operatorsDrawFunc[index] = {
+				var left = (operator.x * (scalingFactor * 10)) + (scalingFactor * 2);
+				var top = (operator.y * (scalingFactor * 10)) + (scalingFactor * 2);
+				Pen.fillColor = opColour;
+				Pen.fillRect(Rect(left, top, (scalingFactor * 6), (scalingFactor * 6)));
+				Pen.stringAtPoint((index + 1).asString, left@top, Font(size: scalingFactor * 5), Color.black);
+
+			};
 		});
 		algorithm.connections.do({
 			|connection,index|
@@ -68,8 +72,8 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 				Pen.strokeColor_(connectionColour);
 				Pen.moveTo(algorithm.operatorCoordinates[connection.x - 1] * 10 * scalingFactor + (scalingFactor * 5));
 				Pen.lineTo(algorithm.operatorCoordinates[connection.y - 1] * 10 * scalingFactor + (scalingFactor * 5));
+				Pen.stroke;
 			};
-
 		});
 		feedbackDrawFunc = {
 			var feedbackHeight = algorithm.operatorCoordinates[algorithm.feedback.wrapAt(-1) - 1].y - algorithm.operatorCoordinates[algorithm.feedback.at(0) - 1].y + 1;
@@ -92,7 +96,8 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 		algorithmView.drawFunc = {
 			algorithmNumberDrawFunc.value;
 			feedbackDrawFunc.value;
-			connectionsDrawFunc.do({|func|func.value();});
+			connectionsDrawFunc.do({|func|func.value;});
+			operatorsDrawFunc.do({|func|func.value;});
 		};
 		algorithmView.refresh;
 	}
