@@ -10,9 +10,10 @@ EXAMPLES::
 
 code::
 (
-var patch;
+var midiout, patch;
 Setup.server;
-~dx7 = ~dx7 ?? Dx7(Setup.midi);
+midiout = Setup.midi;
+~dx7 = ~dx7 ?? Dx7(midiout);
 
 patch = Dx7Patch();
 patch.name = "Unnamed patch";
@@ -20,26 +21,26 @@ patch.kvps[152]=84;patch.kvps[153]=67;patch.kvps[35]=0;patch.kvps[101]=0;patch.k
 ~dx7.setWorkingPatch(patch);
 
 Pdef(\dx7,
-	Ppar([
-		Pbind(
-			\type, \midi,
-			\midicmd, \noteOn,
-			\midiout, Library.at(\d),
-			\chan, ~dx7.midiChannel,
-			\octave, 3,
-			\midinote, Pseq([24,30],inf),
-			\dur, 1/8,
-			\amp, 1
-		),
-		Pbind(
-			\type, \rest,
-			\midiout, Library.at(\d),
-			\chan, ~dx7.midiChannel,
-			\cutoff, (Pseg(Pseq([70,100]), Pseq([8]), 2, inf) + Pwhite(0,5,inf)).clip(0,100),
-			\send, Pfunc({|ev| ~dx7.updateParameterInHardwareSynth(Dx7Sysex.operator2OutputLevel, ev.cutoff)}),
-			\dur, 1/8
-		)
-	])
+    Ppar([
+        Pbind(
+            \type, \midi,
+            \midicmd, \noteOn,
+            \midiout, midiout,
+            \chan, ~dx7.midiChannel,
+            \octave, 3,
+            \midinote, Pseq([24,30],inf),
+            \dur, 1/8,
+            \amp, 1
+        ),
+        Pbind(
+            \type, \rest,
+            \midiout, midiout,
+            \chan, ~dx7.midiChannel,
+            \cutoff, (Pseg(Pseq([70,100]), Pseq([8]), 2, inf) + Pwhite(0,5,inf)).clip(0,100),
+            \send, Pfunc({|ev| ~dx7.updateParameterInHardwareSynth(Dx7Sysex.operator2OutputLevel, ev.cutoff)}),
+            \dur, 1/8
+        )
+    ])
 );
 Pdef(\dx7).play;
 )
