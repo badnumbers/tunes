@@ -1,9 +1,13 @@
 Setup {
+	classvar prMidiOut;
+
 	*midi {
-		if (Library.at(\d).isMemberOf(MIDIOut) == false, {
+		if (prMidiOut.isMemberOf(MIDIOut) == false, {
 			MIDIClient.init;
-			Library.put(\d, MIDIOut.newByName(Config.midi.deviceName, Config.midi.portName));
+			prMidiOut = MIDIOut.newByName(Config.midi.deviceName, Config.midi.portName);
 		});
+
+		^prMidiOut;
 	}
 
 	*server {

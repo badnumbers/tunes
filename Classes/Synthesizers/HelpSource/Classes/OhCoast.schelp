@@ -41,15 +41,16 @@ EXAMPLES::
 
 code::
 (
+var midiout;
 Setup.server;
-Setup.midi;
+midiout = Setup.midi;
 
 Pdef(\oc,
     Ppar([
         Pbind(
             \type, \midi,
             \midicmd, \noteOn,
-            \midiout, Library.at(\d),
+            \midiout, midiout,
             \chan, OhCoast.midiAChannel,
             \degree, Pseq({7.rand2}!16,inf),
 			\multiply, Pseq({127.rand}!16,inf),

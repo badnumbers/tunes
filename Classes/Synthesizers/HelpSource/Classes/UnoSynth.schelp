@@ -1,7 +1,7 @@
 TITLE:: UnoSynth
-summary:: Representation of the UnoSynth desktop synthesizer by IK Multimedia
-categories:: External Control
-related:: Classes/UnoSynthScGuiControlSurface, Classes/UnoSynthPatch, Classes/Hydrasynth, Classes/Jx03, Classes/Microvolt, Classes/OhCoast, Classes/Sh01a, Classes/Tb03, Classes/Td3
+SUMMARY:: Representation of the UnoSynth desktop synthesizer by IK Multimedia
+CATEGORIES:: External Control
+RELATED:: Classes/UnoSynthScGuiControlSurface, Classes/UnoSynthPatch, Classes/Hydrasynth, Classes/Jx03, Classes/Microvolt, Classes/OhCoast, Classes/Sh01a, Classes/Tb03, Classes/Td3
 
 DESCRIPTION::
 Contains information about working with an UnoSynth, such as its controller CC numbers.
@@ -11,27 +11,27 @@ CLASSMETHODS::
 METHOD:: ampAttackCcNo
 The MIDI CC number that is used to control the attack time of the UnoSynth's amplitude envelope.
 
-returns:: 24.
+RETURNS:: 24.
 
 METHOD:: ampDecayCcNo
 The MIDI CC number that is used to control the decay time of the UnoSynth's amplitude envelope.
 
-returns:: 25.
+RETURNS:: 25.
 
 METHOD:: ampSustainCcNo
 The MIDI CC number that is used to control the sustain level of the UnoSynth's amplitude envelope.
 
-returns:: 26.
+RETURNS:: 26.
 
 METHOD:: ampReleaseCcNo
 The MIDI CC number that is used to control the release time of the UnoSynth's amplitude envelope.
 
-returns:: 27.
+RETURNS:: 27.
 
 METHOD:: arpeggiatorDirectionCcNo
 The MIDI CC number that is used to control the arpeggiator direction. Doesn't appear to work.
 
-returns:: 83.
+RETURNS:: 83.
 
 METHOD:: arpeggiatorOnOffCcNo
 The MIDI CC number that is used to control whether the arpeggiator is on or off.
@@ -41,117 +41,117 @@ table::
     ## 64-127 || Arpeggiator on
 ::
 
-returns:: 82.
+RETURNS:: 82.
 
 METHOD:: arpeggiatorRangeCcNo
 The MIDI CC number that is used to control the arpeggiator range. Doesn't appear to work.
 
-returns:: 84.
+RETURNS:: 84.
 
 METHOD:: cutoffCcNo
 The MIDI CC number that is used to control the UnoSynth's filter cutoff frequency.
 
-returns:: 20.
+RETURNS:: 20.
 
 METHOD:: delayMixCcNo
 The MIDI CC number that is used to control the UnoSynth's delay mix.
 
-returns:: 80.
+RETURNS:: 80.
 
 METHOD:: delayTimeCcNo
 The MIDI CC number that is used to control the UnoSynth's delay time.
 
-returns:: 81.
+RETURNS:: 81.
 
 METHOD:: diveOnOffCcNo
 The MIDI CC number that is used to control whether dive is on or off.
-table::
+TABLE::
     ## Value || Notes
     ## 0-63 || Dive off
     ## 64-127 || Dive on
 ::
 
-returns:: 89.
+RETURNS:: 89.
 
 METHOD:: diveRangeCcNo
 The MIDI CC number that is used to control the dive range. 0 effectively disables dive; 127 is quite extensive.
 
-returns:: 90.
+RETURNS:: 90.
 
 METHOD:: driveCcNo
 The MIDI CC number that is used to control the UnoSynth's filter drive.
 
-returns:: 22.
+RETURNS:: 22.
 
 METHOD:: envAmtCcNo
 The MIDI CC number that is used to control the UnoSynth's filter envelope amount. This is bipolar; the middle value is 64.
 
-returns:: 23.
+RETURNS:: 23.
 
 METHOD:: filterAttackCcNo
 The MIDI CC number that is used to control the attack time of the UnoSynth's filter envelope.
 
-returns:: 44.
+RETURNS:: 44.
 
 METHOD:: filterDecayCcNo
 The MIDI CC number that is used to control the decay time of the UnoSynth's filter envelope.
 
-returns:: 45.
+RETURNS:: 45.
 
 METHOD:: filterSustainCcNo
 The MIDI CC number that is used to control the sustain time of the UnoSynth's filter envelope.
 
-returns:: 46.
+RETURNS:: 46.
 
 METHOD:: filterReleaseCcNo
 The MIDI CC number that is used to control the release time of the UnoSynth's filter envelope.
 
-returns:: 47.
+RETURNS:: 47.
 
 METHOD:: filterCutoffKeytrackCcNo
 The MIDI CC number that is used to control filter keytracking.
 
-returns:: 106.
+RETURNS:: 106.
 
 METHOD:: filterEnvToOsc1PwmCcNo
 The MIDI CC number that is used to control the extent to which the filter envelope controls the pulsewidth modulation of oscillator 1.
 
-returns:: 48.
+RETURNS:: 48.
 
 METHOD:: filterEnvToOsc2PwmCcNo
 The MIDI CC number that is used to control the extent to which the filter envelope controls the pulsewidth modulation of oscillator 2.
 
-returns:: 49.
+RETURNS:: 49.
 
 METHOD:: filterEnvToOsc1WaveCcNo
 The MIDI CC number that is used to control the extent to which the filter envelope controls the wave shape of oscillator 1.
 
-returns:: 50.
+RETURNS:: 50.
 
 METHOD:: filterEnvToOsc2WaveCcNo
 The MIDI CC number that is used to control the extent to which the filter envelope controls the wave shape of oscillator 2.
 
-returns:: 51.
+RETURNS:: 51.
 
 METHOD:: filterModeCcNo
 The MIDI CC number that is used to control the UnoSynth's filter mode.
-table::
+TABLE::
     ## Value || Notes
     ## 0-42 || Low-pass
     ## 43-84 || High-pass
     ## 85-127 || Band-pass
 ::
 
-returns:: 19.
+RETURNS:: 19.
 
 METHOD:: glideTimeCcNo
 The MIDI CC number that is used to control the UnoSynth's glide time (portamento).
 
-returns:: 5.
+RETURNS:: 5.
 
 METHOD:: lfoRateCcNo
 The MIDI CC number that is used to control the UnoSynth's LFO rate.
-table::
+TABLE::
     ## Value || Notes
     ## 0 || No movement
     ## 1-116 || Free running; high values are faster
@@ -167,56 +167,56 @@ table::
     ## 126 || 16th note
     ## 127 || 16th note triplet
 ::
-returns:: 67.
+RETURNS:: 67.
 
 METHOD:: lfoToFilterCutoffCcNo
 The MIDI CC number that is used to control the extent to which the LFO controls the filter cutoff.
 
-returns:: 69.
+RETURNS:: 69.
 
 METHOD:: lfoToOsc1PwmCcNo
 The MIDI CC number that is used to control the extent to which the LFO controls the pulse width modulation of oscillator 1. High values used with the pulse wave will oscillate in and out of silence.
 
-returns:: 73.
+RETURNS:: 73.
 
 METHOD:: lfoToOsc2PwmCcNo
 The MIDI CC number that is used to control the extent to which the LFO controls the pulse width modulation of oscillator 2. High values used with the pulse wave will oscillate in and out of silence.
 
-returns:: 74.
+RETURNS:: 74.
 
 METHOD:: lfoToOsc1WaveformCcNo
 The MIDI CC number that is used to control the extent to which the LFO controls the wave shape of oscillator 1. 0 is imperceptible, and 127 is large.
 
-returns:: 75.
+RETURNS:: 75.
 
 METHOD:: lfoToOsc2WaveformCcNo
 The MIDI CC number that is used to control the extent to which the LFO controls the wave shape of oscillator 2. 0 is imperceptible, and 127 is large.
 
-returns:: 76.
+RETURNS:: 76.
 
 METHOD:: lfoToPitchCcNo
 The MIDI CC number that is used to control the extent to which the LFO controls the pitch of the oscillators. 5 produces a subtle pitch modulation.
 
-returns:: 68.
+RETURNS:: 68.
 
 METHOD:: lfoToTremoloCcNo
 The MIDI CC number that is used to control the extent to which the LFO controls tremolo. Appears not to actually affect tremolo in any way.
 
-returns:: 70.
+RETURNS:: 70.
 
 METHOD:: lfoToVibratoCcNo
 The MIDI CC number that is used to control the extent to which the LFO controls vibrato.  0 sounds like a minor second, and 127 sounds like a minor third.
 
-returns:: 72.
+RETURNS:: 72.
 
 METHOD:: lfoToWahCcNo
 The MIDI CC number that is used to control the extent to which the LFO controls wah. 0 is imperceptible, and 127 is quite dramatic.
 
-returns:: 71.
+RETURNS:: 71.
 
 METHOD:: lfoWaveCcNo
 The MIDI CC number that is used to control the UnoSynth's LFO wave shape.
-table::
+TABLE::
 ## Value || Notes
 ## 0-18 || Sine
 ## 19-36 || Triangle
@@ -226,26 +226,26 @@ table::
 ## 91-108 || Random (smooth wave)
 ## 109-127 || Random (sample and hold)
 ::
-returns:: 66.
+RETURNS:: 66.
 
 METHOD:: midiChannel
 The MIDI channel that the UnoSynth is configured to listen on.
 
-returns:: 15, unless assigned a different value.
+RETURNS:: 15, unless assigned a different value.
 
 METHOD:: noiseLevelCcNo
 The MIDI CC number that is used to control the UnoSynth's noise level.
 
-returns:: 14.
+RETURNS:: 14.
 
 METHOD:: osc1LevelCcNo
 The MIDI CC number that is used to control the UnoSynth's oscillator 1 level.
 
-returns:: 12.
+RETURNS:: 12.
 
 METHOD:: osc1TuneCcNo
 The MIDI CC number that is used to control the UnoSynth's oscillator 1 tune amount.
-table::
+TABLE::
     ## Value || Notes
     ## 3 || -12 semitones
     ## 4 || -11 semitones
@@ -276,11 +276,11 @@ table::
     ## 125 || +12 semitones
 ::
 
-returns:: 17.
+RETURNS:: 17.
 
 METHOD:: osc1WaveCcNo
 The MIDI CC number that is used to control the UnoSynth's oscillator 1 wave shape.
-table::
+TABLE::
     ## Value || Notes
     ## 0 || Triangle
     ## 40 || Saw
@@ -288,16 +288,16 @@ table::
     ## 127 || Narrow pulse
 ::
 
-returns:: 15.
+RETURNS:: 15.
 
 METHOD:: osc2LevelCcNo
 The MIDI CC number that is used to control the UnoSynth's oscillator 2 level.
 
-returns:: 13.
+RETURNS:: 13.
 
 METHOD:: osc2TuneCcNo
 The MIDI CC number that is used to control the UnoSynth's oscillator 2 tune amount.
-table::
+TABLE::
     ## Value || Notes
     ## 3 || -12 semitones
     ## 4 || -11 semitones
@@ -328,11 +328,11 @@ table::
     ## 125 || +12 semitones
 ::
 
-returns:: 18.
+RETURNS:: 18.
 
 METHOD:: osc2WaveCcNo
 The MIDI CC number that is used to control the UnoSynth's oscillator 2 wave shape.
-table::
+TABLE::
     ## Value || Notes
     ## 0 || Triangle
     ## 40 || Saw
@@ -340,7 +340,7 @@ table::
     ## 127 || Narrow pulse
 ::
 
-returns:: 16.
+RETURNS:: 16.
 
 METHOD:: pitchBendRangeCcNo
 The MIDI CC number that is used to control the UnoSynth's pitch bend range. 5 'points' are worth one semitone.
@@ -353,96 +353,97 @@ table::
     ## 120 || 2 octaves
 ::
 
-returns:: 101.
+RETURNS:: 101.
 
 METHOD:: resonanceCcNo
 The MIDI CC number that is used to control the UnoSynth's filter resonance.
 
-returns:: 21.
+RETURNS:: 21.
 
 METHOD:: scoopOnOffCcNo
 The MIDI CC number that is used to control whether scoop is on or off.
-table::
+TABLE::
     ## Value || Notes
     ## 0-63 || Scoop off
     ## 64-127 || Scoop on
 ::
 
-returns:: 91.
+RETURNS:: 91.
 
 METHOD:: scoopRangeCcNo
 The MIDI CC number that is used to control the scoop range. 0 effectively disables scoop; 127 is quite extensive.
 
-returns:: 92.
+RETURNS:: 92.
 
 METHOD:: tremoloOnOffCcNo
 The MIDI CC number that is used to control whether tremolo is on or off.
-table::
+TABLE::
     ## Value || Notes
     ## 0-63 || Tremolo off
     ## 64-127 || Tremolo on
 ::
 
-returns:: 79.
+RETURNS:: 79.
 
 METHOD:: velocityToVolumeCcNo
 The MIDI CC number that is used to control the extent to which velocity affects volume.
 
-returns:: 102.
+RETURNS:: 102.
 
 METHOD:: velocityToFilterCutoffCcNo
 The MIDI CC number that is used to control the extent to which velocity affects filter cutoff.
 
-returns:: 103.
+RETURNS:: 103.
 
 METHOD:: velocityToFilterEnvAmtCcNo
 The MIDI CC number that is used to control the extent to which velocity affects filter envelope amount.
 
-returns:: 104.
+RETURNS:: 104.
 
 METHOD:: velocityToLfoRateCcNo
 The MIDI CC number that is used to control the extent to which velocity affects LFO rate. This is bipolar; 64 indicates no effect.
 
-returns:: 105.
+RETURNS:: 105.
 
 METHOD:: vibratoOnOffCcNo
 The MIDI CC number that is used to control whether vibrato is on or off.
-table::
+TABLE::
     ## Value || Notes
     ## 0-63 || Vibrato off
     ## 64-127 || Vibrato on
 ::
 
-returns:: 77.
+RETURNS:: 77.
 
 METHOD:: volumeCcNo
 The MIDI CC number that is used to control the UnoSynth's volume.
 
-returns:: 7.
+RETURNS:: 7.
 
 METHOD:: wahOnOffCcNo
 The MIDI CC number that is used to control whether wah is on or off.
-table::
+TABLE::
     ## Value || Notes
     ## 0-63 || Wah off
     ## 64-127 || Wah on
 ::
 
-returns:: 78.
+RETURNS:: 78.
 
 EXAMPLES::
 
-code::
+CODE::
 (
+var midiout;
 Setup.server;
-Setup.midi;
+midiout = Setup.midi;
 
 Pdef(\unosynth,
 	Ppar([
 		Pbind(
 			\type, \midi,
 			\midicmd, \noteOn,
-			\midiout, Library.at(\d),
+			\midiout, midiout,
 			\chan, UnoSynth.midiChannel,
 			\octave, 3,
 			\degree, 0,
@@ -451,7 +452,7 @@ Pdef(\unosynth,
 		),
 		Pbind(
 			\type, \midi,
-			\midiout, Library.at(\d),
+			\midiout, midiout,
 			\chan, UnoSynth.midiChannel,
 			\midicmd, \control,
 			\ctlNum, UnoSynth.cutoffCcNo,

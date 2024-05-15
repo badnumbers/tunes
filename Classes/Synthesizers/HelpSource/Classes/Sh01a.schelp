@@ -224,15 +224,16 @@ EXAMPLES::
 
 code::
 (
+var midiout;
 Setup.server;
-Setup.midi;
+midiout = Setup.midi;
 
 Pdef(\sh01a,
 	Ppar([
 		Pbind(
 			\type, \midi,
 			\midicmd, \noteOn,
-			\midiout, Library.at(\d),
+			\midiout, midiout,
 			\chan, Sh01a.midiChannel,
 			\octave, 3,
 			\degree, 0,
@@ -241,7 +242,7 @@ Pdef(\sh01a,
 		),
 		Pbind(
 			\type, \midi,
-			\midiout, Library.at(\d),
+			\midiout, midiout,
 			\chan, Sh01a.midiChannel,
 			\midicmd, \control,
 			\ctlNum, Sh01a.vcfFreqCcNo,

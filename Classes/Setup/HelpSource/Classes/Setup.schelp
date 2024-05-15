@@ -8,11 +8,16 @@ A set of utility methods for setting SuperCollider up.
 CLASSMETHODS::
 
 METHOD:: midi
-Checks to see whether CODE::Library.at(\d):: is already set to an instance of CODE::MIDIOut::. If it is, it does nothing. If it is not, it runs CODE::MIDIClient.init:: and sets CODE::Library.at(\d):: to be a CODE::MIDIOut:: corresponding to the device name and port name returned by LINK::Classes/Config#*midi::.
+The first time this is called, it runs LINK::Classes/MIDIClient#*init:: and returns a LINK::Classes/MIDIOut:: corresponding to the device name and port name returned by LINK::Classes/Config#*midi::.
+
+For subsequent calls the CODE::MidiOut:: created the first time is returned.
 
 NOTE::
 If LINK::Classes/Config#*midi:: does not return MIDI configuration, because the STRONG::Configuration File:: is missing or does not contain a valid STRONG::MIDI:: section, then this method will throw an error.
 ::
+
+RETURNS::
+A LINK::Classes/MIDIOut:: created using LINK::Classes/Config#*midi::.
 
 METHOD:: server
 If CODE::Server.default:: is already a running server, frees all nodes. If CODE::Server.default:: is not a running server, it boots it with the number of input and output bus channels as specified in LINK::Classes/Config#*server::.

@@ -12,8 +12,7 @@ code::
 (
 var patch;
 Setup.server;
-Setup.midi;
-~dx7 = ~dx7 ?? Dx7(Library.at(\d));
+~dx7 = ~dx7 ?? Dx7(Setup.midi);
 
 patch = Dx7Patch();
 patch.name = "Unnamed patch";

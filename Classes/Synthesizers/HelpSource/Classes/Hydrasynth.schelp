@@ -52,15 +52,16 @@ EXAMPLES::
 
 code::
 (
+var midiout;
 Setup.server;
-Setup.midi;
+midiout = Setup.midi;
 
 Pdef(\hy,
 	Ppar([
 		Pbind(
 			\type, \midi,
 			\midicmd, \noteOn,
-			\midiout, Library.at(\d),
+			\midiout, midiout,
 			\chan, Hydrasynth.midiChannel,
 			\octave, 3,
 			\scale, Scale.phrygian,
@@ -69,7 +70,7 @@ Pdef(\hy,
 		),
 		Pbind(
 			\type, \midi,
-			\midiout, Library.at(\d),
+			\midiout, midiout,
 			\chan, Hydrasynth.midiChannel,
 			\midicmd, \control,
 			\ctlNum, 0, // Depends on the corresponding patching being done in the Hydrasynth's mod matrix

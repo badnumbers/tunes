@@ -72,17 +72,19 @@ INSTANCEMETHODS::
 
 EXAMPLES::
 
-code::
-Setup.server;
-Setup.midi;
+CODE::
 
 (
+var midiout;
+Setup.server;
+midiout = Setup.midi;
+
 Pdef(\tb03,
     Ppar([
         Pbind(
             \type, \midi,
             \midicmd, \noteOn,
-			\midiout, Library.at(\d),
+			\midiout, midiout,
             \chan, Tb03.midiChannel,
             \octave, 3,
             \degree, 0,
@@ -91,7 +93,7 @@ Pdef(\tb03,
         ),
         Pbind(
             \type, \midi,
-            \midiout, Library.at(\d),
+            \midiout, midiout,
             \chan, Tb03.midiChannel,
             \midicmd, \control,
             \ctlNum, Tb03.cutoffFreqCcNo,

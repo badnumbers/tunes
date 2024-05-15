@@ -22,15 +22,16 @@ EXAMPLES::
 
 code::
 (
+var midiout;
 Setup.server;
-Setup.midi;
+midiout = Setup.midi;
 
 Pdef(\mv,
 	Ppar([
 		Pbind(
 			\type, \midi,
 			\midicmd, \noteOn,
-			\midiout, Library.at(\d),
+			\midiout, midiout,
 			\chan, Microvolt.midiChannel,
 			\octave, 3,
 			\scale, Scale.phrygian,
@@ -39,7 +40,7 @@ Pdef(\mv,
 		),
 		Pbind(
 			\type, \midi,
-			\midiout, Library.at(\d),
+			\midiout, midiout,
 			\chan, Microvolt.midiChannel,
 			\midicmd, \control,
 			\ctlNum, Microvolt.modCcNo, // Depends on the corresponding patching being done on the Microvolt
