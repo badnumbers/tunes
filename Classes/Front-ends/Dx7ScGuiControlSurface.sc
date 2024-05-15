@@ -1,5 +1,5 @@
 Dx7ScGuiControlSurface : ScGuiControlSurface {
-	var algorithmSpecs;
+	var prAlgorithmSpecs;
 	var controlSpec0To1;
 	var controlSpec0To3;
 	var controlSpec0To5;
@@ -175,8 +175,6 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 		pitchEnvelopeTab = globalTabset.addTab("Pitch envelope");
 		this.initPitchEnvelopeTab(pitchEnvelopeTab);
 
-		this.initPresetOverview(window);
-
 		StaticText(window,Rect(50,960,100,30))
 		.background_(lightgrey)
 		.string_("Initialise")
@@ -245,10 +243,16 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 		.mouseUpAction_({this.loadSysexFileFromDialog()});
 
 		this.initFactoryPresetDropDowns(window);
+
+		this.initPresetOverview(window, super.prSynthesizer.prWorkingPatch.kvps[Dx7Sysex.algorithm]);
+		super.prSynthesizer.addUpdateAction(\nil, Dx7Sysex.algorithm, {
+			|newvalue|
+			this.initPresetOverview(window, newvalue);
+		});
 	}
 
 	initAlgorithmSpecs {
-		algorithmSpecs = [
+		prAlgorithmSpecs = [
 			(
 				connections: [2@1, 6@5, 5@4, 4@3],
 				feedback: [6],
@@ -485,7 +489,7 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 		var carousel = ScGuiCarousel(container, Rect(25, 25, 1050, 100), Color.black).mouseUpAction_({
 			super.prSynthesizer.modifyWorkingPatch(Dx7Sysex.algorithm,carousel.value,this.class.name);
 		});
-		algorithmSpecs.do({
+		prAlgorithmSpecs.do({
 			|algorithm,index|
 			var algorithmView = this.drawAlgorithm(carousel.view, leftPosition, scalingFactor, algorithm, index);
 			carousel.addTile(
@@ -645,8 +649,9 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 	}
 
 	initPresetOverview {
-		|parent|
-		var container = View(parent, Rect(0, 0, 500, 500)).background_(Color.green);
+		|parent, algorithmNumber|
+		var container = View(parent, Rect(50, 50, 1000, 700));
+		this.drawAlgorithm(container,50,15,prAlgorithmSpecs[algorithmNumber],0);
 	}
 
 	prLoadAndSendSysexFile {
