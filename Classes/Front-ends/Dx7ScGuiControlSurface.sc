@@ -1,5 +1,4 @@
 Dx7ScGuiControlSurface : ScGuiControlSurface {
-	var prAlgorithmSpecs;
 	var controlSpec0To1;
 	var controlSpec0To3;
 	var controlSpec0To5;
@@ -15,7 +14,10 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 	var <dx7Teal;
 	var <dx7Purple;
 	var <dx7Brown;
+	var prAlgorithmSpecs;
 	var prFactoryPresets;
+	var prPresetOverviewView;
+	var prPresetOverviewScalingFactor = 15;
 
 	addDropDownListWithLabel {
 		|parent,left,top,labelText,parameterNumber,midiMappings|
@@ -37,61 +39,63 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 	}
 
 	drawAlgorithm {
-			|parentView,leftPosition,scalingFactor,algorithm,index|
-			var connectionsDrawFunc = Array.newClear(algorithm.connections.size);
-			var feedbackDrawFunc;
-			var counter = 0;
-			var operatorColour = Color.white;
-			var terminalOperatorColour = Color.white;
-			var connectionColour = Color.white;
-			var algorithmView = UserView(parentView, Rect(leftPosition,0,algorithm.width * 10 * scalingFactor,scalingFactor * 4 * 10)).background_(Color.black);
-			StaticText(algorithmView, Rect(scalingFactor * 2, scalingFactor * 2, scalingFactor * 10, scalingFactor * 5)).string_(algorithm.number).font_(Font(size: scalingFactor * 6, bold: true)).stringColor_(Color.white);
-			algorithm.operatorCoordinates.do({
-				|operator|
-				var opColour, operatorView;
-				opColour = operatorColour;
-				if (operator.y == 3, { opColour = terminalOperatorColour; });
-				counter = counter + 1;
-				operatorView = View(algorithmView, Rect((operator.x * (scalingFactor * 10)) + (scalingFactor * 2), (operator.y * (scalingFactor * 10)) + (scalingFactor * 2), (scalingFactor * 6), (scalingFactor * 6))).background_(opColour);
-				StaticText(operatorView, Rect(scalingFactor * 1.5, 0, scalingFactor * 5, scalingFactor * 5)).string_(counter).font_(Font().size_(scalingFactor * 5));
-			});
-			algorithm.connections.do({
-				|connection,index|
-				connectionsDrawFunc[index] = {
-					Pen.width = scalingFactor;
-					Pen.strokeColor_(connectionColour);
-					Pen.moveTo(algorithm.operatorCoordinates[connection.x - 1] * 10 * scalingFactor + (scalingFactor * 5));
-					Pen.lineTo(algorithm.operatorCoordinates[connection.y - 1] * 10 * scalingFactor + (scalingFactor * 5));
-					Pen.stroke;
-				};
-
-			});
-			feedbackDrawFunc = {
-				var feedbackHeight = algorithm.operatorCoordinates[algorithm.feedback.wrapAt(-1) - 1].y - algorithm.operatorCoordinates[algorithm.feedback.at(0) - 1].y + 1;
-				var currentPoint = algorithm.operatorCoordinates[algorithm.feedback.at(0) - 1] * 10 * scalingFactor + (scalingFactor * 5);
-				postln(format("Number %: feedback height is %", algorithm.number, feedbackHeight));
+		|algorithmView,leftPosition,scalingFactor,algorithm,index|
+		var algorithmNumberDrawFunc;
+		var connectionsDrawFunc = Array.newClear(algorithm.connections.size);
+		var feedbackDrawFunc;
+		var counter = 0;
+		var operatorColour = Color.white;
+		var terminalOperatorColour = Color.white;
+		var connectionColour = Color.white;
+		//StaticText(algorithmView, Rect(scalingFactor * 2, scalingFactor * 2, scalingFactor * 10, scalingFactor * 5)).string_(algorithm.number).font_(Font(size: scalingFactor * 6, bold: true)).stringColor_(Color.white);
+		algorithmNumberDrawFunc = {
+			Pen.stringAtPoint(algorithm.number.asString, 0@0, Font(size: scalingFactor * 6, bold: true), Color.white);
+			Pen.stroke;
+		};
+		algorithm.operatorCoordinates.do({
+			|operator|
+			var opColour, operatorView;
+			opColour = operatorColour;
+			if (operator.y == 3, { opColour = terminalOperatorColour; });
+			counter = counter + 1;
+			operatorView = View(algorithmView, Rect((operator.x * (scalingFactor * 10)) + (scalingFactor * 2), (operator.y * (scalingFactor * 10)) + (scalingFactor * 2), (scalingFactor * 6), (scalingFactor * 6))).background_(opColour);
+			StaticText(operatorView, Rect(scalingFactor * 1.5, 0, scalingFactor * 5, scalingFactor * 5)).string_(counter).font_(Font().size_(scalingFactor * 5));
+		});
+		algorithm.connections.do({
+			|connection,index|
+			connectionsDrawFunc[index] = {
 				Pen.width = scalingFactor;
 				Pen.strokeColor_(connectionColour);
-				Pen.moveTo(currentPoint);
-				currentPoint = Point(currentPoint.x, currentPoint.y - (scalingFactor * 5));
-				Pen.lineTo(currentPoint);
-				currentPoint = Point(currentPoint.x + (scalingFactor * 5), currentPoint.y);
-				Pen.lineTo(currentPoint);
-				currentPoint = Point(currentPoint.x, currentPoint.y + (scalingFactor * 10 * feedbackHeight));
-				Pen.lineTo(currentPoint);
-				currentPoint = Point(currentPoint.x - (scalingFactor * 5), currentPoint.y);
-				Pen.lineTo(currentPoint);
-				currentPoint = Point(currentPoint.x, currentPoint.y - (scalingFactor * 5));
-				Pen.lineTo(currentPoint);
-				Pen.stroke;
+				Pen.moveTo(algorithm.operatorCoordinates[connection.x - 1] * 10 * scalingFactor + (scalingFactor * 5));
+				Pen.lineTo(algorithm.operatorCoordinates[connection.y - 1] * 10 * scalingFactor + (scalingFactor * 5));
 			};
-			algorithmView.drawFunc = {
-				feedbackDrawFunc.value;
-				connectionsDrawFunc.do({|func|func.value();});
-			};
-			algorithmView.refresh;
-		^algorithmView;
-		}
+
+		});
+		feedbackDrawFunc = {
+			var feedbackHeight = algorithm.operatorCoordinates[algorithm.feedback.wrapAt(-1) - 1].y - algorithm.operatorCoordinates[algorithm.feedback.at(0) - 1].y + 1;
+			var currentPoint = algorithm.operatorCoordinates[algorithm.feedback.at(0) - 1] * 10 * scalingFactor + (scalingFactor * 5);
+			Pen.width = scalingFactor;
+			Pen.strokeColor_(connectionColour);
+			Pen.moveTo(currentPoint);
+			currentPoint = Point(currentPoint.x, currentPoint.y - (scalingFactor * 5));
+			Pen.lineTo(currentPoint);
+			currentPoint = Point(currentPoint.x + (scalingFactor * 5), currentPoint.y);
+			Pen.lineTo(currentPoint);
+			currentPoint = Point(currentPoint.x, currentPoint.y + (scalingFactor * 10 * feedbackHeight));
+			Pen.lineTo(currentPoint);
+			currentPoint = Point(currentPoint.x - (scalingFactor * 5), currentPoint.y);
+			Pen.lineTo(currentPoint);
+			currentPoint = Point(currentPoint.x, currentPoint.y - (scalingFactor * 5));
+			Pen.lineTo(currentPoint);
+			Pen.stroke;
+		};
+		algorithmView.drawFunc = {
+			algorithmNumberDrawFunc.value;
+			feedbackDrawFunc.value;
+			connectionsDrawFunc.do({|func|func.value();});
+		};
+		algorithmView.refresh;
+	}
 
 	*getPatchType {
 		^Dx7Patch;
@@ -244,10 +248,11 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 
 		this.initFactoryPresetDropDowns(window);
 
-		this.initPresetOverview(window, super.prSynthesizer.prWorkingPatch.kvps[Dx7Sysex.algorithm]);
+		prPresetOverviewView = UserView(window, Rect(50,0,6 * 10 * prPresetOverviewScalingFactor, prPresetOverviewScalingFactor * 4 * 10)).background_(Color.black);
+		this.initPresetOverview(super.prSynthesizer.prWorkingPatch.kvps[Dx7Sysex.algorithm]);
 		super.prSynthesizer.addUpdateAction(\nil, Dx7Sysex.algorithm, {
 			|newvalue|
-			this.initPresetOverview(window, newvalue);
+			this.initPresetOverview(newvalue);
 		});
 	}
 
@@ -491,7 +496,8 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 		});
 		prAlgorithmSpecs.do({
 			|algorithm,index|
-			var algorithmView = this.drawAlgorithm(carousel.view, leftPosition, scalingFactor, algorithm, index);
+			var algorithmView = UserView(carousel.view, Rect(leftPosition,0,algorithm.width * 10 * scalingFactor,scalingFactor * 4 * 10)).background_(Color.black);
+			this.drawAlgorithm(algorithmView, leftPosition, scalingFactor, algorithm, index);
 			carousel.addTile(
 				ScGuiCarouselTile(
 					algorithmView
@@ -649,9 +655,8 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 	}
 
 	initPresetOverview {
-		|parent, algorithmNumber|
-		var container = View(parent, Rect(50, 50, 1000, 700));
-		this.drawAlgorithm(container,50,15,prAlgorithmSpecs[algorithmNumber],0);
+		|algorithmNumber|
+		this.drawAlgorithm(prPresetOverviewView,50,prPresetOverviewScalingFactor,prAlgorithmSpecs[algorithmNumber],0);
 	}
 
 	prLoadAndSendSysexFile {
