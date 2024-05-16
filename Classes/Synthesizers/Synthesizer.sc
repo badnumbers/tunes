@@ -11,15 +11,15 @@ Synthesizer {
 	var <prWorkingPatch; // Needs to be called from subclasses that override updateParameterInHardwareSynth
 
 	addUpdateAction {
-		|actor,parameterNumber,action|
-		Validator.validateMethodParameterType(actor, Symbol, "actor", "Synthesizer", "addUpdateAction");
+		|destination,parameterNumber,action|
+		Validator.validateMethodParameterType(destination, Symbol, "destination", "Synthesizer", "addUpdateAction");
 		Validator.validateMethodParameterType(parameterNumber, Integer, "parameterNumber", "Synthesizer", "addUpdateAction");
 		Validator.validateMethodParameterType(action, Function, "action", "Synthesizer", "addUpdateAction");
 
-		if (prUpdateActions.at(actor).class != Dictionary, {
-			prUpdateActions.add(actor -> Dictionary());
+		if (prUpdateActions.at(destination).class != Dictionary, {
+			prUpdateActions.add(destination -> Dictionary());
 		});
-		prUpdateActions.at(actor).add(parameterNumber -> action);
+		prUpdateActions.at(destination).add(parameterNumber -> action);
 	}
 
 	// Chooses between an array of values with a specified weighting.
@@ -101,11 +101,11 @@ Synthesizer {
 			});
 
 			invokeUpdateActionsFunc = {
-				|actorFilter, parameterNumber, parameterValue|
+				|destinationFilter, parameterNumber, parameterValue|
 				var actionKeys;
-				prUpdateActions.keys.select(actorFilter).do({
-					|actor| // The actor, e.g. hardware synth or control surface
-					prUpdateActions.at(actor).at(parameterNumber).value(parameterValue);
+				prUpdateActions.keys.select(destinationFilter).do({
+					|destination| // The destination, e.g. hardware synth or control surface
+					prUpdateActions.at(destination).at(parameterNumber).value(parameterValue);
 				});
 			};
 		});
@@ -142,16 +142,16 @@ Synthesizer {
 	}
 
 	modifyWorkingPatch {
-		|parameterNumber, parameterValue, actor|
+		|parameterNumber, parameterValue, source|
 		Validator.validateMethodParameterType(parameterNumber, Integer, "parameterNumber", "Synthesizer", "modifyWorkingPatch");
 		Validator.validateMethodParameterType(parameterValue, Integer, "parameterValue", "Synthesizer", "modifyWorkingPatch");
-		Validator.validateMethodParameterType(actor, Symbol, "actor", "Synthesizer", "modifyWorkingPatch", allowNil: true);
+		Validator.validateMethodParameterType(source, Symbol, "source", "Synthesizer", "modifyWorkingPatch", allowNil: true);
 
 		prWorkingPatch.kvps[parameterNumber] = parameterValue;
-		if (actor.isNil, {
-			invokeUpdateActionsFunc.value({|subscriber| true}, parameterNumber, parameterValue);
+		if (source.isNil, {
+			invokeUpdateActionsFunc.value({|destination| true}, parameterNumber, parameterValue);
 		}, {
-			invokeUpdateActionsFunc.value({|subscriber| subscriber != actor}, parameterNumber, parameterValue);
+			invokeUpdateActionsFunc.value({|destination| destination != source}, parameterNumber, parameterValue);
 		});
 	}
 
@@ -230,7 +230,8 @@ Synthesizer {
 		prWorkingPatch = patch;
 		prWorkingPatch.kvps.keys.do({
 			|parameterNumber|
-			invokeUpdateActionsFunc.value({|actor| true}, parameterNumber, prWorkingPatch.kvps[parameterNumber]);
+			// Update all destinations
+			invokeUpdateActionsFunc.value({|destination| true}, parameterNumber, prWorkingPatch.kvps[parameterNumber]);
 		});
 	}
 
@@ -241,7 +242,7 @@ Synthesizer {
 		gui = this.class.getGuiType().new(this);
 		prWorkingPatch.kvps.keys.do({
 			|parameterNumber|
-			invokeUpdateActionsFunc.value({|actor| actor.asString.beginsWith(this.class.getGuiType().name.asString)}, parameterNumber, prWorkingPatch.kvps[parameterNumber]);
+			invokeUpdateActionsFunc.value({|destination| destination.asString.beginsWith(this.class.getGuiType().name.asString)}, parameterNumber, prWorkingPatch.kvps[parameterNumber]);
 		});
 	}
 
@@ -255,9 +256,9 @@ Synthesizer {
 
 	writeUpdateActions {
 		prUpdateActions.keys.do({
-			|actor|
-			postln(format("- % (actor)",actor));
-			prUpdateActions.at(actor).keys.do({
+			|destination|
+			postln(format("- % (destination)",destination));
+			prUpdateActions.at(destination).keys.do({
 				|parameterNumber|
 				postln(format("--- % (parameter number)",parameterNumber));
 			});

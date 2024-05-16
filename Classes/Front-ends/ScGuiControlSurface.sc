@@ -51,8 +51,13 @@ ScGuiControlSurface {
 	}
 
 	addKnob {
-		|parent,rect,parameterNumber,centred,mainKnobColour,valueIndicatorColour,deviationIndicatorColour,backgroundOfDeviationIndicatorColour,controlSpec|
-		var effectiveControlSpec, knob;
+		|parent,rect,parameterNumber,centred,mainKnobColour,valueIndicatorColour,deviationIndicatorColour,backgroundOfDeviationIndicatorColour,controlSpec,source=nil|
+		var effectiveControlSpec, knob, destination;
+		if (source.isNil, {
+			// This is to allow the source to be overridden so that we can create duplicates of controls which still get updated
+			source = this.class.name;
+		});
+		destination = source; // Kind of the same thing, just depends on how you're looking at it
 		if (controlSpec.isNil,{
 			effectiveControlSpec = defaultControlSpec;
 		},{
@@ -65,10 +70,10 @@ ScGuiControlSurface {
 		.step_(1/127)
 		.action_({
 			|knob|
-			prSynthesizer.modifyWorkingPatch(parameterNumber,effectiveControlSpec.map(knob.value).round.asInteger,this.class.name);
+			prSynthesizer.modifyWorkingPatch(parameterNumber,effectiveControlSpec.map(knob.value).round.asInteger,source);
 		});
 
-		prSynthesizer.addUpdateAction(this.class.name, parameterNumber, {
+		prSynthesizer.addUpdateAction(destination, parameterNumber, {
 			|newvalue|
 			knob.value = effectiveControlSpec.unmap(newvalue);
 		});
@@ -173,11 +178,7 @@ ScGuiControlSurface {
 	}
 
 	openStethoscope {
-		|audioChannelIndex,numChannels|
-		Validator.validateMethodParameterType(audioChannelIndex, Integer, "audioChannelIndex", "ScGuiControlSurface", "openStethoscope");
-		Validator.validateMethodParameterType(numChannels, Integer, "numChannels", "ScGuiControlSurface", "openStethoscope");
-
-		Server.default.scope(Server.default,numChannels:numChannels,index:audioChannelIndex);
+		Server.default.scope(Server.default,numChannels:prSynthesizer.audioInputChannels.size,index:prSynthesizer.audioInputChannels[0]);
 	}
 
 	setDefaultControlSpec {

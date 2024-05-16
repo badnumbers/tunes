@@ -671,10 +671,10 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 
 	initPresetOverviewControls {
 		|algorithmNumber,operatorNumber|
-		var actor = format("%_presetOverviewControls", this.class.name).asSymbol;
+		var source = format("%_presetOverviewControls", this.class.name).asSymbol;
 		var sysexOffset = (operatorNumber - 1) * -21;
 		prOperator1PresetOverviewControlsView = View(prPresetOverviewView,Rect(0,0,200,200)).background_(Color.yellow);
-		this.addKnob(prOperator1PresetOverviewControlsView,Rect(0,0,75,75),Dx7Sysex.operator1OutputLevel + sysexOffset,false,this.darkgrey,this.dx7Teal,Color.black,Color.white,actor:actor);
+		this.addKnob(prOperator1PresetOverviewControlsView,Rect(0,0,75,75),Dx7Sysex.operator1OutputLevel + sysexOffset,false,this.darkgrey,this.dx7Teal,Color.black,Color.white,source:source);
 	}
 
 	prLoadAndSendSysexFile {
