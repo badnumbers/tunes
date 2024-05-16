@@ -66,9 +66,10 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 			operatorsDrawFunc[index] = {
 				var left = (operator.x * (scalingFactor * 10)) + ((10 - boxSize / 2) * scalingFactor);
 				var top = (operator.y * (scalingFactor * 10)) + ((10 - boxSize / 2) * scalingFactor);
+				var rect = Rect(left, top, (boxSize * scalingFactor), (boxSize * scalingFactor));
 				Pen.fillColor = opColour;
-				Pen.fillRect(Rect(left, top, (boxSize * scalingFactor), (boxSize * scalingFactor)));
-				Pen.stringCenteredIn((index + 1).asString, Rect(left, top, (scalingFactor * 6), (scalingFactor * 6)), Font(size: scalingFactor * 5), Color.black);
+				Pen.fillRect(rect);
+				Pen.stringCenteredIn((index + 1).asString, rect, Font(size: scalingFactor * 5), Color.black);
 			};
 		});
 		algorithm.connections.do({
