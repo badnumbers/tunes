@@ -16,6 +16,7 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 	var prAlgorithmSpecs;
 	var prFactoryPresets;
 	var prOperator1PatchOverviewControlsView;
+	var prOperator1PatchOverviewControlsViewOperatorSize = 100;
 	var prPatchOverviewView;
 	var prPatchOverviewScalingFactor = 18;
 
@@ -35,7 +36,7 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 
 	addSectionLabel {
 		|parent,rect,text|
-		super.addSectionLabel(parent,rect,text,Color.white,this.dx7Teal);
+		super.addSectionLabel(parent,rect,text,this.dx7Teal,Color.black,alignment:\left);
 	}
 
 	drawAlgorithm {
@@ -253,13 +254,12 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 		this.initFactoryPresetDropDowns(window);
 
 		prPatchOverviewView = UserView(window, Rect(50,0,6 * 10 * prPatchOverviewScalingFactor, prPatchOverviewScalingFactor * 4 * 10)).background_(Color.black);
-		this.initPatchOverview(super.prSynthesizer.prWorkingPatch.kvps[Dx7Sysex.algorithm]);
+		this.initPatchOverviewControls(super.prSynthesizer.prWorkingPatch.kvps[Dx7Sysex.algorithm],1);
+		this.resetPatchOverview(super.prSynthesizer.prWorkingPatch.kvps[Dx7Sysex.algorithm]);
 		super.prSynthesizer.addUpdateAction(\nil, Dx7Sysex.algorithm, {
 			|newvalue|
-			this.initPatchOverview(newvalue);
+			this.resetPatchOverview(newvalue);
 		});
-
-		this.initPatchOverviewControls(super.prSynthesizer.prWorkingPatch.kvps[Dx7Sysex.algorithm],1);
 	}
 
 	initAlgorithmSpecs {
@@ -660,16 +660,11 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 		this.addKnobWithLabel(container, 750, 25, Dx7Sysex.pitchEnvelopeGeneratorLevel4, "Level 4", false);
 	}
 
-	initPatchOverview {
-		|algorithmNumber|
-		this.drawAlgorithm(prPatchOverviewView,50,prPatchOverviewScalingFactor,prAlgorithmSpecs[algorithmNumber],0,boxSize:8);
-	}
-
 	initPatchOverviewControls {
 		|algorithmNumber,operatorNumber|
 		var source = format("%_patchOverviewControls", this.class.name).asSymbol;
 		var sysexOffset = (operatorNumber - 1) * -21;
-		prOperator1PatchOverviewControlsView = View(prPatchOverviewView,Rect(0,0,200,200)).background_(Color.yellow);
+		prOperator1PatchOverviewControlsView = View(prPatchOverviewView,Rect(0,0,prOperator1PatchOverviewControlsViewOperatorSize,prOperator1PatchOverviewControlsViewOperatorSize)).background_(Color.yellow);
 		this.addKnob(prOperator1PatchOverviewControlsView,Rect(0,0,75,75),Dx7Sysex.operator1OutputLevel + sysexOffset,false,this.darkgrey,this.dx7Teal,Color.black,Color.white,source:source);
 	}
 
@@ -872,6 +867,19 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 		if (sysex[3] != 0, {
 			Error(format("The provided sysex is invalid the fourth byte did not have the value of 0 which is expected for a DX7 patch dump. It had the value %.", sysex[3])).throw;
 		});
+	}
+
+	resetPatchOverview {
+		|algorithmNumber|
+
+		var operator = prAlgorithmSpecs[algorithmNumber].operatorCoordinates[0];
+		var left = (operator.x * (prPatchOverviewScalingFactor * 10) + (prPatchOverviewScalingFactor * 5) - (prOperator1PatchOverviewControlsViewOperatorSize / 2));
+		var top = (operator.y * (prPatchOverviewScalingFactor * 10) + (prPatchOverviewScalingFactor * 5) - (prOperator1PatchOverviewControlsViewOperatorSize / 2));
+
+		prOperator1PatchOverviewControlsView.bounds = Rect(left, top, prOperator1PatchOverviewControlsViewOperatorSize, prOperator1PatchOverviewControlsViewOperatorSize);
+		postln(format("left: %, top: %.", left, top));
+
+		this.drawAlgorithm(prPatchOverviewView,50,prPatchOverviewScalingFactor,prAlgorithmSpecs[algorithmNumber],0,boxSize:8);
 	}
 
 	setDefaultControlSpec {
