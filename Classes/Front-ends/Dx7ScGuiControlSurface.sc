@@ -9,7 +9,6 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 	var controlSpec0To127;
 	var <darkgrey;
 	var <lightgrey;
-	var <orange;
 	var <dx7Pink;
 	var <dx7Teal;
 	var <dx7Purple;
@@ -30,12 +29,12 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 		|parent,left,top,parameterNumber,labelText,centred,controlSpec|
 		var container = View(parent, Rect(left, top, 100, 100)).background_(Color.black);
 		this.addControlLabel(container, Rect(0,0,100,25), labelText, \center, Color.white);
-		this.addKnob(container,Rect(10,25,80,80),parameterNumber,centred,this.darkgrey,this.orange,Color.black,Color.white,controlSpec);
+		this.addKnob(container,Rect(10,25,80,80),parameterNumber,centred,this.darkgrey,this.dx7Teal,Color.black,Color.white,controlSpec);
 	}
 
 	addSectionLabel {
 		|parent,rect,text|
-		super.addSectionLabel(parent,rect,text,Color.white,this.orange);
+		super.addSectionLabel(parent,rect,text,Color.white,this.dx7Teal);
 	}
 
 	drawAlgorithm {
@@ -121,7 +120,6 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 		controlSpec0To127 = ControlSpec(0,127,\lin,1/127);
 		darkgrey = Color(0.8,0.8,0.8);
 		lightgrey = Color(0.5,0.5,0.5);
-		orange = Color(0.8,0.2,0.14);
 		dx7Pink = Color.fromHexString("#fb6582");
 		dx7Teal = Color.fromHexString("#02c9bd");
 		dx7Purple = Color.fromHexString("#9599e3");
