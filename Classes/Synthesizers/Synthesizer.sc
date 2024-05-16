@@ -241,7 +241,7 @@ Synthesizer {
 		gui = this.class.getGuiType().new(this);
 		prWorkingPatch.kvps.keys.do({
 			|parameterNumber|
-			invokeUpdateActionsFunc.value({|actor| actor == this.class.getGuiType().name}, parameterNumber, prWorkingPatch.kvps[parameterNumber]);
+			invokeUpdateActionsFunc.value({|actor| actor.asString.beginsWith(this.class.getGuiType().name.asString)}, parameterNumber, prWorkingPatch.kvps[parameterNumber]);
 		});
 	}
 

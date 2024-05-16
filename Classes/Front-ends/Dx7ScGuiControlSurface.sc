@@ -15,6 +15,7 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 	var <dx7Brown;
 	var prAlgorithmSpecs;
 	var prFactoryPresets;
+	var prOperator1PresetOverviewControlsView;
 	var prPresetOverviewView;
 	var prPresetOverviewScalingFactor = 18;
 
@@ -145,6 +146,15 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 			borderwidth: 5,
 			bordercolour: darkgrey);
 
+		prPresetOverviewView = UserView(window, Rect(50,0,6 * 10 * prPresetOverviewScalingFactor, prPresetOverviewScalingFactor * 4 * 10)).background_(Color.black);
+		this.initPresetOverview(super.prSynthesizer.prWorkingPatch.kvps[Dx7Sysex.algorithm]);
+		super.prSynthesizer.addUpdateAction(\nil, Dx7Sysex.algorithm, {
+			|newvalue|
+			this.initPresetOverview(newvalue);
+		});
+
+		this.initPresetOverviewControls(super.prSynthesizer.prWorkingPatch.kvps[Dx7Sysex.algorithm],1);
+
 		operator1Tab = operatorTabset.addTab("Operator 1");
 		this.initOperatorTab(operator1Tab, 1);
 		operator2Tab = operatorTabset.addTab("Operator 2");
@@ -251,12 +261,9 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 
 		this.initFactoryPresetDropDowns(window);
 
-		prPresetOverviewView = UserView(window, Rect(50,0,6 * 10 * prPresetOverviewScalingFactor, prPresetOverviewScalingFactor * 4 * 10)).background_(Color.black);
-		this.initPresetOverview(super.prSynthesizer.prWorkingPatch.kvps[Dx7Sysex.algorithm]);
-		super.prSynthesizer.addUpdateAction(\nil, Dx7Sysex.algorithm, {
-			|newvalue|
-			this.initPresetOverview(newvalue);
-		});
+
+
+
 	}
 
 	initAlgorithmSpecs {
@@ -660,14 +667,14 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 	initPresetOverview {
 		|algorithmNumber|
 		this.drawAlgorithm(prPresetOverviewView,50,prPresetOverviewScalingFactor,prAlgorithmSpecs[algorithmNumber],0,boxSize:8);
-		this.initPresetOverviewControls(algorithmNumber,1);
 	}
 
 	initPresetOverviewControls {
 		|algorithmNumber,operatorNumber|
-		var actor = \presetOverview;
+		var actor = format("%_presetOverviewControls", this.class.name).asSymbol;
 		var sysexOffset = (operatorNumber - 1) * -21;
-		this.addKnob(prPresetOverviewView,Rect(0,0,75,75),Dx7Sysex.operator1OutputLevel + sysexOffset,false,this.darkgrey,this.dx7Teal,Color.black,Color.white,actor:actor);
+		prOperator1PresetOverviewControlsView = View(prPresetOverviewView,Rect(0,0,200,200)).background_(Color.yellow);
+		this.addKnob(prOperator1PresetOverviewControlsView,Rect(0,0,75,75),Dx7Sysex.operator1OutputLevel + sysexOffset,false,this.darkgrey,this.dx7Teal,Color.black,Color.white,actor:actor);
 	}
 
 	prLoadAndSendSysexFile {
