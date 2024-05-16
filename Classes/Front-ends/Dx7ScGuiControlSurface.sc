@@ -15,8 +15,8 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 	var <dx7Brown;
 	var prAlgorithmSpecs;
 	var prFactoryPresets;
-	var prOperator1PatchOverviewControlsView;
-	var prOperator1PatchOverviewControlsViewOperatorSize = 100;
+	var prPatchOverviewControlsViewOperatorViews;
+	var prPatchOverviewControlsViewOperatorSize = 100;
 	var prPatchOverviewView;
 	var prPatchOverviewScalingFactor = 18;
 
@@ -255,7 +255,9 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 
 		prPatchOverviewView = UserView(window, Rect(50,0,6 * 10 * prPatchOverviewScalingFactor, prPatchOverviewScalingFactor * 4 * 10)).background_(Color.black);
 		this.initPatchOverviewControls(super.prSynthesizer.prWorkingPatch.kvps[Dx7Sysex.algorithm],1);
+		postln(format("init 1 -> prPatchOverviewControlsViewOperatorViews[0].class: %.", prPatchOverviewControlsViewOperatorViews[0].class));
 		this.resetPatchOverview(super.prSynthesizer.prWorkingPatch.kvps[Dx7Sysex.algorithm]);
+		postln(format("init 2 -> prPatchOverviewControlsViewOperatorViews[0].class: %.", prPatchOverviewControlsViewOperatorViews[0].class));
 		super.prSynthesizer.addUpdateAction(\nil, Dx7Sysex.algorithm, {
 			|newvalue|
 			this.resetPatchOverview(newvalue);
@@ -647,6 +649,25 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 		this.addKnobWithLabel(container, 550, 25, Dx7Sysex.lfoKeySync, "Key sync", false, controlSpec0To1);
 	}
 
+	initPatchOverviewControl {
+		|operatorNumber,source|
+		var sysexOffset = (operatorNumber - 1) * -21;
+		prPatchOverviewControlsViewOperatorViews[operatorNumber - 1] = View(prPatchOverviewView,Rect(0,0,prPatchOverviewControlsViewOperatorSize,prPatchOverviewControlsViewOperatorSize)).background_(Color.black);
+		this.addKnob(prPatchOverviewControlsViewOperatorViews[operatorNumber - 1],Rect(0,0,75,75),Dx7Sysex.operator1OutputLevel + sysexOffset,false,this.darkgrey,this.dx7Teal,Color.black,Color.white,source:source);
+		postln(format("initPatchOverviewControl -> prPatchOverviewControlsViewOperatorViews[operatorNumber - 1].class: %.", prPatchOverviewControlsViewOperatorViews[operatorNumber - 1].class));
+	}
+
+	initPatchOverviewControls {
+		|algorithmNumber,operatorNumber|
+		var source = format("%_patchOverviewControls", this.class.name).asSymbol;
+		prPatchOverviewControlsViewOperatorViews = Array.newClear(6);
+		(1..6).do({
+			|operatorNumber|
+			this.initPatchOverviewControl(operatorNumber,source);
+		});
+		postln(format("initPatchOverviewControls -> prPatchOverviewControlsViewOperatorViews[operatorNumber - 1].class: %.", prPatchOverviewControlsViewOperatorViews[operatorNumber - 1].class));
+	}
+
 	initPitchEnvelopeTab {
 		|tab|
 		var container = View(tab.body,Rect(0,0,tab.body.bounds.width,tab.body.bounds.height));
@@ -658,14 +679,6 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 		this.addKnobWithLabel(container, 550, 25, Dx7Sysex.pitchEnvelopeGeneratorLevel3, "Level 3", false);
 		this.addKnobWithLabel(container, 650, 25, Dx7Sysex.pitchEnvelopeGeneratorRate4, "Rate 4", false);
 		this.addKnobWithLabel(container, 750, 25, Dx7Sysex.pitchEnvelopeGeneratorLevel4, "Level 4", false);
-	}
-
-	initPatchOverviewControls {
-		|algorithmNumber,operatorNumber|
-		var source = format("%_patchOverviewControls", this.class.name).asSymbol;
-		var sysexOffset = (operatorNumber - 1) * -21;
-		prOperator1PatchOverviewControlsView = View(prPatchOverviewView,Rect(0,0,prOperator1PatchOverviewControlsViewOperatorSize,prOperator1PatchOverviewControlsViewOperatorSize)).background_(Color.yellow);
-		this.addKnob(prOperator1PatchOverviewControlsView,Rect(0,0,75,75),Dx7Sysex.operator1OutputLevel + sysexOffset,false,this.darkgrey,this.dx7Teal,Color.black,Color.white,source:source);
 	}
 
 	prLoadAndSendSysexFile {
@@ -869,17 +882,22 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 		});
 	}
 
+	repositionOperatorOverviewControls {
+		|algorithmNumber,operatorNumber|
+		var operator = prAlgorithmSpecs[algorithmNumber].operatorCoordinates[operatorNumber-1];
+		var view = prPatchOverviewControlsViewOperatorViews[operatorNumber - 1];
+		var left = (operator.x * (prPatchOverviewScalingFactor * 10) + (prPatchOverviewScalingFactor * 5) - (prPatchOverviewControlsViewOperatorSize / 2));
+		var top = (operator.y * (prPatchOverviewScalingFactor * 10) + (prPatchOverviewScalingFactor * 5) - (prPatchOverviewControlsViewOperatorSize / 2));
+		view.bounds = Rect(left, top, prPatchOverviewControlsViewOperatorSize, prPatchOverviewControlsViewOperatorSize);
+	}
+
 	resetPatchOverview {
 		|algorithmNumber|
-
-		var operator = prAlgorithmSpecs[algorithmNumber].operatorCoordinates[0];
-		var left = (operator.x * (prPatchOverviewScalingFactor * 10) + (prPatchOverviewScalingFactor * 5) - (prOperator1PatchOverviewControlsViewOperatorSize / 2));
-		var top = (operator.y * (prPatchOverviewScalingFactor * 10) + (prPatchOverviewScalingFactor * 5) - (prOperator1PatchOverviewControlsViewOperatorSize / 2));
-
-		prOperator1PatchOverviewControlsView.bounds = Rect(left, top, prOperator1PatchOverviewControlsViewOperatorSize, prOperator1PatchOverviewControlsViewOperatorSize);
-		postln(format("left: %, top: %.", left, top));
-
 		this.drawAlgorithm(prPatchOverviewView,50,prPatchOverviewScalingFactor,prAlgorithmSpecs[algorithmNumber],0,boxSize:8);
+		(1..6).do({
+			|operatorNumber|
+			this.repositionOperatorOverviewControls(algorithmNumber,operatorNumber);
+		});
 	}
 
 	setDefaultControlSpec {
