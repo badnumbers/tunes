@@ -653,10 +653,21 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 
 	initPatchOverviewControl {
 		|operatorNumber,source|
-		var sysexOffset = (operatorNumber - 1) * -21;
+		var sysexOffset = (operatorNumber - 1) * -21, onButton, view;
+		var scale = prPatchOverviewControlsViewOperatorScale;
 		prPatchOverviewControlsViewOperatorViews[operatorNumber - 1] = View(prPatchOverviewView,Rect(0,0,prPatchOverviewControlsViewOperatorSize,prPatchOverviewControlsViewOperatorSize)).background_(Color.black);
-		this.addKnob(prPatchOverviewControlsViewOperatorViews[operatorNumber - 1],Rect(0,0,50*prPatchOverviewControlsViewOperatorScale,50*prPatchOverviewControlsViewOperatorScale),Dx7Sysex.operator1OutputLevel + sysexOffset,false,this.darkgrey,this.dx7Teal,Color.black,Color.white,source:source);
-		this.addDropDownList(prPatchOverviewControlsViewOperatorViews[operatorNumber - 1],Rect(50*prPatchOverviewControlsViewOperatorScale,25*prPatchOverviewControlsViewOperatorScale,50,25),Dx7Sysex.operator1CoarseFrequency + sysexOffset,(0..31).collect({ |number| [ (number + 1).asString, [ number ] ] }),source:source);
+		view = prPatchOverviewControlsViewOperatorViews[operatorNumber - 1];
+		this.addKnob(view,Rect(0,0,50*scale,50*scale),Dx7Sysex.operator1OutputLevel + sysexOffset,false,this.darkgrey,this.dx7Teal,Color.black,Color.white,source:source);
+		this.addDropDownList(view,Rect(50*prPatchOverviewControlsViewOperatorScale,25*scale,50,25),Dx7Sysex.operator1CoarseFrequency + sysexOffset,(0..31).collect({ |number| [ (number + 1).asString, [ number ] ] }),source:source);
+		onButton = UserView(view, Rect(75,0,25,25)).background_(Color.black);
+		onButton.drawFunc = {
+			Pen.strokeColor = Color.red;
+			Pen.width = 3;
+			Pen.addArc(13@13, 10, pi*1.65, pi*1.7);
+			Pen.moveTo(13@2);
+			Pen.lineTo(13@13);
+			Pen.stroke;
+		};
 	}
 
 	initPatchOverviewControls {
