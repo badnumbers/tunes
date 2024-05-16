@@ -17,6 +17,7 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 	var prFactoryPresets;
 	var prPatchOverviewControlsViewOperatorViews;
 	var prPatchOverviewControlsViewOperatorSize = 100;
+	var prPatchOverviewControlsViewOperatorScale = 1;
 	var prPatchOverviewView;
 	var prPatchOverviewScalingFactor = 18;
 
@@ -253,6 +254,7 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 
 		this.initFactoryPresetDropDowns(window);
 
+		prPatchOverviewControlsViewOperatorSize = prPatchOverviewControlsViewOperatorSize * prPatchOverviewControlsViewOperatorScale;
 		prPatchOverviewView = UserView(window, Rect(50,0,6 * 10 * prPatchOverviewScalingFactor, prPatchOverviewScalingFactor * 4 * 10)).background_(Color.black);
 		this.initPatchOverviewControls(super.prSynthesizer.prWorkingPatch.kvps[Dx7Sysex.algorithm],1);
 		postln(format("init 1 -> prPatchOverviewControlsViewOperatorViews[0].class: %.", prPatchOverviewControlsViewOperatorViews[0].class));
@@ -653,8 +655,8 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 		|operatorNumber,source|
 		var sysexOffset = (operatorNumber - 1) * -21;
 		prPatchOverviewControlsViewOperatorViews[operatorNumber - 1] = View(prPatchOverviewView,Rect(0,0,prPatchOverviewControlsViewOperatorSize,prPatchOverviewControlsViewOperatorSize)).background_(Color.black);
-		this.addKnob(prPatchOverviewControlsViewOperatorViews[operatorNumber - 1],Rect(0,0,75,75),Dx7Sysex.operator1OutputLevel + sysexOffset,false,this.darkgrey,this.dx7Teal,Color.black,Color.white,source:source);
-		postln(format("initPatchOverviewControl -> prPatchOverviewControlsViewOperatorViews[operatorNumber - 1].class: %.", prPatchOverviewControlsViewOperatorViews[operatorNumber - 1].class));
+		this.addKnob(prPatchOverviewControlsViewOperatorViews[operatorNumber - 1],Rect(0,0,50*prPatchOverviewControlsViewOperatorScale,50*prPatchOverviewControlsViewOperatorScale),Dx7Sysex.operator1OutputLevel + sysexOffset,false,this.darkgrey,this.dx7Teal,Color.black,Color.white,source:source);
+		this.addDropDownList(prPatchOverviewControlsViewOperatorViews[operatorNumber - 1],Rect(50*prPatchOverviewControlsViewOperatorScale,25*prPatchOverviewControlsViewOperatorScale,50,25),Dx7Sysex.operator1CoarseFrequency + sysexOffset,(0..31).collect({ |number| [ (number + 1).asString, [ number ] ] }),source:source);
 	}
 
 	initPatchOverviewControls {
@@ -665,7 +667,6 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 			|operatorNumber|
 			this.initPatchOverviewControl(operatorNumber,source);
 		});
-		postln(format("initPatchOverviewControls -> prPatchOverviewControlsViewOperatorViews[operatorNumber - 1].class: %.", prPatchOverviewControlsViewOperatorViews[operatorNumber - 1].class));
 	}
 
 	initPitchEnvelopeTab {
