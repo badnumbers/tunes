@@ -17,7 +17,7 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 	var prAlgorithmSpecs;
 	var prFactoryPresets;
 	var prPresetOverviewView;
-	var prPresetOverviewScalingFactor = 15;
+	var prPresetOverviewScalingFactor = 18;
 
 	addDropDownListWithLabel {
 		|parent,left,top,labelText,parameterNumber,midiMappings|
@@ -51,13 +51,6 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 		algorithmNumberDrawFunc = {
 			Pen.stringAtPoint(algorithm.number.asString, 0@0, Font(size: scalingFactor * 6, bold: true), Color.white);
 		};
-		(
-			connections: [3@1, 2@1, 6@5, 5@4],
-			feedback: [6,4],
-			number: 4,
-			operatorCoordinates: [0@3, 0@2, 0@1, 1@3, 1@2, 1@1],
-			width: 2
-		);
 		algorithm.operatorCoordinates.do({
 			|operator, index|
 			var opColour, operatorView;
@@ -669,6 +662,14 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 	initPresetOverview {
 		|algorithmNumber|
 		this.drawAlgorithm(prPresetOverviewView,50,prPresetOverviewScalingFactor,prAlgorithmSpecs[algorithmNumber],0,boxSize:8);
+		this.initPresetOverviewControls(algorithmNumber,1);
+	}
+
+	initPresetOverviewControls {
+		|algorithmNumber,operatorNumber|
+		var actor = \presetOverview;
+		var sysexOffset = (operatorNumber - 1) * -21;
+		this.addKnob(prPresetOverviewView,Rect(0,0,75,75),Dx7Sysex.operator1OutputLevel + sysexOffset,false,this.darkgrey,this.dx7Teal,Color.black,Color.white,actor:actor);
 	}
 
 	prLoadAndSendSysexFile {
