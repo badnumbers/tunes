@@ -15,9 +15,9 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 	var <dx7Brown;
 	var prAlgorithmSpecs;
 	var prFactoryPresets;
-	var prOperator1PresetOverviewControlsView;
-	var prPresetOverviewView;
-	var prPresetOverviewScalingFactor = 18;
+	var prOperator1PatchOverviewControlsView;
+	var prPatchOverviewView;
+	var prPatchOverviewScalingFactor = 18;
 
 	addDropDownListWithLabel {
 		|parent,left,top,labelText,parameterNumber,midiMappings|
@@ -146,15 +146,6 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 			borderwidth: 5,
 			bordercolour: darkgrey);
 
-		prPresetOverviewView = UserView(window, Rect(50,0,6 * 10 * prPresetOverviewScalingFactor, prPresetOverviewScalingFactor * 4 * 10)).background_(Color.black);
-		this.initPresetOverview(super.prSynthesizer.prWorkingPatch.kvps[Dx7Sysex.algorithm]);
-		super.prSynthesizer.addUpdateAction(\nil, Dx7Sysex.algorithm, {
-			|newvalue|
-			this.initPresetOverview(newvalue);
-		});
-
-		this.initPresetOverviewControls(super.prSynthesizer.prWorkingPatch.kvps[Dx7Sysex.algorithm],1);
-
 		operator1Tab = operatorTabset.addTab("Operator 1");
 		this.initOperatorTab(operator1Tab, 1);
 		operator2Tab = operatorTabset.addTab("Operator 2");
@@ -261,9 +252,14 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 
 		this.initFactoryPresetDropDowns(window);
 
+		prPatchOverviewView = UserView(window, Rect(50,0,6 * 10 * prPatchOverviewScalingFactor, prPatchOverviewScalingFactor * 4 * 10)).background_(Color.black);
+		this.initPatchOverview(super.prSynthesizer.prWorkingPatch.kvps[Dx7Sysex.algorithm]);
+		super.prSynthesizer.addUpdateAction(\nil, Dx7Sysex.algorithm, {
+			|newvalue|
+			this.initPatchOverview(newvalue);
+		});
 
-
-
+		this.initPatchOverviewControls(super.prSynthesizer.prWorkingPatch.kvps[Dx7Sysex.algorithm],1);
 	}
 
 	initAlgorithmSpecs {
@@ -664,17 +660,17 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 		this.addKnobWithLabel(container, 750, 25, Dx7Sysex.pitchEnvelopeGeneratorLevel4, "Level 4", false);
 	}
 
-	initPresetOverview {
+	initPatchOverview {
 		|algorithmNumber|
-		this.drawAlgorithm(prPresetOverviewView,50,prPresetOverviewScalingFactor,prAlgorithmSpecs[algorithmNumber],0,boxSize:8);
+		this.drawAlgorithm(prPatchOverviewView,50,prPatchOverviewScalingFactor,prAlgorithmSpecs[algorithmNumber],0,boxSize:8);
 	}
 
-	initPresetOverviewControls {
+	initPatchOverviewControls {
 		|algorithmNumber,operatorNumber|
-		var source = format("%_presetOverviewControls", this.class.name).asSymbol;
+		var source = format("%_patchOverviewControls", this.class.name).asSymbol;
 		var sysexOffset = (operatorNumber - 1) * -21;
-		prOperator1PresetOverviewControlsView = View(prPresetOverviewView,Rect(0,0,200,200)).background_(Color.yellow);
-		this.addKnob(prOperator1PresetOverviewControlsView,Rect(0,0,75,75),Dx7Sysex.operator1OutputLevel + sysexOffset,false,this.darkgrey,this.dx7Teal,Color.black,Color.white,source:source);
+		prOperator1PatchOverviewControlsView = View(prPatchOverviewView,Rect(0,0,200,200)).background_(Color.yellow);
+		this.addKnob(prOperator1PatchOverviewControlsView,Rect(0,0,75,75),Dx7Sysex.operator1OutputLevel + sysexOffset,false,this.darkgrey,this.dx7Teal,Color.black,Color.white,source:source);
 	}
 
 	prLoadAndSendSysexFile {
