@@ -39,7 +39,7 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 	}
 
 	drawAlgorithm {
-		|algorithmView,leftPosition,scalingFactor,algorithm,index|
+		|algorithmView,leftPosition,scalingFactor,algorithm,index,boxSize=6|
 		var algorithmNumberDrawFunc;
 		var connectionsDrawFunc = Array.newClear(algorithm.connections.size);
 		var operatorsDrawFunc = Array.newClear(algorithm.operatorCoordinates.size);
@@ -51,16 +51,23 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 		algorithmNumberDrawFunc = {
 			Pen.stringAtPoint(algorithm.number.asString, 0@0, Font(size: scalingFactor * 6, bold: true), Color.white);
 		};
+		(
+			connections: [3@1, 2@1, 6@5, 5@4],
+			feedback: [6,4],
+			number: 4,
+			operatorCoordinates: [0@3, 0@2, 0@1, 1@3, 1@2, 1@1],
+			width: 2
+		);
 		algorithm.operatorCoordinates.do({
 			|operator, index|
 			var opColour, operatorView;
 			opColour = operatorColour;
 			if (operator.y == 3, { opColour = terminalOperatorColour; });
 			operatorsDrawFunc[index] = {
-				var left = (operator.x * (scalingFactor * 10)) + (scalingFactor * 2);
-				var top = (operator.y * (scalingFactor * 10)) + (scalingFactor * 2);
+				var left = (operator.x * (scalingFactor * 10)) + ((10 - boxSize / 2) * scalingFactor);
+				var top = (operator.y * (scalingFactor * 10)) + ((10 - boxSize / 2) * scalingFactor);
 				Pen.fillColor = opColour;
-				Pen.fillRect(Rect(left, top, (scalingFactor * 6), (scalingFactor * 6)));
+				Pen.fillRect(Rect(left, top, (boxSize * scalingFactor), (boxSize * scalingFactor)));
 				Pen.stringCenteredIn((index + 1).asString, Rect(left, top, (scalingFactor * 6), (scalingFactor * 6)), Font(size: scalingFactor * 5), Color.black);
 			};
 		});
@@ -660,7 +667,7 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 
 	initPresetOverview {
 		|algorithmNumber|
-		this.drawAlgorithm(prPresetOverviewView,50,prPresetOverviewScalingFactor,prAlgorithmSpecs[algorithmNumber],0);
+		this.drawAlgorithm(prPresetOverviewView,50,prPresetOverviewScalingFactor,prAlgorithmSpecs[algorithmNumber],0,boxSize:8);
 	}
 
 	prLoadAndSendSysexFile {
