@@ -61,10 +61,6 @@ Synthesizer {
 		^[args[1],args[0]]
 	}
 
-	getSynthesizerName {
-		Error(format("The Synthesizer with class name % needs to have getSynthesizerName defined.",this.class)).throw;
-	}
-
 	// Gets the type of the Touch OSC control surface class intended for this Synthesizer.
 	*getTouchOscControlSurfaceType {
 		Error("This Synthesizer does not have a Touch OSC control surface defined.").throw;

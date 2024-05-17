@@ -41,10 +41,6 @@ PerformVe : Synthesizer {
 		^\control;
 	}
 
-	getSynthesizerName {
-		^"Perform-VE";
-	}
-
 	getDefaultVariableName {
 		^"~performVe";
 	}

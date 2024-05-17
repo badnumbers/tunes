@@ -43,10 +43,6 @@ Jx03 : Synthesizer {
 		^\sysex;
 	}
 
-	getSynthesizerName {
-		^"JX-03";
-	}
-
 	getDefaultVariableName {
 		^"~jx03";
 	}

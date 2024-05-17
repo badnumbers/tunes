@@ -28,10 +28,6 @@ Dx7 : Synthesizer {
 		^\sysex;
 	}
 
-	getSynthesizerName {
-		^"DX7";
-	}
-
 	getDefaultVariableName {
 		^"~dx7";
 	}

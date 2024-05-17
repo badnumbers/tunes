@@ -34,10 +34,6 @@ Sh01a : Synthesizer {
 		^\control;
 	}
 
-	getSynthesizerName {
-		^"SH-01A";
-	}
-
 	getDefaultVariableName {
 		^"~sh01a";
 	}

@@ -1,8 +1,4 @@
 Rev2 : Synthesizer {
-	getSynthesizerName {
-		^"REV2";
-	}
-
 	getDefaultVariableName {
 		^"~rev2";
 	}

@@ -13,10 +13,6 @@ Tb03 : Synthesizer {
 		^Tb03ControlSurface;
 	}
 
-	getSynthesizerName {
-		^"TB-03";
-	}
-
 	getDefaultVariableName {
 		^"~tb03";
 	}

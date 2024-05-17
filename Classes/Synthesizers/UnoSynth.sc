@@ -60,10 +60,6 @@ UnoSynth : Synthesizer {
 		^UnoSynthControlSurface;
 	}
 
-	getSynthesizerName {
-		^"UnoSynth";
-	}
-
 	getDefaultVariableName {
 		^"~unoSynth";
 	}
