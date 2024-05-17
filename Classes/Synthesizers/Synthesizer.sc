@@ -61,11 +61,6 @@ Synthesizer {
 		^[args[1],args[0]]
 	}
 
-	// Gets the type of the Touch OSC control surface class intended for this Synthesizer.
-	*getTouchOscControlSurfaceType {
-		Error("This Synthesizer does not have a Touch OSC control surface defined.").throw;
-	}
-
 	init {
 		|midiout,patchType,guiType|
 		Validator.validateMethodParameterType(midiout, MIDIOut, "midiout", "Synthesizer", "init");
@@ -190,11 +185,6 @@ Synthesizer {
 			midiParameterValues = this.getMidiParametersFromMididef(args);
 			this.modifyWorkingPatch(midiParameterValues[0],midiParameterValues[1],\hardware);
 		},nil,nil,this.getMidiMessageType,nil,nil,nil);
-	}
-
-	registerTouchOscControlSurface {
-		var touchOscControlSurfaceType = this.class.getTouchOscControlSurfaceType();
-		touchOscControlSurfaceType.register(prMidiout,this);
 	}
 
 	saveWorkingPatch {

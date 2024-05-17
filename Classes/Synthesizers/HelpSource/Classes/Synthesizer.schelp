@@ -24,7 +24,7 @@ Creates an instance of this LINK::Classes/Synthesizer::.
 ARGUMENT:: midiout
 An instance of LINK::Classes/MIDIOut:: to be used by the CODE::Synthesizer:: to send updates to the hardware synth. This could have been created earlier by calling LINK::Classes/Setup#*midi::.
 
-PRIVATE::getDefaultVariableName,getTouchOscControlSurfaceType
+PRIVATE::getDefaultVariableName
 
 INSTANCEMETHODS::
 
@@ -109,21 +109,6 @@ NUMBEREDLIST::
 ## The MIDI output port of the MIDI interface must be virtually connected to SuperCollider's MIDI input port in JACK or PipeWire.
 ::
 ::
-
-METHOD:: registerTouchOscControlSurface
-Creates an LINK::Classes/OSCdef:: for each parameter the Touch OSC control surface can modify (see LINK::Classes/TouchOscControlSurface#-getControlParameters::). This LINK::Classes/OSCdef:: captures the OSC data from the control surface and uses it to update the STRONG::Working Patch::, and in turn sends the new parameter value to the hardware synth itself.
-
-NOTE::
-In order for this to work, these things must have been done:
-NUMBEREDLIST::
-## Touch OSC must be showing a suitable Layout for the CODE::Synthesizer::, with control URLs in the form STRONG::/controls/{parameter name}::, where STRONG::{parameter name}:: is the name of the corresponding property of the CODE::Synthesizer:: (e.g. CODE::cutoffFreqCcNo:: in LINK::Classes/Tb03::).
-## Touch OSC must be configured with the IP address of the machine that SuperCollider is running on, as obtained by running a terminal command such as the following:
-::
-CODE::
-hostname -I
-::
-::
-
 
 METHOD:: saveWorkingPatch
 Stores the STRONG::Working Patch:: in the STRONG::Patch Dictionary:: to enable you to create other CODE::Patches:: without losing this one. To save the CODE::Patch:: permanently, call LINK::#-writeWorkingPatch:: and save the code which was written to the output window.
