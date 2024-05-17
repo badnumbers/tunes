@@ -8,11 +8,6 @@ Contains information about working with a TD-3.
 
 CLASSMETHODS::
 
-METHOD:: midiChannel
-The MIDI channel that the TD-3 is configured to listen on.
-
-RETURNS:: 7, unless assigned a different value.
-
 INSTANCEMETHODS::
 
 EXAMPLES::

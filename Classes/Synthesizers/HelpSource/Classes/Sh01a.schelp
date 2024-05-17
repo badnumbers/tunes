@@ -67,11 +67,6 @@ table::
 
 returns:: 12.
 
-METHOD:: midiChannel
-The MIDI channel that the SH-01A is configured to listen on.
-
-returns:: 2, unless assigned a different value.
-
 METHOD:: modCcNo
 The MIDI CC number that is used to control the SH-01A's modulation amount.
 

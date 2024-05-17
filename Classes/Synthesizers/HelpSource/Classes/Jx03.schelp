@@ -227,11 +227,6 @@ table::
 
 returns:: 12.
 
-METHOD:: midiChannel
-The MIDI channel that the JX-03 is configured to listen on.
-
-returns:: 5, unless assigned a different value.
-
 METHOD:: randomisePatch
 Generates a random patch of the provided code::PatchType::.
 

@@ -66,6 +66,8 @@ A LINK::Classes/Symbol:: which is the name of the CODE::Patch:: to load.
 METHOD:: midiChannels
 An LINK::Classes/Array:: of zero-based integers indicating the MIDI channels that this Synthesizer is set to receive on. The CODE::Array:: typically only contains one value, but some hardware synthesizers, for example multitimbral ones, may have more than one.
 
+This value is read from the STRONG::Configuration File::. See the LINK::Classes/Config:: class.
+
 NOTE::
 In the STRONG::Configuration File::, the MIDI channels are 1-based (i.e. they go from 1 to 16). However, when the STRONG::Configuration File:: is read, the MIDI channels become zero-based for compatbility with SuperCollider's MIDI classes.
 ::

@@ -9,7 +9,6 @@ Sh01a : Synthesizer {
 	classvar <lfoModeCcNo = 79;
 	classvar <lfoRateCcNo = 3;
 	classvar <lfoWaveformCcNo = 12;
-	var <>midiChannel = 2;
 	classvar <modCcNo = 1;
 	classvar <polyphonyModeCcNo = 80;
 	classvar <portamentoCcNo = 5;

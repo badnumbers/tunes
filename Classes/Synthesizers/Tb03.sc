@@ -8,7 +8,6 @@ Tb03 : Synthesizer {
 	classvar <overdriveCcNo = 17;
 	classvar <resonanceCcNo = 71;
 	classvar <tuningCcNo = 104;
-	var <>midiChannel = 1;
 
 	*getControlSurfaceType {
 		^Tb03ControlSurface;

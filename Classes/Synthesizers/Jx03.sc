@@ -25,7 +25,6 @@ Jx03 : Synthesizer {
 	classvar <lfoDelayTimeCcNo = 9;
 	classvar <lfoRateCcNo = 3;
 	classvar <lfoWaveformCcNo= 12;
-	var <>midiChannel = 5;
 	classvar <vcfCutoffCcNo = 74;
 	classvar <vcfEnvModDepthCcNo = 31;
 	classvar <vcfEnvPolarityCcNo = 35;
