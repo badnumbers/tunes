@@ -186,60 +186,60 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 		.string_("Initialise")
 		.stringColor_(Color.black)
 		.align_(\center)
-		.mouseUpAction_({super.prSynthesizer.initialisePatch()});
+		.mouseUpAction_({prSynthesizer.initialisePatch()});
 
 		StaticText(window,Rect(160,960,100,30))
 		.background_(lightgrey)
 		.string_("Randomise")
 		.stringColor_(Color.black)
 		.align_(\center)
-		.mouseUpAction_({super.prSynthesizer.randomisePatch(0)});
+		.mouseUpAction_({prSynthesizer.randomisePatch(0)});
 
 		StaticText(window,Rect(270,960,100,30))
 		.background_(lightgrey)
 		.string_("Send")
 		.stringColor_(Color.black)
 		.align_(\center)
-		.mouseUpAction_({super.prSynthesizer.setWorkingPatch(super.prSynthesizer.prWorkingPatch)});
+		.mouseUpAction_({prSynthesizer.setWorkingPatch(prSynthesizer.prWorkingPatch)});
 
 		StaticText(window,Rect(380,960,40,30))
 		.background_(lightgrey)
 		.string_("1")
 		.stringColor_(Color.black)
 		.align_(\center)
-		.mouseUpAction_({super.prSynthesizer.modifyWorkingPatch(Dx7Sysex.algorithm, 0, this.class.name)});
+		.mouseUpAction_({prSynthesizer.modifyWorkingPatch(Dx7Sysex.algorithm, 0, this.class.name)});
 		StaticText(window,Rect(430,960,40,30))
 		.background_(lightgrey)
 		.string_("10")
 		.stringColor_(Color.black)
 		.align_(\center)
-		.mouseUpAction_({super.prSynthesizer.modifyWorkingPatch(Dx7Sysex.algorithm, 9, this.class.name)});
+		.mouseUpAction_({prSynthesizer.modifyWorkingPatch(Dx7Sysex.algorithm, 9, this.class.name)});
 		StaticText(window,Rect(480,960,40,30))
 		.background_(lightgrey)
 		.string_("20")
 		.stringColor_(Color.black)
 		.align_(\center)
-		.mouseUpAction_({super.prSynthesizer.modifyWorkingPatch(Dx7Sysex.algorithm, 19, this.class.name)});
+		.mouseUpAction_({prSynthesizer.modifyWorkingPatch(Dx7Sysex.algorithm, 19, this.class.name)});
 		StaticText(window,Rect(530,960,40,30))
 		.background_(lightgrey)
 		.string_("32")
 		.stringColor_(Color.black)
 		.align_(\center)
-		.mouseUpAction_({super.prSynthesizer.modifyWorkingPatch(Dx7Sysex.algorithm, 31, this.class.name)});
+		.mouseUpAction_({prSynthesizer.modifyWorkingPatch(Dx7Sysex.algorithm, 31, this.class.name)});
 
 		StaticText(window,Rect(680,960,100,30))
 		.background_(lightgrey)
 		.string_("Write")
 		.stringColor_(Color.black)
 		.align_(\center)
-		.mouseUpAction_({super.prSynthesizer.writeWorkingPatch()});
+		.mouseUpAction_({prSynthesizer.writeWorkingPatch()});
 
 		StaticText(window,Rect(790,960,100,30))
 		.background_(lightgrey)
 		.string_("Scope")
 		.stringColor_(Color.black)
 		.align_(\center)
-		.mouseUpAction_({this.openStethoscope(super.prSynthesizer.audioInputChannels[0],super.prSynthesizer.audioInputChannels.size)});
+		.mouseUpAction_({this.openStethoscope});
 
 		StaticText(window,Rect(900,960,100,30))
 		.background_(lightgrey)
@@ -252,11 +252,11 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 
 		prPatchOverviewControlsViewOperatorSize = prPatchOverviewControlsViewOperatorSize * prPatchOverviewControlsViewOperatorScale;
 		prPatchOverviewView = UserView(window, Rect(50,0,6 * 10 * prPatchOverviewScalingFactor, prPatchOverviewScalingFactor * 4 * 10)).background_(Color.black);
-		this.initPatchOverviewControls(super.prSynthesizer.prWorkingPatch.kvps[Dx7Sysex.algorithm],1);
+		this.initPatchOverviewControls(prSynthesizer.prWorkingPatch.kvps[Dx7Sysex.algorithm],1);
 		postln(format("init 1 -> prPatchOverviewControlsViewOperatorViews[0].class: %.", prPatchOverviewControlsViewOperatorViews[0].class));
-		this.resetPatchOverview(super.prSynthesizer.prWorkingPatch.kvps[Dx7Sysex.algorithm]);
+		this.resetPatchOverview(prSynthesizer.prWorkingPatch.kvps[Dx7Sysex.algorithm]);
 		postln(format("init 2 -> prPatchOverviewControlsViewOperatorViews[0].class: %.", prPatchOverviewControlsViewOperatorViews[0].class));
-		super.prSynthesizer.addUpdateAction(\nil, Dx7Sysex.algorithm, {
+		prSynthesizer.addUpdateAction(\nil, Dx7Sysex.algorithm, {
 			|newvalue|
 			this.resetPatchOverview(newvalue);
 		});
@@ -498,7 +498,7 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 		var leftPosition = 0;
 		var container = View(tab.body,Rect(0,0,tab.body.bounds.width,tab.body.bounds.height));
 		var carousel = ScGuiCarousel(container, Rect(25, 25, 1050, 100), Color.black).mouseUpAction_({
-			super.prSynthesizer.modifyWorkingPatch(Dx7Sysex.algorithm,carousel.value,this.class.name);
+			prSynthesizer.modifyWorkingPatch(Dx7Sysex.algorithm,carousel.value,this.class.name);
 		});
 		prAlgorithmSpecs.do({
 			|algorithm,index|
@@ -522,7 +522,7 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 			);
 			leftPosition = leftPosition + (algorithm.width * 10 * scalingFactor) + (5 * scalingFactor);
 		});
-		super.prSynthesizer.addUpdateAction(this.class.name, Dx7Sysex.algorithm, {
+		prSynthesizer.addUpdateAction(this.class.name, Dx7Sysex.algorithm, {
 			|newvalue|
 			carousel.value = newvalue;
 		});
@@ -851,7 +851,7 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 		patch.kvps[Dx7Sysex.voiceNameCharacter8] = sysex[158];
 		patch.kvps[Dx7Sysex.voiceNameCharacter9] = sysex[159];
 		patch.kvps[Dx7Sysex.voiceNameCharacter10] = sysex[160];
-		super.prSynthesizer.setWorkingPatch(patch);
+		prSynthesizer.setWorkingPatch(patch);
 	}
 
 	loadSysexFileFromDialog {

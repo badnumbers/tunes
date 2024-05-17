@@ -3,7 +3,7 @@ ScGuiControlSurface {
 	var defaultControlSpec;
 	var updateables;
 	var name;
-	var <prSynthesizer;
+	var prSynthesizer;
 	var window;
 	var windowheight = 200;
 	var windowwidth = 300;
@@ -84,9 +84,9 @@ ScGuiControlSurface {
 	}
 
 	addSectionLabel {
-		|parent,rect,text,textColour,backgroundColour,alignment=\center|
+		|parent,rect,labelText,textColour,backgroundColour,alignment=\center|
 		var staticText = StaticText(parent,rect)
-		.string_(text)
+		.string_(labelText)
 		.align_(alignment)
 		.stringColor_(textColour)
 		.font_(Font.new.pixelSize_(18))
@@ -173,7 +173,11 @@ ScGuiControlSurface {
 	}
 
 	openStethoscope {
-		Server.default.scope(Server.default,numChannels:prSynthesizer.audioInputChannels.size,index:prSynthesizer.audioInputChannels[0]);
+		if (Server.default.serverRunning,{
+			Server.default.scope(Server.default,numChannels:prSynthesizer.inputBusChannels.size,index:prSynthesizer.inputBusChannels[0]);
+		},{
+			warn(format("Can't open the scope for %. The server is not running.", prSynthesizer.class));
+		});
 	}
 
 	setDefaultControlSpec {

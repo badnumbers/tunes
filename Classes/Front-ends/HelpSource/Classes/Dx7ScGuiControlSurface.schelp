@@ -1,0 +1,12 @@
+TITLE:: Dx7ScGuiControlSurface
+SUMMARY:: A GUI class for the DX7
+CATEGORIES:: External Control
+
+DESCRIPTION::
+A GUI for the DX7. This GUI allows control over all the DX7's parameters and creating and restoring patches.
+
+CLASSMETHODS::
+
+INSTANCEMETHODS::
+
+PRIVATE:: addDropDownListWithLabel, addKnobWithLabel, addSectionLabel, algorithmView, darkgrey, drawAlgorithm, dx7Brown, dx7Pink, dx7Purple, dx7Teal, init, initAlgorithmSpecs, initAlgorithmTab, initFactoryPresetDropDowns, initFactoryPresets, initGlobalTab, initLfoTab, initOperatorTab, initPatchOverviewControl, initPatchOverviewControls, initPitchEnvelopeTab, lightgrey, loadSysexFileFromDialog, operatorNumber, prLoadAndSendSysexFile, prValidateSysex, repositionOperatorOverviewControls, resetPatchOverview, setDefaultControlSpec
