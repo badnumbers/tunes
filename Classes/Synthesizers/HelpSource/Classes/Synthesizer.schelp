@@ -88,8 +88,8 @@ The number of the parameter to change. For example, in the TB-03, the number of 
 ARGUMENT:: parameterValue
 The new value to change the parameter to.
 
-ARGUMENT:: actor
-The origin of the update, and consequently the place the update will not be written to. For example, if the update was caused by turning a knob on the hardware synthesizer, specifying CODE::\hardware:: as this parameter would prevent the update being written back to the hardware synth again. You will usually not specify this parameter.
+ARGUMENT:: source
+The source of the update, and consequently the place the update will not be written to. For example, if the update was caused by turning a knob on the hardware synthesizer, specifying CODE::\hardware:: as this parameter would prevent the update being written back to the hardware synth again. You will usually not specify this parameter.
 
 METHOD:: randomisePatch
 Replaces the STRONG::Working Patch:: with a randomly-generated one. In CODE::Synthesizer:: only a base method, intended for overriding, is provided. Unless overridden, this method simply validates its inputs.
