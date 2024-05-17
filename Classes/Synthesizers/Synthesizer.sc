@@ -78,6 +78,7 @@ Synthesizer {
 
 		prMidiout = midiout;
 		prPatchType = patchType;
+		prGuiType = guiType;
 
 		if (Config.hardwareSynthesizers[this.class.name].isNil, {
 			Error(format("No config was found for the Synthesizer with the class %. See the helpfile for the Config class for details.", this.class.name)).throw;
