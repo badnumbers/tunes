@@ -1,0 +1,43 @@
+TITLE:: Validator
+SUMMARY:: Provides helper methods for validating values
+CATEGORIES:: Convenience
+
+DESCRIPTION::
+This class provides convenience methods for validation and is intended to be consumed in other classes.
+
+CLASSMETHODS::
+
+METHOD:: validateMethodParameterType
+Validates that a parameter provided to a method is of the expected type, and throws an LINK::Classes/Error:: if it is not. The error message is as follows:
+CODE::
+"The '{parameterName}' parameter of {className}.{methodName} must be a {expectedType}. The value {parameterValue}, which has the class {parameterValue.class}, was provided."
+::
+
+ARGUMENT:: parameterValue
+The value of the parameter to be tested.
+
+ARGUMENT:: expectedType
+The expected type of the parameter to be tested.
+
+ARGUMENT:: parameterName
+The name of the parameter to be tested.
+
+ARGUMENT:: className
+The name of the class containing the method whose parameter is being tested. Typically you would simply provide CODE::this.class.name::.
+
+ARGUMENT:: methodName
+The name of the method whose parameter is being tested.
+
+ARGUMENT:: allowNil
+Whether CODE::nil:: is a permitted parameter value.
+
+DISCUSSION::
+This is an example of how the method might be used:
+CODE::
+exampleMethod {
+	|exampleNumber|
+	Validator.validateMethodParameterType(exampleNumber, Integer, "exampleNumber", this.class.name, "exampleMethod");
+
+	// Method implementation here...
+}
+::
