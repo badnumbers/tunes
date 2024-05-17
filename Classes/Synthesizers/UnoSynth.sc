@@ -66,7 +66,7 @@ UnoSynth : Synthesizer {
 
 	init {
 		|midiout|
-		super.init(midiout,UnoSynthPatch,UnoSynthScGuiControlSurface);
+		super.init(midiout,UnoSynthPatch,UnoSynthScGuiControlSurface,\control);
 	}
 
 	randomisePatch {

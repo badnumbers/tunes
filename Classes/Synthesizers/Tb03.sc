@@ -19,7 +19,7 @@ Tb03 : Synthesizer {
 
 	init {
 		|midiout|
-		super.init(midiout,Tb03Patch);
+		super.init(midiout,Tb03Patch,\control);
 	}
 
 	*randomisePatch {

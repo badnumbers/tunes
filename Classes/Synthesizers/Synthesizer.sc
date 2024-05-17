@@ -6,6 +6,7 @@ Synthesizer {
 	var <midiChannels;
 	var <>prMidiout;
 	var prGuiType;
+	var prMidiMessageType;
 	var prNoSavedPatchesMessage = "To save the working patch, call saveWorkingPatch().";
 	var prPatchDictionary;
 	var prPatchType;
@@ -52,24 +53,26 @@ Synthesizer {
 		Error(format("The Synthesizer with class name % needs to have getDefaultVariableName defined.",this.class)).throw;
 	}
 
-	getMidiMessageType {
-		^\control;
-	}
-
 	getMidiParametersFromMididef {
 		|args|
 		^[args[1],args[0]]
 	}
 
 	init {
-		|midiout,patchType,guiType|
+		|midiout,patchType,guiType,midiMessageType|
 		Validator.validateMethodParameterType(midiout, MIDIOut, "midiout", "Synthesizer", "init");
 		Validator.validateMethodParameterType(patchType, Class, "patchType", "Synthesizer", "init");
 		Validator.validateMethodParameterType(guiType, Class, "guiType", "Synthesizer", "init");
+		Validator.validateMethodParameterType(midiMessageType, Symbol, "midiMessageTypeguiType", "Synthesizer", "init");
+
+		if ((midiMessageType != \control) && (midiMessageType != \sysex), {
+			Error(format("The '{midiMessageType}' parameter of %.init must be one of the values \control, \sysex. The value % was provided.", this.class.name, midiMessageType));
+		});
 
 		prMidiout = midiout;
 		prPatchType = patchType;
 		prGuiType = guiType;
+		prMidiMessageType = midiMessageType;
 
 		if (Config.hardwareSynthesizers[this.class.name].isNil, {
 			Error(format("No config was found for the Synthesizer with the class %. See the helpfile for the Config class for details.", this.class.name)).throw;
@@ -179,6 +182,9 @@ Synthesizer {
     }
 
 	recordMidiParameters {
+		if (prMidiMessageType.isNil,{
+			postln(format("The % cannot record MIDI parameters because it does not have a MIDI message type defined. See the init method.", this.class.name));
+		});
 		MIDIdef(format("%-%",this.class,"record-midi-parameters").asSymbol, {
 			|... args|
 			var midiParameterValues;

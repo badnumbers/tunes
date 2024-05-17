@@ -39,17 +39,13 @@ Jx03 : Synthesizer {
 		^[controlNumber,controlValue];
 	}
 
-	getMidiMessageType {
-		^\sysex;
-	}
-
 	getDefaultVariableName {
 		^"~jx03";
 	}
 
 	init {
 		|midiout|
-		super.init(midiout,Jx03Patch,Jx03ScGuiControlSurface);
+		super.init(midiout,Jx03Patch,Jx03ScGuiControlSurface,\sysex);
 	}
 
 	randomisePatch {

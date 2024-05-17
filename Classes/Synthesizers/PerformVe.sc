@@ -37,16 +37,12 @@ PerformVe : Synthesizer {
 	classvar <looperSnareTriggerCcNo = 82;
 	classvar <looperHiHatTriggerCcNo = 83;
 
-	*getMidiMessageType {
-		^\control;
-	}
-
 	getDefaultVariableName {
 		^"~performVe";
 	}
 
 	init {
 		|midiout|
-		super.init(midiout,PerformVePatch,PerformVeScGuiControlSurface);
+		super.init(midiout,PerformVePatch,PerformVeScGuiControlSurface,\control);
 	}
 }
