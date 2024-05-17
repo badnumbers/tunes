@@ -155,4 +155,5 @@ Dx7Sysex {
 	classvar <voiceNameCharacter8 = 152;
 	classvar <voiceNameCharacter9 = 153;
 	classvar <voiceNameCharacter10 = 154;
+	classvar <operatorsOnOff = 155;
 }
