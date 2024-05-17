@@ -56,17 +56,9 @@ UnoSynth : Synthesizer {
 	classvar <volumeCcNo = 7;
 	classvar <wahOnOffCcNo = 78;
 
-	*getControlSurfaceType {
-		^UnoSynthControlSurface;
-	}
-
-	getDefaultVariableName {
-		^"~unoSynth";
-	}
-
 	init {
 		|midiout|
-		super.init(midiout,UnoSynthPatch,UnoSynthScGuiControlSurface,\control);
+		super.init(midiout,UnoSynthPatch,UnoSynthScGuiControlSurface,\control,"~unoSynth");
 	}
 
 	randomisePatch {

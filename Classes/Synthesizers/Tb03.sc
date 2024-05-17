@@ -9,17 +9,9 @@ Tb03 : Synthesizer {
 	classvar <resonanceCcNo = 71;
 	classvar <tuningCcNo = 104;
 
-	*getControlSurfaceType {
-		^Tb03ControlSurface;
-	}
-
-	getDefaultVariableName {
-		^"~tb03";
-	}
-
 	init {
 		|midiout|
-		super.init(midiout,Tb03Patch,\control);
+		super.init(midiout,Tb03Patch,\control,"~tb03");
 	}
 
 	*randomisePatch {

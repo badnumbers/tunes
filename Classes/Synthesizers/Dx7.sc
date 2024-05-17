@@ -24,13 +24,9 @@ Dx7 : Synthesizer {
 		this.updateParameterInHardwareSynth(Dx7Sysex.operatorsOnOff,prOperatorState);
 	}
 
-	getDefaultVariableName {
-		^"~dx7";
-	}
-
 	init {
 		|midiout|
-		super.init(midiout,Dx7Patch,Dx7ScGuiControlSurface,\sysex);
+		super.init(midiout,Dx7Patch,Dx7ScGuiControlSurface,\sysex,"~dx7");
 		prOperatorMappings = [32,16,8,4,2,1];
 	}
 

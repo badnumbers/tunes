@@ -5,6 +5,7 @@ Synthesizer {
 	var <midiChannel;
 	var <midiChannels;
 	var <>prMidiout;
+	var prDefaultVariableName;
 	var prGuiType;
 	var prMidiMessageType;
 	var prNoSavedPatchesMessage = "To save the working patch, call saveWorkingPatch().";
@@ -49,21 +50,18 @@ Synthesizer {
 		^randomValue;
 	}
 
-	getDefaultVariableName {
-		Error(format("The Synthesizer with class name % needs to have getDefaultVariableName defined.",this.class)).throw;
-	}
-
 	getMidiParametersFromMididef {
 		|args|
 		^[args[1],args[0]]
 	}
 
 	init {
-		|midiout,patchType,guiType,midiMessageType|
+		|midiout,patchType,guiType,midiMessageType,defaultVariableName|
 		Validator.validateMethodParameterType(midiout, MIDIOut, "midiout", "Synthesizer", "init");
 		Validator.validateMethodParameterType(patchType, Class, "patchType", "Synthesizer", "init");
 		Validator.validateMethodParameterType(guiType, Class, "guiType", "Synthesizer", "init");
 		Validator.validateMethodParameterType(midiMessageType, Symbol, "midiMessageTypeguiType", "Synthesizer", "init");
+		Validator.validateMethodParameterType(defaultVariableName, String, "defaultVariableName", "Synthesizer", "init");
 
 		if ((midiMessageType != \control) && (midiMessageType != \sysex), {
 			Error(format("The '{midiMessageType}' parameter of %.init must be one of the values \control, \sysex. The value % was provided.", this.class.name, midiMessageType));
@@ -73,6 +71,7 @@ Synthesizer {
 		prPatchType = patchType;
 		prGuiType = guiType;
 		prMidiMessageType = midiMessageType;
+		prDefaultVariableName = defaultVariableName;
 
 		if (Config.hardwareSynthesizers[this.class.name].isNil, {
 			Error(format("No config was found for the Synthesizer with the class %. See the helpfile for the Config class for details.", this.class.name)).throw;
@@ -265,7 +264,7 @@ Synthesizer {
 		postln("(");
 		postln(format("var patch = %();", prPatchType));
 		this.prWritePatch(prWorkingPatch);
-		postln(format("%.setWorkingPatch(patch);", this.getDefaultVariableName));
+		postln(format("%.setWorkingPatch(patch);", prDefaultVariableName));
 		postln(")");
 	}
 
@@ -283,7 +282,7 @@ Synthesizer {
 			var patch = prPatchDictionary[key];
 			postln(format("patch = %();", prPatchType));
 			this.prWritePatch(patch);
-			postln(format("%.setWorkingPatch(patch);", this.getDefaultVariableName));
+			postln(format("%.setWorkingPatch(patch);", prDefaultVariableName));
 		});
 		postln(")");
 	}

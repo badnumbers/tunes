@@ -1,10 +1,6 @@
 Rev2 : Synthesizer {
-	getDefaultVariableName {
-		^"~rev2";
-	}
-
 	init {
 		|midiout|
-		super.init(midiout,nil,nil,nil);
+		super.init(midiout,nil,nil,nil,"~rev2");
 	}
 }
