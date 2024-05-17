@@ -156,7 +156,7 @@ Synthesizer {
 	}
 
 	*new {
-		|midiout,patchType|
+		|midiout|
 		Validator.validateMethodParameterType(midiout, MIDIOut, "midiout", "Synthesizer", "new");
 
 		^super.new.init(midiout);
