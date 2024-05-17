@@ -126,6 +126,14 @@ The number of the parameter to update.
 ARGUMENT:: newvalue
 The value to update to.
 
+METHOD:: writeSavedPatches
+Writes code to the console window which can be run later to recreate all the saved patches. This is how patches can be saved permanently.
+
+See LINK::#-writeWorkingPatch:: for an example of the output.
+
+METHOD:: writeUpdateActions
+Writes all the update actions registered for this CODE::Synthesizer:: to the post window for help with debugging.
+
 METHOD:: writeWorkingPatch
 Writes code to the console window which can be run later to recreate the STRONG::Working Patch::. This is how CODE::Patches:: can be saved permanently.
 
@@ -139,11 +147,6 @@ patch.kvps[74]=126.0;patch.kvps[104]=64;patch.kvps[12]=64;patch.kvps[71]=119.0;p
 ~tb03.setWorkingPatch(patch);
 )
 ::
-
-METHOD:: writeSavedPatches
-Writes code to the console window which can be run later to recreate all the saved patches. This is how patches can be saved permanently.
-
-See LINK::#-writeWorkingPatch:: for an example of the output.
 
 PRIVATE::addUpdateAction,chooseRandomValue,generateRandomValue,getMidiParametersFromMididef,prWritePatch,saveSpecificPatch,setWorkingPatch
 

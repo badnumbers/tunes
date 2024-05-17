@@ -231,10 +231,9 @@ Synthesizer {
 		if (prGuiType.isNil,{
 			postln(format("The class % has no associated GUI.",this.class.name));
 		});
-		if (gui.isNil == false,{
-			//^this; Had to remove this because window.onClose doesn't work
-		});
-		gui = prGuiType.new(this);
+
+		prGuiType.new(this);
+
 		prWorkingPatch.kvps.keys.do({
 			|parameterNumber|
 			invokeUpdateActionsFunc.value({|destination| destination.asString.beginsWith(prGuiType.name.asString)}, parameterNumber, prWorkingPatch.kvps[parameterNumber]);
