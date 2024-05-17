@@ -1,4 +1,11 @@
 Validator {
+	*stringIsInteger {
+		|stringToTest|
+		this.validateMethodParameterType(stringToTest, String, "stringToTest", this.class.name, "stringIsInteger");
+
+		^stringToTest.asInteger.asString == stringToTest;
+	}
+
 	*validateMethodParameterType {
 		|parameterValue, expectedType, parameterName, className, methodName, allowNil = false|
 		if (allowNil && parameterValue.isNil, {}, {

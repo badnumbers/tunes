@@ -7,6 +7,12 @@ This class provides convenience methods for validation and is intended to be con
 
 CLASSMETHODS::
 
+METHOD:: stringIsInteger
+Returns CODE::true:: if the supplied string represents an integer, CODE::false:: otherwise.
+
+ARGUMENT:: stringToTest
+The string to test.
+
 METHOD:: validateMethodParameterType
 Validates that a parameter provided to a method is of the expected type, and throws an LINK::Classes/Error:: if it is not. The error message is as follows:
 CODE::
