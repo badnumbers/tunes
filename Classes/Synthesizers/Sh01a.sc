@@ -31,10 +31,6 @@ Sh01a : Synthesizer {
 	classvar <vcoSubLevelCcNo = 21;
 	classvar <vcoSubTypeCcNo = 22;
 
-	*getGuiType {
-		^Sh01aScGuiControlSurface;
-	}
-
 	*getMidiMessageType {
 		^\control;
 	}
@@ -49,7 +45,7 @@ Sh01a : Synthesizer {
 
 	init {
 		|midiout|
-		super.init(midiout,Sh01aPatch);
+		super.init(midiout,Sh01aPatch,Sh01aScGuiControlSurface);
 	}
 
 	*randomisePatch {

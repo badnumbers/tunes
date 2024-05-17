@@ -24,7 +24,7 @@ Creates an instance of this LINK::Classes/Synthesizer::.
 ARGUMENT:: midiout
 An instance of LINK::Classes/MIDIOut:: to be used by the CODE::Synthesizer:: to send updates to the hardware synth. This could have been created earlier by calling LINK::Classes/Setup#*midi::.
 
-PRIVATE::getDefaultVariableName,getGuiType,getTouchOscControlSurfaceType
+PRIVATE::getDefaultVariableName,getTouchOscControlSurfaceType
 
 INSTANCEMETHODS::
 

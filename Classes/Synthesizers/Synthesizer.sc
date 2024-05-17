@@ -5,6 +5,7 @@ Synthesizer {
 	var <midiChannel;
 	var <midiChannels;
 	var <>prMidiout;
+	var prGuiType;
 	var prNoSavedPatchesMessage = "To save the working patch, call saveWorkingPatch().";
 	var prPatchDictionary;
 	var prPatchType;
@@ -51,11 +52,6 @@ Synthesizer {
 		Error(format("The Synthesizer with class name % needs to have getDefaultVariableName defined.",this.class)).throw;
 	}
 
-	// Gets the SC GUI class intended for this Synthesizer.
-	*getGuiType {
-		Error("This Synthesizer does not have a GUI class defined. Fix this by overriding getGuitype() in the synthesizer class.").throw;
-	}
-
 	getMidiMessageType {
 		^\control;
 	}
@@ -75,9 +71,10 @@ Synthesizer {
 	}
 
 	init {
-		|midiout,patchType=nil|
+		|midiout,patchType,guiType|
 		Validator.validateMethodParameterType(midiout, MIDIOut, "midiout", "Synthesizer", "init");
 		Validator.validateMethodParameterType(patchType, Class, "patchType", "Synthesizer", "init");
+		Validator.validateMethodParameterType(guiType, Class, "guiType", "Synthesizer", "init");
 
 		prMidiout = midiout;
 		prPatchType = patchType;
@@ -239,13 +236,16 @@ Synthesizer {
 	}
 
 	showGui {
+		if (prGuiType.isNil,{
+			postln(format("The class % has no associated GUI.",this.class.name));
+		});
 		if (gui.isNil == false,{
 			//^this; Had to remove this because window.onClose doesn't work
 		});
-		gui = this.class.getGuiType().new(this);
+		gui = prGuiType.new(this);
 		prWorkingPatch.kvps.keys.do({
 			|parameterNumber|
-			invokeUpdateActionsFunc.value({|destination| destination.asString.beginsWith(this.class.getGuiType().name.asString)}, parameterNumber, prWorkingPatch.kvps[parameterNumber]);
+			invokeUpdateActionsFunc.value({|destination| destination.asString.beginsWith(prGuiType.name.asString)}, parameterNumber, prWorkingPatch.kvps[parameterNumber]);
 		});
 	}
 

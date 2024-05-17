@@ -33,10 +33,6 @@ Jx03 : Synthesizer {
 	classvar <vcfResonanceCcNo = 71;
 	classvar <vcfSourceMixCcNo = 27;
 
-	*getGuiType {
-		^Jx03ScGuiControlSurface;
-	}
-
 	getMidiParametersFromMididef {
 		|args|
 		var controlNumber = args[0][10] * 100 + args[0][11];
@@ -58,7 +54,7 @@ Jx03 : Synthesizer {
 
 	init {
 		|midiout|
-		super.init(midiout,Jx03Patch);
+		super.init(midiout,Jx03Patch,Jx03ScGuiControlSurface);
 	}
 
 	randomisePatch {

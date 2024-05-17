@@ -24,10 +24,6 @@ Dx7 : Synthesizer {
 		this.updateParameterInHardwareSynth(Dx7Sysex.operatorsOnOff,prOperatorState);
 	}
 
-	*getGuiType {
-		^Dx7ScGuiControlSurface;
-	}
-
 	getMidiMessageType {
 		^\sysex;
 	}
@@ -42,7 +38,7 @@ Dx7 : Synthesizer {
 
 	init {
 		|midiout|
-		super.init(midiout,Dx7Patch);
+		super.init(midiout,Dx7Patch,Dx7ScGuiControlSurface);
 		prOperatorMappings = [32,16,8,4,2,1];
 	}
 

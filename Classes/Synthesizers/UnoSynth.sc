@@ -61,10 +61,6 @@ UnoSynth : Synthesizer {
 		^UnoSynthControlSurface;
 	}
 
-	*getGuiType {
-		^UnoSynthScGuiControlSurface;
-	}
-
 	getSynthesizerName {
 		^"UnoSynth";
 	}
@@ -75,7 +71,7 @@ UnoSynth : Synthesizer {
 
 	init {
 		|midiout|
-		super.init(midiout,UnoSynthPatch);
+		super.init(midiout,UnoSynthPatch,UnoSynthScGuiControlSurface);
 	}
 
 	randomisePatch {
