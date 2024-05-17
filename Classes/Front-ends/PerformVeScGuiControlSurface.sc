@@ -35,10 +35,6 @@ PerformVeScGuiControlSurface : ScGuiControlSurface {
 		],backgroundYellow,lightGrey,Color.white,backgroundYellow,litGreen);
 	}
 
-	*getPatchType {
-		^PerformVePatch;
-	}
-
 	init {
 		|synthesizer|
 		var tabset;

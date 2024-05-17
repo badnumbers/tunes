@@ -12,10 +12,6 @@ Sh01aScGuiControlSurface : ScGuiControlSurface {
 		this.addSlider(container, Rect(10,40,20,160),parameterNumber,\vertical);
 	}
 
-	*getPatchType {
-		^Sh01aPatch;
-	}
-
 	init {
 		|synthesizer|
 		name = "SH-01A";

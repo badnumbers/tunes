@@ -52,10 +52,6 @@ Jx03ScGuiControlSurface : ScGuiControlSurface {
 		],Color(1,0,0),Color(0,1,0),Color(0,0,1),Color(0.5,0.5,0),Color(1,0,0));
 	}
 
-	*getPatchType {
-		^Jx03Patch;
-	}
-
 	init {
 		|synthesizer|
 		var tabset;
@@ -126,7 +122,7 @@ Jx03ScGuiControlSurface : ScGuiControlSurface {
 		.string_("Scope")
 		.stringColor_(Color.black)
 		.align_(\center)
-		.mouseUpAction_({this.openStethoscope(super.prSynthesizer.audioInputChannels[0],super.prSynthesizer.audioInputChannels.size)});
+		.mouseUpAction_({this.openStethoscope()});
 	}
 
 	initOscillatorsTab {

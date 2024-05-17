@@ -65,16 +65,17 @@ UnoSynth : Synthesizer {
 		^UnoSynthScGuiControlSurface;
 	}
 
-	*getPatchType {
-		^UnoSynthPatch;
-	}
-
 	getSynthesizerName {
 		^"UnoSynth";
 	}
 
 	getDefaultVariableName {
 		^"~unoSynth";
+	}
+
+	init {
+		|midiout|
+		super.init(midiout,UnoSynthPatch);
 	}
 
 	randomisePatch {

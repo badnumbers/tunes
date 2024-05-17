@@ -14,8 +14,12 @@ ScGuiControlSurface {
 	}
 
 	addDropDownList {
-		|parent,rect,parameterNumber, midiMappings|
+		|parent,rect,parameterNumber, midiMappings,source=nil|
 		var popupMenu,convertFromMidiFunc,convertToMidiFunc;
+		if (source.isNil, {
+			// This is to allow the source to be overridden so that we can create duplicates of controls which still get updated
+			source = this.class.name;
+		});
 		convertFromMidiFunc = {
 			|midiCcValue|
 			var dropDownListIndex;
@@ -42,9 +46,9 @@ ScGuiControlSurface {
 		popupMenu = PopUpMenu(parent,rect).items_(midiMappings.collect(_[0]))
 		.action_({
 			|selectedItem|
-			prSynthesizer.modifyWorkingPatch(parameterNumber,convertToMidiFunc.value(selectedItem.value),this.class.name);
+			prSynthesizer.modifyWorkingPatch(parameterNumber,convertToMidiFunc.value(selectedItem.value),source);
 		});
-		prSynthesizer.addUpdateAction(this.class.name, parameterNumber, {
+		prSynthesizer.addUpdateAction(source, parameterNumber, {
 			|newvalue|
 			popupMenu.value = convertFromMidiFunc.value(newvalue);
 		});
@@ -80,10 +84,10 @@ ScGuiControlSurface {
 	}
 
 	addSectionLabel {
-		|parent,rect,text,textColour,backgroundColour|
+		|parent,rect,text,textColour,backgroundColour,alignment=\center|
 		var staticText = StaticText(parent,rect)
 		.string_(text)
-		.align_(\center)
+		.align_(alignment)
 		.stringColor_(textColour)
 		.font_(Font.new.pixelSize_(18))
 		.background_(backgroundColour);
@@ -148,10 +152,6 @@ ScGuiControlSurface {
 			|newvalue|
 			button.value = convertFromMidiFunc.value(newvalue);
 		});
-	}
-
-	*getPatchType {
-		Error(format("No patch type has yet been defined for %.", this.class)).throw;
 	}
 
 	init {

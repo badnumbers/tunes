@@ -35,10 +35,6 @@ Sh01a : Synthesizer {
 		^Sh01aScGuiControlSurface;
 	}
 
-	*getPatchType {
-		^Sh01aPatch;
-	}
-
 	*getMidiMessageType {
 		^\control;
 	}
@@ -49,6 +45,11 @@ Sh01a : Synthesizer {
 
 	getDefaultVariableName {
 		^"~sh01a";
+	}
+
+	init {
+		|midiout|
+		super.init(midiout,Sh01aPatch);
 	}
 
 	*randomisePatch {

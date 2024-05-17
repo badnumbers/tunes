@@ -42,10 +42,6 @@ PerformVe : Synthesizer {
 		^PerformVeScGuiControlSurface;
 	}
 
-	*getPatchType {
-		^PerformVePatch;
-	}
-
 	*getMidiMessageType {
 		^\control;
 	}
@@ -56,5 +52,10 @@ PerformVe : Synthesizer {
 
 	getDefaultVariableName {
 		^"~performVe";
+	}
+
+	init {
+		|midiout|
+		super.init(midiout,PerformVePatch);
 	}
 }

@@ -28,10 +28,6 @@ Dx7 : Synthesizer {
 		^Dx7ScGuiControlSurface;
 	}
 
-	*getPatchType {
-		^Dx7Patch;
-	}
-
 	getMidiMessageType {
 		^\sysex;
 	}
@@ -46,7 +42,7 @@ Dx7 : Synthesizer {
 
 	init {
 		|midiout|
-		super.init(midiout);
+		super.init(midiout,Dx7Patch);
 		prOperatorMappings = [32,16,8,4,2,1];
 	}
 

@@ -44,10 +44,6 @@ Jx03 : Synthesizer {
 		^[controlNumber,controlValue];
 	}
 
-	*getPatchType {
-		^Jx03Patch;
-	}
-
 	getMidiMessageType {
 		^\sysex;
 	}
@@ -62,7 +58,7 @@ Jx03 : Synthesizer {
 
 	init {
 		|midiout|
-		super.init(midiout);
+		super.init(midiout,Jx03Patch);
 	}
 
 	randomisePatch {

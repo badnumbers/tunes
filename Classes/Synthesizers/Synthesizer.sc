@@ -7,6 +7,7 @@ Synthesizer {
 	var <>prMidiout;
 	var prNoSavedPatchesMessage = "To save the working patch, call saveWorkingPatch().";
 	var prPatchDictionary;
+	var prPatchType;
 	var prUpdateActions;
 	var <prWorkingPatch; // Needs to be called from subclasses that override updateParameterInHardwareSynth
 
@@ -74,10 +75,12 @@ Synthesizer {
 	}
 
 	init {
-		|midiout|
+		|midiout,patchType=nil|
 		Validator.validateMethodParameterType(midiout, MIDIOut, "midiout", "Synthesizer", "init");
+		Validator.validateMethodParameterType(patchType, Class, "patchType", "Synthesizer", "init");
 
 		prMidiout = midiout;
+		prPatchType = patchType;
 
 		if (Config.hardwareSynthesizers[this.class.name].isNil, {
 			Error(format("No config was found for the Synthesizer with the class %. See the helpfile for the Config class for details.", this.class.name)).throw;
@@ -87,8 +90,8 @@ Synthesizer {
 		midiChannels = Config.hardwareSynthesizers[this.class.name].midiChannels;
 		midiChannel = midiChannels[0];
 
-		if (this.class.getPatchType().notNil, {
-			prWorkingPatch = this.class.getPatchType().new;
+		if (prPatchType.notNil, {
+			prWorkingPatch = prPatchType.new;
 			prPatchDictionary = Dictionary();
 			prUpdateActions = Dictionary();
 			prUpdateActions.add(\hardware -> Dictionary());
@@ -112,7 +115,7 @@ Synthesizer {
 	}
 
 	initialisePatch {
-		this.setWorkingPatch(this.class.getPatchType().new);
+		this.setWorkingPatch(prPatchType.new);
 	}
 
 	listSavedPatches {
@@ -156,7 +159,7 @@ Synthesizer {
 	}
 
 	*new {
-		|midiout|
+		|midiout,patchType|
 		Validator.validateMethodParameterType(midiout, MIDIOut, "midiout", "Synthesizer", "new");
 
 		^super.new.init(midiout);
@@ -267,7 +270,7 @@ Synthesizer {
 
 	writeWorkingPatch {
 		postln("(");
-		postln(format("var patch = %();", this.class.getPatchType()));
+		postln(format("var patch = %();", prPatchType));
 		this.prWritePatch(prWorkingPatch);
 		postln(format("%.setWorkingPatch(patch);", this.getDefaultVariableName));
 		postln(")");
@@ -285,7 +288,7 @@ Synthesizer {
 		prPatchDictionary.keys.do({
 			|key|
 			var patch = prPatchDictionary[key];
-			postln(format("patch = %();", this.class.getPatchType()));
+			postln(format("patch = %();", prPatchType));
 			this.prWritePatch(patch);
 			postln(format("%.setWorkingPatch(patch);", this.getDefaultVariableName));
 		});

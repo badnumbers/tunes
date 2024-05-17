@@ -14,16 +14,17 @@ Tb03 : Synthesizer {
 		^Tb03ControlSurface;
 	}
 
-	*getPatchType {
-		^Tb03Patch;
-	}
-
 	getSynthesizerName {
 		^"TB-03";
 	}
 
 	getDefaultVariableName {
 		^"~tb03";
+	}
+
+	init {
+		|midiout|
+		super.init(midiout,Tb03Patch);
 	}
 
 	*randomisePatch {

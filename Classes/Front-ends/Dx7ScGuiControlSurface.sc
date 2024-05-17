@@ -104,10 +104,6 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 		algorithmView.refresh;
 	}
 
-	*getPatchType {
-		^Dx7Patch;
-	}
-
 	init {
 		|synthesizer|
 		var operatorTabset, globalTabset, carousel;
@@ -661,7 +657,7 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 		this.addDropDownList(view,Rect(50*prPatchOverviewControlsViewOperatorScale,25*scale,50,25),Dx7Sysex.operator1CoarseFrequency + sysexOffset,(0..31).collect({ |number| [ (number + 1).asString, [ number ] ] }),source:source);
 		onButton = UserView(view, Rect(75,0,25,25)).background_(Color.black);
 		onButton.drawFunc = {
-			Pen.strokeColor = Color.red;
+			Pen.strokeColor = this.dx7Teal;
 			Pen.width = 3;
 			Pen.addArc(13@13, 10, pi*1.65, pi*1.7);
 			Pen.moveTo(13@2);

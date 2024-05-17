@@ -89,10 +89,6 @@ UnoSynthScGuiControlSurface : ScGuiControlSurface {
 		StaticText(container,Rect(0,height-50,width,50)).string_(labelText).align_(\center).stringColor_(this.lightgrey);
 	}
 
-	*getPatchType {
-		^UnoSynthPatch;
-	}
-
 	init {
 		|synthesizer|
 		var tabset;

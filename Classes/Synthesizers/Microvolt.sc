@@ -1,4 +1,11 @@
-Microvolt {
-	classvar <>midiChannel = 7;
+Microvolt : Synthesizer {
 	classvar <modCcNo = 1;
+
+	getSynthesizerName {
+		^"Microvolt";
+	}
+
+	getDefaultVariableName {
+		^"~microvolt";
+	}
 }
