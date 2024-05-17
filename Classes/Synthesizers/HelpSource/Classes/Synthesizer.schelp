@@ -14,6 +14,8 @@ A key concept is the CODE::Patch::, which is a set of parameters describing a pa
 
 The CODE::Patch:: you are actively working with is called the STRONG:: Working Patch::. At any point you can save the STRONG:: Working Patch:: by calling LINK::#-saveWorkingPatch::. This stores the CODE::Patch:: in an in-memory STRONG::Patch Dictionary::. You can then recall a saved CODE::Patch:: from the STRONG::Patch Dictionary:: by name by calling LINK::#-loadPatch::, which will overwrite the STRONG::Working Patch:: with the recalled saved CODE::Patch::.
 
+This class depends on the hardware synthesizer having been described in the STRONG::Configuration File::, specifically in the STRONG::HardwareSynthesizers:: section. See LINK::Classes/Config:: for more information on this.
+
 CLASSMETHODS::
 
 METHOD:: new
