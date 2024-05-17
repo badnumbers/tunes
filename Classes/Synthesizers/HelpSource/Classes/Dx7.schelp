@@ -6,6 +6,24 @@ RELATED:: Classes/Dx7ScGuiControlSurface, Classes/Jx03, Classes/Hydrasynth, Clas
 DESCRIPTION::
 Contains information about working with a DX7.
 
+INSTANCEMETHODS::
+
+METHOD:: disableOperator
+Disables the operator specified. Does nothing if the operator is already disabled.
+
+NOTE::
+The DX7 will automatically re-enable all operators when the patch is changed.
+::
+
+ARGUMENT:: operatorNumber
+The number of the operator to disable. 1 to 6 are valid values.
+
+METHOD:: enableOperator
+Enables the operator specified. Does nothing if the operator is already enabled.
+
+ARGUMENT:: operatorNumber
+The number of the operator to enable. 1 to 6 are valid values.
+
 EXAMPLES::
 
 code::

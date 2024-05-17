@@ -1,4 +1,29 @@
 Dx7 : Synthesizer {
+	var prOperatorMappings;
+	var prOperatorState = 63; // All operators enabled
+
+	disableOperator {
+		|operatorNumber|
+		Validator.validateMethodParameterType(operatorNumber, Integer, "operatorNumber", this.class.name, "disableOperator");
+		if ((operatorNumber < 1) || (operatorNumber > 6), {
+			Error(format("The 'operatorNumber' parameter of Dx7.disableOperator() must be between 1 and 6. The value % was provided.", operatorNumber)).throw;
+		});
+
+		prOperatorState = prOperatorState.bitAnd(prOperatorMappings[operatorNumber-1].bitNot);
+		this.updateParameterInHardwareSynth(Dx7Sysex.operatorsOnOff,prOperatorState);
+	}
+
+	enableOperator {
+		|operatorNumber|
+		Validator.validateMethodParameterType(operatorNumber, Integer, "operatorNumber", this.class.name, "enableOperator");
+		if ((operatorNumber < 1) || (operatorNumber > 6), {
+			Error(format("The 'operatorNumber' parameter of Dx7.enableOperator() must be between 1 and 6. The value % was provided.", operatorNumber)).throw;
+		});
+
+		prOperatorState = prOperatorState.bitOr(prOperatorMappings[operatorNumber-1]);
+		this.updateParameterInHardwareSynth(Dx7Sysex.operatorsOnOff,prOperatorState);
+	}
+
 	*getGuiType {
 		^Dx7ScGuiControlSurface;
 	}
@@ -22,6 +47,7 @@ Dx7 : Synthesizer {
 	init {
 		|midiout|
 		super.init(midiout);
+		prOperatorMappings = [32,16,8,4,2,1];
 	}
 
 	prCalculateSysexChecksum {
