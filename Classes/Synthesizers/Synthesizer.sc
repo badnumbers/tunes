@@ -249,12 +249,17 @@ Synthesizer {
 	}
 
 	writeUpdateActions {
+		|destination=nil,parameterNumber=nil|
 		prUpdateActions.keys.do({
-			|destination|
-			postln(format("- %",destination));
-			prUpdateActions.at(destination).keys.do({
-				|parameterNumber|
-				postln(format("--- %",parameterNumber));
+			|destinationKey|
+			if ((destination.isNil) || (destination == destinationKey),{
+				postln(format("- %",destinationKey));
+				prUpdateActions.at(destinationKey).keys.do({
+					|parameterNumberKey|
+					if ((parameterNumber.isNil) || (parameterNumber == parameterNumberKey),{
+						postln(format("--- %",parameterNumberKey));
+					});
+				});
 			});
 		});
 	}

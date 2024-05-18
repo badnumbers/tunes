@@ -11,7 +11,7 @@ Dx7 : Synthesizer {
 		});
 
 		prWorkingPatch.kvps[Dx7Sysex.operatorsOnOff] = prWorkingPatch.kvps[Dx7Sysex.operatorsOnOff].bitAnd(prOperatorMappings[operatorNumber-1].bitNot);
-		this.modifyWorkingPatch(Dx7Sysex.operatorsOnOff,prWorkingPatch.kvps[Dx7Sysex.operatorsOnOff]);
+		this.modifyWorkingPatch(Dx7Sysex.operatorsOnOff,prWorkingPatch.kvps[Dx7Sysex.operatorsOnOff],source);
 
 	}
 
@@ -25,7 +25,7 @@ Dx7 : Synthesizer {
 		});
 
 		prWorkingPatch.kvps[Dx7Sysex.operatorsOnOff] = prWorkingPatch.kvps[Dx7Sysex.operatorsOnOff].bitOr(prOperatorMappings[operatorNumber-1]);
-		this.modifyWorkingPatch(Dx7Sysex.operatorsOnOff,prWorkingPatch.kvps[Dx7Sysex.operatorsOnOff]);
+		this.modifyWorkingPatch(Dx7Sysex.operatorsOnOff,prWorkingPatch.kvps[Dx7Sysex.operatorsOnOff],source);
 	}
 
 	init {
@@ -42,7 +42,7 @@ Dx7 : Synthesizer {
 		if ((operatorNumber < 1) || (operatorNumber > 6), {
 			Error(format("The 'operatorNumber' parameter of Dx7.operatorIsEnabled() must be between 1 and 6. The value % was provided.", operatorNumber)).throw;
 		});
-P
+
 		^(prWorkingPatch.kvps[Dx7Sysex.operatorsOnOff].bitAnd(bit) == bit);
 	}
 

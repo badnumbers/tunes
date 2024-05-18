@@ -181,6 +181,12 @@ See LINK::#-writeWorkingPatch:: for an example of the output.
 METHOD:: writeUpdateActions
 Writes all the update actions registered for this CODE::Synthesizer:: to the post window for help with debugging.
 
+ARGUMENT:: destination
+If not CODE::nil::, only update actions with this destination are written.
+
+ARGUMENT:: parameterNumber
+If not CODE::nil::, only update actions with this parameter number are written.
+
 METHOD:: writeWorkingPatch
 Writes code to the console window which can be run later to recreate the STRONG::Working Patch::. This is how CODE::Patches:: can be saved permanently.
 

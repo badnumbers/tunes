@@ -646,30 +646,14 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 	}
 
 	initPatchOverviewControl {
-		|operatorNumber,source|
-		var sysexOffset = (operatorNumber - 1) * -21, onButton, view, onFunc, offFunc;
+		|operatorNumber,source,onFunc,offFunc|
+		var sysexOffset = (operatorNumber - 1) * -21, onButton, view;
 		var scale = prPatchOverviewControlsViewOperatorScale;
 		prPatchOverviewControlsViewOperatorViews[operatorNumber - 1] = View(prPatchOverviewView,Rect(0,0,prPatchOverviewControlsViewOperatorSize,prPatchOverviewControlsViewOperatorSize)).background_(Color.black);
 		view = prPatchOverviewControlsViewOperatorViews[operatorNumber - 1];
 		this.addKnob(view,Rect(0,0,50*scale,50*scale),Dx7Sysex.operator1OutputLevel + sysexOffset,false,this.darkgrey,this.dx7Teal,Color.black,Color.white,source:source);
 		this.addDropDownList(view,Rect(50*prPatchOverviewControlsViewOperatorScale,25*scale,50,25),Dx7Sysex.operator1CoarseFrequency + sysexOffset,(0..31).collect({ |number| [ (number + 1).asString, [ number ] ] }),source:source);
-		onButton = UserView(view, Rect(75,0,25,25)).background_(Color.black);
-		onFunc = {
-			Pen.strokeColor = this.dx7Teal;
-			Pen.width = 3;
-			Pen.addArc(13@13, 10, pi*1.65, pi*1.7);
-			Pen.moveTo(13@2);
-			Pen.lineTo(13@13);
-			Pen.stroke;
-		};
-		offFunc = {
-			Pen.strokeColor = this.lightgrey;
-			Pen.width = 3;
-			Pen.addArc(13@13, 10, pi*1.65, pi*1.7);
-			Pen.moveTo(13@2);
-			Pen.lineTo(13@13);
-			Pen.stroke;
-		};
+		onButton = UserView(view, Rect(75,0,25,25)).background_(Color.black).name_("onButton");
 		onButton.drawFunc = onFunc;
 		onButton.mouseUpAction_({
 			if (prSynthesizer.operatorIsEnabled(operatorNumber),{
@@ -688,10 +672,44 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 	initPatchOverviewControls {
 		|algorithmNumber,operatorNumber|
 		var source = format("%_patchOverviewControls", this.class.name).asSymbol;
+		var onFunc = {
+			Pen.strokeColor = this.dx7Teal;
+			Pen.width = 3;
+			Pen.addArc(13@13, 10, pi*1.65, pi*1.7);
+			Pen.moveTo(13@2);
+			Pen.lineTo(13@13);
+			Pen.stroke;
+		};
+		var offFunc = {
+			Pen.strokeColor = this.lightgrey;
+			Pen.width = 3;
+			Pen.addArc(13@13, 10, pi*1.65, pi*1.7);
+			Pen.moveTo(13@2);
+			Pen.lineTo(13@13);
+			Pen.stroke;
+		};
 		prPatchOverviewControlsViewOperatorViews = Array.newClear(6);
 		(1..6).do({
 			|operatorNumber|
-			this.initPatchOverviewControl(operatorNumber,source);
+			this.initPatchOverviewControl(operatorNumber,source,onFunc,offFunc);
+		});
+		prSynthesizer.addUpdateAction(this.class.name,Dx7Sysex.operatorsOnOff,{
+			|newvalue|
+			postln(format("The update action was triggered because the operators' on/off status was changed."));
+			prPatchOverviewControlsViewOperatorViews.do({
+				|overview,index|
+				overview.children(UserView).select({|userview|userview.name=="onButton"}).do({
+					|onButton|
+					// It's a bit wonky, but it should work
+					var operatorNumber = index + 1;
+					if (prSynthesizer.operatorIsEnabled(operatorNumber),{
+						onButton.drawFunc = onFunc;
+					},{
+						onButton.drawFunc = offFunc;
+					});
+					onButton.refresh;
+				});
+			});
 		});
 	}
 
