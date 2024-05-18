@@ -253,9 +253,7 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 		prPatchOverviewControlsViewOperatorSize = prPatchOverviewControlsViewOperatorSize * prPatchOverviewControlsViewOperatorScale;
 		prPatchOverviewView = UserView(window, Rect(50,0,6 * 10 * prPatchOverviewScalingFactor, prPatchOverviewScalingFactor * 4 * 10)).background_(Color.black);
 		this.initPatchOverviewControls(prSynthesizer.prWorkingPatch.kvps[Dx7Sysex.algorithm],1);
-		postln(format("init 1 -> prPatchOverviewControlsViewOperatorViews[0].class: %.", prPatchOverviewControlsViewOperatorViews[0].class));
 		this.resetPatchOverview(prSynthesizer.prWorkingPatch.kvps[Dx7Sysex.algorithm]);
-		postln(format("init 2 -> prPatchOverviewControlsViewOperatorViews[0].class: %.", prPatchOverviewControlsViewOperatorViews[0].class));
 		prSynthesizer.addUpdateAction(\nil, Dx7Sysex.algorithm, {
 			|newvalue|
 			this.resetPatchOverview(newvalue);
@@ -649,14 +647,14 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 
 	initPatchOverviewControl {
 		|operatorNumber,source|
-		var sysexOffset = (operatorNumber - 1) * -21, onButton, view;
+		var sysexOffset = (operatorNumber - 1) * -21, onButton, view, onFunc, offFunc;
 		var scale = prPatchOverviewControlsViewOperatorScale;
 		prPatchOverviewControlsViewOperatorViews[operatorNumber - 1] = View(prPatchOverviewView,Rect(0,0,prPatchOverviewControlsViewOperatorSize,prPatchOverviewControlsViewOperatorSize)).background_(Color.black);
 		view = prPatchOverviewControlsViewOperatorViews[operatorNumber - 1];
 		this.addKnob(view,Rect(0,0,50*scale,50*scale),Dx7Sysex.operator1OutputLevel + sysexOffset,false,this.darkgrey,this.dx7Teal,Color.black,Color.white,source:source);
 		this.addDropDownList(view,Rect(50*prPatchOverviewControlsViewOperatorScale,25*scale,50,25),Dx7Sysex.operator1CoarseFrequency + sysexOffset,(0..31).collect({ |number| [ (number + 1).asString, [ number ] ] }),source:source);
 		onButton = UserView(view, Rect(75,0,25,25)).background_(Color.black);
-		onButton.drawFunc = {
+		onFunc = {
 			Pen.strokeColor = this.dx7Teal;
 			Pen.width = 3;
 			Pen.addArc(13@13, 10, pi*1.65, pi*1.7);
@@ -664,6 +662,27 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 			Pen.lineTo(13@13);
 			Pen.stroke;
 		};
+		offFunc = {
+			Pen.strokeColor = this.lightgrey;
+			Pen.width = 3;
+			Pen.addArc(13@13, 10, pi*1.65, pi*1.7);
+			Pen.moveTo(13@2);
+			Pen.lineTo(13@13);
+			Pen.stroke;
+		};
+		onButton.drawFunc = onFunc;
+		onButton.mouseUpAction_({
+			if (prSynthesizer.operatorIsEnabled(operatorNumber),{
+				postln(format("The button was clicked for operator %. The operator is currently enabled, so I'm going to disable it.", operatorNumber));
+				onButton.drawFunc = offFunc;
+				prSynthesizer.disableOperator(operatorNumber, this.class.name);
+			},{
+				postln(format("The button was clicked for operator %. The operator is currently disabled, so I'm going to enable it.", operatorNumber));
+				onButton.drawFunc = onFunc;
+				prSynthesizer.enableOperator(operatorNumber, this.class.name);
+			});
+			onButton.refresh;
+		});
 	}
 
 	initPatchOverviewControls {

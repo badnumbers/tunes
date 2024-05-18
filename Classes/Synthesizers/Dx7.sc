@@ -1,33 +1,49 @@
 Dx7 : Synthesizer {
 	var prOperatorMappings;
-	var prOperatorState = 63; // All operators enabled
 
 	disableOperator {
-		|operatorNumber|
+		|operatorNumber,source|
 		Validator.validateMethodParameterType(operatorNumber, Integer, "operatorNumber", this.class.name, "disableOperator");
+		Validator.validateMethodParameterType(source, Symbol, "source", "Dx7", "disableOperator", allowNil: true);
+
 		if ((operatorNumber < 1) || (operatorNumber > 6), {
 			Error(format("The 'operatorNumber' parameter of Dx7.disableOperator() must be between 1 and 6. The value % was provided.", operatorNumber)).throw;
 		});
 
-		prOperatorState = prOperatorState.bitAnd(prOperatorMappings[operatorNumber-1].bitNot);
-		this.updateParameterInHardwareSynth(Dx7Sysex.operatorsOnOff,prOperatorState);
+		prWorkingPatch.kvps[Dx7Sysex.operatorsOnOff] = prWorkingPatch.kvps[Dx7Sysex.operatorsOnOff].bitAnd(prOperatorMappings[operatorNumber-1].bitNot);
+		this.modifyWorkingPatch(Dx7Sysex.operatorsOnOff,prWorkingPatch.kvps[Dx7Sysex.operatorsOnOff]);
+
 	}
 
 	enableOperator {
-		|operatorNumber|
+		|operatorNumber,source|
 		Validator.validateMethodParameterType(operatorNumber, Integer, "operatorNumber", this.class.name, "enableOperator");
+		Validator.validateMethodParameterType(source, Symbol, "source", "Dx7", "enableOperator", allowNil: true);
+
 		if ((operatorNumber < 1) || (operatorNumber > 6), {
 			Error(format("The 'operatorNumber' parameter of Dx7.enableOperator() must be between 1 and 6. The value % was provided.", operatorNumber)).throw;
 		});
 
-		prOperatorState = prOperatorState.bitOr(prOperatorMappings[operatorNumber-1]);
-		this.updateParameterInHardwareSynth(Dx7Sysex.operatorsOnOff,prOperatorState);
+		prWorkingPatch.kvps[Dx7Sysex.operatorsOnOff] = prWorkingPatch.kvps[Dx7Sysex.operatorsOnOff].bitOr(prOperatorMappings[operatorNumber-1]);
+		this.modifyWorkingPatch(Dx7Sysex.operatorsOnOff,prWorkingPatch.kvps[Dx7Sysex.operatorsOnOff]);
 	}
 
 	init {
 		|midiout|
 		super.init(midiout,Dx7Patch,Dx7ScGuiControlSurface,\sysex,"~dx7");
 		prOperatorMappings = [32,16,8,4,2,1];
+	}
+
+	operatorIsEnabled {
+		|operatorNumber|
+		var bit = prOperatorMappings[operatorNumber-1];
+		Validator.validateMethodParameterType(operatorNumber, Integer, "operatorNumber", this.class.name, "operatorIsEnabled");
+
+		if ((operatorNumber < 1) || (operatorNumber > 6), {
+			Error(format("The 'operatorNumber' parameter of Dx7.operatorIsEnabled() must be between 1 and 6. The value % was provided.", operatorNumber)).throw;
+		});
+P
+		^(prWorkingPatch.kvps[Dx7Sysex.operatorsOnOff].bitAnd(bit) == bit);
 	}
 
 	prCalculateSysexChecksum {

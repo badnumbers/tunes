@@ -26,6 +26,53 @@ An instance of LINK::Classes/MIDIOut:: to be used by the CODE::Synthesizer:: to 
 
 INSTANCEMETHODS::
 
+METHOD:: addUpdateAction
+Adds a function to be run when a particular parameter of the CODE::Synthesizer::'s STRONG::Working Patch:: is changed. This is intended to update something somewhere, for example the position of a LINK::Classes/Knob:: or a parameter of a hardware synthesizer.
+
+The update action is triggered when LINK::#-modifyWorkingPatch:: is called to update that parameter of the STRONG::Working Patch::.
+
+ARGUMENT:: destination
+A LINK::Classes/Symbol:: denoting the destination of the update, i.e. what it is intended to change. Typical values would be:
+
+DEFINITIONLIST::
+## TELETYPE::\hardware::
+|| A hardware synthesizer.
+## EMPHASIS::(name of a GUI class)::
+|| A SuperCollider GUI class used to control a synthesizer.
+::
+
+When CODE::modifyWorkingPatch:: is called, a CODE::source:: can be provided. If an update action is triggered, if the CODE::destination:: of the update action matches this CODE::source::, then the update action will not be run. This is to prevent, for example, the knob of a GUI being updated unnecessarily when it was the source of the parameter change, or a change physically made on a hardware synthesizer being fed back to it.
+
+ARGUMENT:: parameterNumber
+The parameter number that, when changed, will trigger the update action.
+
+ARGUMENT:: action
+A LINK::Classes/Function:: which will be run when the update action is triggered. When called, the function is passed the new value of the parameter as an argument.
+
+DISCUSSION::
+Say for example you are writing a GUI to control a hardware synthesizer. You might add a LINK::Classes/Knob:: to the GUI, and want that CODE::Knob:: to be updated automatically when parameter 99 of the CODE::Synthesizer::'s STRONG::Working Patch:: is updated. You might therefore write a call to CODE::addUpdateAction:: like this:
+CODE::
+synthesizer.addUpdateAction(\myGuiClass, 99, {
+	|newvalue|
+	knob.value = newvalue;
+});
+::
+NOTE::
+In reality, CODE::newvalue:: would probably need mapping to the CODE::Knob::'s 0 - 1 value range, but I'm keep the code simple.
+::
+
+As you have provided CODE::\myGuiClass:: as the update action's CODE::destination::, when the CODE::Knob:: is used to update the parameter it should provide CODE::\myGuiClass:: as the CODE::source::. This will prevent the CODE::Knob:: being updated by the update action, which is unecessary since the CODE::Knob:: is what caused the parameter update in the first place.
+
+The CODE::Knob::'s code to update the parameter would look like this:
+
+CODE::
+synthesizer.modifyWorkingPatch(99, knob.value, \myGuiClass);
+::
+
+NOTE::
+Again, you'd probably need to map the CODE::Knob::'s 0 - 1 value range to the range expected for the parameter.
+::
+
 METHOD:: describeWorkingPatch
 Writes a description of the STRONG::Working Patch:: to the post window including all parameter values.
 
@@ -89,7 +136,7 @@ ARGUMENT:: parameterValue
 The new value to change the parameter to.
 
 ARGUMENT:: source
-The source of the update, and consequently the place the update will not be written to. For example, if the update was caused by turning a knob on the hardware synthesizer, specifying CODE::\hardware:: as this parameter would prevent the update being written back to the hardware synth again. You will usually not specify this parameter.
+The source of the update, and consequently the place the update will not be written to. For example, if the update was caused by turning a knob on the hardware synthesizer, specifying CODE::\hardware:: as this parameter would prevent the update being written back to the hardware synth again. See LINK::#-addUpdateAction:: for a more detailed discussion of sources and destinations.
 
 METHOD:: randomisePatch
 Replaces the STRONG::Working Patch:: with a randomly-generated one. In CODE::Synthesizer:: only a base method, intended for overriding, is provided. Unless overridden, this method simply validates its inputs.
@@ -148,7 +195,7 @@ patch.kvps[74]=126.0;patch.kvps[104]=64;patch.kvps[12]=64;patch.kvps[71]=119.0;p
 )
 ::
 
-PRIVATE::addUpdateAction,chooseRandomValue,generateRandomValue,getMidiParametersFromMididef,prWritePatch,saveSpecificPatch,setWorkingPatch
+PRIVATE::chooseRandomValue,generateRandomValue,getMidiParametersFromMididef,prWritePatch,saveSpecificPatch,setWorkingPatch
 
 EXAMPLES::
 

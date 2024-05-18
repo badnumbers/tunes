@@ -1,8 +1,9 @@
 Patch {
 	var <>name;
 	var <kvps;
-	describe {
 
+	describe {
+		postln(format("Don't know how to describe a %.", this.class.name));
 	}
 
 	set {

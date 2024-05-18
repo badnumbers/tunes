@@ -3,7 +3,7 @@ SUMMARY:: A GUI class for the DX7
 CATEGORIES:: External Control
 
 DESCRIPTION::
-A GUI for the DX7. This GUI allows control over all the DX7's parameters and creating and restoring patches.
+A GUI for the LINK::Classes/Dx7::. This GUI allows control over all the DX7's parameters and creating and restoring patches.
 
 CLASSMETHODS::
 

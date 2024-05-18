@@ -251,10 +251,10 @@ Synthesizer {
 	writeUpdateActions {
 		prUpdateActions.keys.do({
 			|destination|
-			postln(format("- % (destination)",destination));
+			postln(format("- %",destination));
 			prUpdateActions.at(destination).keys.do({
 				|parameterNumber|
-				postln(format("--- % (parameter number)",parameterNumber));
+				postln(format("--- %",parameterNumber));
 			});
 		});
 	}

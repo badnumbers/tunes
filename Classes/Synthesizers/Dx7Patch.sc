@@ -168,6 +168,8 @@ Dx7Patch : Patch {
 		kvps.add(Dx7Sysex.voiceNameCharacter8 -> 84); // T
 		kvps.add(Dx7Sysex.voiceNameCharacter9 -> 67); // C
 		kvps.add(Dx7Sysex.voiceNameCharacter10 -> 72); // H
+
+		kvps.add(Dx7Sysex.operatorsOnOff -> 63); // All operators on
 	}
 
 	describe {
