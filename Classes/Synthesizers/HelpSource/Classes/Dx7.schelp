@@ -18,15 +18,21 @@ The DX7 will automatically re-enable all operators when the patch is changed.
 ARGUMENT:: operatorNumber
 The number of the operator to disable. 1 to 6 are valid values.
 
+ARGUMENT:: source
+The source of the update, and consequently the place the update will not be written to. See LINK::Classes/Synthesizer#-modifyWorkingPatch::.
+
 METHOD:: enableOperator
 Enables the operator specified. Does nothing if the operator is already enabled.
 
 ARGUMENT:: operatorNumber
 The number of the operator to enable. 1 to 6 are valid values.
 
+ARGUMENT:: source
+The source of the update, and consequently the place the update will not be written to. See LINK::Classes/Synthesizer#-modifyWorkingPatch::.
+
 EXAMPLES::
 
-code::
+CODE::
 (
 var midiout, patch;
 Setup.server;
