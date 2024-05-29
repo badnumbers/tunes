@@ -12,18 +12,20 @@ The expected structure of the STRONG::Configuration File:: is something like the
 
 CODE::
 HardwareSynthesizers:
-  - Key: "Tb03"
-    Name: "TB-03"
+  - Class: "Dx7"
+    Name: "DX7"
     MIDIChannels:
-      - 2
+      - 9
     InputBusChannels:
+      - 0
+  - Class: "Rev2"
+    Name: "REV2"
+    MIDIChannels:
+      - 13
       - 14
-  - Key: "Sh01a"
-    Name: "SH-01A"
-    MIDIChannels:
-      - 3
     InputBusChannels:
-      - 15
+      - 6
+      - 7
 MIDI:
   DeviceName: "Scarlett 18i8 USB"
   PortName: "Scarlett 18i8 USB MIDI 1"

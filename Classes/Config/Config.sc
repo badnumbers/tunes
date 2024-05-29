@@ -35,6 +35,7 @@ Config {
 						config["HardwareSynthesizers"].do({
 							|item, index|
 							var addSynthesizer = true;
+							var synthesizerClass;
 							if (item.isMemberOf(Dictionary) == false, {
 								warn(format("Item % in the 'HardwareSynthesizers' section of the configuration file at % is not a YAML mapping. This item will not be added to the configuration. See the help file for the Config class for guidance.", index + 1, Platform.userConfigDir +/+ configFileName));
 								addSynthesizer = false;
@@ -86,9 +87,14 @@ Config {
 										});
 									});
 								});
+								synthesizerClass = Class.allClasses.select({|class|class.name==item["Class"].asSymbol});
+								if (synthesizerClass.size != 1,{
+									warn(format("Item % in the 'HardwareSynthesizers' section of the configuration file at % has a 'Class' property of '%' but no such class was found in SuperCollider.", index + 1, Platform.userConfigDir +/+ configFileName, item["Class"]));
+									addSynthesizer = false;
+								});
 							});
 							if (addSynthesizer, {
-								prHardwareSynthesizers.put(item["Class"].asSymbol, HardwareSynthesizerConfig(item["Name"], item["MIDIChannels"].collect(_.asInteger - 1), item["InputBusChannels"].collect(_.asInteger)));
+								prHardwareSynthesizers.put(item["Class"].asSymbol, HardwareSynthesizerConfig(item["Name"],synthesizerClass[0], item["MIDIChannels"].collect(_.asInteger - 1), item["InputBusChannels"].collect(_.asInteger)));
 							});
 						});
 					});

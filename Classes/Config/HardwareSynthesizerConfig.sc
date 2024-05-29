@@ -1,10 +1,16 @@
 HardwareSynthesizerConfig {
+	var prSynthesizerClass;
 	var prName;
 	var prInputBusChannels;
 	var prMidiChannels;
 
+	synthesizerClass {
+		^prSynthesizerClass;
+	}
+
 	init {
-		|name, midiChannels, inputBusChannels|
+		|name, synthesizerClass, midiChannels, inputBusChannels|
+		prSynthesizerClass = synthesizerClass;
 		prName = name;
 		prInputBusChannels = inputBusChannels;
 		prMidiChannels = midiChannels;
@@ -23,11 +29,12 @@ HardwareSynthesizerConfig {
 	}
 
 	*new {
-		|name, midiChannels, inputBusChannels|
+		|name, synthesizerClass, midiChannels, inputBusChannels|
 		Validator.validateMethodParameterType(name, String, "name", "HardwareSynthesizerConfig", "new");
+		Validator.validateMethodParameterType(synthesizerClass, Class, "synthesizerClass", "HardwareSynthesizerConfig", "new");
 		Validator.validateMethodParameterType(midiChannels, Array, "midiChannels", "HardwareSynthesizerConfig", "new");
 		Validator.validateMethodParameterType(inputBusChannels, Array, "inputBusChannels", "HardwareSynthesizerConfig", "new");
 
-		^super.new.init(name, midiChannels, inputBusChannels);
+		^super.new.init(name, synthesizerClass, midiChannels, inputBusChannels);
 	}
 }

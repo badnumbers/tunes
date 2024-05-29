@@ -10,6 +10,9 @@ Creates a new instance of CODE::HardwareSynthesizerConfig::.
 ARGUMENT:: name
 The name of the hardware synthesizer, for example "TB-303".
 
+ARGUMENT:: synthesizerClass
+The subclass of LINK::Classes/Synthesizer:: that represents this hardware synthesizer.
+
 ARGUMENT:: midiChannels
 An LINK::Classes/Array:: of (most likely) one MIDI channels that the hardware synthesizer is configured to receive MIDI on.
 
@@ -26,3 +29,6 @@ An LINK::Classes/Array:: of (most likely) one MIDI channels that the hardware sy
 
 METHOD:: name
 The name of the hardware synthesizer, for example "TB-303".
+
+METHOD:: synthesizerClass
+The subclass of LINK::Classes/Synthesizer:: that represents this hardware synthesizer.
