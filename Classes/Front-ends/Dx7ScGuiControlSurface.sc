@@ -15,6 +15,7 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 	var <dx7Brown;
 	var prAlgorithmSpecs;
 	var prFactoryPresets;
+	var prOperatorDetailViews;
 	var prPatchOverviewControlsViewOperatorViews;
 	var prPatchOverviewControlsViewOperatorSize = 100;
 	var prPatchOverviewControlsViewOperatorScale = 1;
@@ -106,7 +107,7 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 
 	init {
 		|synthesizer|
-		var operatorTabset, globalTabset, carousel;
+		var operatorsDetailView, globalTabset, carousel;
 		var operator1Tab, operator2Tab, operator3Tab, operator4Tab, operator5Tab, operator6Tab;
 		var globalTab, algorithmTab, lfoTab, pitchEnvelopeTab;
 		controlSpec0To1 = ControlSpec(0,1,\lin,1/1);
@@ -132,30 +133,15 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 
 		this.initAlgorithmSpecs();
 
-		operatorTabset = ScGuiTabSet(
-			parent: window,
-			foregroundcolour: Color.black,
-			backgroundcolour: darkgrey,
-			left: 1200,
-			top: 50,
-			width: 650,
-			buttonheight: 50,
-			bodyheight: 825,
-			borderwidth: 5,
-			bordercolour: darkgrey);
+		operatorsDetailView = View(window, Rect(1200,50,650,925));
+		prOperatorDetailViews = Array.newClear(6);
 
-		operator1Tab = operatorTabset.addTab("Operator 1");
-		this.initOperatorTab(operator1Tab, 1);
-		operator2Tab = operatorTabset.addTab("Operator 2");
-		this.initOperatorTab(operator2Tab, 2);
-		operator3Tab = operatorTabset.addTab("Operator 3");
-		this.initOperatorTab(operator3Tab, 3);
-		operator4Tab = operatorTabset.addTab("Operator 4");
-		this.initOperatorTab(operator4Tab, 4);
-		operator5Tab = operatorTabset.addTab("Operator 5");
-		this.initOperatorTab(operator5Tab, 5);
-		operator6Tab = operatorTabset.addTab("Operator 6");
-		this.initOperatorTab(operator6Tab, 6);
+		prOperatorDetailViews[0] = this.initOperatorDetailView(operatorsDetailView, 1);
+		prOperatorDetailViews[1] = this.initOperatorDetailView(operatorsDetailView, 2);
+		prOperatorDetailViews[2] = this.initOperatorDetailView(operatorsDetailView, 3);
+		prOperatorDetailViews[3] = this.initOperatorDetailView(operatorsDetailView, 4);
+		prOperatorDetailViews[4] = this.initOperatorDetailView(operatorsDetailView, 5);
+		prOperatorDetailViews[5] = this.initOperatorDetailView(operatorsDetailView, 6);
 
 		globalTabset = ScGuiTabSet(
 			parent: window,
@@ -580,9 +566,9 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 		});
 	}
 
-	initOperatorTab {
-		|tab, operatorNumber|
-		var container = View(tab.body,Rect(0,0,tab.body.bounds.width,tab.body.bounds.height));
+	initOperatorDetailView {
+		|parentView,operatorNumber|
+		var container = View(parentView,Rect(0,0,parentView.bounds.width,parentView.bounds.height));
 		var sysexOffset = (operatorNumber - 1) * -21;
 
 		this.addSectionLabel(container,Rect(25,25,300,50), format("Frequencies", operatorNumber));
@@ -623,6 +609,8 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 
 		this.addKnobWithLabel(container, 25
 			, 775, Dx7Sysex.operator1KeyboardRateScaling + sysexOffset, "Rate scaling", false, controlSpec0To7);
+
+		^container;
 	}
 
 	initGlobalTab {
@@ -646,7 +634,7 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 	}
 
 	initPatchOverviewControl {
-		|operatorNumber,source,onFunc,offFunc,detailsOnFunc,detailsOffFunc|
+		|operatorNumber,source,onFunc,offFunc|
 		var sysexOffset = (operatorNumber - 1) * -21, onButton, detailsOnButton, view;
 		var scale = prPatchOverviewControlsViewOperatorScale;
 		prPatchOverviewControlsViewOperatorViews[operatorNumber - 1] = View(prPatchOverviewView,Rect(0,0,prPatchOverviewControlsViewOperatorSize,prPatchOverviewControlsViewOperatorSize)).background_(Color.black);
@@ -665,11 +653,9 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 			});
 			onButton.refresh;
 		});
-		detailsOnButton = UserView(view, Rect(75,0,25,25)).background_(Color.black);
-		if (operatorNumber == 1, {
-			detailsOnButton.drawFunc = detailsOnFunc;
-		}, {
-			detailsOnButton.drawFunc = detailsOffFunc;
+		detailsOnButton = UserView(view, Rect(75,0,25,25)).background_(Color.black).name_("detailsOnButton");
+		detailsOnButton.mouseUpAction_({
+			this.selectOperator(operatorNumber);
 		});
 	}
 
@@ -692,32 +678,10 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 			Pen.lineTo(13@13);
 			Pen.stroke;
 		};
-		var detailsOnFunc = {
-			Pen.strokeColor = this.dx7Teal;
-			Pen.width = 3;
-			Pen.moveTo(5@6);
-			Pen.lineTo(19@6);
-			Pen.moveTo(5@12);
-			Pen.lineTo(19@12);
-			Pen.moveTo(5@18);
-			Pen.lineTo(19@18);
-			Pen.stroke;
-		};
-		var detailsOffFunc = {
-			Pen.strokeColor = this.lightgrey;
-			Pen.width = 3;
-			Pen.moveTo(5@6);
-			Pen.lineTo(19@6);
-			Pen.moveTo(5@12);
-			Pen.lineTo(19@12);
-			Pen.moveTo(5@18);
-			Pen.lineTo(19@18);
-			Pen.stroke;
-		};
 		prPatchOverviewControlsViewOperatorViews = Array.newClear(6);
 		(1..6).do({
 			|operatorNumber|
-			this.initPatchOverviewControl(operatorNumber,source,onFunc,offFunc,detailsOnFunc,detailsOffFunc);
+			this.initPatchOverviewControl(operatorNumber,source,onFunc,offFunc);
 		});
 		prSynthesizer.addUpdateAction(this.class.name,Dx7Sysex.operatorsOnOff,{
 			|newvalue|
@@ -736,6 +700,7 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 				});
 			});
 		});
+		this.selectOperator(1);
 	}
 
 	initPitchEnvelopeTab {
@@ -967,6 +932,51 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 		(1..6).do({
 			|operatorNumber|
 			this.repositionOperatorOverviewControls(algorithmNumber,operatorNumber);
+		});
+	}
+
+	selectOperator {
+		|operatorNumber|
+		var detailsOnFunc = {
+			Pen.strokeColor = this.dx7Teal;
+			Pen.width = 3;
+			Pen.moveTo(5@6);
+			Pen.lineTo(19@6);
+			Pen.moveTo(5@12);
+			Pen.lineTo(19@12);
+			Pen.moveTo(5@18);
+			Pen.lineTo(19@18);
+			Pen.stroke;
+		};
+		var detailsOffFunc = {
+			Pen.strokeColor = this.lightgrey;
+			Pen.width = 3;
+			Pen.moveTo(5@6);
+			Pen.lineTo(19@6);
+			Pen.moveTo(5@12);
+			Pen.lineTo(19@12);
+			Pen.moveTo(5@18);
+			Pen.lineTo(19@18);
+			Pen.stroke;
+		};
+		(0..5).do({
+			|index|
+			var opNo = index + 1;
+			if (opNo == operatorNumber,{
+				prPatchOverviewControlsViewOperatorViews[index].children(UserView).select({|userview|userview.name=="detailsOnButton"}).do({
+					|detailsOnButton|
+					detailsOnButton.drawFunc = detailsOnFunc;
+					detailsOnButton.refresh;
+				});
+				prOperatorDetailViews[index].visible = true;
+			},{
+				prPatchOverviewControlsViewOperatorViews[index].children(UserView).select({|userview|userview.name=="detailsOnButton"}).do({
+					|detailsOnButton|
+					detailsOnButton.drawFunc = detailsOffFunc;
+					detailsOnButton.refresh;
+				});
+				prOperatorDetailViews[index].visible = false;
+			});
 		});
 	}
 

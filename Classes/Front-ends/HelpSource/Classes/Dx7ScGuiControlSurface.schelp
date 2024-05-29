@@ -9,4 +9,4 @@ CLASSMETHODS::
 
 INSTANCEMETHODS::
 
-PRIVATE:: addDropDownListWithLabel, addKnobWithLabel, addSectionLabel, algorithmView, darkgrey, drawAlgorithm, dx7Brown, dx7Pink, dx7Purple, dx7Teal, init, initAlgorithmSpecs, initAlgorithmTab, initFactoryPresetDropDowns, initFactoryPresets, initGlobalTab, initLfoTab, initOperatorTab, initPatchOverviewControl, initPatchOverviewControls, initPitchEnvelopeTab, lightgrey, loadSysexFileFromDialog, operatorNumber, prLoadAndSendSysexFile, prValidateSysex, repositionOperatorOverviewControls, resetPatchOverview, setDefaultControlSpec
+PRIVATE:: addDropDownListWithLabel, addKnobWithLabel, addSectionLabel, algorithmView, darkgrey, drawAlgorithm, dx7Brown, dx7Pink, dx7Purple, dx7Teal, init, initAlgorithmSpecs, initAlgorithmTab, initFactoryPresetDropDowns, initFactoryPresets, initGlobalTab, initLfoTab, initOperatorDetailView, initOperatorTab, initPatchOverviewControl, initPatchOverviewControls, initPitchEnvelopeTab, lightgrey, loadSysexFileFromDialog, operatorNumber, prLoadAndSendSysexFile, prValidateSysex, repositionOperatorOverviewControls, resetPatchOverview, selectOperator, setDefaultControlSpec
