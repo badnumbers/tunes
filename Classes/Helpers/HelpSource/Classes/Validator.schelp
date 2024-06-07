@@ -40,10 +40,56 @@ Whether CODE::nil:: is a permitted parameter value.
 DISCUSSION::
 This is an example of how the method might be used:
 CODE::
-exampleMethod {
-	|exampleNumber|
-	Validator.validateMethodParameterType(exampleNumber, Integer, "exampleNumber", this.class.name, "exampleMethod");
+ExampleClass {
+	exampleMethod {
+		|exampleNumber|
+		Validator.validateMethodParameterType(exampleNumber, Integer, "exampleNumber", this.class.name, "exampleMethod");
 
-	// Method implementation here...
+		// Method implementation here...
+	}
 }
+::
+
+METHOD:: validateMethodParameterPropertyType
+Validates that a parameter provided to a method contains a named property of the expected type, and throws an LINK::Classes/Error:: if it is not. The error message is as follows:
+CODE::
+"The '{parameterName}' parameter of {className}.{methodName} must contain a member called {propertyNameAsSymbol} which is a {expectedType}. The provided value {parameterValue} had a property {propertyNameAsSymbol} but it was a {actual type of the property}."
+::
+
+ARGUMENT:: parameterValue
+The value of the parameter to be tested.
+
+ARGUMENT:: propertyNameAsSymbol
+The name of the property of the parameter to be tested. This must be a LINK::Classes/Symbol::.
+
+ARGUMENT:: expectedType
+The expected type of the property of the parameter to be tested.
+
+ARGUMENT:: parameterName
+The name of the parameter to be tested.
+
+ARGUMENT:: className
+The name of the class containing the method whose parameter is being tested. Typically you would simply provide CODE::this.class.name::.
+
+ARGUMENT:: methodName
+The name of the method whose parameter is being tested.
+
+ARGUMENT:: allowNil
+Whether CODE::nil:: is a permitted parameter value.
+
+DISCUSSION::
+This is an example of how the method might be used:
+CODE::
+ExampleClass {
+	exampleMethod {
+		|exampleParameter|
+		Validator.validateMethodParameterType(exampleParameter.exampleProperty, Integer, "exampleParameter", this.class.name, "exampleMethod");
+
+		// Method implementation here...
+	}
+}
+::
+
+NOTE::
+A real-life example of CODE::validateMethodParameterPropertyType:: is in LINK::Classes/PipeWire#.connectToSoundcard::. That method accepts an instance of either LINK::Classes/Synthesizer:: or LINK::Classes/HardwareSynthesizerConfig::, since both classes contain a property called CODE::inputBusChannels:: of type LINK::Classes/Array::.
 ::

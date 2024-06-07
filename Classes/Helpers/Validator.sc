@@ -14,4 +14,17 @@ Validator {
 			});
 		});
 	}
+
+	*validateMethodParameterPropertyType {
+		|parameterValue, propertyNameAsSymbol, expectedType, parameterName, className, methodName, allowNil = false|
+		if (allowNil && parameterValue.isNil, {}, {
+			if (parameterValue.respondsTo(propertyNameAsSymbol),{
+				if (parameterValue.perform(propertyNameAsSymbol).isKindOf(expectedType) == false,{
+					Error(format("The '%' parameter of %.%() must contain a member called % which is a %. The provided value % had a property % but it was a %.", parameterName, className, methodName, propertyNameAsSymbol, expectedType, parameterValue, propertyNameAsSymbol, parameterValue.perform(propertyNameAsSymbol).class)).throw;
+				});
+			},{
+				Error(format("The '%' parameter of %.%() must contain a member called %. The provided value %, which has the class %, does not.", parameterName, className, methodName, propertyNameAsSymbol, parameterValue, parameterValue.class)).throw;
+			});
+		});
+	}
 }
