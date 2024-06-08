@@ -1,21 +1,34 @@
 Mixer {
+	var prSynthsDictionary;
+
 	init {
 		|synthsDictionary|
-		var window, carousel, detailViews;
 		Validator.validateMethodParameterType(synthsDictionary, Dictionary, "synthsDictionary", this.class.name, "init");
-
-		window = Window("Mixer",Rect(10,10,1200,800));
-		carousel = ScrollView(window,Rect(0,0,200,800)).background_(Color.green);
-		detailViews = Array.newClear(Config.hardwareSynthesizers.size);
+		prSynthsDictionary = synthsDictionary;
 
 		Setup.server;
+		this.renderUi();
+	}
+
+	*new {
+		|synthsDictionary|
+		Validator.validateMethodParameterType(synthsDictionary, Dictionary, "synthsDictionary", this.class.name, "new");
+
+		^super.new.init(synthsDictionary);
+	}
+
+	renderUi {
+		var window = Window("Mixer",Rect(10,10,1200,800));
+		var carousel = ScrollView(window,Rect(0,0,200,800)).background_(Color.green);
+		var detailViews = Array.newClear(Config.hardwareSynthesizers.size);
 
 		Config.hardwareSynthesizers.do({
 			|synthConfig,index|
+			var fxCheckBox;
 			var tile = View(carousel,Rect(0,index*100,195,100));
+
 			var detailView = View(window,Rect(200,0,1000,800)).background_(Color.black).visible_(false);
 			var detailViewCanvas = View(detailView, Rect(10,10,980,780));
-			var fxCheckBox;
 
 			// Carousel
 			StaticText(tile, Rect(5,5,150,50)).string_(synthConfig.name);
@@ -40,17 +53,17 @@ Mixer {
 
 			fxCheckBox.action_({
 				|checkbox|
-				synthsDictionary[synthConfig.name].free;
+				prSynthsDictionary[synthConfig.name].free;
 				if (checkbox.value == true, {
 					PipeWire.disconnectFromSoundcard(synthConfig);
 					if (synthConfig.inputBusChannels.size == 1, {
-						synthsDictionary[synthConfig.name] = {
+						prSynthsDictionary[synthConfig.name] = {
 							var audio = SoundIn.ar(synthConfig.inputBusChannels[0]) ! 2;
 							NHHall.ar(audio, 5) * 0.5 + audio;
 						}.play;
 					},{
 						if (synthConfig.inputBusChannels.size == 2, {
-							synthsDictionary[synthConfig.name] = {
+							prSynthsDictionary[synthConfig.name] = {
 								var audio = SoundIn.ar(synthConfig.inputBusChannels);
 								NHHall.ar(audio, 5) * 0.25 + audio;
 							}.play;
@@ -64,12 +77,5 @@ Mixer {
 			});
 		});
 		window.front;
-	}
-
-	*new {
-		|synthsDictionary|
-		Validator.validateMethodParameterType(synthsDictionary, Dictionary, "synthsDictionary", this.class.name, "new");
-
-		^super.new.init(synthsDictionary);
 	}
 }
