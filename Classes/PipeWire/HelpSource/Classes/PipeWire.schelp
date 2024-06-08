@@ -8,7 +8,7 @@ A set of utilities for working with PipeWire.
 CLASSMETHODS::
 
 METHOD:: connectToSoundcard
-Connects the hardware synthesizer represented by the supplied instance of LINK::Classes/Synthesizer:: to the soundcard.
+Connects the specified hardware synthesizer to the soundcard.
 
 This is done by reading the LINK::Classes/Synthesizer#-inputBusChannels:: property and connecting those port numbers in PipeWire.
 
@@ -23,7 +23,7 @@ TABLE::
 ::
 
 ARGUMENT:: synthesizer
-An instance of LINK::Classes/Synthesizer::.
+An instance of LINK::Classes/Synthesizer:: or LINK::Classes/HardwareSynthesizerConfig::.
 
 METHOD:: connectAllToSoundcard
 For all hardware synthesizers configured in LINK::Classes/Config#*hardwareSynthesizers::, connects the synthesizer to the soundcard.
@@ -39,7 +39,7 @@ TABLE::
 ::
 
 METHOD:: disconnectFromSoundcard
-Disconnects the hardware synthesizer represented by the supplied instance of LINK::Classes/Synthesizer:: from the soundcard.
+Disconnects the specified hardware synthesizer from the soundcard.
 
 This is done by reading the LINK::Classes/Synthesizer#-inputBusChannels:: property and disconnecting those port numbers in PipeWire.
 
@@ -52,7 +52,7 @@ LIST::
 ::
 
 ARGUMENT:: synthesizer
-An instance of LINK::Classes/Synthesizer::.
+An instance of LINK::Classes/Synthesizer:: or LINK::Classes/HardwareSynthesizerConfig::.
 
 METHOD:: disconnectAllFromSoundcard
 For all hardware synthesizers configured in LINK::Classes/Config#*hardwareSynthesizers::, disconnects the synthesizer from the soundcard.

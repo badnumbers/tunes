@@ -6,7 +6,7 @@ PipeWire {
 	*connectToSoundcard {
 		|synthesizer|
 		var pipe,line, inputPort;
-		Validator.validateMethodParameterType(synthesizer, Synthesizer, "synthesizer", "PipeWire", "deleteConnection");
+		Validator.validateMethodParameterPropertyType(synthesizer, \inputBusChannels, Array, "synthesizer", "PipeWire", "connectToSoundcard");
 		if (synthesizer.inputBusChannels.size == 1, {
 			// Connect to both the left and right outputs
 			inputPort = format(pr_InputPortFormat, synthesizer.inputBusChannels[0]);
@@ -72,7 +72,7 @@ PipeWire {
 	*disconnectFromSoundcard {
 		|synthesizer|
 		var pipe,line, audioInputChannels;
-		Validator.validateMethodParameterType(synthesizer, Synthesizer, "synthesizer", "PipeWire", "deleteConnection");
+		Validator.validateMethodParameterPropertyType(synthesizer, \inputBusChannels, Array, "synthesizer", "PipeWire", "disconnectFromSoundcard");
 		synthesizer.inputBusChannels.do({
 			|inputBusChannel|
 			// Disconnect each input channel from both the left and the right outputs
