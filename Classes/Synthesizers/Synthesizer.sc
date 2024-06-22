@@ -58,9 +58,9 @@ Synthesizer {
 	init {
 		|midiout,patchType,guiType,midiMessageType,defaultVariableName|
 		Validator.validateMethodParameterType(midiout, MIDIOut, "midiout", "Synthesizer", "init");
-		Validator.validateMethodParameterType(patchType, Class, "patchType", "Synthesizer", "init");
-		Validator.validateMethodParameterType(guiType, Class, "guiType", "Synthesizer", "init");
-		Validator.validateMethodParameterType(midiMessageType, Symbol, "midiMessageTypeguiType", "Synthesizer", "init");
+		Validator.validateMethodParameterType(patchType, Class, "patchType", "Synthesizer", "init",allowNil:true);
+		Validator.validateMethodParameterType(guiType, Class, "guiType", "Synthesizer", "init",allowNil:true);
+		Validator.validateMethodParameterType(midiMessageType, Symbol, "midiMessageType", "Synthesizer", "init",allowNil:true);
 		Validator.validateMethodParameterType(defaultVariableName, String, "defaultVariableName", "Synthesizer", "init");
 
 		if ((midiMessageType != \control) && (midiMessageType != \sysex), {
