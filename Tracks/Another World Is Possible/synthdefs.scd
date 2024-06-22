@@ -51,10 +51,21 @@ postln("SENDING SYNTHDEFS");
 	SynthDef(\rev2_fx,
 		{
 			|out=0|
-			var audio = SoundIn.ar([~rev2.inputBusChannels]) * 1;
+			var audio = SoundIn.ar(~rev2.inputBusChannels) * 1;
 			audio = LPF.ar(audio, 2800);
 			audio = NHHall.ar(audio, 5)* 0.15 + audio;
 			Out.ar(out, audio);
+		}
+	).add;
+	SynthDef(\microvolt_fx,
+		{
+			|out=0|
+			var audio = SoundIn.ar(~microvolt.inputBusChannels);
+			audio = HPF.ar(audio, 300);
+			audio = BLowShelf.ar(audio, 600, 1, -10);
+			audio = audio ! 2;
+			audio = OteySoundBoard.ar(audio, c1:1, c3: 20, mix: 0.8);
+			Out.ar(b.master, audio);
 		}
 	).add;
 	SynthDef(\master,
