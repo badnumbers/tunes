@@ -68,6 +68,13 @@ postln("SENDING SYNTHDEFS");
 			Out.ar(b.master, audio);
 		}
 	).add;
+	SynthDef(\hydrasynth_fx,
+		{
+			|out=0|
+			var audio = SoundIn.ar(~hydrasynth.inputBusChannels);
+			Out.ar(b.master, audio);
+		}
+	).add;
 	SynthDef(\master,
 		{
 			var audio = (In.ar(b.master,2) * 3).softclip;

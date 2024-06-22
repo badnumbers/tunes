@@ -8,3 +8,6 @@ patch.kvps[152]=32;patch.kvps[153]=49;patch.kvps[35]=0;patch.kvps[101]=0;patch.k
 
 Setup.midi.control(chan: ~rev2.midiChannel, ctlNum: 32, val: 1); // Bank 2
 Setup.midi.program(chan: ~rev2.midiChannel, num: 30); // Patch 31
+
+Setup.midi.control(chan: ~hydrasynth.midiChannel, ctlNum: 32, val: 0); // Bank 0
+Setup.midi.program(chan: ~hydrasynth.midiChannel, num: 12); // Patch 13
