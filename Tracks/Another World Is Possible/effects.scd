@@ -1,4 +1,3 @@
-d = Library.at(\d);
 f = ();
 w=1;
 h=0.5;

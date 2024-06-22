@@ -63,7 +63,6 @@ postln("SENDING SYNTHDEFS");
 			var env = Env([0, 0, LFNoise0.kr(0.1).range(0.0012
 				,0.0016), 0, 0], [0, LFNoise0.kr(0.1).range(6,10), LFNoise0.kr(0.1).range(0.4,0.6), 0],'sin',3,0);
 			audio = CombC.ar(audio, 1, env.ar(Done.none, 1) + 0.02 + SinOsc.ar(0.5).range(0,0.0005), 0.1);
-			audio;
 			Out.ar(0, audio);
 		}
 	).add;
