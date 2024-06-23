@@ -57,6 +57,7 @@ synthesizer.addUpdateAction(\myGuiClass, 99, {
 	knob.value = newvalue;
 });
 ::
+
 NOTE::
 In reality, CODE::newvalue:: would probably need mapping to the CODE::Knob::'s 0 - 1 value range, but I'm keep the code simple.
 ::
@@ -137,6 +138,28 @@ The new value to change the parameter to.
 
 ARGUMENT:: source
 The source of the update, and consequently the place the update will not be written to. For example, if the update was caused by turning a knob on the hardware synthesizer, specifying CODE::\hardware:: as this parameter would prevent the update being written back to the hardware synth again. See LINK::#-addUpdateAction:: for a more detailed discussion of sources and destinations.
+
+METHOD:: nrpn
+Sends a non-registered parameter number (NRPN) message to the hardware synth.
+
+ARGUMENT:: selectMsb
+The most significant bit (MSB) to select the parameter to change.
+
+ARGUMENT:: selectLsb
+The least significant bit (LSB) to select the parameter to change.
+
+ARGUMENT:: valueMsb
+The most significant bit (MSB) of the value to change to.
+
+ARGUMENT:: valueLsb
+The least significant bit (LSB) of the value to change to.
+
+DISCUSSION::
+This code will set Filter 1 Cutoff to 0 on a Hydrasynth, assuming that the Hydrasynth's TELETYPE::Param RX:: setting is set to STRONG::NRPN:: in the System Setup:
+CODE::
+// ~hydrasynth = ~hydrasynth ?? Hydrasynth(Setup.midi); (if necessary)
+~hydrasynth.nrpn(64,40,0,0);
+::
 
 METHOD:: randomisePatch
 Replaces the STRONG::Working Patch:: with a randomly-generated one. In CODE::Synthesizer:: only a base method, intended for overriding, is provided. Unless overridden, this method simply validates its inputs.

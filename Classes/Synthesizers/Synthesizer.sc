@@ -156,6 +156,14 @@ Synthesizer {
 		^super.new.init(midiout);
 	}
 
+	nrpn {
+		|selectMsb, selectLsb, valueMsb, valueLsb|
+		prMidiout.control(this.midiChannel, 99, selectMsb);
+		prMidiout.control(this.midiChannel, 98, selectLsb);
+		prMidiout.control(this.midiChannel, 6, valueMsb);
+		prMidiout.control(this.midiChannel, 38, valueLsb);
+	}
+
 	// Writes code describing the supplied patch to the post window.
 	// Running this code will recreate the patch.
 	// Used by writeWorkingPatch() and writeSavedPatches().
