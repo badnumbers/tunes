@@ -23,7 +23,7 @@ ARGUMENT:: parameterValue
 The value of the parameter to be tested.
 
 ARGUMENT:: expectedType
-The expected type of the parameter to be tested.
+The expected type of the parameter to be tested, or an LINK::Classes/Array:: of acceptable types.
 
 ARGUMENT:: parameterName
 The name of the parameter to be tested.

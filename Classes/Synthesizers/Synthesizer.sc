@@ -157,11 +157,32 @@ Synthesizer {
 	}
 
 	nrpn {
-		|selectMsb, selectLsb, valueMsb, valueLsb|
+		|selectMsb, selectLsb, value|
+		Validator.validateMethodParameterType(selectMsb, Integer, "selectMsb", "Synthesizer", "nrpn");
+		Validator.validateMethodParameterType(selectLsb, Integer, "selectLsb", "Synthesizer", "nrpn");
+		Validator.validateMethodParameterType(value, [Integer,Array], "value", "Synthesizer", "nrpn");
+
+		if (value.class == Array, {
+			if (value.size != 2, {
+				Error(format("The 'value' parameter passed to Synthesizer.nrpn was an Array of size 2. The value of the parmaeter was %.", value)).throw;
+			});
+			value.do({
+				|element|
+				if (element.class != Integer, {
+					Error(format("The 'value' parameter passed to Synthesizer.nrpn should be an Array of 2 Integers. The value of the parmaeter was %.", value)).throw;
+				});
+			});
+		});
+
 		prMidiout.control(this.midiChannel, 99, selectMsb);
 		prMidiout.control(this.midiChannel, 98, selectLsb);
-		prMidiout.control(this.midiChannel, 6, valueMsb);
-		prMidiout.control(this.midiChannel, 38, valueLsb);
+		if (value.class == Array, {
+			prMidiout.control(this.midiChannel, 6, value[0]);
+			prMidiout.control(this.midiChannel, 38, value[1]);
+		}, {
+			prMidiout.control(this.midiChannel, 6, (value / 128).asInteger);
+			prMidiout.control(this.midiChannel, 38, value % 128);
+		});
 	}
 
 	// Writes code describing the supplied patch to the post window.

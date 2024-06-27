@@ -148,17 +148,14 @@ The most significant bit (MSB) to select the parameter to change.
 ARGUMENT:: selectLsb
 The least significant bit (LSB) to select the parameter to change.
 
-ARGUMENT:: valueMsb
-The most significant bit (MSB) of the value to change to.
-
-ARGUMENT:: valueLsb
-The least significant bit (LSB) of the value to change to.
+ARGUMENT:: value
+This can be either an LINK::Classes/Integer::, in which case its value is used, or an LINK::Classes/Array:: of two TELETYPE::Integers::, in which case the first is interpreted as the most significant bit (MSB) of the value to change to, and the second is interpreted as the least significant bit (LSB) of the value to change to.
 
 DISCUSSION::
 This code will set Filter 1 Cutoff to 0 on a Hydrasynth, assuming that the Hydrasynth's TELETYPE::Param RX:: setting is set to STRONG::NRPN:: in the System Setup:
 CODE::
 // ~hydrasynth = ~hydrasynth ?? Hydrasynth(Setup.midi); (if necessary)
-~hydrasynth.nrpn(64,40,0,0);
+~hydrasynth.nrpn(64,40,0);
 ::
 
 METHOD:: randomisePatch

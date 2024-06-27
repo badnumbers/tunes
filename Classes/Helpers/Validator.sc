@@ -8,9 +8,47 @@ Validator {
 
 	*validateMethodParameterType {
 		|parameterValue, expectedType, parameterName, className, methodName, allowNil = false|
-		if (allowNil && parameterValue.isNil, {}, {
-			if (parameterValue.isKindOf(expectedType) == false,{
-				Error(format("The '%' parameter of %.%() must be a %. The value %, which has the class %, was provided.", parameterName, className, methodName, expectedType, parameterValue, parameterValue.class)).throw;
+		var expectedTypeIsValid = true;
+		var parameterIsExpectedType = false;
+
+		if ((expectedType.isKindOf(Class)), {
+			expectedType = [expectedType];
+		},{
+			if ((expectedType.isKindOf(Array)), {
+				if (expectedType.size == 0, {
+					expectedTypeIsValid = false;
+				});
+				expectedType.do({
+					|type|
+					if (type.isKindOf(Class) == false, {
+						expectedTypeIsValid = false;
+					});
+				});
+			}, {
+				expectedTypeIsValid = false;
+			});
+		});
+
+		if (expectedTypeIsValid == false, {
+			Error(format("The 'expectedType' parameter of Validator.validateMethodParameterType() must be a Class or an Array of Classes. The value %, which has the class %, was provided.", parameterValue.class)).throw;
+		});
+
+		if (allowNil && parameterValue.isNil, {
+			parameterIsExpectedType = true;
+		}, {
+			expectedType.do({
+				|type|
+				if (parameterValue.isKindOf(type),{
+					parameterIsExpectedType = true;
+				});
+			});
+		});
+
+		if (parameterIsExpectedType == false, {
+			if (expectedType.size == 1, {
+				Error(format("The '%' parameter of %.%() must be a %. The value %, which has the class %, was provided.", parameterName, className, methodName, expectedType[0], parameterValue, parameterValue.class)).throw;
+			}, {
+				Error(format("The '%' parameter of %.%() must be one of the following: %. The value %, which has the class %, was provided.", parameterName, className, methodName, expectedType, parameterValue, parameterValue.class)).throw;
 			});
 		});
 	}
