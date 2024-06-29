@@ -8,7 +8,12 @@
 \markup "REV2 U2 P31: Gorgeous Brass BN."
 \markup "Hydrasynth A013 SpiralBallad PS."
 \markup "E♭ minor"
+\markup ""
 
+\score {
+  \header {
+    piece = "Main section"
+  }
 \repeat volta 2
 \new GrandStaff <<
   \new Staff \with { instrumentName = "Hydrasynth" } \relative c'' {
@@ -72,7 +77,12 @@
     }
   }
 >>
+}
 
+\score {
+  \header {
+    piece = "Gentle section"
+  }
 \new GrandStaff <<
   \new Staff \with { instrumentName = "REV2" } \relative c''' {
     \key ef \minor
@@ -91,10 +101,11 @@
     <gf' ef'>1 | % 1
     << { f' } \\ { af,2 bf } >> | % 2
     <cf gf'>1 | % 3
-    <ef af> | % 4
+    << { af' } \\ { ef2 df } >> | % 4
     <gf, ef'>1 | % 5
-    <f ef'> | % 6
+    << { ef'2 df } \\ { f, } >> | % 6
     <ef cf'>2 <f df'> | % 7 
     <gf ef'> <af f'>| % 8
   }
 >>
+}
