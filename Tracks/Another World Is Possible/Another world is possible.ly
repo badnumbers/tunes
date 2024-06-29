@@ -72,3 +72,29 @@
     }
   }
 >>
+
+\new GrandStaff <<
+  \new Staff \with { instrumentName = "REV2" } \relative c''' {
+    \key ef \minor
+    \ottava 1
+    <bf~ df~ gf>1 | % 1
+    <bf df af'>1 | % 2
+    <ef af cf > | % 3
+    <df f bf> | % 4
+    <bf~ df~ gf> | % 5
+    <bf df f> | % 6
+    <gf cf ef> | % 7
+    << {gf'2 f} \\ { <af, cf>1 } >> | % 8
+  }
+  \new Staff \with { instrumentName = "REV2" } \relative c' {
+    \key ef \minor
+    <gf' ef'>1 | % 1
+    << { f' } \\ { af,2 bf } >> | % 2
+    <cf gf'>1 | % 3
+    <ef af> | % 4
+    <gf, ef'>1 | % 5
+    <f ef'> | % 6
+    <ef cf'>2 <f df'> | % 7 
+    <gf ef'> <af f'>| % 8
+  }
+>>
