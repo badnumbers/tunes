@@ -12,10 +12,10 @@
 
 \score {
   \header {
-    piece = "Main section"
+    piece = "Main section" 
   }
 \repeat volta 2
-\new GrandStaff <<
+<<
   \new Staff \with { instrumentName = "Hydrasynth" } \relative c'' {
     \key ef \minor
     gf16 af bf8 ef,4~ ef2~  | % 1
@@ -81,9 +81,69 @@
 
 \score {
   \header {
+    piece = "Intermediate
+ section"
+  }
+<<
+  \new Staff \with { instrumentName = "Hydrasynth" } \relative c' {
+    \key ef \minor
+    r8 gf16 af bf8. af16 gf af df4. | % 1
+    r8 gf,16 af bf4 f'16 gf bf4. | % 2
+    r8 gf,16 af bf8. af16 gf af ef'4. | % 3
+    r8 gf,16 af bf4 g'16 af bf8 ef,4 | % 4
+  }
+  \new Staff \with { instrumentName = "REV2" } \relative c''' {
+    \key ef \minor
+    \ottava 1
+    \repeat volta 2 {
+      <bf~ af'>1 | % 1
+      <bf~ ef>1 | % 2
+      <bf~ af'>1 | % 3
+      <bf ef>1 | % 4
+    }
+    <cf~ af'>1 | % 9
+    <cf~ ff>1 | % 10
+    <cf~ af'>1 | % 11
+    <cf~ df>1 | % 12
+    <cf~ af'~>1 | % 13
+    <cf af'>1 | % 14
+    <af~ ff'~>1 | % 15
+    <af ff'>1 | % 16
+    <cf~ af'~>1 | % 17
+    <cf af'>1 | % 18
+    <af~ f'~>1 | % 19
+    <af f'>1 | % 20
+  }
+  \new Staff \with { instrumentName = "REV2"
+  } \relative c' {
+    \key ef \minor
+    \repeat volta 2 {
+      <gf gf'>1 | % 1
+      <af af'>1 | % 2
+      <bf bf'>1 | % 3
+      <df df'>1 | % 4
+    }
+    <ff ff'>1 | % 9
+    <df df'>1 | % 10
+    <ff ff'>1 | % 11
+    <gf gf'>1 | % 12
+    <ff ff'>1 | % 13
+    <ef ef'>1 | % 14
+    <df~ df'~>1 | % 15
+    <df df'>1 | % 16
+    <ff ff'>1 | % 17
+    <ef ef'>1 | % 18
+    <df df'>1 | % 19
+    <f f'>1 | % 20
+  }
+>>
+}
+
+\score {
+  \header {
     piece = "Gentle section"
   }
-\new GrandStaff <<
+<<
   \new Staff \with { instrumentName = "REV2" } \relative c''' {
     \key ef \minor
     \ottava 1
@@ -96,16 +156,52 @@
     <gf cf ef> | % 7
     << {gf'2 f} \\ { <af, cf>1 } >> | % 8
   }
-  \new Staff \with { instrumentName = "REV2" } \relative c' {
+  \new Staff \with { instrumentName = "REV2"
+  } \relative c' {
     \key ef \minor
     <gf' ef'>1 | % 1
     << { f' } \\ { af,2 bf } >> | % 2
     <cf gf'>1 | % 3
     << { af' } \\ { ef2 df } >> | % 4
     <gf, ef'>1 | % 5
-    << { ef'2 df } \\ { f, } >> | % 6
+    << { ef'2 df } \\ { f,1 } >> | % 6
     <ef cf'>2 <f df'> | % 7 
     <gf ef'> <af f'>| % 8
+    
+  }
+>>
+}
+
+\score {
+  \header {
+    piece = "Interesting connecting section"
+  }
+<<
+  \new Staff \with { instrumentName = "REV2" } \relative c''' {
+    \key ef \minor
+    \ottava 1
+    <af df gf>1 | % 1
+    << { ef'1 } \\ { <gf, bf>2 <ef af> }  >> | % 2
+    <af df gf>1 | % 3
+    << { ef'1 } \\ { <gf, bf>2 <ef af> }  >> | % 4
+    <ef af ef'>1 | % 5
+    << { ef'2 df } \\ { <f, bf>1 } >> | % 6
+    <ef af ef'>1 | % 7
+    <f bf ef>2 <bf d f> | % 8
+    <bf~ df~ gf>1 | % 9
+  }
+  \new Staff \with { instrumentName = "REV2"
+  } \relative c' {
+    \key ef \minor
+    <af af'>2. <bf bf'>4 | % 1
+    <cf cf'>1 | % 2
+    <af af'>2. <bf bf'>4 | % 3
+    <cf cf'>1 | % 4
+    <ff, ff'>2. <f f'>4 | % 5
+    <gf gf'>2 <bf bf'>2 | % 6
+    <ff ff'>2. <f f'>4 | % 7
+    <gf gf'>4 <bf bf'> <c c'> <d d'> | % 8
+    <ef ef'>1 | % 9
   }
 >>
 }
