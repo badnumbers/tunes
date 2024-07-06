@@ -205,3 +205,84 @@
   }
 >>
 }
+
+\score {
+  \header {
+    piece = "Recovery"
+  }
+  \new Staff \with { instrumentName = "REV2"
+  } \relative c' {
+    \key ef \minor
+    <df bf'>2 <ef cf'>2 | % 1
+    <f df'> <gf ef'> | % 2
+    <bf gf'> <af f'> | % 3
+    <f df'> <g ef'>\fermata | % 4
+    <df bf'> <ff df'> | % 5
+    <gf ef'> <af f'> | % 6
+    <bf g'>1 | % 7
+  }
+}
+
+\score {
+  \header {
+    piece = "Alien and mysterious"
+  }
+<<
+  \new Staff \with { instrumentName = "REV2" } \relative c''' {
+    \key ef \minor
+    \ottava 1
+    \repeat volta 2
+    {
+      << { <df~ g~>1 } \\ { g,2 a } >> | % 1
+      << { <df g~>1 } \\ { g,2 a } >> | % 2
+      << { <ef'~ g~>1 } \\ { g,2 a } >> | % 3
+      << { <ef' g>1 } \\ { g,2 a } >> | % 4
+    }
+    \repeat volta 2
+    {
+      << { <df~ g~>1 } \\ { g,2 a } >> | % 9
+      << { <df g~>1 } \\ { g,2 a } >> | % 10
+      << { <ff'~ g~>1 } \\ { g,2 a } >> | % 11
+      << { <ff' g>1 } \\ { g,2 a } >>\break | % 12
+    }
+    << { <df~ g~>1 } \\ { g,2 a } >> | % 13
+    << { <df g~>1 } \\ { g,2 a } >> | % 14
+    << { <ff'~ g~>1 } \\ { g,2 a } >> | % 15
+    << { <ff' g>1 } \\ { g,2 a } >> | % 16
+    << { <df~ ff~>1 } \\ { g,2 a } >> | % 17
+    << { <df ff>1 } \\ { g,2 a } >> | % 18
+    << { <ef'~ g~>1 } \\ { a,2 cf } >> | % 19
+    << { <ef g>1 } \\ { a,2 cf } >>\break | % 20
+    <df~ f~ a>1^"Big and dramatic"\fermata | % 21
+    <df f af>1^"Back to a major place" | % 22
+  }
+  \new Staff \with { instrumentName = "REV2"
+  } \relative c' {
+    \key ef \minor
+    \repeat volta 2
+    {
+      <ef~ ef'~>1 | % 1
+      <ef~ ef'~>1 | % 2
+      <ef~ ef'~>1 | % 3
+      <ef ef'>1 | % 4
+    }
+    \repeat volta 2
+    {
+      <ff~ ff'~>1 | % 9
+      <ff~ ff'~>1 | % 10
+      <ff~ ff'~>1 | % 11
+      <ff ff'>1 | % 12
+    }
+    <df~ df'~>1 | % 13
+    <df df'>1 | % 14
+    <cf~ cf'~>1 | % 15
+    <cf cf'>1 | % 16
+    <g~ g'~>1 | % 17
+    <g g'>1 | % 18
+    <gf~ gf'~>1 | % 19
+    <gf gf'>1 | % 20
+    <ef ef'>1 | % 21
+    <df df'>1 | % 22
+  }
+>>
+}
