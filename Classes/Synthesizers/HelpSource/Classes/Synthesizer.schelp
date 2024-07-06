@@ -19,7 +19,7 @@ This class depends on the hardware synthesizer having been described in the STRO
 CLASSMETHODS::
 
 METHOD:: new
-Creates an instance of this LINK::Classes/Synthesizer::.
+Creates an instance of LINK::Classes/Synthesizer::.
 
 ARGUMENT:: midiout
 An instance of LINK::Classes/MIDIOut:: to be used by the CODE::Synthesizer:: to send updates to the hardware synth. This could have been created earlier by calling LINK::Classes/Setup#*midi::.

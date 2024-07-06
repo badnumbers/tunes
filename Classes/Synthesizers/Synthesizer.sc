@@ -4,7 +4,7 @@ Synthesizer {
 	var invokeUpdateActionsFunc;
 	var <midiChannel;
 	var <midiChannels;
-	var <>prMidiout;
+	var <>midiout;
 	var prDefaultVariableName;
 	var prGuiType;
 	var prMidiMessageType;
@@ -56,8 +56,8 @@ Synthesizer {
 	}
 
 	init {
-		|midiout,patchType,guiType,midiMessageType,defaultVariableName|
-		Validator.validateMethodParameterType(midiout, MIDIOut, "midiout", "Synthesizer", "init");
+		|midiout_param,patchType,guiType,midiMessageType,defaultVariableName|
+		Validator.validateMethodParameterType(midiout_param, MIDIOut, "midiout", "Synthesizer", "init");
 		Validator.validateMethodParameterType(patchType, Class, "patchType", "Synthesizer", "init",allowNil:true);
 		Validator.validateMethodParameterType(guiType, Class, "guiType", "Synthesizer", "init",allowNil:true);
 		Validator.validateMethodParameterType(midiMessageType, Symbol, "midiMessageType", "Synthesizer", "init",allowNil:true);
@@ -67,7 +67,7 @@ Synthesizer {
 			Error(format("The '{midiMessageType}' parameter of %.init must be one of the values \control, \sysex. The value % was provided.", this.class.name, midiMessageType));
 		});
 
-		prMidiout = midiout;
+		midiout= midiout_param;
 		prPatchType = patchType;
 		prGuiType = guiType;
 		prMidiMessageType = midiMessageType;
@@ -174,14 +174,14 @@ Synthesizer {
 			});
 		});
 
-		prMidiout.control(this.midiChannel, 99, selectMsb);
-		prMidiout.control(this.midiChannel, 98, selectLsb);
+		midiout.control(this.midiChannel, 99, selectMsb);
+		midiout.control(this.midiChannel, 98, selectLsb);
 		if (value.class == Array, {
-			prMidiout.control(this.midiChannel, 6, value[0]);
-			prMidiout.control(this.midiChannel, 38, value[1]);
+			midiout.control(this.midiChannel, 6, value[0]);
+			midiout.control(this.midiChannel, 38, value[1]);
 		}, {
-			prMidiout.control(this.midiChannel, 6, (value / 128).asInteger);
-			prMidiout.control(this.midiChannel, 38, value % 128);
+			midiout.control(this.midiChannel, 6, (value / 128).asInteger);
+			midiout.control(this.midiChannel, 38, value % 128);
 		});
 	}
 
@@ -274,7 +274,7 @@ Synthesizer {
 		Validator.validateMethodParameterType(key, Integer, "key", "Synthesizer", "updateParameterInHardwareSynth");
 		Validator.validateMethodParameterType(newvalue, Integer, "newvalue", "Synthesizer", "updateParameterInHardwareSynth");
 		postln(format("In updateParameterInHardwareSynth, newvalue is %.",newvalue.asInteger));
-		prMidiout.control(this.midiChannel,key,newvalue.asInteger);
+		midiout.control(this.midiChannel,key,newvalue.asInteger);
 	}
 
 	writeUpdateActions {

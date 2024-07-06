@@ -3,17 +3,45 @@ SUMMARY:: A sequencer for managing and playing patterns
 CATEGORIES:: Undocumented classes
 
 DESCRIPTION::
-(put long description here)
-
+TELETYPE::Sequencer:: is intended to cut down the amount of boilerplate code required to sequence tracks. For example, it reduces the amount of keys that you need to specify when writing a pattern, and provides a new way of specifying musical notes.
 
 CLASSMETHODS::
 
+METHOD::new
+Creates an instance of LINK::Classes/Sequencer::.
 
 INSTANCEMETHODS::
+
+METHOD::addMidiPart
+Adds a MIDI sequence to the specified section for the specified LINK::Classes/Synthesizer::.
+
+ARGUMENT::section
+A LINK::Classes/Symbol:: representing the section of the piece.
+
+ARGUMENT::synthesizer
+A LINK::Classes/Synthesizer:: that the part is for.
+
+ARGUMENT::pattern
+A LINK::Classes/Pattern:: to play on the synthesizer. There is no need to specify the TELETYPE::\type::, TELETYPE::\midiout:: or TELETYPE::\chan:: keys since these are included automatically.
+
+METHOD::play
+Plays the specified section by playing all of the parts in the section in parallel.
+
+ARGUMENT::section
+A LINK::Classes/Symbol:: denoting the section to play.
 
 
 EXAMPLES::
 
 code::
-(some example code)
+~rev2 = ~rev2 ?? Rev2(Setup.midi); // If necessary
+(
+~seq = Sequencer();
+~seq.addMidiPart(\intro, ~rev2, Pbind(
+	\pitch, Pseq([31,41,51,61]);
+));
+~seq.play(\intro);
+)
+
+~seq.stop; // If necessary
 ::
