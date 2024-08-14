@@ -40,8 +40,7 @@ Jx03 : Synthesizer {
 	}
 
 	init {
-		|midiout|
-		super.init(midiout,Jx03Patch,Jx03ScGuiControlSurface,\sysex,"~jx03");
+		super.init(Jx03Patch,Jx03ScGuiControlSurface,\sysex,"~jx03");
 	}
 
 	randomisePatch {

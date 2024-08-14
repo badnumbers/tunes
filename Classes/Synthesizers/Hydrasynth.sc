@@ -5,7 +5,6 @@ Hydrasynth : Synthesizer {
 	classvar <sustainPedal = 64;
 
 	init {
-		|midiout|
-		super.init(midiout,nil,nil,nil,"~hydrasynth");
+		super.init(nil,nil,nil,"~hydrasynth");
 	}
 }

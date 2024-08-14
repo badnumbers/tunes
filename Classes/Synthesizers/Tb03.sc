@@ -10,8 +10,7 @@ Tb03 : Synthesizer {
 	classvar <tuningCcNo = 104;
 
 	init {
-		|midiout|
-		super.init(midiout,Tb03Patch,\control,"~tb03");
+		super.init(Tb03Patch,\control,"~tb03");
 	}
 
 	*randomisePatch {

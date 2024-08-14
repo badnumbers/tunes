@@ -38,7 +38,6 @@ PerformVe : Synthesizer {
 	classvar <looperHiHatTriggerCcNo = 83;
 
 	init {
-		|midiout|
-		super.init(midiout,PerformVePatch,PerformVeScGuiControlSurface,\control,"~performVe");
+		super.init(PerformVePatch,PerformVeScGuiControlSurface,\control,"~performVe");
 	}
 }

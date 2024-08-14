@@ -56,8 +56,7 @@ Synthesizer {
 	}
 
 	init {
-		|midiout_param,patchType,guiType,midiMessageType,defaultVariableName|
-		Validator.validateMethodParameterType(midiout_param, MIDIOut, "midiout", "Synthesizer", "init");
+		|patchType,guiType,midiMessageType,defaultVariableName|
 		Validator.validateMethodParameterType(patchType, Class, "patchType", "Synthesizer", "init",allowNil:true);
 		Validator.validateMethodParameterType(guiType, Class, "guiType", "Synthesizer", "init",allowNil:true);
 		Validator.validateMethodParameterType(midiMessageType, Symbol, "midiMessageType", "Synthesizer", "init",allowNil:true);
@@ -67,7 +66,7 @@ Synthesizer {
 			Error(format("The '{midiMessageType}' parameter of %.init must be one of the values \control, \sysex. The value % was provided.", this.class.name, midiMessageType));
 		});
 
-		midiout= midiout_param;
+		midiout= Setup.midi;
 		prPatchType = patchType;
 		prGuiType = guiType;
 		prMidiMessageType = midiMessageType;
@@ -150,10 +149,7 @@ Synthesizer {
 	}
 
 	*new {
-		|midiout|
-		Validator.validateMethodParameterType(midiout, MIDIOut, "midiout", "Synthesizer", "new");
-
-		^super.new.init(midiout);
+		^super.new.init;
 	}
 
 	nrpn {

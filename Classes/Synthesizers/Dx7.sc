@@ -29,8 +29,7 @@ Dx7 : Synthesizer {
 	}
 
 	init {
-		|midiout|
-		super.init(midiout,Dx7Patch,Dx7ScGuiControlSurface,\sysex,"~dx7");
+		super.init(Dx7Patch,Dx7ScGuiControlSurface,\sysex,"~dx7");
 		prOperatorMappings = [32,16,8,4,2,1];
 	}
 
@@ -237,7 +236,7 @@ Dx7 : Synthesizer {
 		end = Int8Array[247];
 
 		finalMessage = start ++ payload ++ checksum ++ end;
-		prMidiout.sysex(finalMessage);
+		midiout.sysex(finalMessage);
 
 		// Update the GUI but don't send parameter changes to the hardware
 		prWorkingPatch.kvps.keys.do({
@@ -254,6 +253,6 @@ Dx7 : Synthesizer {
 			pageNumber = 1;
 			parameterNumber = parameterNumber - 128;
 		});
-		prMidiout.sysex(Int8Array[240, 67, 16 + midiChannel, pageNumber, parameterNumber, newvalue, 247]);
+		midiout.sysex(Int8Array[240, 67, 16 + midiChannel, pageNumber, parameterNumber, newvalue, 247]);
 	}
 }

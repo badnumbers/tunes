@@ -31,8 +31,7 @@ Sh01a : Synthesizer {
 	classvar <vcoSubTypeCcNo = 22;
 
 	init {
-		|midiout|
-		super.init(midiout,Sh01aPatch,Sh01aScGuiControlSurface,\control,"~sh01a");
+		super.init(Sh01aPatch,Sh01aScGuiControlSurface,\control,"~sh01a");
 	}
 
 	*randomisePatch {

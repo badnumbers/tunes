@@ -57,8 +57,7 @@ UnoSynth : Synthesizer {
 	classvar <wahOnOffCcNo = 78;
 
 	init {
-		|midiout|
-		super.init(midiout,UnoSynthPatch,UnoSynthScGuiControlSurface,\control,"~unoSynth");
+		super.init(UnoSynthPatch,UnoSynthScGuiControlSurface,\control,"~unoSynth");
 	}
 
 	randomisePatch {
