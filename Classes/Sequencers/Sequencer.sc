@@ -55,10 +55,12 @@ Sequencer {
 					\midiout,synthesizer.midiout,
 					\chan,synthesizer.midiChannel,
 					\midinote, Pfunc({|ev|convertFromPitch.value(ev)}),
+				),
+				midiPart,
+				Pbind(
 					\amp, 1,
 					\timingOffset, 0
-				),
-				midiPart
+				)
 			)
 		};
 	}
