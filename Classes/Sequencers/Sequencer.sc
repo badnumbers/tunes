@@ -20,13 +20,28 @@ Sequencer {
 
 	init {
 		var convertFromPitch = {
-			|event, num|
-			var numberOfDegrees, degree, octave, answer;
+			// This function MUST NOT use ^ to return a value
+			// Otherwise you get awful 'PauseStream-awake' Out of context return of value errors
+			|event|
+			var numberOfDegrees, degree, octave, answer, num = event.pitch;
+			if (num.isNil, {
+				postln(format("num is nil"));
+				num = 101; // Whatever, sometimes a pattern sticks a rest in here with no pitch key
+				postln(format("num is %", num));
+			});
 			num = num - 1;
+			postln(format("1: num is %", num));
 			numberOfDegrees = event.scale.size;
+			postln(format("2: numberOfDegrees is %", numberOfDegrees));
 			degree = num % 10;
+			if (degree > 7, {
+				Error("The pitch value of % must not end in a number higher than 7.", event.pitch).throw;
+			});
+			postln(format("3: degree is %", degree));
 			octave = num - degree / 10;
+			postln(format("4: octave is %", octave));
 			answer = (octave * 12 + event.scale[degree]).asInteger;
+			postln(format("5: answer is %", answer));
 			answer;
 		};
 
@@ -39,7 +54,7 @@ Sequencer {
 					\type,\midi,
 					\midiout,synthesizer.midiout,
 					\chan,synthesizer.midiChannel,
-					\midinote, Pfunc({|ev|convertFromPitch.value(ev,ev.pitch)}),
+					\midinote, Pfunc({|ev|convertFromPitch.value(ev)}),
 					\amp, 1,
 					\timingOffset, 0
 				),

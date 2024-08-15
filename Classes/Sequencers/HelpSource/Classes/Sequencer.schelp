@@ -30,11 +30,10 @@ Plays the specified section by playing all of the parts in the section in parall
 ARGUMENT::section
 A LINK::Classes/Symbol:: denoting the section to play.
 
-
 EXAMPLES::
 
 code::
-~rev2 = ~rev2 ?? Rev2(Setup.midi); // If necessary
+~rev2 = ~rev2 ?? Rev2(); // If necessary
 (
 ~seq = Sequencer();
 ~seq.addMidiPart(\intro, ~rev2, Pbind(
