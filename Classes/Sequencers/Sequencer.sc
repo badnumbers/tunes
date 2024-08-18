@@ -1,6 +1,17 @@
 Sequencer {
 	var prSections;
 	var prMidiPartWrapper;
+	var prPreKeySets;
+	var prPostKeySets;
+
+	addGlobalPreKeys {
+		|keysArray|
+		Validator.validateMethodParameterType(keysArray, Array, "keysArray", "Sequencer", "addGlobalPreKeys");
+
+		// TODO validate keysArray - even numbered, every even numbered element is a Symbol
+
+		prPreKeySets.add([{true},keysArray]);
+	}
 
 	addMidiPart {
 		|section,synthesizer,pattern|
@@ -18,6 +29,16 @@ Sequencer {
 		prSections[section].put(synthesizer,pattern);
 	}
 
+	addSynthesizerPostKeys {
+		|synthesizer,keysArray|
+		Validator.validateMethodParameterType(synthesizer, Synthesizer, "synthesizer", "Sequencer", "addSynthesizerPostKeys");
+		Validator.validateMethodParameterType(keysArray, Array, "keysArray", "Sequencer", "addSynthesizerPostKeys");
+
+		// TODO validate keysArray - even numbered, every even numbered element is a Symbol
+
+		prPostKeySets.add([{|synth,section|synth==synthesizer},keysArray]);
+	}
+
 	init {
 		var convertFromPitch = {
 			// This function MUST NOT use ^ to return a value
@@ -25,42 +46,105 @@ Sequencer {
 			|event|
 			var numberOfDegrees, degree, octave, answer, num = event.pitch;
 			if (num.isNil, {
-				postln(format("num is nil"));
 				num = 101; // Whatever, sometimes a pattern sticks a rest in here with no pitch key
-				postln(format("num is %", num));
 			});
 			num = num - 1;
-			postln(format("1: num is %", num));
 			numberOfDegrees = event.scale.size;
-			postln(format("2: numberOfDegrees is %", numberOfDegrees));
 			degree = num % 10;
 			if (degree > 7, {
 				Error("The pitch value of % must not end in a number higher than 7.", event.pitch).throw;
 			});
-			postln(format("3: degree is %", degree));
 			octave = num - degree / 10;
-			postln(format("4: octave is %", octave));
 			answer = (octave * 12 + event.scale[degree]).asInteger;
-			postln(format("5: answer is %", answer));
 			answer;
 		};
 
+		prPreKeySets = List();
+		prPostKeySets = List();
 		prSections = Dictionary();
 
 		prMidiPartWrapper = {
-			|synthesizer,midiPart|
+			|section,synthesizer,midiPart|
+			var preKeys, postKeys;
+
+			preKeys = List.newUsing([
+				\type,\midi,
+				\midiout,synthesizer.midiout,
+				\chan,synthesizer.midiChannel,
+				\amp,0.5,
+				\timingOffset,0
+			]);
+			postKeys = List.newUsing([
+				\midinote, Pfunc({|ev|convertFromPitch.value(ev)})
+			]);
+
+			// prPreKeys = [{},[key,value,key,value]]
+			// preKeys = [key,value,key,value]
+			prPreKeySets.do({
+				|newKeySet,index|
+				// Decide whether the current set of prekeys should be applied by evaluating its Function
+				if (newKeySet[0].value(synthesizer,midiPart),{
+					newKeySet[1].do({
+						|newKey,newKeyIndex|
+						// Only look at even-numbered elements
+						if (newKeyIndex % 2 == 0,{
+							// Check if the current key matches any existing key and warn if it does
+							preKeys.do({
+								|existingKey,existingIndex|
+								// Only look at even-numbered elements
+								if (index % 2 == 0,{
+									if (newKey == existingKey,{
+										warn(format("The new pre-key % duplicates the existing pre-key % for synthesizer % and section %.", newKey, existingKey, synthesizer, section));
+									});
+								});
+							});
+						});
+						preKeys.add(newKey);
+					});
+				});
+			});
+
+			prPostKeySets.do({
+				|newKeySet,index|
+				// Decide whether the current set of postkeys should be applied by evaluating its Function
+				if (newKeySet[0].value(synthesizer,midiPart),{
+					newKeySet[1].do({
+						|newKey,newKeyIndex|
+						// Check for duplicates in even-numbered elements
+						if (newKeyIndex % 2 == 0,{
+							// Check if the current key matches any existing key and warn if it does
+							postKeys.do({
+								|existingKey,existingIndex|
+								// Only look at even-numbered elements
+								if (index % 2 == 0,{
+									if (newKey == existingKey,{
+										warn(format("The new post-key % duplicates the existing post-key % for synthesizer % and section %.", newKey, existingKey, synthesizer, section));
+									});
+								});
+							});
+						});
+						postln(format("Adding element %.",newKey));
+						postKeys.add(newKey);
+					});
+				});
+			});
+
+			postln(format("For section % and synthesizer %, the keys are", section, synthesizer));
+			postln("Pre-keys:");
+			preKeys.do({
+				|preKey|
+				postln(format("- %",preKey));
+			});
+			postln("Post-keys:");
+			postKeys.do({
+				|postKey|
+				postln(format("- %",postKey));
+			});
+
 			Pchain(
-				Pbind(
-					\type,\midi,
-					\midiout,synthesizer.midiout,
-					\chan,synthesizer.midiChannel,
-					\midinote, Pfunc({|ev|convertFromPitch.value(ev)}),
-				),
+				Pbind(*postKeys), // The asterisk converts the array into a set of parameters
 				midiPart,
-				Pbind(
-					\amp, 1,
-					\timingOffset, 0
-				)
+				Pbind(*preKeys)
 			)
 		};
 	}
@@ -73,7 +157,7 @@ Sequencer {
 		|section|
 		Validator.validateMethodParameterType(section, Symbol, "section", "Sequencer", "play");
 		Pdef(\currentSection,
-			Ppar(prSections[section].keys.collect({|synthesizer|prMidiPartWrapper.value(synthesizer,prSections[section][synthesizer])}))
+			Ppar(prSections[section].keys.collect({|synthesizer|prMidiPartWrapper.value(section,synthesizer,prSections[section][synthesizer])}))
 		).play;
 	}
 
