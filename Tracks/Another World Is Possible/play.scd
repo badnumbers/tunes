@@ -1,2 +1,2 @@
-~seq.play(\intro);
+~seq.play(\main1);
 ~seq.stop;

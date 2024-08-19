@@ -17,7 +17,7 @@ postln("SENDING SYNTHDEFS");
 			audio = audio + SinOsc.ar(freq9 * pitchenv, mul: 0.1);
 			audio = audio + SinOsc.ar(freq10 * pitchenv, mul: 0.1);
 			audio = (audio * Env([0,amp,0],[0.0001,0.1],-5).kr(Done.none, t_trig)).tanh;
-			Out.ar(b.knockreverb,Pan2.ar(audio, pan));
+			Out.ar(out,Pan2.ar(audio, pan));
 		}
 	).add;
 	SynthDef(\shake,
@@ -35,7 +35,7 @@ postln("SENDING SYNTHDEFS");
 			audio = audio + BPF.ar(noise, lfo.linlin(-1,1,freq5*lfomin,freq1*lfomax), rq);
 			audio = LPF.ar(audio, 1500);
 			audio = audio * Env([0,amp,0],[0.3,1],-12).kr(Done.none, t_trig);
-			Out.ar(b.knockreverb,Pan2.ar(audio, pan));
+			Out.ar(out,Pan2.ar(audio, pan));
 		}
 	).add;
 	SynthDef(\dx7_fx,
@@ -75,10 +75,30 @@ postln("SENDING SYNTHDEFS");
 			Out.ar(b.master, audio);
 		}
 	).add;
+	SynthDef(\crave_fx,
+		{
+			|out=0|
+			var audio = SoundIn.ar(~crave.inputBusChannels[0]) * 0.5;
+			audio = audio ! 2;
+			audio = NHHall.ar(audio, 3) + audio;
+			Out.ar(b.master, audio);
+		}
+	).add;
+	SynthDef(\percussionreverb,
+		{
+			|in,out=0|
+			var audio = In.ar(in,2);
+			Out.ar(out, GVerb.ar(audio, 100, 20, 0.9, drylevel: 1) * 0.5 );
+		}
+	).add;
 	SynthDef(\master,
 		{
-			var audio = (In.ar(b.master,2) * 3).softclip;
-			var env = Env([0, 0, LFNoise0.kr(0.1).range(0.0012
+			var audio, env;
+			audio = In.ar(b.master,2);
+			// Attempt to use Compander as a noise gate; appears to result in silence
+			//audio = Compander.ar(audio, audio,thresh: MouseX.kr(0.001, 1),slopeBelow: 10,slopeAbove:  1,clampTime:   0.01,relaxTime:   0.01);
+			audio = (audio * 1).softclip;
+			env = Env([0, 0, LFNoise0.kr(0.1).range(0.0012
 				,0.0016), 0, 0], [0, LFNoise0.kr(0.1).range(6,10), LFNoise0.kr(0.1).range(0.4,0.6), 0],'sin',3,0);
 			audio = CombC.ar(audio, 1, env.ar(Done.none, 1) + 0.02 + SinOsc.ar(0.5).range(0,0.0005), 0.1);
 			Out.ar(0, audio);
