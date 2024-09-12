@@ -1,3 +1,4 @@
+
 Jx03ScGuiControlSurface : ScGuiControlSurface {
 	var <darkgrey;
 	var <lightgrey;
@@ -101,21 +102,21 @@ Jx03ScGuiControlSurface : ScGuiControlSurface {
 		.string_("Initialise")
 		.stringColor_(Color.black)
 		.align_(\center)
-		.mouseUpAction_({super.prSynthesizer.initialisePatch()});
+		.mouseUpAction_({prSynthesizer.initialisePatch()});
 
 		StaticText(window,Rect(160,710,100,30))
 		.background_(lightgrey)
 		.string_("Randomise")
 		.stringColor_(Color.black)
 		.align_(\center)
-		.mouseUpAction_({super.prSynthesizer.randomisePatch(0)});
+		.mouseUpAction_({prSynthesizer.randomisePatch(0)});
 
 		StaticText(window,Rect(680,710,100,30))
 		.background_(lightgrey)
 		.string_("Write")
 		.stringColor_(Color.black)
 		.align_(\center)
-		.mouseUpAction_({super.prSynthesizer.writeWorkingPatch()});
+		.mouseUpAction_({prSynthesizer.writeWorkingPatch()});
 
 		StaticText(window,Rect(790,710,100,30))
 		.background_(lightgrey)
