@@ -575,7 +575,7 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 
 		this.addKnobWithLabel(container, 25, 75, Dx7Sysex.operator1OutputLevel + sysexOffset, "Output level", false);
 		this.addDropDownListWithLabel(container,125,75,"Coarse freq",Dx7Sysex.operator1CoarseFrequency + sysexOffset,
-			(0..31).collect({ |number| [ (number + 1).asString, [ number ] ] }));
+			[ [ "0.5", [0]] ] ++ (1..31).collect({ |number| [ number.asString, [ number ] ] }));
 		this.addKnobWithLabel(container, 225, 75, Dx7Sysex.operator1FineFrequency + sysexOffset, "Fine freq", false);
 		this.addKnobWithLabel(container, 325, 75, Dx7Sysex.operator1Detune + sysexOffset, "Detune", false, controlSpec0To14);
 
@@ -640,7 +640,7 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 		prPatchOverviewControlsViewOperatorViews[operatorNumber - 1] = View(prPatchOverviewView,Rect(0,0,prPatchOverviewControlsViewOperatorSize,prPatchOverviewControlsViewOperatorSize)).background_(Color.black);
 		view = prPatchOverviewControlsViewOperatorViews[operatorNumber - 1];
 		this.addKnob(view,Rect(0,0,50*scale,50*scale),Dx7Sysex.operator1OutputLevel + sysexOffset,false,this.darkgrey,this.dx7Teal,Color.black,Color.white,source:source);
-		this.addDropDownList(view,Rect(50*prPatchOverviewControlsViewOperatorScale,25*scale,50,25),Dx7Sysex.operator1CoarseFrequency + sysexOffset,(0..31).collect({ |number| [ (number + 1).asString, [ number ] ] }),source:source);
+		this.addDropDownList(view,Rect(50*prPatchOverviewControlsViewOperatorScale,25*scale,50,25),Dx7Sysex.operator1CoarseFrequency + sysexOffset,[ [ "0.5", [0]] ] ++ (1..31).collect({ |number| [ number.asString, [ number ] ] }),source:source);
 		onButton = UserView(view, Rect(50,0,25,25)).background_(Color.black).name_("onButton");
 		onButton.drawFunc = onFunc;
 		onButton.mouseUpAction_({
