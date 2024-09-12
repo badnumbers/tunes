@@ -5,10 +5,11 @@ patch.kvps[1220]=0;patch.kvps[1208]=5;patch.kvps[1218]=1;patch.kvps[1304]=81.0;p
 ~jx03.setWorkingPatch(patch);
 )
 (
+Pdef(\jx03).stop;
 Pdef(\jx03,
 	Pbind(
 		\type,\midi,
-		\midiout,d,
+		\midiout,Setup.midi,
 		\chan,~jx03.midiChannel,
 		\amp,0.8,
 		\midinote,Pseq([[50,62,78],[54,66,81],[52,64,84],[48,60,82],[50,62,78],[54,66,81],[48,60,76],[66,78,82]],inf),
@@ -17,7 +18,6 @@ Pdef(\jx03,
 	)
 ).play(TempoClock(1.7));
 )
-Pdef(\jx03).stop;
 
 (
 var patch = Jx03Patch();
@@ -61,10 +61,11 @@ patch.kvps[1304]=28;patch.kvps[1314]=224;patch.kvps[1402]=128;patch.kvps[1102]=5
 ~jx03.setWorkingPatch(patch);
 )
 (
+Pdef(\jx03).stop;
 Pdef(\jx03,
 	Pbind(
 		\type,\midi,
-		\midiout,d,
+		\midiout,Setup.midi,
 		\chan,~jx03.midiChannel,
 		\amp,0.8,
 		\midinote,Pseq([[49,61,68,75],[51,63,73,80],[49,61,68,75],[46,58,63,73]],inf),
@@ -73,7 +74,6 @@ Pdef(\jx03,
 	)
 ).play(TempoClock(1.3));
 )
-Pdef(\jx03).stop;
 
 (
 var patch = Jx03Patch();
@@ -89,11 +89,12 @@ patch.kvps[1304]=52;patch.kvps[1314]=224;patch.kvps[1402]=255.0;patch.kvps[1102]
 ~jx03.setWorkingPatch(patch);
 )
 (
+Pdef(\jx03).stop;
 Pdef(\jx03,
 	Pseq([
 		Pbind(
 			\type,\midi,
-			\midiout,d,
+			\midiout,Setup.midi,
 			\chan,~jx03.midiChannel,
 			\amp,0.8,
 			\midinote,Pseq([38]),
@@ -104,7 +105,7 @@ Pdef(\jx03,
 			Ppar([
 				Pbind(
 					\type,\midi,
-					\midiout,d,
+					\midiout,Setup.midi,
 					\chan,~jx03.midiChannel,
 					\amp,0.8,
 					\midinote,Pseq([50,42,54,38,50,40,52,43,55,38]),
@@ -113,7 +114,7 @@ Pdef(\jx03,
 				),
 				Pbind(
 					\type,\midi,
-					\midiout,d,
+					\midiout,Setup.midi,
 					\chan,~jx03.midiChannel,
 					\amp,0.6,
 					\midinote,Pseq([\,67,69,72,\,\,\,\, 70,\,\,\,\,\,\,\, \,67,69,72,\,\,\,\, 67,\,\,\,70,\,\,\]),
@@ -125,7 +126,6 @@ Pdef(\jx03,
 	])
 ).play(TempoClock(1.5));
 )
-Pdef(\jx03).stop;
 
 (
 var patch = Jx03Patch();
@@ -155,10 +155,11 @@ patch.kvps[1304]=255;patch.kvps[1314]=224;patch.kvps[1402]=128;patch.kvps[1102]=
 ~jx03.setWorkingPatch(patch);
 )
 (
+Pdef(\jx03).stop;
 Pdef(\jx03,
 	Pbind(
 		\type,\midi,
-		\midiout,d,
+		\midiout,Setup.midi,
 		\chan,~jx03.midiChannel,
 		\amp,0.8,
 		\midinote,Pseq([
@@ -172,7 +173,6 @@ Pdef(\jx03,
 	)
 ).play(TempoClock(2));
 )
-Pdef(\jx03).stop;
 
 (
 var patch = Jx03Patch();
@@ -181,11 +181,12 @@ patch.kvps[1304]=16;patch.kvps[1314]=192;patch.kvps[1402]=255;patch.kvps[1102]=1
 ~jx03.setWorkingPatch(patch);
 )
 (
+Pdef(\jx03).stop;
 Pdef(\jx03,
 	Ppar([
 		Pbind(
 			\type,\midi,
-			\midiout,d,
+			\midiout,Setup.midi,
 			\chan,~jx03.midiChannel,
 			\amp,0.7,
 			\legato, 0.9,
@@ -194,7 +195,7 @@ Pdef(\jx03,
 		),
 		Pbind(
 			\type,\midi,
-			\midiout,d,
+			\midiout,Setup.midi,
 			\chan,~jx03.midiChannel,
 			\amp,0.6,
 			\legato, 0.8,
@@ -204,7 +205,6 @@ Pdef(\jx03,
 	],inf)
 ).play(TempoClock(1.8));
 )
-Pdef(\jx03).stop;
 
 (
 var patch = Jx03Patch();
@@ -218,4 +218,40 @@ var patch = Jx03Patch();
 patch.name = "Neil 2";
 patch.kvps[1304]=108;patch.kvps[1314]=224;patch.kvps[1402]=128;patch.kvps[1102]=198;patch.kvps[1206]=1;patch.kvps[1306]=155;patch.kvps[1702]=84;patch.kvps[1204]=0;patch.kvps[1200]=3;patch.kvps[1504]=255;patch.kvps[1500]=64;patch.kvps[1210]=4;patch.kvps[1606]=13;patch.kvps[1220]=1;patch.kvps[1708]=12;patch.kvps[1700]=1;patch.kvps[1216]=1;patch.kvps[1308]=64;patch.kvps[1100]=1;patch.kvps[1600]=1;patch.kvps[1502]=56;patch.kvps[1602]=11;patch.kvps[1226]=0;patch.kvps[1706]=0;patch.kvps[1506]=183;patch.kvps[1104]=86;patch.kvps[1300]=255;patch.kvps[1222]=0;patch.kvps[1302]=165;patch.kvps[1310]=1;patch.kvps[1214]=200;patch.kvps[1218]=1;patch.kvps[1224]=40;patch.kvps[1202]=4;patch.kvps[1312]=64;patch.kvps[1604]=12;patch.kvps[1400]=1;patch.kvps[1212]=118;patch.kvps[1208]=5;
 ~jx03.setWorkingPatch(patch);
+)
+
+(
+var patch = Jx03Patch();
+patch.name = "Grumpy uncle";
+patch.kvps[1304]=24;patch.kvps[1314]=95;patch.kvps[1402]=255;patch.kvps[1102]=128;patch.kvps[1206]=0;patch.kvps[1306]=0;patch.kvps[1702]=128;patch.kvps[1204]=0;patch.kvps[1200]=3;patch.kvps[1504]=128;patch.kvps[1500]=12;patch.kvps[1210]=2;patch.kvps[1606]=0;patch.kvps[1220]=0;patch.kvps[1708]=12;patch.kvps[1700]=0;patch.kvps[1216]=3;patch.kvps[1308]=118;patch.kvps[1100]=0;patch.kvps[1600]=0;patch.kvps[1502]=94;patch.kvps[1602]=0;patch.kvps[1226]=1;patch.kvps[1706]=0;patch.kvps[1506]=128;patch.kvps[1104]=0;patch.kvps[1300]=126;patch.kvps[1222]=52;patch.kvps[1302]=0;patch.kvps[1310]=1;patch.kvps[1214]=128;patch.kvps[1218]=1;patch.kvps[1224]=0;patch.kvps[1202]=2;patch.kvps[1312]=0;patch.kvps[1604]=0;patch.kvps[1400]=1;patch.kvps[1212]=201;patch.kvps[1208]=3;
+~jx03.setWorkingPatch(patch);
+)
+(
+h = 0.5;
+Pdef(\jx03).stop;
+Pdef(\jx03,
+	Pseq([
+
+		Ppar([
+			Pbind(
+				\type,\midi,
+				\midiout,Setup.midi,
+				\chan,~jx03.midiChannel,
+				\amp,0.7,
+				\legato, 0.9,
+				\midinote,Pseq([57,54,54,\,55,57, 59,\, 61,59,57,55]),
+				\dur,Pseq([h*3,h,h*3,h*7,h,h, h*3,h*5, h*2,h*2,h*2,h*2])
+			),
+			Pbind(
+				\type,\midi,
+				\midiout,Setup.midi,
+				\chan,~jx03.midiChannel,
+				\amp,0.4,
+				\legato, 0.9,
+				\midinote,Pseq([38,50,38,50,38,50,38,50,38,50,38,50,38,50,38,50, 43,55,43,55,43,55,43,55, 45,57,43,55,41,53,40,52]),
+				\dur,Pseq(h!32)
+			)
+		])
+	],inf)
+).play(TempoClock(1.8));
 )
