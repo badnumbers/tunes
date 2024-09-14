@@ -255,3 +255,10 @@ Pdef(\jx03,
 	],inf)
 ).play(TempoClock(1.8));
 )
+
+(
+var patch = Jx03Patch();
+patch.name = "Woke up in the 80s";
+patch.kvps[1304]=22;patch.kvps[1314]=224;patch.kvps[1402]=255;patch.kvps[1102]=128;patch.kvps[1206]=0;patch.kvps[1306]=191;patch.kvps[1702]=128;patch.kvps[1204]=0;patch.kvps[1200]=3;patch.kvps[1504]=128;patch.kvps[1500]=0;patch.kvps[1210]=3;patch.kvps[1606]=10;patch.kvps[1220]=0;patch.kvps[1708]=12;patch.kvps[1700]=0;patch.kvps[1216]=0;patch.kvps[1308]=98;patch.kvps[1100]=0;patch.kvps[1600]=2;patch.kvps[1502]=128;patch.kvps[1602]=11;patch.kvps[1226]=1;patch.kvps[1706]=0;patch.kvps[1506]=128;patch.kvps[1104]=0;patch.kvps[1300]=128;patch.kvps[1222]=0;patch.kvps[1302]=0;patch.kvps[1310]=1;patch.kvps[1214]=144;patch.kvps[1218]=0;patch.kvps[1224]=0;patch.kvps[1202]=2;patch.kvps[1312]=0;patch.kvps[1604]=11;patch.kvps[1400]=1;patch.kvps[1212]=128;patch.kvps[1208]=3;
+~jx03.setWorkingPatch(patch);
+)
