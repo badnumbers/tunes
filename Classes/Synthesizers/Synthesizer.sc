@@ -181,6 +181,11 @@ Synthesizer {
 		});
 	}
 
+	programChange {
+		|programNumber|
+		midiout.program(midiChannel, programNumber);
+	}
+
 	// Writes code describing the supplied patch to the post window.
 	// Running this code will recreate the patch.
 	// Used by writeWorkingPatch() and writeSavedPatches().

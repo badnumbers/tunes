@@ -155,6 +155,12 @@ CODE::
 ~hydrasynth.nrpn(64,40,0);
 ::
 
+METHOD:: programChange
+Sends a program change message to the hardware synth in order to change the current preset. Note that this is different the patches that are maintained in this class.
+
+ARGUMENT:: programNumber
+The number (0-based) of the preset to change to.
+
 METHOD:: randomisePatch
 Replaces the STRONG::Working Patch:: with a randomly-generated one. In CODE::Synthesizer:: only a base method, intended for overriding, is provided. Unless overridden, this method simply validates its inputs.
 
