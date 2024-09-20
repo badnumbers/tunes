@@ -1,0 +1,464 @@
+TITLE:: Jp08
+summary:: Representation of the JP-08 desktop synthesizer by Roland, itself a digital replica of the Roland Jupiter 8
+categories:: External Control
+related:: Classes/Hydrasynth, Classes/Jx03, Classes/Microvolt, Classes/OhCoast, Classes/Sh01a, Classes/Tb03, Classes/Td3, Classes/UnoSynth
+
+DESCRIPTION::
+Contains information about working with a JP-08, such as its sysex parameter numbers.
+
+NOTE::
+Many thanks to the developer of https://data.dynareg.se/breadandbutter/JP08.html, from which I derived the sysex parameter numbers.
+::
+
+CLASSMETHODS::
+
+METHOD:: assignModeParameterNumber
+The sysex parameter number that is used to control the way the JP-08 assigns voices.
+TABLE::
+    ## Value || Mode
+    ## 0 || Poly
+    ## 1 || Also seems to be Poly???
+    ## 2 || Solo
+    ## 3 || Unison
+::
+
+NOTE::
+In Unison mode, if multiple notes are triggered then multiple notes are played. You only get actual unison if you play a single note.
+::
+
+RETURNS:: 0x1106.
+
+METHOD:: chorusAlgorithmParameterNumber
+The sysex parameter number that is used to control which chorus algorithm to use.
+TABLE::
+    ## Value || Algorithm
+    ## 0 || Off
+    ## 1 || Chorus 1
+    ## 2 || Chorus 2
+    ## 3 || Chorus 3
+::
+
+RETURNS:: 0x1000.
+
+METHOD:: delayFeedbackParameterNumber
+The sysex parameter number that is used to control the amount of delay feedback.
+
+The range for values for this parameter is STRONG::0 to 15::.
+
+RETURNS:: 0x1006.
+
+METHOD:: delayLevelParameterNumber
+The sysex parameter number that is used to control the delay level.
+
+The range for values for this parameter is STRONG::0 to 15::.
+
+RETURNS:: 0x1002.
+
+METHOD:: delayTimeParameterNumber
+The sysex parameter number that is used to control the delay time.
+
+The range for values for this parameter is STRONG::0 to 15::.
+
+RETURNS:: 0x1004.
+
+METHOD:: envelope1AttackParameterNumber
+The sysex parameter number that is used to control the attack time of envelope 1.
+
+The range for values for this parameter is STRONG::0 to 255::.
+
+RETURNS:: 0x0400.
+
+METHOD:: envelope1DecayParameterNumber
+The sysex parameter number that is used to control the decay time of envelope 1.
+
+The range for values for this parameter is STRONG::0 to 255::.
+
+RETURNS:: 0x0402.
+
+METHOD:: envelope1SustainParameterNumber
+The sysex parameter number that is used to control the sustain level of envelope 1.
+
+The range for values for this parameter is STRONG::0 to 255::.
+
+RETURNS:: 0x0404.
+
+METHOD:: envelope1ReleaseParameterNumber
+The sysex parameter number that is used to control the release time of envelope 1.
+
+The range for values for this parameter is STRONG::0 to 255::.
+
+RETURNS:: 0x0406.
+
+METHOD:: envelope1PolarityParameterNumber
+The sysex parameter number that is used to control the polarity of envelope 1.
+TABLE::
+## Value || Polarity
+## 0 || Inverted
+## 1 || Normal
+::
+
+RETURNS:: 0x0408.
+
+METHOD:: envelope2AttackParameterNumber
+The sysex parameter number that is used to control the attack time of envelope 2.
+
+The range for values for this parameter is STRONG::0 to 255::.
+
+RETURNS:: 0x0500.
+
+METHOD:: envelope2DecayParameterNumber
+The sysex parameter number that is used to control the decay time of envelope 2.
+
+The range for values for this parameter is STRONG::0 to 255::.
+
+RETURNS:: 0x0502.
+
+METHOD:: envelope2SustainParameterNumber
+The sysex parameter number that is used to control the sustain level of envelope 2.
+
+The range for values for this parameter is STRONG::0 to 255::.
+
+RETURNS:: 0x0504.
+
+METHOD:: envelope2ReleaseParameterNumber
+The sysex parameter number that is used to control the release time of envelope 2.
+
+The range for values for this parameter is STRONG::0 to 255::.
+
+RETURNS:: 0x0506.
+
+METHOD:: envelopeKeyfollowDestinationParameterNumber
+The sysex parameter number that is used to control which combination of envelope 1 and envelope 2 has the duration of the envelope lengthened as lower notes are played.
+TABLE::
+## Value || Destination
+## 0 || Off
+## 1 || Envelope 1
+## 2 || Envelope 2
+## 3 || Both
+::
+
+RETURNS:: 0x0508.
+
+METHOD:: hpfCutoffParameterNumber
+The sysex parameter number that is used to control the frequency of the high-pass filter.
+
+The range for values for this parameter is STRONG::0 to 255::.
+
+RETURNS:: 0x0200.
+
+METHOD:: lfoDelayTimeParameterNumber
+The sysex parameter number that is used to control the delay time of the LFO.
+
+The range for values for this parameter is STRONG::0 to 255::.
+
+RETURNS:: 0x0002.
+
+METHOD:: lfoRateParameterNumber
+The sysex parameter number that is used to control the LFO rate.
+
+The range for values for this parameter is STRONG::0 to 255::.
+
+RETURNS:: 0x0000.
+
+METHOD:: lfoWaveformParameterNumber
+The sysex parameter number that is used to control the LFO waveform.
+TABLE::
+## Value || Waveform
+## 0 || Sine
+## 1 || Triangle
+## 2 || Descending sawtooth
+## 3 || Square
+## 4 || Random
+## 5 || Noise
+::
+
+RETURNS:: 0x0004.
+
+METHOD:: pitchBendRangeParameterNumber
+The sysex parameter number that is used to control pitchbend range. Each unit means that the pitch can bend up one semitone from centre and down one semitone from centre.
+
+The range for values for this parameter is STRONG::0 to 24::.
+
+RETURNS:: 0x1108.
+
+METHOD:: portamentoSwitchParameterNumber
+The sysex parameter number that is used to control whether portamento is enabled or not.
+TABLE::
+## Value || Status
+## 0 || Off
+## 1 || On
+::
+
+RETURNS:: 0x1100.
+
+METHOD:: portamentoTimeParameterNumber
+The sysex parameter number that is used to control the portamento time between notes.
+
+The range for values for this parameter is STRONG::0 to 255::.
+
+RETURNS:: 0x1102.
+
+METHOD:: pwmModParameterNumber
+The sysex parameter number that is used to control the amount of pulse width modulation. This only applies to the pulse waveform.
+
+The range for values for this parameter is STRONG::0 to 255::.
+
+RETURNS:: 0x0106.
+
+METHOD:: pwmModSourceParameterNumber
+The sysex parameter number that is used to control the source of pulse width modulation.
+TABLE::
+## Value || Source
+## 0 || Envelope 1
+## 1 || Manual
+## 2 || LFO
+::
+
+RETURNS:: 0x0108.
+
+METHOD:: sourceMixParameterNumber
+The sysex parameter number that is used to control the mix of oscillators 1 and 2. Low values favour oscillator 1.
+
+The range for values for this parameter is STRONG::0 to 255::.
+
+RETURNS:: 0x0118.
+
+METHOD:: vcaLevelParameterNumber
+The sysex parameter number that is used to control the overall output level of the JP-08.
+
+The range for values for this parameter is STRONG::0 to 255::.
+
+RETURNS:: 0x0300.
+
+METHOD:: vcaLfoModParameterNumber
+The sysex parameter number that is used to control the modulation of output level by the LFO.
+
+The range for values for this parameter is STRONG::0 to 3::.
+
+RETURNS:: 0x0302.
+
+METHOD:: vco1CrossmodParameterNumber
+The sysex parameter number that is used to control amount of cross modulation from oscillator 2 to oscillator 1.
+
+The range for values for this parameter is STRONG::0 to 255::.
+
+RETURNS:: 0x010a.
+
+METHOD:: vco1SyncParameterNumber
+The sysex parameter number that is used to control whether oscillator 2 is synced to oscillator 1.
+TABLE::
+## Value || Status
+## 0 || Off
+## 1 || On
+::
+
+RETURNS:: 0x0110.
+
+METHOD:: vco1RangeParameterNumber
+The sysex parameter number that is used to control the frequency range of oscillator 1.
+TABLE::
+## Value || Range
+## 0 || 64'
+## 1 || 32'
+## 2 || 16'
+## 3 || 8'
+## 4 || 4'
+## 5 || 2'
+::
+
+RETURNS:: 0x010c.
+
+METHOD:: vco1WaveformParameterNumber
+The sysex parameter number that is used to control the waveform for oscillator 1.
+TABLE::
+## Value || Waveform
+## 0 || Sine
+## 1 || Triangle
+## 2 || Sawtooth
+## 3 || Pulse (with modulatable pulsewidth)
+## 4 || Square
+## 5 || Noise
+::
+
+RETURNS:: 0x010e.
+
+METHOD:: vco2RangeParameterNumber
+The sysex parameter number that is used to control frequency range of oscillator 2. The mapping of parameter values to frequency ranges does not seem straightforward The table below shows some examples:
+TABLE::
+## Value || Range
+## 0 || 64'
+## 30 || 32'
+## 90 || 16'
+## 165 || 8'
+## 225 || 4'
+## 255 || 2'
+::
+
+RETURNS:: 0x0112.
+
+METHOD:: vco2TuneParameterNumber
+The sysex parameter number that is used to control the fine tuning of oscillator 2. The minimum and maximum values seem to be somewhat less than a semitone from the centre. 128 is centred.
+
+The range for values for this parameter is STRONG::0 to 255::.
+
+RETURNS:: 0x0114.
+
+METHOD:: vco2WaveformParameterNumber
+The sysex parameter number that is used to control the waveform for oscillator 2.
+TABLE::
+## Value || Waveform
+## 0 || Sine
+## 1 || Sawtooth
+## 2 || Pulse (with modulatable pulsewidth)
+## 3 || Low frequency sine
+## 4 || Low frequency sawtooth
+## 5 || Low frequency pulse (with modulatable pulsewidth)
+::
+
+RETURNS:: 0x0116.
+
+METHOD:: vcoEnvModParameterNumber
+The sysex parameter number that is used to control how much envelope 1 controls the pitch of the configured oscillators (see LINK::#*vcoModDestinationParameterNumber::).
+
+The range for values for this parameter is STRONG::0 to 255::.
+
+RETURNS:: 0x0102.
+
+METHOD:: vcoLfoModParameterNumber
+The sysex parameter number that is used to control how the LFO controls the pitch of the configured oscillators (see LINK::#*vcoModDestinationParameterNumber::).
+
+The range for values for this parameter is STRONG::0 to 255::.
+
+RETURNS:: 0x0100.
+
+METHOD:: vcoModDestinationParameterNumber
+The sysex parameter number that is used to control which oscillators are pitch modulated.
+TABLE::
+## Value || Destination
+## 0 || Oscillator 2
+## 1 || Both oscillators
+## 2 || Oscillator 1
+::
+
+RETURNS:: 0x0104.
+
+METHOD:: vcfEnvmodParameterNumber
+The sysex parameter number that is used to control how much the envelope specified by LINK::#*vcfEnvModSourceParameterNumber:: modulates the filter cutoff.
+
+The range for values for this parameter is STRONG::0 to 255::.
+
+RETURNS:: 0x0208.
+
+METHOD:: vcfEnvModSourceParameterNumber
+The sysex parameter number that is used to control which of the two envelopes modulates the filter cutoff.
+TABLE::
+## Value || Source
+## 0 || Envelope 2
+## 1 || Envelope 1
+::
+
+RETURNS:: 0x020a.
+
+METHOD:: vcfCutoffParameterNumber
+The sysex parameter number that is used to control the filter cutoff.
+
+The range for values for this parameter is STRONG::0 to 255::.
+
+RETURNS:: 0x0202.
+
+METHOD:: vcfKeyfollowParameterNumber
+The sysex parameter number that is used to control the extent to which the filter cutoff tracks the note number on the keyboard. A value of 0 may mean higher notes are inaudible, whereas a value of 255 may mean that lower notes are inaudible (i.e. key follow is more than 100%). To my ears, the tone colour is consistent across the keyboard at around 160.
+
+The range for values for this parameter is STRONG::0 to 255::.
+
+RETURNS:: 0x020e.
+
+METHOD:: vcfLfoModParameterNumber
+The sysex parameter number that is used to control how much the LFO modulates the filter cutoff.
+
+The range for values for this parameter is STRONG::0 to 255::.
+
+RETURNS:: 0x020c.
+
+METHOD:: vcfResonanceParameterNumber
+The sysex parameter number that is used to control the filter resonance.
+
+The range for values for this parameter is STRONG::0 to 255::.
+
+RETURNS:: 0x0204.
+
+METHOD:: vcfSlopeParameterNumber
+The sysex parameter number that is used to control the filter slope.
+TABLE::
+## Value || Slope
+## 0 || 24 dB/octave
+## 1 || 12 db/octave
+::
+
+RETURNS:: 0x0206.
+
+INSTANCEMETHODS::
+
+EXAMPLES::
+
+CODE::
+(
+~jp08 = ~jp08 ?? Jp08();
+~jp08.programChange(1);
+
+Pdef(\jp08).stop;
+Pdef(\jp08,
+    Ppar([
+        Pbind(
+            \type, \midi,
+            \midiout, ~jp08.midiout,
+            \chan, ~jp08.midiChannel,
+            \octave, 3,
+			\midinote, Pseq([48,56,48,56,48,62,61,59],4),
+			\dur, Pseq([1,1.5,1,1.5,1,0.5,0.5,1],4),
+			\amp, 1
+        ),
+        Pbind(
+            \type, \rest,
+            \midiout,  ~jp08.midiout,
+            \chan, ~jp08.midiChannel,
+			\change, Pseq([
+				Pfuncn({
+					postln("Play the preset unchanged...");
+				}),
+				Pfuncn({
+					postln("Remove the PWM and crank up the resonance...");
+					// Should probably use modifyWorkingPatch when the Patch stuff is implemented...
+					~jp08.updateParameterInHardwareSynth(Jp08.pwmModParameterNumber,0);
+					~jp08.updateParameterInHardwareSynth(Jp08.vcfResonanceParameterNumber,225);
+				}),
+				Pfuncn({
+					postln("Now let's get silly...");
+					~jp08.updateParameterInHardwareSynth(Jp08.sourceMixParameterNumber,255);
+					~jp08.updateParameterInHardwareSynth(Jp08.vco2RangeParameterNumber,147);
+					~jp08.updateParameterInHardwareSynth(Jp08.vcoEnvModParameterNumber,80);
+					~jp08.updateParameterInHardwareSynth(Jp08.vco2WaveformParameterNumber,1);
+				}),
+				Pfuncn({
+					postln("Bip bip...");
+					~jp08.updateParameterInHardwareSynth(Jp08.sourceMixParameterNumber,128);
+					~jp08.updateParameterInHardwareSynth(Jp08.vco1WaveformParameterNumber,0);
+					~jp08.updateParameterInHardwareSynth(Jp08.vco2WaveformParameterNumber,0);
+					~jp08.updateParameterInHardwareSynth(Jp08.vco1RangeParameterNumber,4);
+					~jp08.updateParameterInHardwareSynth(Jp08.vco2RangeParameterNumber,225);
+					~jp08.updateParameterInHardwareSynth(Jp08.vco2TuneParameterNumber,130);
+					~jp08.updateParameterInHardwareSynth(Jp08.vcoEnvModParameterNumber,0);
+					~jp08.updateParameterInHardwareSynth(Jp08.envelope2DecayParameterNumber,100);
+					~jp08.updateParameterInHardwareSynth(Jp08.envelope2SustainParameterNumber,0);
+					~jp08.updateParameterInHardwareSynth(Jp08.delayFeedbackParameterNumber,12);
+					~jp08.updateParameterInHardwareSynth(Jp08.delayLevelParameterNumber,12);
+					~jp08.updateParameterInHardwareSynth(Jp08.delayTimeParameterNumber,10);
+				})
+			]),
+			\dur, 8
+        )
+    ])
+);
+Pdef(\jp08).play(TempoClock(2));
+)
+::
