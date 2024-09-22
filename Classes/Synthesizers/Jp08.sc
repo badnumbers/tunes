@@ -26,16 +26,6 @@ Jp08 : Synthesizer {
 	classvar <sourceMixParameterNumber = 0x0118;
 	classvar <vcaLevelParameterNumber = 0x0300;
 	classvar <vcaLfoModParameterNumber = 0x0302;
-	classvar <vco1CrossmodParameterNumber = 0x010a;
-	classvar <vco1SyncParameterNumber = 0x0110;
-	classvar <vco1RangeParameterNumber = 0x010c;
-	classvar <vco1WaveformParameterNumber = 0x010e;
-	classvar <vco2RangeParameterNumber = 0x0112;
-	classvar <vco2TuneParameterNumber = 0x0114;
-	classvar <vco2WaveformParameterNumber = 0x0116;
-	classvar <vcoEnvModParameterNumber = 0x0102;
-	classvar <vcoLfoModParameterNumber = 0x0100;
-	classvar <vcoModDestinationParameterNumber = 0x0104;
 	classvar <vcfEnvmodParameterNumber = 0x0208;
 	classvar <vcfEnvModSourceParameterNumber = 0x020a;
 	classvar <vcfCutoffParameterNumber = 0x0202;
@@ -43,9 +33,19 @@ Jp08 : Synthesizer {
 	classvar <vcfLfoModParameterNumber = 0x020c;
 	classvar <vcfResonanceParameterNumber = 0x0204;
 	classvar <vcfSlopeParameterNumber = 0x0206;
+	classvar <vco1CrossmodParameterNumber = 0x010a;
+	classvar <vco1RangeParameterNumber = 0x010c;
+	classvar <vco1WaveformParameterNumber = 0x010e;
+	classvar <vco2RangeParameterNumber = 0x0112;
+	classvar <vco2SyncParameterNumber = 0x0110;
+	classvar <vco2TuneParameterNumber = 0x0114;
+	classvar <vco2WaveformParameterNumber = 0x0116;
+	classvar <vcoEnvModParameterNumber = 0x0102;
+	classvar <vcoLfoModParameterNumber = 0x0100;
+	classvar <vcoModDestinationParameterNumber = 0x0104;
 
 	init {
-		super.init(Jx03Patch,Jx03ScGuiControlSurface,\sysex,"~jx03");
+		super.init(Jp08Patch,Jx03ScGuiControlSurface,\sysex,"~jx03");
 	}
 
 	updateParameterInHardwareSynth {
