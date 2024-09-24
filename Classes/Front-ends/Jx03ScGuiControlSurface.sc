@@ -44,15 +44,6 @@ Jx03ScGuiControlSurface : ScGuiControlSurface {
 		super.addSectionLabel(parent,rect,text,Color.white,this.orange);
 	}
 
-	addToggleButtonWithLabel {
-		|parent,left,top,parameterNumber,labelText|
-		var container = View(parent, Rect(left, top, 200, 230)).background_(Color.black);
-		this.addControlLabel(container, Rect(0,0,200,25), labelText, \center, Color.white);
-		this.addToggleButton(container,Rect(0,25,100,100),parameterNumber,[
-			[False, [0] ], [True, [1] ]
-		],Color(1,0,0),Color(0,1,0),Color(0,0,1),Color(0.5,0.5,0),Color(1,0,0));
-	}
-
 	init {
 		|synthesizer|
 		var tabset;

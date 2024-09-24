@@ -59,7 +59,6 @@ Jp08 : Synthesizer {
 		hi = (newvalue/16).asInteger;
 		lo = newvalue%16;
 		checksum = 125-address1-address2-hi-lo;
-		postln([240, 65, 16, 0, 0, 0, 28, 18, 3, 0, address1, address2, hi, lo, checksum, 247]);
 		midiout.sysex(Int8Array[240, 65, 16, 0, 0, 0, 28, 18, 3, 0, address1, address2, hi, lo, checksum, 247]);
 	}
 }

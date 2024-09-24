@@ -1,42 +1,23 @@
-
 Jp08ScGuiControlSurface : ScGuiControlSurface {
 	var <darkgrey;
 	var <lightgrey;
 	var <orange;
 	var knobcolors;
+	var prEnvelope1KeyfollowToggleButton;
+	var prEnvelope2KeyfollowToggleButton;
 
 	addDropDownListWithLabel {
-		|parent,left,top,labelText,parameterNumber,midiMappings|
+		|parent,left,top,parameterNumber,labelText,midiMappings|
 		var container = View(parent, Rect(left, top, 200, 50)).background_(Color.black);
 		this.addControlLabel(container, Rect(0,0,200,25), labelText, \center, Color.white);
 		this.addDropDownList(container, Rect(0,25,200,25),parameterNumber,midiMappings);
 	}
 
-	addFreqModToggleButtons {
-		|parent,left,top,lfoModParameterNumber,envModParameterNumber|
-		var container = View(parent, Rect(left, top, 200, 125)).background_(Color.black);
-		this.addControlLabel(container, Rect(0,0,200,25), "Freq Mod", \center, Color.white);
-		this.addControlLabel(container, Rect(0,25,100,25), "LFO", \center, Color.white);
-		this.addControlLabel(container, Rect(100,25,100,25), "ENV", \center, Color.white);
-		this.addToggleButton(container,Rect(15,50,70,70),lfoModParameterNumber,[
-			[False, [0] ], [True, [1] ]
-		],Color.white,this.darkgrey,Color.white,Color.black,this.darkgrey);
-		this.addToggleButton(container,Rect(115,50,70,70),envModParameterNumber,[
-			[False, [0] ], [True, [1] ]
-		],Color.white,this.darkgrey,Color.white,Color.black,this.darkgrey);
-	}
-
-	addKnobPair {
-		|parent,left,top,parameterNumber1,labelText1,centred1,parameterNumber2,labelText2,centred2,controlSpec|
-		var container = View(parent, Rect(left, top, 200, 100)).background_(Color.black);
-		if (parameterNumber1.isNil == false, {
-			this.addControlLabel(container, Rect(0,0,100,25), labelText1, \center, Color.white);
-			this.addKnob(container,Rect(10,25,80,80),parameterNumber1,centred1,this.darkgrey,this.orange,Color.black,Color.white,controlSpec);
-		});
-		if (parameterNumber2.isNil == false, {
-			this.addControlLabel(container, Rect(100,0,100,25), labelText2, \center, Color.white);
-			this.addKnob(container,Rect(110,25,80,80),parameterNumber2,centred2,this.darkgrey,this.orange,Color.black,Color.white,controlSpec);
-		});
+	addKnobWithLabel {
+		|parent,left,top,parameterNumber,labelText,centred,controlSpec|
+		var container = View(parent, Rect(left, top, 100, 100)).background_(Color.black);
+		this.addControlLabel(container, Rect(0,0,100,25), labelText, \center, Color.white);
+		this.addKnob(container,Rect(10,25,80,80),parameterNumber,centred,this.darkgrey,this.orange,Color.black,Color.white,controlSpec);
 	}
 
 	addSectionLabel {
@@ -44,22 +25,62 @@ Jp08ScGuiControlSurface : ScGuiControlSurface {
 		super.addSectionLabel(parent,rect,text,Color.white,this.orange);
 	}
 
+	addSliderWithLabel {
+		|parent,left,top,parameterNumber,labelText,controlSpec|
+		var container = View(parent, Rect(left, top, 100, 325)).background_(Color.black);
+		this.addControlLabel(container, Rect(0,0,100,25), labelText, \center, Color.white);
+		this.addSlider(container, Rect(35,25,30,300),parameterNumber,controlSpec:controlSpec);
+	}
+
+	addEnvelopeKeyfollowToggleButton {
+		|parent,rect|
+		var button;
+		button = ScGuiToggleButton(parent,rect,
+			backgroundColour:Color.white,
+			borderColour:this.darkgrey,
+			clickColour:Color.white,
+			offColour:Color.black,
+			onColour:orange,
+			externalMargin:10,
+			borderWidth:5)
+		.mouseUpAction_({
+			var paramvalue = 0;
+			postln("In the mouseUpAction for a keyfollow toggle button.");
+			if (prEnvelope1KeyfollowToggleButton.value == true, { paramvalue = 1 });
+			if (prEnvelope2KeyfollowToggleButton.value == true, { paramvalue = paramvalue + 2; });
+			postln(format("About to update the envelope keyfollow parameter. The button for envelope 1 has the value % and the button for envelope 2 has the value %. Sending parameter value %.", prEnvelope1KeyfollowToggleButton.value, prEnvelope2KeyfollowToggleButton.value, paramvalue));
+			prSynthesizer.modifyWorkingPatch(Jp08.envelopeKeyfollowDestinationParameterNumber,paramvalue,this.class.name);
+		});
+		prSynthesizer.addUpdateAction(this.class.name, Jp08.envelopeKeyfollowDestinationParameterNumber, {
+			|newvalue|
+			postln(format("prEnvelope1KeyfollowToggleButton.value: %", prEnvelope1KeyfollowToggleButton.value));
+			postln(format("prEnvelope2KeyfollowToggleButton.value: %", prEnvelope2KeyfollowToggleButton.value));
+			switch (newvalue,
+				0, { prEnvelope1KeyfollowToggleButton.value = false; prEnvelope2KeyfollowToggleButton.value = false; },
+				1, { prEnvelope1KeyfollowToggleButton.value = true; prEnvelope2KeyfollowToggleButton.value = false; },
+				2, { prEnvelope1KeyfollowToggleButton.value = false; prEnvelope2KeyfollowToggleButton.value = true; },
+				3, { prEnvelope1KeyfollowToggleButton.value = true; prEnvelope2KeyfollowToggleButton.value = true; },
+			);
+		});
+		^button;
+	}
+
 	addToggleButtonWithLabel {
 		|parent,left,top,parameterNumber,labelText|
 		var container = View(parent, Rect(left, top, 200, 230)).background_(Color.black);
 		this.addControlLabel(container, Rect(0,0,200,25), labelText, \center, Color.white);
 		this.addToggleButton(container,Rect(0,25,100,100),parameterNumber,[
-			[False, [0] ], [True, [1] ]
-		],Color(1,0,0),Color(0,1,0),Color(0,0,1),Color(0.5,0.5,0),Color(1,0,0));
+			[false, [0] ], [true, [1] ]
+		],Color.white,darkgrey,Color.white,Color.black,orange);
 	}
 
 	init {
 		|synthesizer|
 		var tabset;
-		var oscillatorstab, vcfTab, modTab, effectsTab;
+		var oscillatorsTab, filterTab, modulationTab, effectsTab, otherTab;
 		darkgrey = Color(0.8,0.8,0.8);
 		lightgrey = Color(0.5,0.5,0.5);
-		orange = Color(0.8,0.2,0.14);
+		orange = Color.fromHexString("f76929");
 		knobcolors = [
 			Color.black,
 			darkgrey,
@@ -70,7 +91,7 @@ Jp08ScGuiControlSurface : ScGuiControlSurface {
 		name = "JP-08";
 		background = Color.black;
 		windowheight = 750;
-		windowwidth = 940;
+		windowwidth = 1800;
 		super.init(synthesizer);
 
 		tabset = ScGuiTabSet(
@@ -79,23 +100,26 @@ Jp08ScGuiControlSurface : ScGuiControlSurface {
 			backgroundcolour: darkgrey,
 			left: 50,
 			top: 50,
-			width: 840,
+			width: 1750,
 			buttonheight: 50,
 			bodyheight: 600,
 			borderwidth: 5,
 			bordercolour: darkgrey);
 
-		oscillatorstab = tabset.addTab("OSCILLATORS");
-		this.initOscillatorsTab(oscillatorstab);
+		oscillatorsTab = tabset.addTab("OSCILLATORS");
+		this.initOscillatorsTab(oscillatorsTab);
 
-		vcfTab = tabset.addTab("VCF / VCA");
-		this.initVcfTab(vcfTab);
+		filterTab = tabset.addTab("FILTER");
+		this.initFilterTab(filterTab);
 
-		modTab = tabset.addTab("MODULATION");
-		this.initModTab(modTab);
+		modulationTab = tabset.addTab("MODULATION");
+		this.initModulationTab(modulationTab);
 
 		effectsTab = tabset.addTab("EFFECTS");
 		this.initEffectsTab(effectsTab);
+
+		otherTab = tabset.addTab("OTHER");
+		this.initOtherTab(otherTab);
 
 		StaticText(window,Rect(50,710,100,30))
 		.background_(lightgrey)
@@ -103,13 +127,6 @@ Jp08ScGuiControlSurface : ScGuiControlSurface {
 		.stringColor_(Color.black)
 		.align_(\center)
 		.mouseUpAction_({prSynthesizer.initialisePatch()});
-
-		StaticText(window,Rect(160,710,100,30))
-		.background_(lightgrey)
-		.string_("Randomise")
-		.stringColor_(Color.black)
-		.align_(\center)
-		.mouseUpAction_({prSynthesizer.randomisePatch(0)});
 
 		StaticText(window,Rect(680,710,100,30))
 		.background_(lightgrey)
@@ -126,115 +143,127 @@ Jp08ScGuiControlSurface : ScGuiControlSurface {
 		.mouseUpAction_({this.openStethoscope()});
 	}
 
-	initOscillatorsTab {
-		|tab|
-		var container = View(tab.body,Rect(0,0,tab.body.bounds.width,tab.body.bounds.height));
-
-		this.addSectionLabel(container,Rect(0,25,300,50),"DCO-1");
-		this.addDropDownListWithLabel(container,50,100,"Range",Jx03Sysex.dco1Range,[
-			[ "64", [0] ], [ "32", [1] ], [ "16", [2] ], [ "8", [3] ], [ "4", [4] ], [ "2", [5] ]
-		]);
-		this.addDropDownListWithLabel(container,50,175,"Waveform",Jx03Sysex.dco1Waveform,[
-			[ "Sine", [0] ], [ "Triangle", [1] ], [ "Sawtooth", [2] ], [ "Pulsewidth", [3] ], [ "Square", [4] ], [ "Pink noise", [5] ]
-		]);
-		this.addFreqModToggleButtons(container,50,250,Jx03Sysex.dco1FreqModLfoSwitch,Jx03Sysex.dco1FreqModEnvSwitch);
-
-		View(container, Rect(288, 100, 1, 475)).background_(Color.white);
-
-		this.addSectionLabel(container,Rect(275,25,300,50),"DCO-2");
-		this.addDropDownListWithLabel(container,325,100,"Range",Jx03Sysex.dco2Range,[
-			[ "64", [0] ], [ "32", [1] ], [ "16", [2] ], [ "8", [3] ], [ "4", [4] ], [ "2", [5] ]
-		]);
-		this.addDropDownListWithLabel(container,325,175,"Waveform",Jx03Sysex.dco2Waveform,[
-			[ "Sine", [0] ], [ "Triangle", [1] ], [ "Sawtooth", [2] ], [ "Pulsewidth", [3] ], [ "Square", [4] ], [ "Pink noise", [5] ]
-		]);
-		this.addFreqModToggleButtons(container,325,250,Jx03Sysex.dco2FreqModLfoSwitch,Jx03Sysex.dco2FreqModEnvSwitch);
-		this.addDropDownListWithLabel(container,325,400,"Cross Mod",Jx03Sysex.dco2CrossMod,[
-			[ "Off", [0] ], [ "Syn 1", [1] ], [ "Syn 2", [2] ], [ "Met 1", [3] ], [ "Met 2", [4] ], [ "Ring modulation", [5] ]
-		]);
-		this.addKnobPair(container,325,475,Jx03Sysex.dco2Tune,"Tune",true,Jx03Sysex.dco2FineTune,"Fine Tune",true);
-
-		View(container, Rect(562, 100, 1, 475)).background_(Color.white);
-
-		this.addSectionLabel(container,Rect(550,25,300,50),"MOD");
-		this.addKnobPair(container,600,100,Jx03Sysex.dcoFreqLfoMod,"LFO Mod",false,Jx03Sysex.dcoFreqEnvMod,"Env Mod",false);
-		this.addDropDownListWithLabel(container,600,225,"Env Polarity",Jx03Sysex.dcoFreqEnvPolarity,[
-			[ "Inverted", [0] ], [ "Normal", [1] ]
-		]);
-	}
-
-	initVcfTab {
-		|tab|
-		var container = View(tab.body,Rect(0,0,tab.body.bounds.width,tab.body.bounds.height));
-
-		this.addSectionLabel(container,Rect(0,25,700,50),"");
-
-		this.addSectionLabel(container,Rect(100,25,300,50),"VCF");
-		this.addKnobPair(container,100,100,Jx03Sysex.vcfSourceMix,"Source Mix",true,Jx03Sysex.vcfHpf,"HPF",false);
-		this.addKnobPair(container,100,225,Jx03Sysex.vcfCutoffFreq,"Cutoff Freq",false,Jx03Sysex.vcfResonance,"Resonance",false);
-		this.addKnobPair(container,100,350,Jx03Sysex.vcfLfoMod,"LFO Mod",false,Jx03Sysex.vcfPitchFollow,"Pitch Follow",false);
-
-		this.addKnobPair(container,325,100,Jx03Sysex.vcfEnvMod,"Env Mod",false,nil,nil,nil);
-		this.addDropDownListWithLabel(container,325,225,"Env Polarity",Jx03Sysex.vcfEnvPolarity,[
-			[ "Inverted", [0] ], [ "Normal", [1] ]
-		]);
-
-		View(container, Rect(562, 100, 1, 475)).background_(Color.white);
-
-		this.addSectionLabel(container,Rect(550,25,300,50),"VCA");
-		this.addKnobPair(container,600,100,Jx03Sysex.vcaLevel,"Level",false,nil,nil,nil);
-		this.addDropDownListWithLabel(container,600,225,"VCA Mode",Jx03Sysex.vcaEnvSwitch,[
-			[ "Gate", [0] ], [ "Envelope", [1] ]
-		]);
-		this.addDropDownListWithLabel(container,600,300,"Assign Mode",Jx03Sysex.assignMode,[
-			[ "Poly", [0] ], [ "Solo", [2] ], [ "Unison", [3] ]
-		]);
-	}
-
-	initModTab {
-		|tab|
-		var container = View(tab.body,Rect(0,0,tab.body.bounds.width,tab.body.bounds.height));
-
-		this.addSectionLabel(container,Rect(0,25,700,50),"");
-
-		this.addSectionLabel(container,Rect(0,25,300,50),"LFO");
-		this.addKnobPair(container,50,100,Jx03Sysex.lfoDelayTime,"Delay Time",false,Jx03Sysex.lfoRate,"Rate",false);
-		this.addDropDownListWithLabel(container,50,225,"Waveform",Jx03Sysex.lfoWaveform,[
-			[ "Sine", [0] ], [ "Ascending Ramp", [1] ], [ "Descending Ramp", [2] ], [ "Square", [3] ], [ "Random", [4] ], [ "Noise", [5] ]
-		]);
-
-		View(container, Rect(288, 100, 1, 475)).background_(Color.white);
-
-		View(container, Rect(562, 100, 1, 475)).background_(Color.white);
-
-		this.addSectionLabel(container,Rect(550,25,300,50),"ENV");
-		this.addKnobPair(container,600,100,Jx03Sysex.envelopeAttack,"Attack",false,Jx03Sysex.envelopeDecay,"Decay",false);
-		this.addKnobPair(container,600,225,Jx03Sysex.envelopeSustain,"Sustain",false,Jx03Sysex.envelopeRelease,"Release",false);
-	}
-
 	initEffectsTab {
 		|tab|
 		var container = View(tab.body,Rect(0,0,tab.body.bounds.width,tab.body.bounds.height));
 		var delayControlSpec = ControlSpec(0,15,\lin,1/15);
 
 		this.addSectionLabel(container,Rect(0,25,300,50),"DELAY");
-		this.addKnobPair(container,50,100,Jx03Sysex.delayTime,"Time",false,Jx03Sysex.delayLevel,"Level",false,delayControlSpec);
-		this.addKnobPair(container,50,225,Jx03Sysex.delayFeedback,"Feedback",false,nil,nil,nil,delayControlSpec);
+		this.addSliderWithLabel(container, 50, 100, Jp08.delayTimeParameterNumber, "TIME", delayControlSpec);
+		this.addSliderWithLabel(container, 150, 100, Jp08.delayLevelParameterNumber, "LEVEL", delayControlSpec);
+		this.addSliderWithLabel(container, 250, 100, Jp08.delayFeedbackParameterNumber, "FEEDBACK", delayControlSpec);
 
-		View(container, Rect(288, 100, 1, 475)).background_(Color.white);
+		View(container, Rect(388, 100, 1, 475)).background_(Color.white);
 
-		this.addSectionLabel(container,Rect(275,25,300,50),"CHORUS");
-		this.addDropDownListWithLabel(container,325,100,"Algorithm",Jx03Sysex.chorusAlgorithm,[
+		this.addSectionLabel(container,Rect(375,25,300,50),"CHORUS");
+		this.addDropDownListWithLabel(container,425,100,Jp08.chorusAlgorithmParameterNumber,"ALGORITHM",[
 			[ "Off", [0] ], [ "One", [1] ], [ "Two", [2] ], [ "Three", [3] ]
 		]);
+	}
 
-		View(container, Rect(562, 100, 1, 475)).background_(Color.white);
+	initFilterTab {
+		|tab|
+		var container = View(tab.body,Rect(0,0,tab.body.bounds.width,tab.body.bounds.height));
 
-		this.addSectionLabel(container,Rect(550,25,300,50),"PORTAMENTO");
-		this.addDropDownListWithLabel(container,600,100,"Switch",Jx03Sysex.portamentoSwitch,[
+		this.addSectionLabel(container,Rect(0,25,300,50),"HPF");
+		this.addSliderWithLabel(container, 50, 100, Jp08.hpfCutoffParameterNumber, "CUTOFF FREQ");
+
+		this.addSectionLabel(container,Rect(175,25,700,50),"VCF");
+		this.addSliderWithLabel(container, 200, 100, Jp08.vcfCutoffParameterNumber, "CUTOFF FREQ");
+		this.addSliderWithLabel(container, 300, 100, Jp08.vcfResonanceParameterNumber, "RESONANCE");
+		this.addDropDownListWithLabel(container,400,100,Jp08.vcfSlopeParameterNumber,"SLOPE",[
+			[ "-12db/OCT", [1] ], [ "-24db/OCT", [0] ]
+		]);
+		this.addSliderWithLabel(container, 500, 100, Jp08.vcfEnvmodParameterNumber, "ENV MOD");
+		this.addDropDownListWithLabel(container,600,100,Jp08.vcfEnvModSourceParameterNumber,"SOURCE",[
+			[ "Envelope 1", [1] ], [ "Envelope 2", [0] ]
+		]);
+		this.addSliderWithLabel(container, 700, 100, Jp08.vcfLfoModParameterNumber, "LFO MOD");
+		this.addSliderWithLabel(container, 800, 100, Jp08.vcfKeyfollowParameterNumber, "KEY FOLLOW");
+	}
+
+	initModulationTab {
+		|tab|
+		var container = View(tab.body,Rect(0,0,tab.body.bounds.width,tab.body.bounds.height));
+
+		this.addSectionLabel(container,Rect(0,25,300,50),"LFO");
+		this.addSliderWithLabel(container, 50, 100, Jp08.lfoRateParameterNumber, "RATE");
+		this.addSliderWithLabel(container, 150, 100, Jp08.lfoDelayTimeParameterNumber, "DELAY TIME");
+		this.addDropDownListWithLabel(container,250,100,Jp08.lfoWaveformParameterNumber,"WAVEFORM",[
+			[ "Sine", [0] ], [ "Triangle", [1] ], [ "Descending sawtooth", [2] ], [ "Square", [3] ], [ "Random", [4] ], [ "Noise", [5] ]
+		]);
+
+		this.addSectionLabel(container,Rect(300,25,300,50),"ENVELOPE 1");
+		this.addSliderWithLabel(container, 350, 100, Jp08.envelope1AttackParameterNumber, "ATTACK");
+		this.addSliderWithLabel(container, 450, 100, Jp08.envelope1DecayParameterNumber, "DECAY");
+		this.addSliderWithLabel(container, 550, 100, Jp08.envelope1SustainParameterNumber, "SUSTAIN");
+		this.addSliderWithLabel(container, 650, 100, Jp08.envelope1ReleaseParameterNumber, "RELEASE");
+		prEnvelope1KeyfollowToggleButton = this.addEnvelopeKeyfollowToggleButton(container, Rect(465,100,70,70));
+
+		this.addSectionLabel(container,Rect(800,25,300,50),"ENVELOPE 2");
+		this.addSliderWithLabel(container, 850, 100, Jp08.envelope2AttackParameterNumber, "ATTACK");
+		this.addSliderWithLabel(container, 950, 100, Jp08.envelope2DecayParameterNumber, "DECAY");
+		this.addSliderWithLabel(container, 1050, 100, Jp08.envelope2SustainParameterNumber, "SUSTAIN");
+		this.addSliderWithLabel(container, 1150, 100, Jp08.envelope2ReleaseParameterNumber, "RELEASE");
+		prEnvelope2KeyfollowToggleButton = this.addEnvelopeKeyfollowToggleButton(container, Rect(965,100,70,70));
+	}
+
+	initOscillatorsTab {
+		|tab|
+		var container = View(tab.body,Rect(0,0,tab.body.bounds.width,tab.body.bounds.height));
+
+		this.addSectionLabel(container,Rect(0,25,300,50),"VCO-1");
+		this.addSliderWithLabel(container, 50, 100, Jp08.vco1CrossmodParameterNumber, "CROSS MOD");
+		this.addDropDownListWithLabel(container, 150, 100, Jp08.vco1RangeParameterNumber, "RANGE",[
+			[ "64'", [0] ], [ "32'", [1] ], [ "16'", [2] ], [ "8'", [3] ], [ "4'", [4] ], [ "2'", [5] ]
+		]);
+		this.addDropDownListWithLabel(container, 150, 200, Jp08.vco1WaveformParameterNumber, "WAVEFORM",[
+			[ "Sine", [0] ], [ "Triangle", [1] ], [ "Sawtooth", [2] ], [ "Pulse", [3] ], [ "Square", [4] ], [ "Noise", [5] ]
+		]);
+
+		this.addSectionLabel(container,Rect(325,25,300,50),"VCO-2");
+		this.addToggleButtonWithLabel(container, 350, 100, Jp08.vco2SyncParameterNumber, "SYNC");
+		this.addKnobWithLabel(container, 450, 100, Jp08.vco2RangeParameterNumber, "RANGE");
+		this.addKnobWithLabel(container, 550, 100, Jp08.vco2TuneParameterNumber, "TUNE", centred: true);
+		this.addDropDownListWithLabel(container, 650, 200, Jp08.vco2WaveformParameterNumber, "WAVEFORM",[
+			[ "Sine", [0] ], [ "Sawtooth", [1] ], [ "Pulse", [2] ], [ "Low frequency sine", [3] ], [ "Low frequency sawtooth", [4] ], [ "Low frequency pulse", [5] ]
+		]);
+
+		this.addSectionLabel(container,Rect(725,25,300,50),"VCO=1 / VCO-2");
+		this.addKnobWithLabel(container, 750, 100, Jp08.sourceMixParameterNumber, "SOURCE MIX");
+
+		this.addSectionLabel(container,Rect(875,25,300,50),"VCO MODULATOR");
+		this.addSliderWithLabel(container, 900, 100, Jp08.vcoLfoModParameterNumber, "LFO MOD");
+		this.addSliderWithLabel(container, 1000, 100, Jp08.vcoEnvModParameterNumber, "ENV MOD");
+		this.addDropDownListWithLabel(container, 1100, 200, Jp08.vcoModDestinationParameterNumber, "DESTINATION",[
+			[ "Oscillator 1", [2] ], [ "Oscillator 2", [0] ], [ "Both", [1] ]
+		]);
+		this.addSliderWithLabel(container, 1200, 100, Jp08.pwmModParameterNumber, "PWM");
+		this.addDropDownListWithLabel(container, 1300, 200, Jp08.pwmModSourceParameterNumber, "SOURCE",[
+			[ "LFO", [2] ], [ "Manual", [1] ], [ "Envelope 1", [0] ]
+		]);
+	}
+
+	initOtherTab {
+		|tab|
+		var container = View(tab.body,Rect(0,0,tab.body.bounds.width,tab.body.bounds.height));
+
+		this.addSectionLabel(container,Rect(0,25,300,50),"VCA");
+		this.addSliderWithLabel(container, 50, 100, Jp08.vcaLevelParameterNumber, "LEVEL");
+		this.addDropDownListWithLabel(container, 150, 100, Jp08.vco1RangeParameterNumber, "LFO MOD",[
+			[ "0", [0] ], [ "1", [1] ], [ "2", [2] ], [ "3", [3] ]
+		]);
+
+		this.addSectionLabel(container,Rect(0,175,300,50),"ASSIGN");
+		this.addDropDownListWithLabel(container, 200, 200, Jp08.assignModeParameterNumber, "ASSIGN MODE",[
+			[ "Poly 1", [0] ], [ "Poly 2", [1] ], [ "Solo", [2] ], [ "Unison", [3] ]
+		]);
+
+		this.addSectionLabel(container,Rect(650,25,300,50),"PORTAMENTO");
+		this.addDropDownListWithLabel(container,700,100,Jp08.portamentoSwitchParameterNumber,"SWITCH",[
 			[ "Off", [0] ], [ "On", [1] ]
 		]);
-		this.addKnobPair(container,600,175,Jx03Sysex.portamentoTime,"Time",false,nil,nil,nil);
+		this.addSliderWithLabel(container, 800, 100, Jp08.portamentoTimeParameterNumber, "TIME");
 	}
 
 	setDefaultControlSpec {

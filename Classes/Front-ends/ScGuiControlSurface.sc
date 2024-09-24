@@ -94,19 +94,25 @@ ScGuiControlSurface {
 	}
 
 	addSlider {
-		|parent,rect,parameterNumber,orientation=\vertical|
-		var slider = Slider(parent,rect)
+		|parent,rect,parameterNumber,orientation=\vertical,controlSpec|
+		var effectiveControlSpec, slider;
+		if (controlSpec.isNil,{
+			effectiveControlSpec = defaultControlSpec;
+		},{
+			effectiveControlSpec = controlSpec;
+		});
+		slider = Slider(parent,rect)
 		.orientation_(orientation)
 		.knobColor_(Color.red)
 		.thumbSize_(25)
 		.step_(1/127)
 		.action_({
 			|slider|
-			prSynthesizer.modifyWorkingPatch(parameterNumber,defaultControlSpec.map(slider.value).round.asInteger,this.class.name);
+			prSynthesizer.modifyWorkingPatch(parameterNumber,effectiveControlSpec.map(slider.value).round.asInteger,this.class.name);
 		});
 		prSynthesizer.addUpdateAction(this.class.name, parameterNumber, {
 			|newvalue|
-			slider.value = defaultControlSpec.unmap(newvalue);
+			slider.value = effectiveControlSpec.unmap(newvalue);
 		});
 	}
 

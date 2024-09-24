@@ -33,10 +33,10 @@ Jp08Patch : Patch {
 		kvps.add(Jp08.vcaLevelParameterNumber -> 255);
 		kvps.add(Jp08.vcaLfoModParameterNumber -> 0); // None
 		kvps.add(Jp08.vco1CrossmodParameterNumber -> 0);
-		kvps.add(Jp08.vco1SyncParameterNumber -> 0); // Off
 		kvps.add(Jp08.vco1RangeParameterNumber -> 3); // 8'
 		kvps.add(Jp08.vco1WaveformParameterNumber -> 2); // Sawtooth
 		kvps.add(Jp08.vco2RangeParameterNumber -> 165); // 8'
+		kvps.add(Jp08.vco2SyncParameterNumber -> 0); // Off
 		kvps.add(Jp08.vco2TuneParameterNumber -> 128);
 		kvps.add(Jp08.vco2WaveformParameterNumber -> 1); // Sawtooth
 		kvps.add(Jp08.vcoEnvModParameterNumber -> 0);

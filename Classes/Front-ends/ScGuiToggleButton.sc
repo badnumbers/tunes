@@ -18,7 +18,7 @@ ScGuiToggleButton : ScGuiControl {
 		.mouseDownAction_({prActualButton.background_(clickColour)})
 		.mouseUpAction_({this.toggleState(prActualButton,onColour,offColour)});
 		if (value.isNil,{
-			this.value = True
+			this.value = true
 		});
 	}
 
@@ -43,10 +43,10 @@ ScGuiToggleButton : ScGuiControl {
 	toggleState {
 		|buttonView,onColour,offColour|
 		postln(format("Calling toggleState(). Button currently has value of %, about to change it.", this.value));
-		if (this.value == True, {
-			this.value_(False);
+		if (this.value == true, {
+			this.value_(false);
 		}, {
-			this.value_(True);
+			this.value_(true);
 		});
 		if (prMouseUpAction.isNil,{
 			postln(format("prMouseUpAction is nil, so we're not doing anything."));
@@ -62,11 +62,11 @@ ScGuiToggleButton : ScGuiControl {
 
 	value_ {
 		|newValue|
-		if ((newValue != True) && (newValue != False), {
-			Error(format("The value passed to %.value_() must be True or False. The value % was provided.", newValue)).throw;
+		if ((newValue != true) && (newValue != false), {
+			Error(format("The value passed to ScGuiToggleButton.value_() must be true or false. The value % was provided.", newValue)).throw;
 		});
 		prValue = newValue;
-		if (newValue == True,{
+		if (newValue == true,{
 			prActualButton.background_(prOnColour);
 		},{
 			prActualButton.background_(prOffColour);

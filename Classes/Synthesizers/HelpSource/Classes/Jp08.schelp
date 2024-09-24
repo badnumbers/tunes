@@ -237,111 +237,6 @@ The range for values for this parameter is STRONG::0 to 3::.
 
 RETURNS:: 0x0302.
 
-METHOD:: vco1CrossmodParameterNumber
-The sysex parameter number that is used to control amount of cross modulation from oscillator 2 to oscillator 1.
-
-The range for values for this parameter is STRONG::0 to 255::.
-
-RETURNS:: 0x010a.
-
-METHOD:: vco1SyncParameterNumber
-The sysex parameter number that is used to control whether oscillator 2 is synced to oscillator 1.
-TABLE::
-## Value || Status
-## 0 || Off
-## 1 || On
-::
-
-RETURNS:: 0x0110.
-
-METHOD:: vco1RangeParameterNumber
-The sysex parameter number that is used to control the frequency range of oscillator 1.
-TABLE::
-## Value || Range
-## 0 || 64'
-## 1 || 32'
-## 2 || 16'
-## 3 || 8'
-## 4 || 4'
-## 5 || 2'
-::
-
-RETURNS:: 0x010c.
-
-METHOD:: vco1WaveformParameterNumber
-The sysex parameter number that is used to control the waveform for oscillator 1.
-TABLE::
-## Value || Waveform
-## 0 || Sine
-## 1 || Triangle
-## 2 || Sawtooth
-## 3 || Pulse (with modulatable pulsewidth)
-## 4 || Square
-## 5 || Noise
-::
-
-RETURNS:: 0x010e.
-
-METHOD:: vco2RangeParameterNumber
-The sysex parameter number that is used to control frequency range of oscillator 2. The mapping of parameter values to frequency ranges does not seem straightforward The table below shows some examples:
-TABLE::
-## Value || Range
-## 0 || 64'
-## 30 || 32'
-## 90 || 16'
-## 165 || 8'
-## 225 || 4'
-## 255 || 2'
-::
-
-RETURNS:: 0x0112.
-
-METHOD:: vco2TuneParameterNumber
-The sysex parameter number that is used to control the fine tuning of oscillator 2. The minimum and maximum values seem to be somewhat less than a semitone from the centre. 128 is centred.
-
-The range for values for this parameter is STRONG::0 to 255::.
-
-RETURNS:: 0x0114.
-
-METHOD:: vco2WaveformParameterNumber
-The sysex parameter number that is used to control the waveform for oscillator 2.
-TABLE::
-## Value || Waveform
-## 0 || Sine
-## 1 || Sawtooth
-## 2 || Pulse (with modulatable pulsewidth)
-## 3 || Low frequency sine
-## 4 || Low frequency sawtooth
-## 5 || Low frequency pulse (with modulatable pulsewidth)
-::
-
-RETURNS:: 0x0116.
-
-METHOD:: vcoEnvModParameterNumber
-The sysex parameter number that is used to control how much envelope 1 controls the pitch of the configured oscillators (see LINK::#*vcoModDestinationParameterNumber::).
-
-The range for values for this parameter is STRONG::0 to 255::.
-
-RETURNS:: 0x0102.
-
-METHOD:: vcoLfoModParameterNumber
-The sysex parameter number that is used to control how the LFO controls the pitch of the configured oscillators (see LINK::#*vcoModDestinationParameterNumber::).
-
-The range for values for this parameter is STRONG::0 to 255::.
-
-RETURNS:: 0x0100.
-
-METHOD:: vcoModDestinationParameterNumber
-The sysex parameter number that is used to control which oscillators are pitch modulated.
-TABLE::
-## Value || Destination
-## 0 || Oscillator 2
-## 1 || Both oscillators
-## 2 || Oscillator 1
-::
-
-RETURNS:: 0x0104.
-
 METHOD:: vcfEnvmodParameterNumber
 The sysex parameter number that is used to control how much the envelope specified by LINK::#*vcfEnvModSourceParameterNumber:: modulates the filter cutoff.
 
@@ -397,6 +292,111 @@ TABLE::
 
 RETURNS:: 0x0206.
 
+METHOD:: vco1CrossmodParameterNumber
+The sysex parameter number that is used to control amount of cross modulation from oscillator 2 to oscillator 1.
+
+The range for values for this parameter is STRONG::0 to 255::.
+
+RETURNS:: 0x010a.
+
+METHOD:: vco1RangeParameterNumber
+The sysex parameter number that is used to control the frequency range of oscillator 1.
+TABLE::
+## Value || Range
+## 0 || 64'
+## 1 || 32'
+## 2 || 16'
+## 3 || 8'
+## 4 || 4'
+## 5 || 2'
+::
+
+RETURNS:: 0x010c.
+
+METHOD:: vco1WaveformParameterNumber
+The sysex parameter number that is used to control the waveform for oscillator 1.
+TABLE::
+## Value || Waveform
+## 0 || Sine
+## 1 || Triangle
+## 2 || Sawtooth
+## 3 || Pulse (with modulatable pulsewidth)
+## 4 || Square
+## 5 || Noise
+::
+
+RETURNS:: 0x010e.
+
+METHOD:: vco2RangeParameterNumber
+The sysex parameter number that is used to control frequency range of oscillator 2. The mapping of parameter values to frequency ranges does not seem straightforward The table below shows some examples:
+TABLE::
+## Value || Range
+## 0 || 64'
+## 30 || 32'
+## 90 || 16'
+## 165 || 8'
+## 225 || 4'
+## 255 || 2'
+::
+
+RETURNS:: 0x0112.
+
+METHOD:: vco2SyncParameterNumber
+The sysex parameter number that is used to control whether oscillator 2 is synced to oscillator 1.
+TABLE::
+## Value || Status
+## 0 || Off
+## 1 || On
+::
+
+RETURNS:: 0x0110.
+
+METHOD:: vco2TuneParameterNumber
+The sysex parameter number that is used to control the fine tuning of oscillator 2. The minimum and maximum values seem to be somewhat less than a semitone from the centre. 128 is centred.
+
+The range for values for this parameter is STRONG::0 to 255::.
+
+RETURNS:: 0x0114.
+
+METHOD:: vco2WaveformParameterNumber
+The sysex parameter number that is used to control the waveform for oscillator 2.
+TABLE::
+## Value || Waveform
+## 0 || Sine
+## 1 || Sawtooth
+## 2 || Pulse (with modulatable pulsewidth)
+## 3 || Low frequency sine
+## 4 || Low frequency sawtooth
+## 5 || Low frequency pulse (with modulatable pulsewidth)
+::
+
+RETURNS:: 0x0116.
+
+METHOD:: vcoEnvModParameterNumber
+The sysex parameter number that is used to control how much envelope 1 controls the pitch of the configured oscillators (see LINK::#*vcoModDestinationParameterNumber::).
+
+The range for values for this parameter is STRONG::0 to 255::.
+
+RETURNS:: 0x0102.
+
+METHOD:: vcoLfoModParameterNumber
+The sysex parameter number that is used to control how the LFO controls the pitch of the configured oscillators (see LINK::#*vcoModDestinationParameterNumber::).
+
+The range for values for this parameter is STRONG::0 to 255::.
+
+RETURNS:: 0x0100.
+
+METHOD:: vcoModDestinationParameterNumber
+The sysex parameter number that is used to control which oscillators are pitch modulated.
+TABLE::
+## Value || Destination
+## 0 || Oscillator 2
+## 1 || Both oscillators
+## 2 || Oscillator 1
+::
+
+RETURNS:: 0x0104.
+
 INSTANCEMETHODS::
 
 EXAMPLES::
@@ -428,31 +428,30 @@ Pdef(\jp08,
 				}),
 				Pfuncn({
 					postln("Remove the PWM and crank up the resonance...");
-					// Should probably use modifyWorkingPatch when the Patch stuff is implemented...
-					~jp08.updateParameterInHardwareSynth(Jp08.pwmModParameterNumber,0);
-					~jp08.updateParameterInHardwareSynth(Jp08.vcfResonanceParameterNumber,225);
+					~jp08.modifyWorkingPatch(Jp08.pwmModParameterNumber,0);
+					~jp08.modifyWorkingPatch(Jp08.vcfResonanceParameterNumber,225);
 				}),
 				Pfuncn({
 					postln("Now let's get silly...");
-					~jp08.updateParameterInHardwareSynth(Jp08.sourceMixParameterNumber,255);
-					~jp08.updateParameterInHardwareSynth(Jp08.vco2RangeParameterNumber,147);
-					~jp08.updateParameterInHardwareSynth(Jp08.vcoEnvModParameterNumber,80);
-					~jp08.updateParameterInHardwareSynth(Jp08.vco2WaveformParameterNumber,1);
+					~jp08.modifyWorkingPatch(Jp08.sourceMixParameterNumber,255);
+					~jp08.modifyWorkingPatch(Jp08.vco2RangeParameterNumber,147);
+					~jp08.modifyWorkingPatch(Jp08.vcoEnvModParameterNumber,80);
+					~jp08.modifyWorkingPatch(Jp08.vco2WaveformParameterNumber,1);
 				}),
 				Pfuncn({
 					postln("Bip bip...");
-					~jp08.updateParameterInHardwareSynth(Jp08.sourceMixParameterNumber,128);
-					~jp08.updateParameterInHardwareSynth(Jp08.vco1WaveformParameterNumber,0);
-					~jp08.updateParameterInHardwareSynth(Jp08.vco2WaveformParameterNumber,0);
-					~jp08.updateParameterInHardwareSynth(Jp08.vco1RangeParameterNumber,4);
-					~jp08.updateParameterInHardwareSynth(Jp08.vco2RangeParameterNumber,225);
-					~jp08.updateParameterInHardwareSynth(Jp08.vco2TuneParameterNumber,130);
-					~jp08.updateParameterInHardwareSynth(Jp08.vcoEnvModParameterNumber,0);
-					~jp08.updateParameterInHardwareSynth(Jp08.envelope2DecayParameterNumber,100);
-					~jp08.updateParameterInHardwareSynth(Jp08.envelope2SustainParameterNumber,0);
-					~jp08.updateParameterInHardwareSynth(Jp08.delayFeedbackParameterNumber,12);
-					~jp08.updateParameterInHardwareSynth(Jp08.delayLevelParameterNumber,12);
-					~jp08.updateParameterInHardwareSynth(Jp08.delayTimeParameterNumber,10);
+					~jp08.modifyWorkingPatch(Jp08.sourceMixParameterNumber,128);
+					~jp08.modifyWorkingPatch(Jp08.vco1WaveformParameterNumber,0);
+					~jp08.modifyWorkingPatch(Jp08.vco2WaveformParameterNumber,0);
+					~jp08.modifyWorkingPatch(Jp08.vco1RangeParameterNumber,4);
+					~jp08.modifyWorkingPatch(Jp08.vco2RangeParameterNumber,225);
+					~jp08.modifyWorkingPatch(Jp08.vco2TuneParameterNumber,130);
+					~jp08.modifyWorkingPatch(Jp08.vcoEnvModParameterNumber,0);
+					~jp08.modifyWorkingPatch(Jp08.envelope2DecayParameterNumber,100);
+					~jp08.modifyWorkingPatch(Jp08.envelope2SustainParameterNumber,0);
+					~jp08.modifyWorkingPatch(Jp08.delayFeedbackParameterNumber,12);
+					~jp08.modifyWorkingPatch(Jp08.delayLevelParameterNumber,12);
+					~jp08.modifyWorkingPatch(Jp08.delayTimeParameterNumber,10);
 				})
 			]),
 			\dur, 8
