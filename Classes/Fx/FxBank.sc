@@ -76,11 +76,16 @@ FxBank {
 					NHHall.ar(SoundIn.ar(synthConfig.inputBusChannels));
 				});
 			});
-			Ndef(format("%_in").asSymbol).play;
+			Ndef(format("%_out").asSymbol,{
+				NamedControl.ar(\in, 0!2);
+			});
+			Ndef(format("%_out").asSymbol).set(\in, Ndef(format("%_in").asSymbol));
+			Ndef(format("%_out").asSymbol).play;
 			PipeWire.disconnectFromSoundcard(synthConfig);
 		},{
 			postln(format("None of the check boxes are selected for the %.", synthConfig.name));
-				Ndef(format("%_in").asSymbol).stop;
+			Ndef(format("%_in").asSymbol).end;
+			Ndef(format("%_out").asSymbol).end;
 			PipeWire.connectToSoundcard(synthConfig);
 		});
 	}
