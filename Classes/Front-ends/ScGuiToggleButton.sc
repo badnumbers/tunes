@@ -31,12 +31,12 @@ ScGuiToggleButton : ScGuiControl {
 		if (newValue.class != Function, {
 			Error(format("The value passed to %.mouseUpAction_() must be an instance of Function. An instance of % was provided.", this.class,newValue.class)).throw;
 		});
-		postln("Setting the mouseUpAction of the toggle button.");
+		//postln("Setting the mouseUpAction of the toggle button.");
 		prMouseUpAction = newValue;
 		if (prMouseUpAction.isNil,{
-			postln(format("The toggle button's prMouseUpAction is nil."));
+			//postln(format("The toggle button's prMouseUpAction is nil."));
 		},{
-			postln(format("The toggle button's prMouseUpAction is not nil."));
+			//postln(format("The toggle button's prMouseUpAction is not nil."));
 		});
 	}
 
@@ -49,9 +49,9 @@ ScGuiToggleButton : ScGuiControl {
 			this.value_(true);
 		});
 		if (prMouseUpAction.isNil,{
-			postln(format("prMouseUpAction is nil, so we're not doing anything."));
+			//postln(format("prMouseUpAction is nil, so we're not doing anything."));
 		},{
-			postln(format("prMouseUpAction is not nil, so we're going to run that function now."));
+			//postln(format("prMouseUpAction is not nil, so we're going to run that function now."));
 			prMouseUpAction.value();
 		});
 	}

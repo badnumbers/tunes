@@ -33,9 +33,11 @@ Jp08ScGuiControlSurface : ScGuiControlSurface {
 	}
 
 	addEnvelopeKeyfollowToggleButton {
-		|parent,rect|
-		var button;
-		button = ScGuiToggleButton(parent,rect,
+		|parent,left,top|
+		var container, button;
+		container = View(parent, Rect(left, top, 100, 100)).background_(Color.black);
+		this.addControlLabel(container, Rect(0,0,100,25), "KEY FOLLOW", \center, Color.white);
+		button = ScGuiToggleButton(container,Rect(15,15,70, 70),
 			backgroundColour:Color.white,
 			borderColour:this.darkgrey,
 			clickColour:Color.white,
@@ -67,7 +69,7 @@ Jp08ScGuiControlSurface : ScGuiControlSurface {
 
 	addToggleButtonWithLabel {
 		|parent,left,top,parameterNumber,labelText|
-		var container = View(parent, Rect(left, top, 200, 230)).background_(Color.black);
+		var container = View(parent, Rect(left, top, 100, 25)).background_(Color.black);
 		this.addControlLabel(container, Rect(0,0,200,25), labelText, \center, Color.white);
 		this.addToggleButton(container,Rect(0,25,100,100),parameterNumber,[
 			[false, [0] ], [true, [1] ]
@@ -198,14 +200,14 @@ Jp08ScGuiControlSurface : ScGuiControlSurface {
 		this.addSliderWithLabel(container, 450, 100, Jp08.envelope1DecayParameterNumber, "DECAY");
 		this.addSliderWithLabel(container, 550, 100, Jp08.envelope1SustainParameterNumber, "SUSTAIN");
 		this.addSliderWithLabel(container, 650, 100, Jp08.envelope1ReleaseParameterNumber, "RELEASE");
-		prEnvelope1KeyfollowToggleButton = this.addEnvelopeKeyfollowToggleButton(container, Rect(465,100,70,70));
+		prEnvelope1KeyfollowToggleButton = this.addEnvelopeKeyfollowToggleButton(container, 750,100);
 
 		this.addSectionLabel(container,Rect(800,25,300,50),"ENVELOPE 2");
 		this.addSliderWithLabel(container, 850, 100, Jp08.envelope2AttackParameterNumber, "ATTACK");
 		this.addSliderWithLabel(container, 950, 100, Jp08.envelope2DecayParameterNumber, "DECAY");
 		this.addSliderWithLabel(container, 1050, 100, Jp08.envelope2SustainParameterNumber, "SUSTAIN");
 		this.addSliderWithLabel(container, 1150, 100, Jp08.envelope2ReleaseParameterNumber, "RELEASE");
-		prEnvelope2KeyfollowToggleButton = this.addEnvelopeKeyfollowToggleButton(container, Rect(965,100,70,70));
+		prEnvelope2KeyfollowToggleButton = this.addEnvelopeKeyfollowToggleButton(container, 1250,100);
 	}
 
 	initOscillatorsTab {
