@@ -102,7 +102,7 @@ Jp08ScGuiControlSurface : ScGuiControlSurface {
 			backgroundcolour: darkgrey,
 			left: 50,
 			top: 50,
-			width: 1750,
+			width: 1700,
 			buttonheight: 50,
 			bodyheight: 600,
 			borderwidth: 5,
@@ -269,6 +269,11 @@ Jp08ScGuiControlSurface : ScGuiControlSurface {
 			[ "Off", [0] ], [ "On", [1] ]
 		]);
 		this.addSliderWithLabel(container, 800, 100, Jp08.portamentoTimeParameterNumber, "TIME");
+
+		this.addSectionLabel(container,Rect(972,25,200,50),"PITCH BEND");
+		this.addDropDownListWithLabel(container,1000,100,Jp08.pitchBendRangeParameterNumber,"RANGE",
+			(0..24).collect({ |num| [ num.asString, [ num ] ] })
+		);
 	}
 
 	setDefaultControlSpec {
