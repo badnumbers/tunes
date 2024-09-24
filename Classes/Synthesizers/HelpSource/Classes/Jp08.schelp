@@ -237,7 +237,14 @@ The range for values for this parameter is STRONG::0 to 3::.
 
 RETURNS:: 0x0302.
 
-METHOD:: vcfEnvmodParameterNumber
+METHOD:: vcfCutoffParameterNumber
+The sysex parameter number that is used to control the filter cutoff.
+
+The range for values for this parameter is STRONG::0 to 255::.
+
+RETURNS:: 0x0202.
+
+METHOD:: vcfEnvModParameterNumber
 The sysex parameter number that is used to control how much the envelope specified by LINK::#*vcfEnvModSourceParameterNumber:: modulates the filter cutoff.
 
 The range for values for this parameter is STRONG::0 to 255::.
@@ -253,13 +260,6 @@ TABLE::
 ::
 
 RETURNS:: 0x020a.
-
-METHOD:: vcfCutoffParameterNumber
-The sysex parameter number that is used to control the filter cutoff.
-
-The range for values for this parameter is STRONG::0 to 255::.
-
-RETURNS:: 0x0202.
 
 METHOD:: vcfKeyfollowParameterNumber
 The sysex parameter number that is used to control the extent to which the filter cutoff tracks the note number on the keyboard. A value of 0 may mean higher notes are inaudible, whereas a value of 255 may mean that lower notes are inaudible (i.e. key follow is more than 100%). To my ears, the tone colour is consistent across the keyboard at around 160.

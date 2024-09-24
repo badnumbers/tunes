@@ -26,9 +26,9 @@ Jp08 : Synthesizer {
 	classvar <sourceMixParameterNumber = 0x0118;
 	classvar <vcaLevelParameterNumber = 0x0300;
 	classvar <vcaLfoModParameterNumber = 0x0302;
-	classvar <vcfEnvmodParameterNumber = 0x0208;
-	classvar <vcfEnvModSourceParameterNumber = 0x020a;
 	classvar <vcfCutoffParameterNumber = 0x0202;
+	classvar <vcfEnvModParameterNumber = 0x0208;
+	classvar <vcfEnvModSourceParameterNumber = 0x020a;
 	classvar <vcfKeyfollowParameterNumber = 0x020e;
 	classvar <vcfLfoModParameterNumber = 0x020c;
 	classvar <vcfResonanceParameterNumber = 0x0204;
