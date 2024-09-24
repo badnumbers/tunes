@@ -201,6 +201,9 @@ Jp08ScGuiControlSurface : ScGuiControlSurface {
 		this.addSliderWithLabel(container, 550, 100, Jp08.envelope1SustainParameterNumber, "SUSTAIN");
 		this.addSliderWithLabel(container, 650, 100, Jp08.envelope1ReleaseParameterNumber, "RELEASE");
 		prEnvelope1KeyfollowToggleButton = this.addEnvelopeKeyfollowToggleButton(container, 750,100);
+		this.addDropDownListWithLabel(container,750,200,Jp08.envelope1PolarityParameterNumber,"POLARITY",[
+			[ "Normal", [1] ], [ "Inverted", [0] ]
+		]);
 
 		this.addSectionLabel(container,Rect(800,25,300,50),"ENVELOPE 2");
 		this.addSliderWithLabel(container, 850, 100, Jp08.envelope2AttackParameterNumber, "ATTACK");
