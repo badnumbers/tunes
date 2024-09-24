@@ -1,7 +1,7 @@
 (
 var patch = Jp08Patch();
 patch.name = "Way back when";
-patch.kvps[526]=160;patch.kvps[522]=1;patch.kvps[262]=0;patch.kvps[1288]=3;patch.kvps[1280]=0;patch.kvps[1032]=1;patch.kvps[258]=187;patch.kvps[4100]=12;patch.kvps[770]=0;patch.kvps[1024]=50;patch.kvps[768]=255;patch.kvps[276]=160;patch.kvps[268]=3;patch.kvps[272]=1;patch.kvps[4096]=2;patch.kvps[260]=0;patch.kvps[278]=0;patch.kvps[524]=0;patch.kvps[516]=0;patch.kvps[4352]=0;patch.kvps[4354]=128;patch.kvps[280]=128;patch.kvps[512]=0;patch.kvps[2]=128;patch.kvps[1026]=128;patch.kvps[1284]=173;patch.kvps[274]=207;patch.kvps[4360]=2;patch.kvps[1286]=114;patch.kvps[4098]=9;patch.kvps[4]=0;patch.kvps[518]=1;patch.kvps[256]=66;patch.kvps[270]=2;patch.kvps[1030]=128;patch.kvps[4102]=9;patch.kvps[0]=128;patch.kvps[266]=0;patch.kvps[1028]=128;patch.kvps[4358]=0;patch.kvps[264]=1;patch.kvps[514]=78;patch.kvps[1282]=126;
+patch.kvps[526]=160;patch.kvps[522]=1;patch.kvps[262]=0;patch.kvps[1288]=3;patch.kvps[1280]=0;patch.kvps[1032]=1;patch.kvps[258]=187;patch.kvps[4100]=12;patch.kvps[770]=0;patch.kvps[1024]=50;patch.kvps[768]=255;patch.kvps[276]=160;patch.kvps[268]=3;patch.kvps[272]=1;patch.kvps[4096]=2;patch.kvps[260]=0;patch.kvps[278]=0;patch.kvps[524]=0;patch.kvps[516]=0;patch.kvps[4352]=0;patch.kvps[4354]=128;patch.kvps[280]=128;patch.kvps[512]=0;patch.kvps[2]=128;patch.kvps[1026]=128;patch.kvps[1284]=173;patch.kvps[274]=207;patch.kvps[4360]=2;patch.kvps[1286]=114;patch.kvps[4098]=9;patch.kvps[4]=0;patch.kvps[518]=1;patch.kvps[256]=66;patch.kvps[270]=2;patch.kvps[1030]=128;patch.kvps[4102]=9;patch.kvps[0]=128;patch.kvps[266]=42;patch.kvps[1028]=128;patch.kvps[4358]=0;patch.kvps[264]=1;patch.kvps[514]=78;patch.kvps[1282]=126;
 ~jp08.setWorkingPatch(patch);
 )
 (
