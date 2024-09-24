@@ -32,6 +32,13 @@ Jp08Patch : Patch {
 		kvps.add(Jp08.sourceMixParameterNumber -> 128);
 		kvps.add(Jp08.vcaLevelParameterNumber -> 255);
 		kvps.add(Jp08.vcaLfoModParameterNumber -> 0); // None
+		kvps.add(Jp08.vcfEnvModParameterNumber -> 0);
+		kvps.add(Jp08.vcfEnvModSourceParameterNumber -> 1); // Envelope 1
+		kvps.add(Jp08.vcfCutoffParameterNumber -> 255);
+		kvps.add(Jp08.vcfKeyfollowParameterNumber -> 160); // 100%
+		kvps.add(Jp08.vcfLfoModParameterNumber -> 0);
+		kvps.add(Jp08.vcfResonanceParameterNumber -> 0);
+		kvps.add(Jp08.vcfSlopeParameterNumber -> 0); // 24dB/octave
 		kvps.add(Jp08.vco1CrossmodParameterNumber -> 0);
 		kvps.add(Jp08.vco1RangeParameterNumber -> 3); // 8'
 		kvps.add(Jp08.vco1WaveformParameterNumber -> 2); // Sawtooth
@@ -42,12 +49,6 @@ Jp08Patch : Patch {
 		kvps.add(Jp08.vcoEnvModParameterNumber -> 0);
 		kvps.add(Jp08.vcoLfoModParameterNumber -> 0);
 		kvps.add(Jp08.vcoModDestinationParameterNumber -> 1); // Both oscillators
-		kvps.add(Jp08.vcfEnvModSourceParameterNumber -> 1); // Envelope 1
-		kvps.add(Jp08.vcfCutoffParameterNumber -> 255);
-		kvps.add(Jp08.vcfKeyfollowParameterNumber -> 160); // 100%
-		kvps.add(Jp08.vcfLfoModParameterNumber -> 0);
-		kvps.add(Jp08.vcfResonanceParameterNumber -> 0);
-		kvps.add(Jp08.vcfSlopeParameterNumber -> 0); // 24dB/octave
     }
 
 	describe {
