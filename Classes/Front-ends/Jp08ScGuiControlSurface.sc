@@ -92,7 +92,7 @@ Jp08ScGuiControlSurface : ScGuiControlSurface {
 
 		name = "JP-08";
 		background = Color.black;
-		windowheight = 650;
+		windowheight = 675;
 		windowwidth = 1700;
 		super.init(synthesizer);
 
@@ -123,21 +123,21 @@ Jp08ScGuiControlSurface : ScGuiControlSurface {
 		otherTab = tabset.addTab("OTHER");
 		this.initOtherTab(otherTab);
 
-		StaticText(window,Rect(50,710,100,30))
+		StaticText(window,Rect(50,625,100,30))
 		.background_(lightgrey)
 		.string_("Initialise")
 		.stringColor_(Color.black)
 		.align_(\center)
 		.mouseUpAction_({prSynthesizer.initialisePatch()});
 
-		StaticText(window,Rect(680,710,100,30))
+		StaticText(window,Rect(680,625,100,30))
 		.background_(lightgrey)
 		.string_("Write")
 		.stringColor_(Color.black)
 		.align_(\center)
 		.mouseUpAction_({prSynthesizer.writeWorkingPatch()});
 
-		StaticText(window,Rect(790,710,100,30))
+		StaticText(window,Rect(790,625,100,30))
 		.background_(lightgrey)
 		.string_("Scope")
 		.stringColor_(Color.black)
@@ -236,7 +236,7 @@ Jp08ScGuiControlSurface : ScGuiControlSurface {
 
 		vco1vco2View = View(container, Rect(0,0,200,500)).background_(Color.black);
 		this.addSectionLabel(vco1vco2View,Rect(25,25,150,50),"VCO-1 / VCO-2");
-		this.addKnobWithLabel(vco1vco2View, 50, 100, Jp08.sourceMixParameterNumber, "SOURCE MIX");
+		this.addKnobWithLabel(vco1vco2View, 50, 100, Jp08.sourceMixParameterNumber, "SOURCE MIX", centred: true);
 
 		vco1View = View(container, Rect(200,0,300,500)).background_(Color.black);
 		this.addSectionLabel(vco1View,Rect(25,25,250,50),"VCO-1");
