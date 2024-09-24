@@ -1,19 +1,15 @@
 TITLE:: FxBank
-SUMMARY:: (put short description here)
+SUMMARY:: A user interface for adding effects to hardware synthesizers
 CATEGORIES:: External Control
 RELATED:: Classes/SomeRelatedClass, Reference/SomeRelatedStuff, etc.
 
 DESCRIPTION::
-(put long description here)
-
+LINK::Classes/FxBank:: provides a quick user interface which can be used to selectively route the output of chosen hardware synths via SuperCollider so that effects can be added to them.
 
 CLASSMETHODS::
 
 METHOD:: new
-(describe method here)
-
-RETURNS:: (describe returnvalue here)
-
+Creates an instance of LINK::Classes/FxBank::.
 
 INSTANCEMETHODS::
 
