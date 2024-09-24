@@ -1,0 +1,68 @@
+TITLE:: FxBank
+SUMMARY:: (put short description here)
+CATEGORIES:: External Control
+RELATED:: Classes/SomeRelatedClass, Reference/SomeRelatedStuff, etc.
+
+DESCRIPTION::
+(put long description here)
+
+
+CLASSMETHODS::
+
+METHOD:: new
+(describe method here)
+
+RETURNS:: (describe returnvalue here)
+
+
+INSTANCEMETHODS::
+
+METHOD:: renderUi
+(describe method here)
+
+RETURNS:: (describe returnvalue here)
+
+METHOD:: stopSynth
+(describe method here)
+
+ARGUMENT:: synthConfig
+(describe argument here)
+
+RETURNS:: (describe returnvalue here)
+
+METHOD:: init
+(describe method here)
+
+RETURNS:: (describe returnvalue here)
+
+METHOD:: renderSynthDetails
+(describe method here)
+
+ARGUMENT:: synthConfig
+(describe argument here)
+
+ARGUMENT:: index
+(describe argument here)
+
+ARGUMENT:: window
+(describe argument here)
+
+ARGUMENT:: carousel
+(describe argument here)
+
+RETURNS:: (describe returnvalue here)
+
+METHOD:: startSynth
+(describe method here)
+
+ARGUMENT:: synthConfig
+(describe argument here)
+
+RETURNS:: (describe returnvalue here)
+
+
+EXAMPLES::
+
+CODE::
+(some example code)
+::
