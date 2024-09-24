@@ -8,9 +8,9 @@ Jp08ScGuiControlSurface : ScGuiControlSurface {
 
 	addDropDownListWithLabel {
 		|parent,left,top,parameterNumber,labelText,midiMappings|
-		var container = View(parent, Rect(left, top, 200, 50)).background_(Color.black);
-		this.addControlLabel(container, Rect(0,0,200,25), labelText, \center, Color.white);
-		this.addDropDownList(container, Rect(0,25,200,25),parameterNumber,midiMappings);
+		var container = View(parent, Rect(left, top, 100, 50)).background_(Color.black);
+		this.addControlLabel(container, Rect(0,0,100,25), labelText, \center, Color.white);
+		this.addDropDownList(container, Rect(0,25,100,25),parameterNumber,midiMappings);
 	}
 
 	addKnobWithLabel {
@@ -255,12 +255,12 @@ Jp08ScGuiControlSurface : ScGuiControlSurface {
 
 		this.addSectionLabel(container,Rect(0,25,300,50),"VCA");
 		this.addSliderWithLabel(container, 50, 100, Jp08.vcaLevelParameterNumber, "LEVEL");
-		this.addDropDownListWithLabel(container, 150, 100, Jp08.vco1RangeParameterNumber, "LFO MOD",[
+		this.addDropDownListWithLabel(container, 150, 100, Jp08.vcaLfoModParameterNumber, "LFO MOD",[
 			[ "0", [0] ], [ "1", [1] ], [ "2", [2] ], [ "3", [3] ]
 		]);
 
-		this.addSectionLabel(container,Rect(0,175,300,50),"ASSIGN");
-		this.addDropDownListWithLabel(container, 200, 200, Jp08.assignModeParameterNumber, "ASSIGN MODE",[
+		this.addSectionLabel(container,Rect(275,25,300,50),"ASSIGN");
+		this.addDropDownListWithLabel(container, 300, 100, Jp08.assignModeParameterNumber, "ASSIGN MODE",[
 			[ "Poly 1", [0] ], [ "Poly 2", [1] ], [ "Solo", [2] ], [ "Unison", [3] ]
 		]);
 
