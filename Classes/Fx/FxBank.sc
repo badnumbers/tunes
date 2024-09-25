@@ -31,14 +31,16 @@ FxBank {
 				Ndef(format("%_%",synthConfig.synthesizerClass.name,effectType).asSymbol,{
 					var audio = NamedControl.ar(\in, 0!2);
 					var drywet =  NamedControl.ar(\drywet, 0);
-					XFade2.ar(audio,CombC.ar(audio, 1, [prTempoClock.beatDur,prTempoClock.beatDur/2], 3),drywet);
+					var decay = NamedControl.ar(\decay,3);
+					XFade2.ar(audio,CombC.ar(audio, 2, [prTempoClock.beatDur,prTempoClock.beatDur/2], decay),drywet);
 				});
 			},
 			\reverb, {
 				Ndef(format("%_%",synthConfig.synthesizerClass.name,effectType).asSymbol,{
 					var audio = NamedControl.ar(\in, 0!2);
 					var drywet =  NamedControl.ar(\drywet, 0);
-					XFade2.ar(audio,NHHall.ar(audio, 5),drywet);
+					var decay = NamedControl.ar(\decay,3);
+					XFade2.ar(audio,NHHall.ar(audio, decay),drywet);
 				});
 			}
 		);
@@ -63,6 +65,11 @@ FxBank {
 			Ndef(format("%_%",synthConfig.synthesizerClass.name,\delay).asSymbol).set(\drywet,knob.value.linexp(0,1,1,3)-2);
 		}));
 		StaticText(controlsView,Rect(0,80,100,20)).string_("DRY / WET").align_(\center).stringColor_(Color.white);
+		fxControls[\delay].put(\decay, Knob(controlsView, Rect(110,0,80,80)).mode_(\vert).value_(0.3).action_({
+			|knob|
+			Ndef(format("%_%",synthConfig.synthesizerClass.name,\delay).asSymbol).set(\decay,knob.value.linexp(0,1,1,21)-1);
+		}));
+		StaticText(controlsView,Rect(100,80,100,20)).string_("DECAY").align_(\center).stringColor_(Color.white);
 	}
 
 	prUpdateEffectsForHardwareSynth {
@@ -153,6 +160,11 @@ FxBank {
 			Ndef(format("%_%",synthConfig.synthesizerClass.name,\reverb).asSymbol).set(\drywet,knob.value.linexp(0,1,1,3)-2);
 		}));
 		StaticText(controlsView,Rect(0,80,100,20)).string_("DRY / WET").align_(\center).stringColor_(Color.white);
+		fxControls[\reverb].put(\decay, Knob(controlsView, Rect(110,0,80,80)).mode_(\vert).value_(0.3).action_({
+			|knob|
+			Ndef(format("%_%",synthConfig.synthesizerClass.name,\reverb).asSymbol).set(\decay,knob.value.linexp(0,1,1,21)-1);
+		}));
+		StaticText(controlsView,Rect(100,80,100,20)).string_("DECAY").align_(\center).stringColor_(Color.white);
 	}
 
 	prRenderUi {
