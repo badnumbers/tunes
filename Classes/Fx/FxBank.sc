@@ -32,9 +32,10 @@ FxBank {
 					var audio = NamedControl.ar(\in, 0!2);
 					var drywet =  NamedControl.ar(\drywet, 0);
 					var decay = NamedControl.ar(\decay,3);
-					var leftdelay = NamedControl.ar(\leftdelay,1);
-					var rightdelay = NamedControl.ar(\rightdelay,1);
-					XFade2.ar(audio,CombC.ar(audio, 2, [prTempoClock.beatDur*leftdelay,prTempoClock.beatDur*rightdelay], decay),drywet);
+					var leftdelay = NamedControl.ar(\leftdelay,1/4);
+					var rightdelay = NamedControl.ar(\rightdelay,1/4);
+					var delaywander = NamedControl.ar(\delaywander,0).clip(0,0.1);
+					XFade2.ar(audio,CombC.ar(audio, 2, [prTempoClock.beatDur*leftdelay*LFNoise1.kr(0.25).range(1-delaywander,1+delaywander),prTempoClock.beatDur*rightdelay*LFNoise1.kr(0.2).range(1-delaywander,1+delaywander)], decay),drywet);
 				});
 			},
 			\reverb, {
@@ -73,15 +74,20 @@ FxBank {
 		}));
 		StaticText(controlsView,Rect(100,80,100,20)).string_("DECAY").align_(\center).stringColor_(Color.white);
 		StaticText(controlsView,Rect(200,15,100,20)).string_("LEFT DELAY").align_(\right).stringColor_(Color.white);
-		fxControls[\delay].put(\leftdelay, PopUpMenu(controlsView, Rect(300,15,100,20)).items_(["1/4", "1/3" , "1/2", "3/4" , "1", "5/4", "4/3", "1.5", "2", "3", "4"]).action_({
+		fxControls[\delay].put(\leftdelay, PopUpMenu(controlsView, Rect(300,15,100,20)).items_(["1/4", "1/3" , "1/2", "3/4" , "1", "5/4", "4/3", "1.5", "2", "3", "4"]).value_(4).action_({
 			|control|
 			Ndef(format("%_%",synthConfig.synthesizerClass.name,\delay).asSymbol).set(\leftdelay,control.value.asFloat/16);
 		}));
 		StaticText(controlsView,Rect(200,65,100,20)).string_("RIGHT DELAY").align_(\right).stringColor_(Color.white);
-		fxControls[\delay].put(\rightdelay, PopUpMenu(controlsView, Rect(300,65,100,20)).items_(["1/4", "1/3" , "1/2", "3/4" , "1", "5/4", "4/3", "1.5", "2", "3", "4"]).action_({
+		fxControls[\delay].put(\rightdelay, PopUpMenu(controlsView, Rect(300,65,100,20)).items_(["1/4", "1/3" , "1/2", "3/4" , "1", "5/4", "4/3", "1.5", "2", "3", "4"]).value_(4).action_({
 			|control|
 			Ndef(format("%_%",synthConfig.synthesizerClass.name,\delay).asSymbol).set(\rightdelay,control.value.asFloat/16);
 		}));
+		fxControls[\delay].put(\delaywander, Knob(controlsView, Rect(400,0,80,80)).mode_(\vert).value_(0).action_({
+			|control|
+			Ndef(format("%_%",synthConfig.synthesizerClass.name,\delay).asSymbol).set(\delaywander,control.value.linexp(0,1,1,1.1)-1);
+		}));
+		StaticText(controlsView,Rect(400,80,100,20)).string_("WANDER").align_(\center).stringColor_(Color.white);
 	}
 
 	prUpdateEffectsForHardwareSynth {
