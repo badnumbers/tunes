@@ -30,13 +30,15 @@ FxBank {
 			\delay, {
 				Ndef(format("%_%",synthConfig.synthesizerClass.name,effectType).asSymbol,{
 					var audio = NamedControl.ar(\in, 0!2);
-					CombC.ar(audio, 1, [prTempoClock.beatDur,prTempoClock.beatDur/2], 3) * 0.25 + audio;
+					var drywet =  NamedControl.ar(\drywet, 0);
+					XFade2.ar(audio,CombC.ar(audio, 1, [prTempoClock.beatDur,prTempoClock.beatDur/2], 3),drywet);
 				});
 			},
 			\reverb, {
 				Ndef(format("%_%",synthConfig.synthesizerClass.name,effectType).asSymbol,{
 					var audio = NamedControl.ar(\in, 0!2);
-					NHHall.ar(audio, 5) * 0.25 + audio;
+					var drywet =  NamedControl.ar(\drywet, 0);
+					XFade2.ar(audio,NHHall.ar(audio, 5),drywet);
 				});
 			}
 		);
@@ -50,9 +52,17 @@ FxBank {
 
 	prRenderDelayUi {
 		|container,fxControls,synthConfig|
+		var effectView = View(container, Rect(10,10,960,200)).background_(Color.red);
+		var topBar = View(effectView, Rect(10,10,940,50)).background_(Color.blue);
+		var controlsView = View(effectView, Rect(10,60,940,100)).background_(Color.green);
 		fxControls.put(\delay, Dictionary());
-		fxControls[\delay].put(\switch, CheckBox(container, Rect(0,50,50,50)).action_({this.prUpdateEffectsForHardwareSynth(fxControls, synthConfig);}));
-		StaticText(container,Rect(50,50,200,50)).string_("Delay").stringColor_(Color.white);
+		fxControls[\delay].put(\switch, CheckBox(topBar, Rect(0,0,50,50)).action_({this.prUpdateEffectsForHardwareSynth(fxControls, synthConfig);}));
+		StaticText(topBar,Rect(50,0,200,50)).string_("Delay").stringColor_(Color.white);
+		fxControls[\delay].put(\drywet, Knob(controlsView, Rect(10,0,80,80)).mode_(\vert).value_(0.2).action_({
+			|knob|
+			Ndef(format("%_%",synthConfig.synthesizerClass.name,\delay).asSymbol).set(\drywet,knob.value.linexp(0,1,1,3)-2);
+		}));
+		StaticText(controlsView,Rect(0,80,100,20)).string_("DRY / WET").align_(\center).stringColor_(Color.white);
 	}
 
 	prUpdateEffectsForHardwareSynth {
@@ -96,14 +106,15 @@ FxBank {
 		});
 	}
 
-	prRenderSynthDetails {
+	prRenderDetailsView {
 		|synthConfig,index,window,carousel|
 		var fxControls = Dictionary();
 		var delayCheckBox, reverbCheckBox;
 		var tile = View(carousel,Rect(0,index*100,195,100));
 
 		var detailView = View(window,Rect(200,0,1000,800)).background_(Color.black).visible_(false);
-		var detailViewCanvas = View(detailView, Rect(10,10,980,780));
+		var headerView = View(detailView, Rect(10, 10, 980, 180)).background_(Color.magenta);
+		var effectsView = View(detailView, Rect(10, 210, 980, 580)).background_(Color.yellow);
 
 		// Carousel
 		StaticText(tile, Rect(5,5,150,50)).string_(synthConfig.name);
@@ -122,18 +133,26 @@ FxBank {
 
 		// Detail view
 		prDetailViews[index] = detailView;
-		StaticText(detailViewCanvas, Rect(0,0,200,50)).string_(synthConfig.name).stringColor_(Color.white);
+		StaticText(headerView, Rect(0,0,200,50)).string_(synthConfig.name).stringColor_(Color.white);
 
 		// Effects controls sections
-		this.prRenderDelayUi(detailViewCanvas,fxControls,synthConfig);
-		this.prRenderReverbUi(detailViewCanvas,fxControls,synthConfig);
+		this.prRenderDelayUi(effectsView,fxControls,synthConfig);
+		this.prRenderReverbUi(effectsView,fxControls,synthConfig);
 	}
 
 	prRenderReverbUi {
 		|container,fxControls,synthConfig|
+		var effectView = View(container, Rect(10,210,960,200)).background_(Color.red);
+		var topBar = View(effectView, Rect(10,10,940,50)).background_(Color.blue);
+		var controlsView = View(effectView, Rect(10,60,940,100)).background_(Color.green);
 		fxControls.put(\reverb, Dictionary());
-		fxControls[\reverb].put(\switch, CheckBox(container, Rect(0,100,50,50)).action_({this.prUpdateEffectsForHardwareSynth(fxControls, synthConfig);}));
-		StaticText(container,Rect(50,100,200,50)).string_("Reverb").stringColor_(Color.white);
+		fxControls[\reverb].put(\switch, CheckBox(topBar, Rect(0,0,50,50)).action_({this.prUpdateEffectsForHardwareSynth(fxControls, synthConfig);}));
+		StaticText(topBar,Rect(50,0,200,50)).string_("Reverb").stringColor_(Color.white);
+		fxControls[\reverb].put(\drywet, Knob(controlsView, Rect(10,0,80,80)).mode_(\vert).value_(0.2).action_({
+			|knob|
+			Ndef(format("%_%",synthConfig.synthesizerClass.name,\reverb).asSymbol).set(\drywet,knob.value.linexp(0,1,1,3)-2);
+		}));
+		StaticText(controlsView,Rect(0,80,100,20)).string_("DRY / WET").align_(\center).stringColor_(Color.white);
 	}
 
 	prRenderUi {
@@ -146,7 +165,7 @@ FxBank {
 			(synthConfig.inputBusChannels.size == 1) || (synthConfig.inputBusChannels.size == 2)}
 		).do({
 			|synthConfig,index|
-			this.prRenderSynthDetails(synthConfig,index,window,carousel);
+			this.prRenderDetailsView(synthConfig,index,window,carousel);
 		});
 		window.front;
 	}
