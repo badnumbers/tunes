@@ -6,7 +6,7 @@ FxBank {
 	init {
 		Setup.server;
 		prTempoClock = TempoClock.default;
-		this.renderUi();
+		this.prRenderUi();
 	}
 
 	*new {
@@ -25,6 +25,7 @@ FxBank {
 			Error(format("The effect type % is not supported by FxBank.", effectType)).throw;
 		});
 
+		postln(format("%: creating Ndef for %.", synthConfig.name, effectType));
 		switch (effectType,
 			\delay, {
 				Ndef(format("%_%",synthConfig.synthesizerClass.name,effectType).asSymbol,{
@@ -45,6 +46,13 @@ FxBank {
 		|effectType,synthConfig|
 		postln(format("%: removing %.", synthConfig.name, effectType));
 		Ndef(format("%_%",synthConfig.synthesizerClass.name,effectType).asSymbol).end;
+	}
+
+	prRenderDelayUi {
+		|container,fxControls,synthConfig|
+		fxControls.put(\delay, Dictionary());
+		fxControls[\delay].put(\switch, CheckBox(container, Rect(0,50,50,50)).action_({this.prUpdateEffectsForHardwareSynth(fxControls, synthConfig);}));
+		StaticText(container,Rect(50,50,200,50)).string_("Delay").stringColor_(Color.white);
 	}
 
 	prUpdateEffectsForHardwareSynth {
@@ -88,7 +96,7 @@ FxBank {
 		});
 	}
 
-	renderSynthDetails {
+	prRenderSynthDetails {
 		|synthConfig,index,window,carousel|
 		var fxControls = Dictionary();
 		var delayCheckBox, reverbCheckBox;
@@ -117,16 +125,18 @@ FxBank {
 		StaticText(detailViewCanvas, Rect(0,0,200,50)).string_(synthConfig.name).stringColor_(Color.white);
 
 		// Effects controls sections
-		fxControls.put(\delay, Dictionary());
-		fxControls[\delay].put(\switch, CheckBox(detailViewCanvas, Rect(0,50,50,50)).action_({this.prUpdateEffectsForHardwareSynth(fxControls, synthConfig);}));
-		StaticText(detailViewCanvas,Rect(50,50,200,50)).string_("Delay").stringColor_(Color.white);
-
-		fxControls.put(\reverb, Dictionary());
-		fxControls[\reverb].put(\switch, CheckBox(detailViewCanvas, Rect(0,100,50,50)).action_({this.prUpdateEffectsForHardwareSynth(fxControls, synthConfig);}));
-		StaticText(detailViewCanvas,Rect(50,100,200,50)).string_("Reverb").stringColor_(Color.white);
+		this.prRenderDelayUi(detailViewCanvas,fxControls,synthConfig);
+		this.prRenderReverbUi(detailViewCanvas,fxControls,synthConfig);
 	}
 
-	renderUi {
+	prRenderReverbUi {
+		|container,fxControls,synthConfig|
+		fxControls.put(\reverb, Dictionary());
+		fxControls[\reverb].put(\switch, CheckBox(container, Rect(0,100,50,50)).action_({this.prUpdateEffectsForHardwareSynth(fxControls, synthConfig);}));
+		StaticText(container,Rect(50,100,200,50)).string_("Reverb").stringColor_(Color.white);
+	}
+
+	prRenderUi {
 		var window = Window("Mixer",Rect(10,10,1200,800));
 		var carousel = ScrollView(window,Rect(0,0,200,800)).background_(Color.green);
 		prDetailViews = Array.newClear(Config.hardwareSynthesizers.size);
@@ -136,7 +146,7 @@ FxBank {
 			(synthConfig.inputBusChannels.size == 1) || (synthConfig.inputBusChannels.size == 2)}
 		).do({
 			|synthConfig,index|
-			this.renderSynthDetails(synthConfig,index,window,carousel);
+			this.prRenderSynthDetails(synthConfig,index,window,carousel);
 		});
 		window.front;
 	}
