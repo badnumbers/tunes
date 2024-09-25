@@ -32,7 +32,9 @@ FxBank {
 					var audio = NamedControl.ar(\in, 0!2);
 					var drywet =  NamedControl.ar(\drywet, 0);
 					var decay = NamedControl.ar(\decay,3);
-					XFade2.ar(audio,CombC.ar(audio, 2, [prTempoClock.beatDur,prTempoClock.beatDur/2], decay),drywet);
+					var leftdelay = NamedControl.ar(\leftdelay,1);
+					var rightdelay = NamedControl.ar(\rightdelay,1);
+					XFade2.ar(audio,CombC.ar(audio, 2, [prTempoClock.beatDur*leftdelay,prTempoClock.beatDur*rightdelay], decay),drywet);
 				});
 			},
 			\reverb, {
@@ -61,15 +63,25 @@ FxBank {
 		fxControls[\delay].put(\switch, CheckBox(topBar, Rect(0,0,50,50)).action_({this.prUpdateEffectsForHardwareSynth(fxControls, synthConfig);}));
 		StaticText(topBar,Rect(50,0,200,50)).string_("Delay").stringColor_(Color.white);
 		fxControls[\delay].put(\drywet, Knob(controlsView, Rect(10,0,80,80)).mode_(\vert).value_(0.2).action_({
-			|knob|
-			Ndef(format("%_%",synthConfig.synthesizerClass.name,\delay).asSymbol).set(\drywet,knob.value.linexp(0,1,1,3)-2);
+			|control|
+			Ndef(format("%_%",synthConfig.synthesizerClass.name,\delay).asSymbol).set(\drywet,control.value.linexp(0,1,1,3)-2);
 		}));
 		StaticText(controlsView,Rect(0,80,100,20)).string_("DRY / WET").align_(\center).stringColor_(Color.white);
 		fxControls[\delay].put(\decay, Knob(controlsView, Rect(110,0,80,80)).mode_(\vert).value_(0.3).action_({
-			|knob|
-			Ndef(format("%_%",synthConfig.synthesizerClass.name,\delay).asSymbol).set(\decay,knob.value.linexp(0,1,1,21)-1);
+			|control|
+			Ndef(format("%_%",synthConfig.synthesizerClass.name,\delay).asSymbol).set(\decay,control.value.linexp(0,1,1,21)-1);
 		}));
 		StaticText(controlsView,Rect(100,80,100,20)).string_("DECAY").align_(\center).stringColor_(Color.white);
+		StaticText(controlsView,Rect(200,15,100,20)).string_("LEFT DELAY").align_(\right).stringColor_(Color.white);
+		fxControls[\delay].put(\leftdelay, PopUpMenu(controlsView, Rect(300,15,100,20)).items_(["1/4", "1/3" , "1/2", "3/4" , "1", "5/4", "4/3", "1.5", "2", "3", "4"]).action_({
+			|control|
+			Ndef(format("%_%",synthConfig.synthesizerClass.name,\delay).asSymbol).set(\leftdelay,control.value.asFloat/16);
+		}));
+		StaticText(controlsView,Rect(200,65,100,20)).string_("RIGHT DELAY").align_(\right).stringColor_(Color.white);
+		fxControls[\delay].put(\rightdelay, PopUpMenu(controlsView, Rect(300,65,100,20)).items_(["1/4", "1/3" , "1/2", "3/4" , "1", "5/4", "4/3", "1.5", "2", "3", "4"]).action_({
+			|control|
+			Ndef(format("%_%",synthConfig.synthesizerClass.name,\delay).asSymbol).set(\rightdelay,control.value.asFloat/16);
+		}));
 	}
 
 	prUpdateEffectsForHardwareSynth {
@@ -156,19 +168,19 @@ FxBank {
 		fxControls[\reverb].put(\switch, CheckBox(topBar, Rect(0,0,50,50)).action_({this.prUpdateEffectsForHardwareSynth(fxControls, synthConfig);}));
 		StaticText(topBar,Rect(50,0,200,50)).string_("Reverb").stringColor_(Color.white);
 		fxControls[\reverb].put(\drywet, Knob(controlsView, Rect(10,0,80,80)).mode_(\vert).value_(0.2).action_({
-			|knob|
-			Ndef(format("%_%",synthConfig.synthesizerClass.name,\reverb).asSymbol).set(\drywet,knob.value.linexp(0,1,1,3)-2);
+			|control|
+			Ndef(format("%_%",synthConfig.synthesizerClass.name,\reverb).asSymbol).set(\drywet,control.value.linexp(0,1,1,3)-2);
 		}));
 		StaticText(controlsView,Rect(0,80,100,20)).string_("DRY / WET").align_(\center).stringColor_(Color.white);
 		fxControls[\reverb].put(\decay, Knob(controlsView, Rect(110,0,80,80)).mode_(\vert).value_(0.3).action_({
-			|knob|
-			Ndef(format("%_%",synthConfig.synthesizerClass.name,\reverb).asSymbol).set(\decay,knob.value.linexp(0,1,1,21)-1);
+			|control|
+			Ndef(format("%_%",synthConfig.synthesizerClass.name,\reverb).asSymbol).set(\decay,control.value.linexp(0,1,1,21)-1);
 		}));
 		StaticText(controlsView,Rect(100,80,100,20)).string_("DECAY").align_(\center).stringColor_(Color.white);
 	}
 
 	prRenderUi {
-		var window = Window("Mixer",Rect(10,10,1200,800));
+		var window = Window("FX Bank",Rect(10,10,1200,800));
 		var carousel = ScrollView(window,Rect(0,0,200,800)).background_(Color.green);
 		prDetailViews = Array.newClear(Config.hardwareSynthesizers.size);
 
