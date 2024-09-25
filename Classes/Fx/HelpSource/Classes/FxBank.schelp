@@ -1,7 +1,7 @@
 TITLE:: FxBank
 SUMMARY:: A user interface for adding effects to hardware synthesizers
 CATEGORIES:: External Control
-RELATED:: Classes/SomeRelatedClass, Reference/SomeRelatedStuff, etc.
+RELATED:: Classes/SomeRelatedClass, Reference/SomeRelatedStuff
 
 DESCRIPTION::
 LINK::Classes/FxBank:: provides a quick user interface which can be used to selectively route the output of chosen hardware synths via SuperCollider so that effects can be added to them.
@@ -9,56 +9,16 @@ LINK::Classes/FxBank:: provides a quick user interface which can be used to sele
 CLASSMETHODS::
 
 METHOD:: new
-Creates an instance of LINK::Classes/FxBank::.
+Creates an instance of LINK::Classes/FxBank::. This also calls LINK::Classes/Setup#*server:: in order to ensure the LINK::Classes/Server:: is started.
 
 INSTANCEMETHODS::
 
-METHOD:: renderUi
-(describe method here)
-
-RETURNS:: (describe returnvalue here)
-
-METHOD:: stopSynth
-(describe method here)
-
-ARGUMENT:: synthConfig
-(describe argument here)
-
-RETURNS:: (describe returnvalue here)
-
-METHOD:: init
-(describe method here)
-
-RETURNS:: (describe returnvalue here)
-
-METHOD:: renderSynthDetails
-(describe method here)
-
-ARGUMENT:: synthConfig
-(describe argument here)
-
-ARGUMENT:: index
-(describe argument here)
-
-ARGUMENT:: window
-(describe argument here)
-
-ARGUMENT:: carousel
-(describe argument here)
-
-RETURNS:: (describe returnvalue here)
-
-METHOD:: startSynth
-(describe method here)
-
-ARGUMENT:: synthConfig
-(describe argument here)
-
-RETURNS:: (describe returnvalue here)
-
+PRIVATE:: prCreateMapping, prCreateNdef, prRemoveNdef, prRenderDelayUi, prRenderReverbUi, prRenderSynthDetails, prRenderUi, prUpdateEffectsForHardwareSynth
 
 EXAMPLES::
 
 CODE::
-(some example code)
+// Show the FX Bank
+FxBank();
+// That's it!
 ::
