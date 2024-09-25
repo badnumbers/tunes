@@ -13,6 +13,12 @@ FxBank {
 		^super.new.init;
 	}
 
+	prCreateMapping {
+		|sourceEffectType,destinationEffectType,synthConfig|
+		postln(format("%: connecting % -> %.", synthConfig.name, sourceEffectType, destinationEffectType));
+		Ndef(format("%_%",synthConfig.synthesizerClass.name, destinationEffectType).asSymbol).set(\in, Ndef(format("%_%",synthConfig.synthesizerClass.name, sourceEffectType).asSymbol));
+	}
+
 	prCreateNdef {
 		|effectType, fxControls, synthConfig|
 		if (prEffectTypes.every({|supportedEffectType|supportedEffectType != effectType}),{
@@ -35,9 +41,16 @@ FxBank {
 		);
 	}
 
+	prRemoveNdef {
+		|effectType,synthConfig|
+		postln(format("%: removing %.", synthConfig.name, effectType));
+		Ndef(format("%_%",synthConfig.synthesizerClass.name,effectType).asSymbol).end;
+	}
+
 	prUpdateEffectsForHardwareSynth {
 		|fxControls, synthConfig|
 		var previousEffectType = \in;
+		postln("-----------------------------------------");
 		if (fxControls.keys.collect({|effectType|fxControls[effectType][\switch]}).any({|switch|switch.value == true}),{
 			postln(format("At least one of the check boxes is selected for the %.", synthConfig.name));
 			if (synthConfig.inputBusChannels.size == 1, {
@@ -49,33 +62,26 @@ FxBank {
 					SoundIn.ar(synthConfig.inputBusChannels);
 				});
 			});
-			Ndef(format("%_out",synthConfig.synthesizerClass.name).asSymbol,{
-				NamedControl.ar(\in, 0!2);
-			});
 
 			prEffectTypes.do({
 				|effectType|
 				if (fxControls[effectType][\switch].value == true,{
-					postln(format("The effect type % is switched on for the %.", effectType, synthConfig.name));
 					this.prCreateNdef(effectType, fxControls[effectType], synthConfig);
-					Ndef(format("%_%",synthConfig.synthesizerClass.name, effectType).asSymbol).set(\in, Ndef(format("%_%",synthConfig.synthesizerClass.name, previousEffectType).asSymbol));
+					this.prCreateMapping(previousEffectType, effectType, synthConfig);
 					previousEffectType = effectType;
 				},{
-					postln(format("The effect type % is switched off for the %.", effectType, synthConfig.name));
-					Ndef(format("%_%",synthConfig.class.name,effectType).asSymbol).end;
+					this.prRemoveNdef(effectType,synthConfig);
 				});
 			});
-
-			Ndef(format("%_out",synthConfig.synthesizerClass.name).asSymbol).set(\in, Ndef(format("%_%",synthConfig.synthesizerClass.name, previousEffectType).asSymbol));
-			Ndef(format("%_out",synthConfig.synthesizerClass.name).asSymbol).play;
+			postln(format("%: playing %.", synthConfig.name, previousEffectType));
+			Ndef(format("%_%",synthConfig.synthesizerClass.name,previousEffectType).asSymbol).play;
 			PipeWire.disconnectFromSoundcard(synthConfig);
 		},{
 			postln(format("None of the check boxes are selected for the %.", synthConfig.name));
-			Ndef(format("%_in",synthConfig.synthesizerClass.name).asSymbol).end;
-			Ndef(format("%_out",synthConfig.synthesizerClass.name).asSymbol).end;
+			this.prRemoveNdef(\in,synthConfig);
 			prEffectTypes.do({
 				|effectType|
-				Ndef(format("%_%",synthConfig.synthesizerClass.name,effectType).asSymbol).end;
+				this.prRemoveNdef(effectType,synthConfig);
 			});
 
 			PipeWire.connectToSoundcard(synthConfig);
