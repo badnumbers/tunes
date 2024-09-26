@@ -83,12 +83,12 @@ FxBank {
 
 	prRenderCommonUi {
 		|container,top,fxControls,synthConfig,effectType,effectName|
-		var effectView = View(container, Rect(10,top,960,200)).background_(Color.red);
-		var topBar = View(effectView, Rect(10,10,940,50)).background_(Color.blue);
-		var controlsView = View(effectView, Rect(10,60,940,100)).background_(Color.green);
+		var effectView = View(container, Rect(10,top,960,150)).background_(Color.red);
+		var topBar = View(effectView, Rect(10,10,940,30)).background_(Color.blue);
+		var controlsView = View(effectView, Rect(10,40,940,100)).background_(Color.green);
 		fxControls.put(effectType, Dictionary());
-		fxControls[effectType].put(\switch, CheckBox(topBar, Rect(0,0,50,50)).action_({this.prUpdateEffectsForHardwareSynth(fxControls, synthConfig);}));
-		StaticText(topBar,Rect(50,0,200,50)).string_(effectName).stringColor_(Color.white);
+		fxControls[effectType].put(\switch, CheckBox(topBar, Rect(10,0,50,30)).action_({this.prUpdateEffectsForHardwareSynth(fxControls, synthConfig);}));
+		StaticText(topBar,Rect(50,0,200,30)).string_(effectName).stringColor_(Color.white);
 		^controlsView;
 	}
 
@@ -111,7 +111,7 @@ FxBank {
 	prRenderPowerChorusUi {
 		|container,fxControls,synthConfig|
 		var effectType = \powerchorus;
-		var view = this.prRenderCommonUi(container,210,fxControls,synthConfig,effectType,"Power Chorus");
+		var view = this.prRenderCommonUi(container,150,fxControls,synthConfig,effectType,"Power Chorus");
 		fxControls[effectType].put(\drywet, Knob(view, Rect(10,0,80,80)).mode_(\vert).value_(1).action_({
 			|control|
 			Ndef(format("%_%",synthConfig.synthesizerClass.name,effectType).asSymbol).set(\drywet,control.value.linlin(0,1,-1,1));
@@ -132,7 +132,7 @@ FxBank {
 	prRenderDelayUi {
 		|container,fxControls,synthConfig|
 		var effectType = \delay;
-		var view = this.prRenderCommonUi(container,410,fxControls,synthConfig,effectType,"Delay");
+		var view = this.prRenderCommonUi(container,290,fxControls,synthConfig,effectType,"Delay");
 		fxControls[effectType].put(\drywet, Knob(view, Rect(10,0,80,80)).mode_(\vert).value_(0.2).action_({
 			|control|
 			Ndef(format("%_%",synthConfig.synthesizerClass.name,effectType).asSymbol).set(\drywet,control.value.linexp(0,1,1,3)-2);
@@ -240,7 +240,7 @@ FxBank {
 	prRenderReverbUi {
 		|container,fxControls,synthConfig|
 		var effectType = \reverb;
-		var view = this.prRenderCommonUi(container,610,fxControls,synthConfig,effectType,"Reverb");
+		var view = this.prRenderCommonUi(container,430,fxControls,synthConfig,effectType,"Reverb");
 		fxControls[effectType].put(\drywet, Knob(view, Rect(10,0,80,80)).mode_(\vert).value_(0.2).action_({
 			|control|
 			Ndef(format("%_%",synthConfig.synthesizerClass.name,effectType).asSymbol).set(\drywet,control.value.linexp(0,1,1,3)-2);
