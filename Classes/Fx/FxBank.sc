@@ -76,12 +76,12 @@ FxBank {
 		StaticText(controlsView,Rect(200,15,100,20)).string_("LEFT DELAY").align_(\right).stringColor_(Color.white);
 		fxControls[\delay].put(\leftdelay, PopUpMenu(controlsView, Rect(300,15,100,20)).items_(["1/4", "1/3" , "1/2", "3/4" , "1", "5/4", "4/3", "1.5", "2", "3", "4"]).value_(4).action_({
 			|control|
-			Ndef(format("%_%",synthConfig.synthesizerClass.name,\delay).asSymbol).set(\leftdelay,control.value.asFloat/16);
+			Ndef(format("%_%",synthConfig.synthesizerClass.name,\delay).asSymbol).set(\leftdelay,[0.25,1/3,0.5,0.75,1,1.25,4/3,1.5,2,3,4][control.value]/4);
 		}));
 		StaticText(controlsView,Rect(200,65,100,20)).string_("RIGHT DELAY").align_(\right).stringColor_(Color.white);
 		fxControls[\delay].put(\rightdelay, PopUpMenu(controlsView, Rect(300,65,100,20)).items_(["1/4", "1/3" , "1/2", "3/4" , "1", "5/4", "4/3", "1.5", "2", "3", "4"]).value_(4).action_({
 			|control|
-			Ndef(format("%_%",synthConfig.synthesizerClass.name,\delay).asSymbol).set(\rightdelay,control.value.asFloat/16);
+			Ndef(format("%_%",synthConfig.synthesizerClass.name,\delay).asSymbol).set(\rightdelay,[0.25,1/3,0.5,0.75,1,1.25,4/3,1.5,2,3,4][control.value]/4);
 		}));
 		fxControls[\delay].put(\delaywander, Knob(controlsView, Rect(400,0,80,80)).mode_(\vert).value_(0).action_({
 			|control|
