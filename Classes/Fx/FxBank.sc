@@ -1,6 +1,6 @@
 FxBank {
 	var prDetailViews;
-	var prEffectTypes = #[\chorus,\delay,\reverb];
+	var prEffectTypes = #[\chorus,\powerchorus,\delay,\reverb];
 	var prTempoClock;
 
 	init {
@@ -35,7 +35,22 @@ FxBank {
 					var modifiedaudio = audio * 1; // Create a copy of the signal
 					modifiedaudio[0] = modifiedaudio[0] + DelayC.ar(audio[0], 0.1, SinOsc.kr(LFNoise1.kr(0.2).range(0.2,0.8)).range(0.03,0.03+wander));
 					modifiedaudio[1] = modifiedaudio[1] + DelayC.ar(audio[1], 0.1, SinOsc.ar(LFNoise1.kr(0.2).range(0.2,0.8)).range(0.03,0.03+wander));
-	[XFade2.ar(audio[0], modifiedaudio[0], drywet),XFade2.ar(audio[1], modifiedaudio[1], drywet)];
+					[XFade2.ar(audio[0], modifiedaudio[0], drywet),XFade2.ar(audio[1], modifiedaudio[1], drywet)];
+				});
+			},
+			\powerchorus, {
+				Ndef(format("%_%",synthConfig.synthesizerClass.name,effectType).asSymbol,{
+					var audio = NamedControl.ar(\in, 0!2);
+					var drywet =  NamedControl.ar(\drywet, 0);
+					var freqspread = NamedControl.ar(\freqspread, 2); // 1 -> 2
+					var wander =  NamedControl.ar(\wander, 2);//MouseY.kr(1,5,1);
+					var modifiedaudio = audio * 1; // Create a copy of the signal
+					(1..10).collect(_*0.01).do({
+						|delay|
+						modifiedaudio[0] = modifiedaudio[0] + DelayC.ar(audio[0], 0.1, SinOsc.ar(LFNoise1.ar(0.2).range(0.2,0.8)).range(delay*freqspread,(delay+(0.002*wander))*freqspread));
+						modifiedaudio[1] = modifiedaudio[1] + DelayC.ar(audio[1], 0.1, SinOsc.ar(LFNoise1.ar(0.2).range(0.2,0.8)).range(delay*freqspread,(delay+(0.002*wander))*freqspread));
+					});
+					[XFade2.ar(audio[0], modifiedaudio[0], drywet),XFade2.ar(audio[1], modifiedaudio[1], drywet)];
 				});
 			},
 			\delay, {
@@ -81,7 +96,7 @@ FxBank {
 		|container,fxControls,synthConfig|
 		var effectType = \chorus;
 		var view = this.prRenderCommonUi(container,10,fxControls,synthConfig,effectType,"Chorus");
-		fxControls[effectType].put(\drywet, Knob(view, Rect(10,0,80,80)).mode_(\vert).value_(0.2).action_({
+		fxControls[effectType].put(\drywet, Knob(view, Rect(10,0,80,80)).mode_(\vert).value_(1).action_({
 			|control|
 			Ndef(format("%_%",synthConfig.synthesizerClass.name,effectType).asSymbol).set(\drywet,control.value.linlin(0,1,-1,1));
 		}));
@@ -91,13 +106,33 @@ FxBank {
 			Ndef(format("%_%",synthConfig.synthesizerClass.name,effectType).asSymbol).set(\wander,control.value.linexp(0,1,0.001,0.01));
 		}));
 		StaticText(view,Rect(100,80,100,20)).string_("WANDER").align_(\center).stringColor_(Color.white);
+	}
 
+	prRenderPowerChorusUi {
+		|container,fxControls,synthConfig|
+		var effectType = \powerchorus;
+		var view = this.prRenderCommonUi(container,210,fxControls,synthConfig,effectType,"Power Chorus");
+		fxControls[effectType].put(\drywet, Knob(view, Rect(10,0,80,80)).mode_(\vert).value_(1).action_({
+			|control|
+			Ndef(format("%_%",synthConfig.synthesizerClass.name,effectType).asSymbol).set(\drywet,control.value.linlin(0,1,-1,1));
+		}));
+		StaticText(view,Rect(0,80,100,20)).string_("DRY / WET").align_(\center).stringColor_(Color.white);
+		fxControls[effectType].put(\freqspread, Knob(view, Rect(110,0,80,80)).mode_(\vert).value_(0).action_({
+			|control|
+			Ndef(format("%_%",synthConfig.synthesizerClass.name,effectType).asSymbol).set(\freqspread,control.value.linlin(0,1,1,2));
+		}));
+		StaticText(view,Rect(100,80,100,20)).string_("FREQ SPREAD").align_(\center).stringColor_(Color.white);
+		fxControls[effectType].put(\wander, Knob(view, Rect(210,0,80,80)).mode_(\vert).value_(0.2).action_({
+			|control|
+			Ndef(format("%_%",synthConfig.synthesizerClass.name,effectType).asSymbol).set(\wander,control.value.linexp(0,1,1,5));
+		}));
+		StaticText(view,Rect(200,80,100,20)).string_("WANDER").align_(\center).stringColor_(Color.white);
 	}
 
 	prRenderDelayUi {
 		|container,fxControls,synthConfig|
 		var effectType = \delay;
-		var view = this.prRenderCommonUi(container,210,fxControls,synthConfig,effectType,"Delay");
+		var view = this.prRenderCommonUi(container,410,fxControls,synthConfig,effectType,"Delay");
 		fxControls[effectType].put(\drywet, Knob(view, Rect(10,0,80,80)).mode_(\vert).value_(0.2).action_({
 			|control|
 			Ndef(format("%_%",synthConfig.synthesizerClass.name,effectType).asSymbol).set(\drywet,control.value.linexp(0,1,1,3)-2);
@@ -197,6 +232,7 @@ FxBank {
 
 		// Effects controls sections
 		this.prRenderChorusUi(effectsView,fxControls,synthConfig);
+		this.prRenderPowerChorusUi(effectsView,fxControls,synthConfig);
 		this.prRenderDelayUi(effectsView,fxControls,synthConfig);
 		this.prRenderReverbUi(effectsView,fxControls,synthConfig);
 	}
@@ -204,7 +240,7 @@ FxBank {
 	prRenderReverbUi {
 		|container,fxControls,synthConfig|
 		var effectType = \reverb;
-		var view = this.prRenderCommonUi(container,410,fxControls,synthConfig,effectType,"Reverb");
+		var view = this.prRenderCommonUi(container,610,fxControls,synthConfig,effectType,"Reverb");
 		fxControls[effectType].put(\drywet, Knob(view, Rect(10,0,80,80)).mode_(\vert).value_(0.2).action_({
 			|control|
 			Ndef(format("%_%",synthConfig.synthesizerClass.name,effectType).asSymbol).set(\drywet,control.value.linexp(0,1,1,3)-2);
