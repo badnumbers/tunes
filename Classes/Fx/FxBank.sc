@@ -1,6 +1,6 @@
 FxBank {
 	var prDetailViews;
-	var prEffectTypes = #[\delay,\reverb];
+	var prEffectTypes = #[\chorus,\delay,\reverb];
 	var prTempoClock;
 
 	init {
@@ -27,6 +27,17 @@ FxBank {
 
 		postln(format("%: creating Ndef for %.", synthConfig.name, effectType));
 		switch (effectType,
+			\chorus, {
+				Ndef(format("%_%",synthConfig.synthesizerClass.name,effectType).asSymbol,{
+					var audio = NamedControl.ar(\in, 0!2);
+					var drywet =  NamedControl.ar(\drywet, 0);
+					var wander =  NamedControl.ar(\wander, 0.003);
+					var modifiedaudio = audio * 1; // Create a copy of the signal
+					modifiedaudio[0] = modifiedaudio[0] + DelayC.ar(audio[0], 0.1, SinOsc.kr(LFNoise1.kr(0.2).range(0.2,0.8)).range(0.03,0.03+wander));
+					modifiedaudio[1] = modifiedaudio[1] + DelayC.ar(audio[1], 0.1, SinOsc.ar(LFNoise1.kr(0.2).range(0.2,0.8)).range(0.03,0.03+wander));
+	[XFade2.ar(audio[0], modifiedaudio[0], drywet),XFade2.ar(audio[1], modifiedaudio[1], drywet)];
+				});
+			},
 			\delay, {
 				Ndef(format("%_%",synthConfig.synthesizerClass.name,effectType).asSymbol,{
 					var audio = NamedControl.ar(\in, 0!2);
@@ -55,39 +66,63 @@ FxBank {
 		Ndef(format("%_%",synthConfig.synthesizerClass.name,effectType).asSymbol).end;
 	}
 
-	prRenderDelayUi {
-		|container,fxControls,synthConfig|
-		var effectView = View(container, Rect(10,10,960,200)).background_(Color.red);
+	prRenderCommonUi {
+		|container,top,fxControls,synthConfig,effectType,effectName|
+		var effectView = View(container, Rect(10,top,960,200)).background_(Color.red);
 		var topBar = View(effectView, Rect(10,10,940,50)).background_(Color.blue);
 		var controlsView = View(effectView, Rect(10,60,940,100)).background_(Color.green);
-		fxControls.put(\delay, Dictionary());
-		fxControls[\delay].put(\switch, CheckBox(topBar, Rect(0,0,50,50)).action_({this.prUpdateEffectsForHardwareSynth(fxControls, synthConfig);}));
-		StaticText(topBar,Rect(50,0,200,50)).string_("Delay").stringColor_(Color.white);
-		fxControls[\delay].put(\drywet, Knob(controlsView, Rect(10,0,80,80)).mode_(\vert).value_(0.2).action_({
+		fxControls.put(effectType, Dictionary());
+		fxControls[effectType].put(\switch, CheckBox(topBar, Rect(0,0,50,50)).action_({this.prUpdateEffectsForHardwareSynth(fxControls, synthConfig);}));
+		StaticText(topBar,Rect(50,0,200,50)).string_(effectName).stringColor_(Color.white);
+		^controlsView;
+	}
+
+	prRenderChorusUi {
+		|container,fxControls,synthConfig|
+		var effectType = \chorus;
+		var view = this.prRenderCommonUi(container,10,fxControls,synthConfig,effectType,"Chorus");
+		fxControls[effectType].put(\drywet, Knob(view, Rect(10,0,80,80)).mode_(\vert).value_(0.2).action_({
 			|control|
-			Ndef(format("%_%",synthConfig.synthesizerClass.name,\delay).asSymbol).set(\drywet,control.value.linexp(0,1,1,3)-2);
+			Ndef(format("%_%",synthConfig.synthesizerClass.name,effectType).asSymbol).set(\drywet,control.value.linlin(0,1,-1,1));
 		}));
-		StaticText(controlsView,Rect(0,80,100,20)).string_("DRY / WET").align_(\center).stringColor_(Color.white);
-		fxControls[\delay].put(\decay, Knob(controlsView, Rect(110,0,80,80)).mode_(\vert).value_(0.3).action_({
+		StaticText(view,Rect(0,80,100,20)).string_("DRY / WET").align_(\center).stringColor_(Color.white);
+		fxControls[effectType].put(\wander, Knob(view, Rect(110,0,80,80)).mode_(\vert).value_(0.003).action_({
 			|control|
-			Ndef(format("%_%",synthConfig.synthesizerClass.name,\delay).asSymbol).set(\decay,control.value.linexp(0,1,1,21)-1);
+			Ndef(format("%_%",synthConfig.synthesizerClass.name,effectType).asSymbol).set(\wander,control.value.linexp(0,1,0.001,0.01));
 		}));
-		StaticText(controlsView,Rect(100,80,100,20)).string_("DECAY").align_(\center).stringColor_(Color.white);
-		StaticText(controlsView,Rect(200,15,100,20)).string_("LEFT DELAY").align_(\right).stringColor_(Color.white);
-		fxControls[\delay].put(\leftdelay, PopUpMenu(controlsView, Rect(300,15,100,20)).items_(["1/4", "1/3" , "1/2", "3/4" , "1", "5/4", "4/3", "1.5", "2", "3", "4"]).value_(4).action_({
+		StaticText(view,Rect(100,80,100,20)).string_("WANDER").align_(\center).stringColor_(Color.white);
+
+	}
+
+	prRenderDelayUi {
+		|container,fxControls,synthConfig|
+		var effectType = \delay;
+		var view = this.prRenderCommonUi(container,210,fxControls,synthConfig,effectType,"Delay");
+		fxControls[effectType].put(\drywet, Knob(view, Rect(10,0,80,80)).mode_(\vert).value_(0.2).action_({
 			|control|
-			Ndef(format("%_%",synthConfig.synthesizerClass.name,\delay).asSymbol).set(\leftdelay,[0.25,1/3,0.5,0.75,1,1.25,4/3,1.5,2,3,4][control.value]/4);
+			Ndef(format("%_%",synthConfig.synthesizerClass.name,effectType).asSymbol).set(\drywet,control.value.linexp(0,1,1,3)-2);
 		}));
-		StaticText(controlsView,Rect(200,65,100,20)).string_("RIGHT DELAY").align_(\right).stringColor_(Color.white);
-		fxControls[\delay].put(\rightdelay, PopUpMenu(controlsView, Rect(300,65,100,20)).items_(["1/4", "1/3" , "1/2", "3/4" , "1", "5/4", "4/3", "1.5", "2", "3", "4"]).value_(4).action_({
+		StaticText(view,Rect(0,80,100,20)).string_("DRY / WET").align_(\center).stringColor_(Color.white);
+		fxControls[effectType].put(\decay, Knob(view, Rect(110,0,80,80)).mode_(\vert).value_(0.3).action_({
 			|control|
-			Ndef(format("%_%",synthConfig.synthesizerClass.name,\delay).asSymbol).set(\rightdelay,[0.25,1/3,0.5,0.75,1,1.25,4/3,1.5,2,3,4][control.value]/4);
+			Ndef(format("%_%",synthConfig.synthesizerClass.name,effectType).asSymbol).set(\decay,control.value.linexp(0,1,1,21)-1);
 		}));
-		fxControls[\delay].put(\delaywander, Knob(controlsView, Rect(400,0,80,80)).mode_(\vert).value_(0).action_({
+		StaticText(view,Rect(100,80,100,20)).string_("DECAY").align_(\center).stringColor_(Color.white);
+		StaticText(view,Rect(200,15,100,20)).string_("LEFT DELAY").align_(\right).stringColor_(Color.white);
+		fxControls[effectType].put(\leftdelay, PopUpMenu(view, Rect(300,15,100,20)).items_(["1/4", "1/3" , "1/2", "3/4" , "1", "5/4", "4/3", "1.5", "2", "3", "4"]).value_(4).action_({
 			|control|
-			Ndef(format("%_%",synthConfig.synthesizerClass.name,\delay).asSymbol).set(\delaywander,control.value.linexp(0,1,1,1.1)-1);
+			Ndef(format("%_%",synthConfig.synthesizerClass.name,effectType).asSymbol).set(\leftdelay,[0.25,1/3,0.5,0.75,1,1.25,4/3,1.5,2,3,4][control.value]/4);
 		}));
-		StaticText(controlsView,Rect(400,80,100,20)).string_("WANDER").align_(\center).stringColor_(Color.white);
+		StaticText(view,Rect(200,65,100,20)).string_("RIGHT DELAY").align_(\right).stringColor_(Color.white);
+		fxControls[effectType].put(\rightdelay, PopUpMenu(view, Rect(300,65,100,20)).items_(["1/4", "1/3" , "1/2", "3/4" , "1", "5/4", "4/3", "1.5", "2", "3", "4"]).value_(4).action_({
+			|control|
+			Ndef(format("%_%",synthConfig.synthesizerClass.name,effectType).asSymbol).set(\rightdelay,[0.25,1/3,0.5,0.75,1,1.25,4/3,1.5,2,3,4][control.value]/4);
+		}));
+		fxControls[effectType].put(\delaywander, Knob(view, Rect(400,0,80,80)).mode_(\vert).value_(0).action_({
+			|control|
+			Ndef(format("%_%",synthConfig.synthesizerClass.name,effectType).asSymbol).set(\delaywander,control.value.linexp(0,1,1,1.1)-1);
+		}));
+		StaticText(view,Rect(400,80,100,20)).string_("WANDER").align_(\center).stringColor_(Color.white);
 	}
 
 	prUpdateEffectsForHardwareSynth {
@@ -161,28 +196,25 @@ FxBank {
 		StaticText(headerView, Rect(0,0,200,50)).string_(synthConfig.name).stringColor_(Color.white);
 
 		// Effects controls sections
+		this.prRenderChorusUi(effectsView,fxControls,synthConfig);
 		this.prRenderDelayUi(effectsView,fxControls,synthConfig);
 		this.prRenderReverbUi(effectsView,fxControls,synthConfig);
 	}
 
 	prRenderReverbUi {
 		|container,fxControls,synthConfig|
-		var effectView = View(container, Rect(10,210,960,200)).background_(Color.red);
-		var topBar = View(effectView, Rect(10,10,940,50)).background_(Color.blue);
-		var controlsView = View(effectView, Rect(10,60,940,100)).background_(Color.green);
-		fxControls.put(\reverb, Dictionary());
-		fxControls[\reverb].put(\switch, CheckBox(topBar, Rect(0,0,50,50)).action_({this.prUpdateEffectsForHardwareSynth(fxControls, synthConfig);}));
-		StaticText(topBar,Rect(50,0,200,50)).string_("Reverb").stringColor_(Color.white);
-		fxControls[\reverb].put(\drywet, Knob(controlsView, Rect(10,0,80,80)).mode_(\vert).value_(0.2).action_({
+		var effectType = \reverb;
+		var view = this.prRenderCommonUi(container,410,fxControls,synthConfig,effectType,"Reverb");
+		fxControls[effectType].put(\drywet, Knob(view, Rect(10,0,80,80)).mode_(\vert).value_(0.2).action_({
 			|control|
-			Ndef(format("%_%",synthConfig.synthesizerClass.name,\reverb).asSymbol).set(\drywet,control.value.linexp(0,1,1,3)-2);
+			Ndef(format("%_%",synthConfig.synthesizerClass.name,effectType).asSymbol).set(\drywet,control.value.linexp(0,1,1,3)-2);
 		}));
-		StaticText(controlsView,Rect(0,80,100,20)).string_("DRY / WET").align_(\center).stringColor_(Color.white);
-		fxControls[\reverb].put(\decay, Knob(controlsView, Rect(110,0,80,80)).mode_(\vert).value_(0.3).action_({
+		StaticText(view,Rect(0,80,100,20)).string_("DRY / WET").align_(\center).stringColor_(Color.white);
+		fxControls[effectType].put(\decay, Knob(view, Rect(110,0,80,80)).mode_(\vert).value_(0.3).action_({
 			|control|
-			Ndef(format("%_%",synthConfig.synthesizerClass.name,\reverb).asSymbol).set(\decay,control.value.linexp(0,1,1,21)-1);
+			Ndef(format("%_%",synthConfig.synthesizerClass.name,effectType).asSymbol).set(\decay,control.value.linexp(0,1,1,21)-1);
 		}));
-		StaticText(controlsView,Rect(100,80,100,20)).string_("DECAY").align_(\center).stringColor_(Color.white);
+		StaticText(view,Rect(100,80,100,20)).string_("DECAY").align_(\center).stringColor_(Color.white);
 	}
 
 	prRenderUi {
