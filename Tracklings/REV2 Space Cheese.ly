@@ -3,6 +3,7 @@
 
 \header {
   title = "REV2 Space Cheese"
+  subtitle = "A♭"
 }
 
 \markup "REV2 is using F1 P47. The left split is an arpeggio and makes an 80s octave bass."

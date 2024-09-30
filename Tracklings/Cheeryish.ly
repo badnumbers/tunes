@@ -3,6 +3,7 @@
 
 \header {
   title = "Cheeryish"
+  subtitle = "F♯ / G♭"
 }
 
 \markup "Hydrasynth: A101 VHS Dreams"
