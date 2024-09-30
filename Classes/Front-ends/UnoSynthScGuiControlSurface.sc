@@ -71,9 +71,9 @@ UnoSynthScGuiControlSurface : ScGuiControlSurface {
 			borderWidth:5)
 		.mouseUpAction_({
 			postln(format("Running the mouse up action for toggle button %. Sending CC value %.",labelText,onOffConvertToMidiCcFunc.value(button.value)));
-			super.prSynthesizer.modifyWorkingPatch(parameterNumber,onOffConvertToMidiCcFunc.value(button.value),this.class.name);
+			prSynthesizer.modifyWorkingPatch(parameterNumber,onOffConvertToMidiCcFunc.value(button.value),this.class.name);
 		});
-		super.prSynthesizer.addUpdateAction(this.class.name, parameterNumber, {
+		prSynthesizer.addUpdateAction(this.class.name, parameterNumber, {
 			|newvalue|
 			button.value = onOffConvertFromMidiCcFunc.value(newvalue);
 			postln(format("Setting toggle button % to %.",labelText,button.value));
@@ -138,28 +138,28 @@ UnoSynthScGuiControlSurface : ScGuiControlSurface {
 		.string_("Initialise")
 		.stringColor_(Color.black)
 		.align_(\center)
-		.mouseUpAction_({super.prSynthesizer.initialisePatch()});
+		.mouseUpAction_({prSynthesizer.initialisePatch()});
 
 		StaticText(window,Rect(160,710,100,30))
 		.background_(lightgrey)
 		.string_("Randomise")
 		.stringColor_(Color.black)
 		.align_(\center)
-		.mouseUpAction_({super.prSynthesizer.randomisePatch(0)});
+		.mouseUpAction_({prSynthesizer.randomisePatch(0)});
 
 		StaticText(window,Rect(680,710,100,30))
 		.background_(lightgrey)
 		.string_("Write")
 		.stringColor_(Color.black)
 		.align_(\center)
-		.mouseUpAction_({super.prSynthesizer.writeWorkingPatch()});
+		.mouseUpAction_({prSynthesizer.writeWorkingPatch()});
 
 		StaticText(window,Rect(790,710,100,30))
 		.background_(lightgrey)
 		.string_("Scope")
 		.stringColor_(Color.black)
 		.align_(\center)
-		.mouseUpAction_({this.openStethoscope(super.prSynthesizer.audioInputChannels[0],super.prSynthesizer.audioInputChannels.size)});
+		.mouseUpAction_({this.openStethoscope(prSynthesizer.audioInputChannels[0],prSynthesizer.audioInputChannels.size)});
 	}
 
 	initOscillatorsTab {
@@ -263,10 +263,10 @@ UnoSynthScGuiControlSurface : ScGuiControlSurface {
 			"Sine","Triangle","Ascending sawtooth","Descending sawtooth","Square","Random (smooth)","Random (sample and hold)"
 		])
 		.action_({
-			|selectedItem|super.prSynthesizer.modifyWorkingPatch(UnoSynth.lfoWaveCcNo,lfoWaveChooserConvertToMidiCcFunc.value(selectedItem.value),this.class.name);
+			|selectedItem|prSynthesizer.modifyWorkingPatch(UnoSynth.lfoWaveCcNo,lfoWaveChooserConvertToMidiCcFunc.value(selectedItem.value),this.class.name);
 			postln(format("Value updated to %.", lfoWaveChooserConvertToMidiCcFunc.value(selectedItem.value)));
 		});
-		super.prSynthesizer.addUpdateAction(this.class.name, UnoSynth.lfoWaveCcNo, {
+		prSynthesizer.addUpdateAction(this.class.name, UnoSynth.lfoWaveCcNo, {
 			|newvalue|
 			postln(format("In update action for LFO wave"));
 			lfoWaveChooser.value = lfoWaveChooserConvertFromMidiCcFunc.value(newvalue);

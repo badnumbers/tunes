@@ -184,7 +184,7 @@ Jp08ScGuiControlSurface : ScGuiControlSurface {
 		]);
 		this.addSliderWithLabel(vcfView, 350, 100, Jp08.vcfKeyfollowParameterNumber, "KEY FOLLOW");
 		this.addSliderWithLabel(vcfView, 450, 100, Jp08.vcfLfoModParameterNumber, "LFO MOD");
-		this.addSliderWithLabel(vcfView, 550, 100, Jp08.vcfEnvmodParameterNumber, "ENV MOD");
+		this.addSliderWithLabel(vcfView, 550, 100, Jp08.vcfEnvModParameterNumber, "ENV MOD");
 		this.addDropDownListWithLabel(vcfView,650,100,Jp08.vcfEnvModSourceParameterNumber,"SOURCE",[
 			[ "Envelope 1", [1] ], [ "Envelope 2", [0] ]
 		]);
