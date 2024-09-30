@@ -40,7 +40,7 @@ music = \relative
     b ds gs ds cs f b f ds fs as c cs4 | % 8
     cs,16 fs as fs c ds as' ds, b ds as' ds, d fs cs' fs, | % 9
     as, cs fs as cs4~ cs2 | % 10
-    d,16 fs as fs s fs as fs cs fs as fs b, d gs d | % 11
+    d,16 fs as fs d fs as fs cs fs as fs b, d gs d | % 11
     cs e b' e, cs e b' e, d fs cs' fs, e gs d' gs, | % 12
     a, cs e gs cs, e a cs d, fs b d b, d fs b | % 13
     d, fs a d cs, f a cs cs, e gs b a, cs e a'
