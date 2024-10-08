@@ -65,6 +65,7 @@
 >>
 
 \markup "This sounds wonderful with the same bassline under it"
+\markup "JP-08: Duran pluck"
 
 \new GrandStaff <<
   \new Staff \with { instrumentName = "JP08" } \relative c'' {
