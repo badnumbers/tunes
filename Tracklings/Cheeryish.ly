@@ -63,3 +63,13 @@
     r1 | % 8
   }
 >>
+
+\markup "This sounds wonderful with the same bassline under it"
+
+\new GrandStaff <<
+  \new Staff \with { instrumentName = "JP08" } \relative c'' {
+    \key ef \minor
+    \time 22/8
+    bf8[ df ef] af,[ bf df] gf,[ af bf] ef,[ gf af] ef[ gf af] ef[ gf af] f[ gf bf df] |
+  }
+>>
