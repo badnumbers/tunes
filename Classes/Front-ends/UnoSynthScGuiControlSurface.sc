@@ -51,7 +51,7 @@ UnoSynthScGuiControlSurface : ScGuiControlSurface {
 		var onOffConvertFromMidiCcFunc = {
 			|midiCcValue|
 			var onOffValue;
-			if (midiCcValue <= 63, {onOffValue = False;}, {onOffValue = True});
+			if (midiCcValue <= 63, {onOffValue = false;}, {onOffValue = true});
 			onOffValue;
 		};
 		var onOffConvertToMidiCcFunc = {
