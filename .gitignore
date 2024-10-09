@@ -1,2 +1,4 @@
 /Tracklings/*.pdf
 /Tracklings/*.midi
+/Tracks/**/*.pdf
+/Tracks/**/*.midi
