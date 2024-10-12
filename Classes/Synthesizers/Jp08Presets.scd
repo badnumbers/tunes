@@ -76,3 +76,52 @@ Pdef(\pattern,
 	)
 ).play(TempoClock(1.6));
 )
+
+(
+var patch = Jp08Patch();
+patch.name = "Skateboards Offiah";
+patch.kvps[4102]=8;patch.kvps[4358]=0;patch.kvps[1282]=128;patch.kvps[1286]=128;patch.kvps[268]=3;patch.kvps[770]=0;patch.kvps[1284]=128;patch.kvps[4]=0;patch.kvps[274]=163;patch.kvps[264]=2;patch.kvps[280]=0;patch.kvps[1288]=2;patch.kvps[768]=255;patch.kvps[1032]=1;patch.kvps[260]=0;patch.kvps[278]=3;patch.kvps[522]=1;patch.kvps[524]=0;patch.kvps[4098]=13;patch.kvps[270]=3;patch.kvps[276]=129;patch.kvps[1026]=78;patch.kvps[1024]=0;patch.kvps[272]=0;patch.kvps[4352]=0;patch.kvps[4360]=2;patch.kvps[514]=145;patch.kvps[262]=141;patch.kvps[4100]=13;patch.kvps[258]=255;patch.kvps[1028]=0;patch.kvps[518]=0;patch.kvps[516]=0;patch.kvps[0]=128;patch.kvps[266]=2;patch.kvps[526]=160;patch.kvps[512]=0;patch.kvps[4354]=128;patch.kvps[4096]=1;patch.kvps[520]=90;patch.kvps[1280]=0;patch.kvps[256]=0;patch.kvps[2]=128;patch.kvps[1030]=0;
+~jp08.setWorkingPatch(patch);
+)
+(
+h = 0.5;
+Pdef(\pattern).stop;
+Pdef(\pattern,
+	Ppar([
+		Pbind(
+			\type,\midi,
+			\midiout,~jp08.midiout,
+			\chan,~jp08.midiChannel,
+			\midinote, Pseq([66,64,62,\, 66,64,62,\, 69,67,66,\, 66,64,62,\, 71,73,74,69, 71,73,74,78, 74,72,70,67, 69,71,64,\]),
+			\dur, Pseq([     2,2,2,2,    2,2,2,2,    2,2,2,2,    2,2,2,2,    2,2,1.5,2.5, 2,2,1.5,2.5, 2,2,1.5,2.5, 2,2,2,2]),
+			\legato, 0.1,
+			\amp, 0.7
+		),
+		Pbind(
+			\type,\midi,
+			\midiout,~jp08.midiout,
+			\chan,~jp08.midiChannel,
+			\midinote, Pseq([
+				Pseq([\,\,38,50, \,\,38,50, \,\,38,50, \,38,50,\]),
+				Pseq([\,\,38,50, \,\,38,50, \,\,38,50, \,38,50,\]),
+				Pseq([\,\,42,54, \,\,42,54, \,\,42,54, \,42,54,\]),
+				Pseq([\,\,38,50, \,\,38,50, \,\,38,50, \,38,50,\]),
+				Pseq([\,\,43,55, \,\,42,54, \,\,41,53, \,41,53,\]),
+				Pseq([\,\,43,55, \,\,45,57, \,\,47,59, \,43,55,\]),
+				Pseq([\,\,46,58, \,\,44,56, \,\,43,55, \,39,55,\]),
+				Pseq([\,\,42,54, \,\,43,55, \,\,45,57, \,\,\,\])
+			]),
+			\dur, h,
+			\legato, 0.9,
+			\amp, 0.5
+		)
+	])
+).play(TempoClock(1.75));
+)
+
+(
+MIDIdef.noteOn(\reporter,{
+	|val,num,chan,src|
+	postln(format("Velocity: %, Note Number: %, Channel: %", val,num,chan));
+});
+)
