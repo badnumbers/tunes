@@ -12,6 +12,21 @@ Creates an instance of LINK::Classes/Sequencer::.
 
 INSTANCEMETHODS::
 
+METHOD::addGlobalPreKeys
+Adds a set of pattern keys which are added EMPHASIS::before:: every section for every part. This is generally done to provide defaults which can be overridden in the patterns provided by LINK::#-addMidiPart:: and LINK::#-addScPart::.
+
+ARGUMENT::keysArray
+An even-numbered LINK::Classes/Array:: of keys and values. Each key (i.e. odd-numbered item) must be a LINK::Classes/Symbol::.
+
+DISCUSSION::
+CODE::
+// All parts will use the E♭ minor scale by default
+~mysequencer.addGlobalPreKeys([
+	\scale,Scale.minor,
+	\ctranspose,3
+]);
+::
+
 METHOD::addMidiPart
 Adds a MIDI sequence to the specified section for the specified LINK::Classes/Synthesizer::.
 
@@ -24,23 +39,60 @@ A LINK::Classes/Synthesizer:: that the part is for.
 ARGUMENT::pattern
 A LINK::Classes/Pattern:: to play on the synthesizer. There is no need to specify the TELETYPE::\type::, TELETYPE::\midiout:: or TELETYPE::\chan:: keys since these are included automatically.
 
-METHOD::play
-Plays the specified section by playing all of the parts in the section in parallel.
+METHOD::addScPart
+Adds a sequence to be played using a LINK::Classes/SynthDef::.
 
 ARGUMENT::section
-A LINK::Classes/Symbol:: denoting the section to play.
+A LINK::Classes/Symbol:: representing the name of the LINK::Classes/SynthDef::.
+
+ARGUMENT::synthDefName
+A LINK::Classes/SynthDef:: that the part is for.
+
+ARGUMENT::pattern
+A LINK::Classes/Pattern:: to play on the LINK::Classes/SynthDef::. There is no need to specify the TELETYPE::\type::, TELETYPE::\midiout:: or TELETYPE::\chan:: keys since these are included automatically.
+
+METHOD::addSynthesizerPostKeys
+Adds a set of pattern keys which are added EMPHASIS::after:: every section for the specified LINK::Classes/Synthesizer::. These post-keys are generally patterns which use LINK::Classes/Pkey:: to access keys defined previously, for example by LINK::#-addMidiPart:: and LINK::#-addScPart::, and modify them in some way.
+
+ARGUMENT::synthesizer
+The LINK::Classes/Synthesizer:: that these post-keys will be applied to.
+
+ARGUMENT::keysArray
+An even-numbered LINK::Classes/Array:: of keys and values. Each key (i.e. odd-numbered item) must be a LINK::Classes/Symbol::.
+
+DISCUSSION::
+CODE::
+// Add a little randomness to the \amp key for all notes generated for the REV2 synthesizer
+~mysequencer.addSynthesizerPostKeys(~rev2, [
+	\amp, (Pkey(\amp) * Pbrown(0.8,1.2,0.1)).clip(0,1)
+]);
+::
+
+METHOD::play
+Plays the specified sections by playing all of the parts in each section in parallel.
+
+ARGUMENT::sections
+An LINK::Classes/Array:: of LINK::Classes/Symbol::s denoting the sections to play.
+
+METHOD::stop
+Stops playback.
 
 EXAMPLES::
 
-code::
+CODE::
 ~rev2 = ~rev2 ?? Rev2(); // If necessary
 (
 ~seq = Sequencer();
-~seq.addMidiPart(\intro, ~rev2, Pbind(
-	\pitch, Pseq([31,41,51,61]);
+~seq.addMidiPart(\part1, ~rev2, Pbind(
+	\dur, 1,
+	\pitch, Pseq([31,41,51,61])
 ));
-~seq.play(\intro);
+~seq.addMidiPart(\part2, ~rev2, Pbind(
+	\dur, 0.5,
+	\pitch, Pseq([71,61,51,41,31])
+));
+~seq.play([\part1,\part2]);
 )
 
-~seq.stop; // If necessary
+~seq.stop;
 ::

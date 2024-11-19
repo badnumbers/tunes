@@ -1,8 +1,9 @@
 Sequencer {
-	var prSections;
+	var prEventStreamPlayer;
 	var prPartWrapper;
 	var prPreKeySets;
 	var prPostKeySets;
+	var prSections;
 
 	addGlobalPreKeys {
 		|keysArray|
@@ -82,8 +83,6 @@ Sequencer {
 			var partType = part[0];
 			var pattern = part[1];
 
-			postln(format("The synth is % and the partType is %.", synth, partType));
-
 			preKeys = List.newUsing([
 				\amp,0.5,
 				\timingOffset,0
@@ -151,22 +150,9 @@ Sequencer {
 								});
 							});
 						});
-						postln(format("Adding element %.",newKey));
 						postKeys.add(newKey);
 					});
 				});
-			});
-
-			postln(format("For section % and synth %, the keys are", section, synth));
-			postln("Pre-keys:");
-			preKeys.do({
-				|preKey|
-				postln(format("- %",preKey));
-			});
-			postln("Post-keys:");
-			postKeys.do({
-				|postKey|
-				postln(format("- %",postKey));
 			});
 
 			Pchain(
@@ -182,14 +168,21 @@ Sequencer {
 	}
 
 	play {
-		|section|
-		Validator.validateMethodParameterType(section, Symbol, "section", "Sequencer", "play");
-		Pdef(\currentSection,
-			Ppar(prSections[section].keys.collect({|instrument|prPartWrapper.value(section,instrument,prSections[section][instrument])}))
-		).play;
+		|sections|
+		Validator.validateMethodParameterType(sections, Array, "sections", "Sequencer", "play");
+		this.stop;
+		prEventStreamPlayer = Pspawner({
+			|sp|
+			sections.do({
+				|section|
+				sp.seq(Ppar(prSections[section].keys.collect({|instrument|prPartWrapper.value(section,instrument,prSections[section][instrument])})));
+			});
+		}).play;
 	}
 
 	stop {
-		Pdef(\currentSection).stop;
+		if (prEventStreamPlayer.isMemberOf(EventStreamPlayer), {
+			prEventStreamPlayer.stop;
+		});
 	}
 }
