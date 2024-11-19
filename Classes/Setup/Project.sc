@@ -60,6 +60,7 @@ Project {
 					Document.open("%/%".format(thisProcess.nowExecutingPath.dirname, file.filename));
 				});
 			});
+			postln("PROJECT SETUP COMPLETE");
 		}.fork;
 	}
 }
