@@ -41,3 +41,34 @@
     g,8 d' g r g,8 d' g r | % 12
   }
 >>
+
+\markup "Sounds good with a Perform-VE ooooh"
+
+\new GrandStaff <<
+  \new Staff \with { instrumentName = "?" } \relative c'' {
+    \key c \major
+    <g c e>1 | % 1
+  }
+  \new Staff \with { instrumentName = "?" } \relative c' {
+    \key c \major
+    \clef bass
+    <d, d'>4 <e e'>4 <b b'>2  | % 1
+  }
+>>
+
+\new GrandStaff <<
+  \new Staff \with { instrumentName = "?" } \relative c' {
+    \key c \major
+    c4 e g2 | % 1
+    e4 f c ef | % 2
+    d4 f e2 | % 3
+    af4^"?"
+  }
+  \new Staff \with { instrumentName = "?" } \relative c' {
+    \key c \major
+    \clef bass
+    c4 b a g  | % 1
+    af a f g | % 2
+    f a af b | % 3
+  }
+>>
