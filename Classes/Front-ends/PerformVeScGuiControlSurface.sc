@@ -31,7 +31,7 @@ PerformVeScGuiControlSurface : ScGuiControlSurface {
 		var container = View(parent, Rect(left, top, 100, 100)).background_(backgroundYellow);
 		this.addControlLabel(container, Rect(0,0,100,25), labelText, \center, Color.black);
 		this.addToggleButton(container,Rect(15,25,70,70),parameterNumber,[
-			[False, [0] ], [True, [127] ]
+			[false, [0] ], [true, [127] ]
 		],backgroundYellow,lightGrey,Color.white,backgroundYellow,litGreen);
 	}
 
