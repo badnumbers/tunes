@@ -38,7 +38,7 @@ DEFINITIONLIST::
 || A SuperCollider GUI class used to control a synthesizer.
 ::
 
-When CODE::modifyWorkingPatch:: is called, a CODE::source:: can be provided. If an update action is triggered, if the CODE::destination:: of the update action matches this CODE::source::, then the update action will not be run. This is to prevent, for example, the knob of a GUI being updated unnecessarily when it was the source of the parameter change, or a change physically made on a hardware synthesizer being fed back to it.
+When LINK::#-modifyWorkingPatch:: is called, a CODE::source:: can be provided. If an update action is triggered, if the CODE::destination:: of the update action matches this CODE::source::, then the update action will not be run. This is to prevent, for example, the knob of a GUI being updated unnecessarily when it was the source of the parameter change, or a change physically made on a hardware synthesizer being fed back to it.
 
 ARGUMENT:: parameterNumber
 The parameter number that, when changed, will trigger the update action.
@@ -88,6 +88,12 @@ Overdrive: 17.0
 Delay Time: 0
 Delay Feedback: 0
 ::
+
+METHOD:: getWorkingPatchParameterValue
+Gets the value of the supplied parameter of the STRONG::Working Patch::.
+
+ARGUMENT:: parameterNumber
+An LINK::Classes/Integer:: which is the number of the parameter to get the value of.
 
 METHOD:: initialisePatch
 Updates the STRONG::Working Patch:: with default parameter values and sends it to the hardware synth.

@@ -657,6 +657,7 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 		detailsOnButton.mouseUpAction_({
 			this.selectOperator(operatorNumber);
 		});
+		ScGuiDx7Envelope(view,Rect(0,50,100,50),Color.black,this.dx7Teal,prSynthesizer,operatorNumber);
 	}
 
 	initPatchOverviewControls {
@@ -982,5 +983,188 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 
 	setDefaultControlSpec {
 		defaultControlSpec = ControlSpec(0,99,\lin,1/99);
+	}
+}
+
+ScGuiDx7Envelope : ScGuiControl {
+	var prEnvelopeView;
+	var prHeight;
+	var prLineColour;
+	var prWidth;
+
+	init {
+		|parent, bounds, backgroundColour, lineColour, synthesizer, operatorNumber|
+		var rate1Parameter;
+		var level1Parameter;
+		var rate2Parameter;
+		var level2Parameter;
+		var rate3Parameter;
+		var level3Parameter;
+		var rate4Parameter;
+		var level4Parameter;
+
+		Validator.validateMethodParameterType(parent, View, "parent", this.class.name, "init");
+		Validator.validateMethodParameterType(bounds, Rect, "bounds", this.class.name, "init");
+		Validator.validateMethodParameterType(backgroundColour, Color, "backgroundColour", this.class.name, "init");
+		Validator.validateMethodParameterType(lineColour, Color, "lineColour", this.class.name, "init");
+		Validator.validateMethodParameterType(synthesizer, Synthesizer, "synthesizer", this.class.name, "init");
+		Validator.validateMethodParameterType(operatorNumber, Integer, "operatorNumber", this.class.name, "init");
+
+		if ((operatorNumber < 1) || (operatorNumber > 6), {
+			Error("The operatorNumber passed to ScGuiDx7Envelope.init must be between 1 and 6 inclusive.").throw;
+		});
+
+		switch (operatorNumber,
+			1,   {
+				rate1Parameter = Dx7Sysex.operator1EnvelopeGeneratorRate1;
+				level1Parameter = Dx7Sysex.operator1EnvelopeGeneratorLevel1;
+				rate2Parameter = Dx7Sysex.operator1EnvelopeGeneratorRate2;
+				level2Parameter = Dx7Sysex.operator1EnvelopeGeneratorLevel2;
+				rate3Parameter = Dx7Sysex.operator1EnvelopeGeneratorRate3;
+				level3Parameter = Dx7Sysex.operator1EnvelopeGeneratorLevel3;
+				rate4Parameter = Dx7Sysex.operator1EnvelopeGeneratorRate4;
+				level4Parameter = Dx7Sysex.operator1EnvelopeGeneratorLevel4;
+			},
+			2, {
+				rate1Parameter = Dx7Sysex.operator2EnvelopeGeneratorRate1;
+				level1Parameter = Dx7Sysex.operator2EnvelopeGeneratorLevel1;
+				rate2Parameter = Dx7Sysex.operator2EnvelopeGeneratorRate2;
+				level2Parameter = Dx7Sysex.operator2EnvelopeGeneratorLevel2;
+				rate3Parameter = Dx7Sysex.operator2EnvelopeGeneratorRate3;
+				level3Parameter = Dx7Sysex.operator2EnvelopeGeneratorLevel3;
+				rate4Parameter = Dx7Sysex.operator2EnvelopeGeneratorRate4;
+				level4Parameter = Dx7Sysex.operator2EnvelopeGeneratorLevel4;
+			},
+			3, {
+				rate1Parameter = Dx7Sysex.operator3EnvelopeGeneratorRate1;
+				level1Parameter = Dx7Sysex.operator3EnvelopeGeneratorLevel1;
+				rate2Parameter = Dx7Sysex.operator3EnvelopeGeneratorRate2;
+				level2Parameter = Dx7Sysex.operator3EnvelopeGeneratorLevel2;
+				rate3Parameter = Dx7Sysex.operator3EnvelopeGeneratorRate3;
+				level3Parameter = Dx7Sysex.operator3EnvelopeGeneratorLevel3;
+				rate4Parameter = Dx7Sysex.operator3EnvelopeGeneratorRate4;
+				level4Parameter = Dx7Sysex.operator3EnvelopeGeneratorLevel4;
+			},
+			4, {
+				rate1Parameter = Dx7Sysex.operator4EnvelopeGeneratorRate1;
+				level1Parameter = Dx7Sysex.operator4EnvelopeGeneratorLevel1;
+				rate2Parameter = Dx7Sysex.operator4EnvelopeGeneratorRate2;
+				level2Parameter = Dx7Sysex.operator4EnvelopeGeneratorLevel2;
+				rate3Parameter = Dx7Sysex.operator4EnvelopeGeneratorRate3;
+				level3Parameter = Dx7Sysex.operator4EnvelopeGeneratorLevel3;
+				rate4Parameter = Dx7Sysex.operator4EnvelopeGeneratorRate4;
+				level4Parameter = Dx7Sysex.operator4EnvelopeGeneratorLevel4;
+			},
+			5, {
+				rate1Parameter = Dx7Sysex.operator5EnvelopeGeneratorRate1;
+				level1Parameter = Dx7Sysex.operator5EnvelopeGeneratorLevel1;
+				rate2Parameter = Dx7Sysex.operator5EnvelopeGeneratorRate2;
+				level2Parameter = Dx7Sysex.operator5EnvelopeGeneratorLevel2;
+				rate3Parameter = Dx7Sysex.operator5EnvelopeGeneratorRate3;
+				level3Parameter = Dx7Sysex.operator5EnvelopeGeneratorLevel3;
+				rate4Parameter = Dx7Sysex.operator5EnvelopeGeneratorRate4;
+				level4Parameter = Dx7Sysex.operator5EnvelopeGeneratorLevel4
+			},
+			6, {
+				rate1Parameter = Dx7Sysex.operator6EnvelopeGeneratorRate1;
+				level1Parameter = Dx7Sysex.operator6EnvelopeGeneratorLevel1;
+				rate2Parameter = Dx7Sysex.operator6EnvelopeGeneratorRate2;
+				level2Parameter = Dx7Sysex.operator6EnvelopeGeneratorLevel2;
+				rate3Parameter = Dx7Sysex.operator6EnvelopeGeneratorRate3;
+				level3Parameter = Dx7Sysex.operator6EnvelopeGeneratorLevel3;
+				rate4Parameter = Dx7Sysex.operator6EnvelopeGeneratorRate4;
+				level4Parameter = Dx7Sysex.operator6EnvelopeGeneratorLevel4;
+			}
+		);
+
+		prEnvelopeView = UserView(parent, bounds).background_(Color.black);
+		prHeight = bounds.height;
+		prLineColour = lineColour;
+		prWidth = bounds.width;
+
+		[rate1Parameter,level1Parameter,rate2Parameter,level2Parameter,rate3Parameter,level3Parameter,rate4Parameter,level4Parameter].do({
+			|parameter|
+			synthesizer.addUpdateAction(\nil, parameter, {
+				|parameter|
+				this.value_(Dictionary.with(
+					\rate1 -> synthesizer.getWorkingPatchParameterValue(rate1Parameter),
+					\level1 -> synthesizer.getWorkingPatchParameterValue(level1Parameter),
+					\rate2 -> synthesizer.getWorkingPatchParameterValue(rate2Parameter),
+					\level2 -> synthesizer.getWorkingPatchParameterValue(level2Parameter),
+					\rate3 -> synthesizer.getWorkingPatchParameterValue(rate3Parameter),
+					\level3 -> synthesizer.getWorkingPatchParameterValue(level3Parameter),
+					\rate4 -> synthesizer.getWorkingPatchParameterValue(rate4Parameter),
+					\level4 -> synthesizer.getWorkingPatchParameterValue(level4Parameter),
+			))});
+		});
+
+		this.value_(Dictionary.with(
+			\rate1 -> synthesizer.getWorkingPatchParameterValue(rate1Parameter),
+			\level1 -> synthesizer.getWorkingPatchParameterValue(level1Parameter),
+			\rate2 -> synthesizer.getWorkingPatchParameterValue(rate2Parameter),
+			\level2 -> synthesizer.getWorkingPatchParameterValue(level2Parameter),
+			\rate3 -> synthesizer.getWorkingPatchParameterValue(rate3Parameter),
+			\level3 -> synthesizer.getWorkingPatchParameterValue(level3Parameter),
+			\rate4 -> synthesizer.getWorkingPatchParameterValue(rate4Parameter),
+			\level4 -> synthesizer.getWorkingPatchParameterValue(level4Parameter),
+		))
+	}
+
+	*new {
+		|parent, bounds, backgroundColour, lineColour, synthesizer, operatorNumber|
+		^super.new.init(parent, bounds, backgroundColour, lineColour, synthesizer, operatorNumber);
+	}
+
+	value_ {
+		|newValue|
+		var rate1, rate2, rate3, rate4;
+		var level1, level2, level3, level4;
+		Validator.validateMethodParameterType(newValue, Dictionary, "newValue", this.class.name, "value_");
+
+		if (newValue.includesKey(\rate1) == false, {
+			Error("The dictionary passed to ScGuiDx7Envelope.value_ must contain a key called \rate1.").throw;
+		});
+		if (newValue.includesKey(\level1) == false, {
+			Error("The dictionary passed to ScGuiDx7Envelope.value_ must contain a key called \level1.").throw;
+		});
+		if (newValue.includesKey(\rate2) == false, {
+			Error("The dictionary passed to ScGuiDx7Envelope.value_ must contain a key called \rate2.").throw;
+		});
+		if (newValue.includesKey(\level2) == false, {
+			Error("The dictionary passed to ScGuiDx7Envelope.value_ must contain a key called \level2.").throw;
+		});
+		if (newValue.includesKey(\rate3) == false, {
+			Error("The dictionary passed to ScGuiDx7Envelope.value_ must contain a key called \rate3.").throw;
+		});
+		if (newValue.includesKey(\level3) == false, {
+			Error("The dictionary passed to ScGuiDx7Envelope.value_ must contain a key called \level3.").throw;
+		});
+		if (newValue.includesKey(\rate4) == false, {
+			Error("The dictionary passed to ScGuiDx7Envelope.value_ must contain a key called \rate4.").throw;
+		});
+		if (newValue.includesKey(\level4) == false, {
+			Error("The dictionary passed to ScGuiDx7Envelope.value_ must contain a key called \level4.").throw;
+		});
+
+		rate1 = (prWidth / 4) * (1 - (newValue[\rate1] / 99));
+		rate2 = (prWidth / 4) * (1 - (newValue[\rate2] / 99)) + rate1;
+		rate3 = (prWidth / 4) * (1 - (newValue[\rate3] / 99)) + rate2;
+		rate4 = (prWidth / 4) * (1 - (newValue[\rate4] / 99)) + rate3;
+		level1 = prHeight * (1 - (newValue[\level1] / 99));
+		level2 = prHeight * (1 - (newValue[\level2] / 99));
+		level3 = prHeight * (1 - (newValue[\level3] / 99));
+		level4 = prHeight * (1 - (newValue[\level4] / 99));
+
+		prEnvelopeView.drawFunc = {
+			Pen.strokeColor = prLineColour;
+			Pen.width = 3;
+			Pen.moveTo(0@level4);
+			Pen.lineTo(rate1@level1);
+			Pen.lineTo(rate2@level2);
+			Pen.lineTo(rate3@level3);
+			Pen.lineTo(rate4@level4);
+			Pen.stroke;
+		};
+		prEnvelopeView.refresh;
 	}
 }

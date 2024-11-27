@@ -55,6 +55,12 @@ Synthesizer {
 		^[args[1],args[0]]
 	}
 
+	getWorkingPatchParameterValue {
+		|parameterNumber|
+		Validator.validateMethodParameterType(parameterNumber, Integer, "parameterNumber", "Synthesizer", "getWorkingPatchParameterValue");
+		^prWorkingPatch.kvps[parameterNumber];
+	}
+
 	init {
 		|patchType,guiType,midiMessageType,defaultVariableName|
 		Validator.validateMethodParameterType(patchType, Class, "patchType", "Synthesizer", "init",allowNil:true);
