@@ -987,6 +987,7 @@ Dx7ScGuiControlSurface : ScGuiControlSurface {
 }
 
 ScGuiDx7Envelope : ScGuiControl {
+	var prDragBoth;
 	var prEnvelopeView;
 	var prHeight;
 	var prLineColour;
@@ -1002,6 +1003,7 @@ ScGuiDx7Envelope : ScGuiControl {
 		var level3Parameter;
 		var rate4Parameter;
 		var level4Parameter;
+		var envelopeCopyFunction;
 
 		Validator.validateMethodParameterType(parent, View, "parent", this.class.name, "init");
 		Validator.validateMethodParameterType(bounds, Rect, "bounds", this.class.name, "init");
@@ -1013,79 +1015,40 @@ ScGuiDx7Envelope : ScGuiControl {
 		if ((operatorNumber < 1) || (operatorNumber > 6), {
 			Error("The operatorNumber passed to ScGuiDx7Envelope.init must be between 1 and 6 inclusive.").throw;
 		});
+				rate1Parameter = 6 - operatorNumber * 21 + 0;
+				level1Parameter = 6 - operatorNumber * 21 + 4;
+				rate2Parameter = 6 - operatorNumber * 21 + 1;
+				level2Parameter = 6 - operatorNumber * 21 + 5;
+				rate3Parameter = 6 - operatorNumber * 21 + 2;
+				level3Parameter = 6 - operatorNumber * 21 + 6;
+				rate4Parameter = 6 - operatorNumber * 21 + 3;
+				level4Parameter = 6 - operatorNumber * 21 + 7;
 
-		switch (operatorNumber,
-			1,   {
-				rate1Parameter = Dx7Sysex.operator1EnvelopeGeneratorRate1;
-				level1Parameter = Dx7Sysex.operator1EnvelopeGeneratorLevel1;
-				rate2Parameter = Dx7Sysex.operator1EnvelopeGeneratorRate2;
-				level2Parameter = Dx7Sysex.operator1EnvelopeGeneratorLevel2;
-				rate3Parameter = Dx7Sysex.operator1EnvelopeGeneratorRate3;
-				level3Parameter = Dx7Sysex.operator1EnvelopeGeneratorLevel3;
-				rate4Parameter = Dx7Sysex.operator1EnvelopeGeneratorRate4;
-				level4Parameter = Dx7Sysex.operator1EnvelopeGeneratorLevel4;
-			},
-			2, {
-				rate1Parameter = Dx7Sysex.operator2EnvelopeGeneratorRate1;
-				level1Parameter = Dx7Sysex.operator2EnvelopeGeneratorLevel1;
-				rate2Parameter = Dx7Sysex.operator2EnvelopeGeneratorRate2;
-				level2Parameter = Dx7Sysex.operator2EnvelopeGeneratorLevel2;
-				rate3Parameter = Dx7Sysex.operator2EnvelopeGeneratorRate3;
-				level3Parameter = Dx7Sysex.operator2EnvelopeGeneratorLevel3;
-				rate4Parameter = Dx7Sysex.operator2EnvelopeGeneratorRate4;
-				level4Parameter = Dx7Sysex.operator2EnvelopeGeneratorLevel4;
-			},
-			3, {
-				rate1Parameter = Dx7Sysex.operator3EnvelopeGeneratorRate1;
-				level1Parameter = Dx7Sysex.operator3EnvelopeGeneratorLevel1;
-				rate2Parameter = Dx7Sysex.operator3EnvelopeGeneratorRate2;
-				level2Parameter = Dx7Sysex.operator3EnvelopeGeneratorLevel2;
-				rate3Parameter = Dx7Sysex.operator3EnvelopeGeneratorRate3;
-				level3Parameter = Dx7Sysex.operator3EnvelopeGeneratorLevel3;
-				rate4Parameter = Dx7Sysex.operator3EnvelopeGeneratorRate4;
-				level4Parameter = Dx7Sysex.operator3EnvelopeGeneratorLevel4;
-			},
-			4, {
-				rate1Parameter = Dx7Sysex.operator4EnvelopeGeneratorRate1;
-				level1Parameter = Dx7Sysex.operator4EnvelopeGeneratorLevel1;
-				rate2Parameter = Dx7Sysex.operator4EnvelopeGeneratorRate2;
-				level2Parameter = Dx7Sysex.operator4EnvelopeGeneratorLevel2;
-				rate3Parameter = Dx7Sysex.operator4EnvelopeGeneratorRate3;
-				level3Parameter = Dx7Sysex.operator4EnvelopeGeneratorLevel3;
-				rate4Parameter = Dx7Sysex.operator4EnvelopeGeneratorRate4;
-				level4Parameter = Dx7Sysex.operator4EnvelopeGeneratorLevel4;
-			},
-			5, {
-				rate1Parameter = Dx7Sysex.operator5EnvelopeGeneratorRate1;
-				level1Parameter = Dx7Sysex.operator5EnvelopeGeneratorLevel1;
-				rate2Parameter = Dx7Sysex.operator5EnvelopeGeneratorRate2;
-				level2Parameter = Dx7Sysex.operator5EnvelopeGeneratorLevel2;
-				rate3Parameter = Dx7Sysex.operator5EnvelopeGeneratorRate3;
-				level3Parameter = Dx7Sysex.operator5EnvelopeGeneratorLevel3;
-				rate4Parameter = Dx7Sysex.operator5EnvelopeGeneratorRate4;
-				level4Parameter = Dx7Sysex.operator5EnvelopeGeneratorLevel4
-			},
-			6, {
-				rate1Parameter = Dx7Sysex.operator6EnvelopeGeneratorRate1;
-				level1Parameter = Dx7Sysex.operator6EnvelopeGeneratorLevel1;
-				rate2Parameter = Dx7Sysex.operator6EnvelopeGeneratorRate2;
-				level2Parameter = Dx7Sysex.operator6EnvelopeGeneratorLevel2;
-				rate3Parameter = Dx7Sysex.operator6EnvelopeGeneratorRate3;
-				level3Parameter = Dx7Sysex.operator6EnvelopeGeneratorLevel3;
-				rate4Parameter = Dx7Sysex.operator6EnvelopeGeneratorRate4;
-				level4Parameter = Dx7Sysex.operator6EnvelopeGeneratorLevel4;
-			}
-		);
+		envelopeCopyFunction = {
+			|sourceOperatorNumber,destinationOperatorNumber|
+			synthesizer.modifyWorkingPatch(6 - destinationOperatorNumber * 21 + 0, synthesizer.getWorkingPatchParameterValue(6 - sourceOperatorNumber  * 21 + 0), \foo);
+			synthesizer.modifyWorkingPatch(6 - destinationOperatorNumber * 21 + 1, synthesizer.getWorkingPatchParameterValue(6 - sourceOperatorNumber * 21 + 1), \foo);
+			synthesizer.modifyWorkingPatch(6 - destinationOperatorNumber * 21 + 2, synthesizer.getWorkingPatchParameterValue(6 - sourceOperatorNumber * 21 + 2), \foo);
+			synthesizer.modifyWorkingPatch(6 - destinationOperatorNumber * 21 + 3, synthesizer.getWorkingPatchParameterValue(6 - sourceOperatorNumber * 21 + 3), \foo);
+			synthesizer.modifyWorkingPatch(6 - destinationOperatorNumber * 21 + 4, synthesizer.getWorkingPatchParameterValue(6 - sourceOperatorNumber * 21 + 4), \foo);
+			synthesizer.modifyWorkingPatch(6 - destinationOperatorNumber * 21 + 5, synthesizer.getWorkingPatchParameterValue(6 - sourceOperatorNumber * 21 + 5), \foo);
+			synthesizer.modifyWorkingPatch(6 - destinationOperatorNumber * 21 + 6, synthesizer.getWorkingPatchParameterValue(6 - sourceOperatorNumber * 21 + 6), \foo);
+			synthesizer.modifyWorkingPatch(6 - destinationOperatorNumber * 21 + 7, synthesizer.getWorkingPatchParameterValue(6 - sourceOperatorNumber * 21 + 7), \foo);
+		};
 
 		prEnvelopeView = UserView(parent, bounds).background_(Color.black);
+		prDragBoth = DragBoth(parent, bounds).background_(Color(alpha:0));
+		prDragBoth.beginDragAction = { |me| me.dragLabel = "Drag me onto another envelope to copy over it..."; operatorNumber; };
+		prDragBoth.canReceiveDragHandler = { if (View.currentDrag == operatorNumber, false, true); };
+		prDragBoth.receiveDragHandler = { envelopeCopyFunction.value(View.currentDrag, operatorNumber) };
 		prHeight = bounds.height;
 		prLineColour = lineColour;
 		prWidth = bounds.width;
 
 		[rate1Parameter,level1Parameter,rate2Parameter,level2Parameter,rate3Parameter,level3Parameter,rate4Parameter,level4Parameter].do({
-			|parameter|
-			synthesizer.addUpdateAction(\nil, parameter, {
-				|parameter|
+			|parameterNumber|
+			synthesizer.addUpdateAction(\nil, parameterNumber, {
+				|parameterValue|
 				this.value_(Dictionary.with(
 					\rate1 -> synthesizer.getWorkingPatchParameterValue(rate1Parameter),
 					\level1 -> synthesizer.getWorkingPatchParameterValue(level1Parameter),
