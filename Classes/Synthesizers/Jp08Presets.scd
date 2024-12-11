@@ -125,3 +125,28 @@ patch.name = "80s sci-fi";
 patch.kvps[4102]=13;patch.kvps[4358]=0;patch.kvps[1282]=128;patch.kvps[1286]=124;patch.kvps[268]=3;patch.kvps[770]=0;patch.kvps[1284]=128;patch.kvps[4]=0;patch.kvps[274]=87;patch.kvps[264]=2;patch.kvps[280]=0;patch.kvps[1288]=3;patch.kvps[768]=255;patch.kvps[1032]=0;patch.kvps[260]=2;patch.kvps[278]=3;patch.kvps[522]=1;patch.kvps[524]=0;patch.kvps[4098]=7;patch.kvps[270]=3;patch.kvps[276]=128;patch.kvps[1026]=128;patch.kvps[1024]=0;patch.kvps[272]=0;patch.kvps[4352]=0;patch.kvps[4360]=2;patch.kvps[514]=227;patch.kvps[262]=165;patch.kvps[4100]=128;patch.kvps[258]=0;patch.kvps[1028]=128;patch.kvps[518]=0;patch.kvps[516]=0;patch.kvps[0]=114;patch.kvps[266]=2;patch.kvps[526]=84;patch.kvps[512]=0;patch.kvps[4354]=128;patch.kvps[4096]=2;patch.kvps[520]=185;patch.kvps[1280]=0;patch.kvps[256]=0;patch.kvps[2]=0;patch.kvps[1030]=114;
 ~jp08.setWorkingPatch(patch);
 )
+(
+Pdef(\pattern).stop;
+Pdef(\pattern,
+	Ppar([
+		Pbind(
+			\type,\midi,
+			\midiout,~jp08.midiout,
+			\chan,~jp08.midiChannel,
+			\midinote, Pseq([Pseq([75, 66, 68, 63]), Pseq([75, 66, 68, 70, 65])],2),
+			\dur,      Pseq([Pseq([1.5,1.5,1.5,3.5]),Pseq([1.5,1.5,1.5,1.5,2])],2),
+			\amp, 0.7
+		),
+		Pbind(
+			\type,\midi,
+			\midiout,~jp08.midiout,
+			\chan,~jp08.midiChannel,
+			\midinote, Pseq([
+				Pseq([Pseq([51,53,54,56]),Pseq([59,58,56,49])])
+			]),
+			\dur, 4,
+			\amp, 0.6
+		)
+	],2)
+).play(TempoClock(2.1));
+)
