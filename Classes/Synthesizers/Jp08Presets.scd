@@ -120,8 +120,8 @@ Pdef(\pattern,
 )
 
 (
-MIDIdef.noteOn(\reporter,{
-	|val,num,chan,src|
-	postln(format("Velocity: %, Note Number: %, Channel: %", val,num,chan));
-});
+var patch = Jp08Patch();
+patch.name = "80s sci-fi";
+patch.kvps[4102]=13;patch.kvps[4358]=0;patch.kvps[1282]=128;patch.kvps[1286]=124;patch.kvps[268]=3;patch.kvps[770]=0;patch.kvps[1284]=128;patch.kvps[4]=0;patch.kvps[274]=87;patch.kvps[264]=2;patch.kvps[280]=0;patch.kvps[1288]=3;patch.kvps[768]=255;patch.kvps[1032]=0;patch.kvps[260]=2;patch.kvps[278]=3;patch.kvps[522]=1;patch.kvps[524]=0;patch.kvps[4098]=7;patch.kvps[270]=3;patch.kvps[276]=128;patch.kvps[1026]=128;patch.kvps[1024]=0;patch.kvps[272]=0;patch.kvps[4352]=0;patch.kvps[4360]=2;patch.kvps[514]=227;patch.kvps[262]=165;patch.kvps[4100]=128;patch.kvps[258]=0;patch.kvps[1028]=128;patch.kvps[518]=0;patch.kvps[516]=0;patch.kvps[0]=114;patch.kvps[266]=2;patch.kvps[526]=84;patch.kvps[512]=0;patch.kvps[4354]=128;patch.kvps[4096]=2;patch.kvps[520]=185;patch.kvps[1280]=0;patch.kvps[256]=0;patch.kvps[2]=0;patch.kvps[1030]=114;
+~jp08.setWorkingPatch(patch);
 )
