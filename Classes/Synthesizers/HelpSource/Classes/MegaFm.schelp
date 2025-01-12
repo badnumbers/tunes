@@ -1,0 +1,32 @@
+TITLE:: MegaFm
+summary:: Representation of the Mega FM desktop synthesizer by Twisted Electrons
+categories:: External Control
+related:: Classes/Hydrasynth, Classes/Jx03, Classes/OhCoast, Classes/Sh01a, Classes/Tb03, Classes/Td3, Classes/UnoSynth
+
+DESCRIPTION::
+Contains information about working with a Mega FM, such as its controller CC numbers.
+
+EXAMPLES::
+
+code::
+(
+var midiout;
+Setup.server;
+midiout = Setup.midi;
+
+Pdef(\megafm,
+	Ppar([
+		Pbind(
+			\type, \midi,
+			\midicmd, \noteOn,
+			\midiout, midiout,
+			\chan, Microvolt.midiChannel,
+			\octave, 3,
+			\scale, Scale.phrygian,
+			\degree, 0,
+			\dur, q
+		)
+);
+Pdef(\megafm).play;
+)
+::
