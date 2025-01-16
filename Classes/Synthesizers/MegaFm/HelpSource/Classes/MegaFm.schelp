@@ -1,7 +1,7 @@
 TITLE:: MegaFm
 summary:: Representation of the Mega FM desktop synthesizer by Twisted Electrons
 categories:: External Control
-related:: Classes/Hydrasynth, Classes/Jx03, Classes/OhCoast, Classes/Sh01a, Classes/Tb03, Classes/Td3, Classes/UnoSynth
+related:: Classes/Crave, Classes/Dx7, Classes/Hydrasynth, Classes/Jp08, Classes/Jx03, Classes/Microvolt, Classes/OhCoast, Classes/PerformVe, Classes/Rev2, Classes/Sh01a, Classes/Tb03, Classes/Td3, Classes/UnoDrum, Classes/UnoSynth
 
 DESCRIPTION::
 Contains information about working with a Mega FM, such as its controller CC numbers.

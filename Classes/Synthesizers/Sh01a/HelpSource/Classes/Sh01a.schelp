@@ -1,7 +1,7 @@
 TITLE:: Sh01a
 summary:: Representation of the SH-01A desktop synthesizer by Roland, itself a digital replica of the Roland SH-101
 categories:: External Control
-related:: Classes/Hydrasynth, Classes/Jx03, Classes/Microvolt, Classes/OhCoast, Classes/Tb03, Classes/Td3, Classes/UnoSynth
+related:: Classes/Crave, Classes/Dx7, Classes/Hydrasynth, Classes/Jp08, Classes/Jx03, Classes/MegaFm, Classes/Microvolt, Classes/OhCoast, Classes/PerformVe, Classes/Rev2, Classes/Tb03, Classes/Td3, Classes/UnoDrum, Classes/UnoSynth
 
 DESCRIPTION::
 Contains information about working with a SH-01A, such as its controller CC numbers.

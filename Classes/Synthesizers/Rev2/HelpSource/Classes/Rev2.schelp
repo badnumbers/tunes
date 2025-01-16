@@ -1,7 +1,7 @@
 TITLE:: Rev2
 SUMMARY:: Representation of the Prophet REV2 synthesizer by Sequential Circuits
 CATEGORIES:: External Control
-RELATED:: Classes/Dx7, Classes/Jx03, Classes/Hydrasynth, Classes/Microvolt, Classes/OhCoast, Classes/Sh01a, Classes/Tb03, Classes/Td3, Classes/UnoSynth
+RELATED:: Classes/Crave, Classes/Dx7, Classes/Hydrasynth, Classes/Jp08, Classes/Jx03, Classes/MegaFm, Classes/Microvolt, Classes/OhCoast, Classes/PerformVe, Classes/Sh01a, Classes/Tb03, Classes/Td3, Classes/UnoDrum, Classes/UnoSynth
 
 DESCRIPTION::
 Contains information about working with a Prophet REV2.

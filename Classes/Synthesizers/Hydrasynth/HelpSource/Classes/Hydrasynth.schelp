@@ -1,7 +1,7 @@
 TITLE:: Hydrasynth
 summary:: Representation of the Hydrasynth synthesizer by Ashun Sound Machines
 categories:: External Control
-related:: Classes/Jx03, Classes/Microvolt, Classes/OhCoast, Classes/Sh01a, Classes/Tb03, Classes/Td3, Classes/UnoSynth
+related:: Classes/Crave, Classes/Dx7, Classes/Jp08, Classes/Jx03, Classes/MegaFm, Classes/Microvolt, Classes/OhCoast, Classes/PerformVe, Classes/Rev2, Classes/Sh01a, Classes/Tb03, Classes/Td3, Classes/UnoDrum, Classes/UnoSynth
 
 DESCRIPTION::
 Contains information about working with an Hydrasynth, such as its NRPN numbers.

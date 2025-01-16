@@ -1,7 +1,7 @@
 TITLE:: UnoDrum
 SUMMARY:: Representation of the Uno Drum desktop drum machine by IK Multimedia
 CATEGORIES:: External Control
-RELATED:: Classes/Hydrasynth, Classes/Jx03, Classes/Microvolt, Classes/OhCoast, Classes/Sh01a, Classes/Tb03, Classes/Td3, Classes/UnoSynth
+RELATED:: Classes/Crave, Classes/Dx7, Classes/Hydrasynth, Classes/Jp08, Classes/Jx03, Classes/MegaFm, Classes/Microvolt, Classes/OhCoast, Classes/PerformVe, Classes/Rev2, Classes/Sh01a, Classes/Tb03, Classes/Td3, Classes/UnoSynth
 
 DESCRIPTION::
 Contains information about working with an Uno Drum, such as its controller CC numbers.
