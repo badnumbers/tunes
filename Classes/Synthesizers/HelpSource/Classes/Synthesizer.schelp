@@ -162,7 +162,14 @@ CODE::
 ::
 
 METHOD:: programChange
-Sends a program change message to the hardware synth in order to change the current preset. Note that this is different the patches that are maintained in this class.
+Sends bank and program change messages to the hardware synth in order to change the current preset.
+
+NOTE::
+This changes between the presets EMPHASIS::stored on the synthesizer itself::, and is different from the patches that are maintained in this class.
+::
+
+ARGUMENT:: bankNumber
+The number (0-based) of the bank to change to.
 
 ARGUMENT:: programNumber
 The number (0-based) of the preset to change to.

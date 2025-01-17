@@ -50,6 +50,24 @@ Jp08 : Synthesizer {
 		super.init(id,Jp08Patch,Jp08ScGuiControlSurface,\sysex);
 	}
 
+	programChange {
+		|bankNumber, programNumber|
+		var actualProgramNumber;
+		Validator.validateMethodParameterType(bankNumber, Integer, "bankNumber", "Synthesizer", "programChange");
+		Validator.validateMethodParameterType(programNumber, Integer, "programNumber", "Synthesizer", "programChange");
+
+		if ((bankNumber < 1) || (bankNumber > 8), {
+			Error(format("The JP-08 has 8 banks. You must provide a bank number between 1 and 8 when you call programChange on it but you provided %.", bankNumber)).throw;
+		});
+
+		if ((programNumber < 1) || (programNumber > 8), {
+			Error(format("Each JP-08 bank has 8 presets. You must provide a program number between 1 and 8 when you call programChange on it but you provided %.", bankNumber)).throw;
+		});
+
+		actualProgramNumber = (bankNumber - 1) * 8  + (programNumber - 1);
+		midiout.program(midiChannel, actualProgramNumber);
+	}
+
 	updateParameterInHardwareSynth {
 		|key,newvalue|
 		var num,address1,address2,hi,lo,checksum;

@@ -198,6 +198,19 @@ The range for values for this parameter is STRONG::0 to 255::.
 
 RETURNS:: 0x1102.
 
+METHOD:: programChange
+Sends bank and program change messages to the JP-08 in order to change the current preset. Note that the JP-08 has 8 banks of 8 presets.
+
+NOTE::
+This changes between the presets EMPHASIS::stored on the synthesizer itself::, and is different from the patches that are maintained in this class.
+::
+
+ARGUMENT:: bankNumber
+The number (1-based) of the bank to change to. The values 1 to 8 are accepted.
+
+ARGUMENT:: programNumber
+The number (1-based) of the preset to change to. The values 1 to 8 are accepted
+
 METHOD:: pwmModParameterNumber
 The sysex parameter number that is used to control the amount of pulse width modulation. This only applies to the pulse waveform.
 
@@ -328,7 +341,7 @@ TABLE::
 RETURNS:: 0x010e.
 
 METHOD:: vco2RangeParameterNumber
-The sysex parameter number that is used to control frequency range of oscillator 2. The mapping of parameter values to frequency ranges does not seem straightforward The table below shows some examples:
+The sysex parameter number that is used to control frequency range of oscillator 2. The mapping of parameter values to frequency ranges does not seem straightforward. The table below shows some examples:
 TABLE::
 ## Value || Range
 ## 0 || 64'
@@ -403,16 +416,15 @@ EXAMPLES::
 
 CODE::
 (
-~jp08 = ~jp08 ?? Jp08();
-~jp08.programChange(1);
+Synths(\jp08).programChange(1,2);
 
 Pdef(\jp08).stop;
 Pdef(\jp08,
     Ppar([
         Pbind(
             \type, \midi,
-            \midiout, ~jp08.midiout,
-            \chan, ~jp08.midiChannel,
+            \midiout, Synths(\jp08).midiout,
+            \chan, Synths(\jp08).midiChannel,
             \octave, 3,
 			\midinote, Pseq([48,56,48,56,48,62,61,59],4),
 			\dur, Pseq([1,1.5,1,1.5,1,0.5,0.5,1],4),
@@ -420,38 +432,38 @@ Pdef(\jp08,
         ),
         Pbind(
             \type, \rest,
-            \midiout,  ~jp08.midiout,
-            \chan, ~jp08.midiChannel,
+            \midiout,  Synths(\jp08).midiout,
+            \chan, Synths(\jp08).midiChannel,
 			\change, Pseq([
 				Pfuncn({
 					postln("Play the preset unchanged...");
 				}),
 				Pfuncn({
 					postln("Remove the PWM and crank up the resonance...");
-					~jp08.modifyWorkingPatch(Jp08.pwmModParameterNumber,0);
-					~jp08.modifyWorkingPatch(Jp08.vcfResonanceParameterNumber,225);
+					Synths(\jp08).modifyWorkingPatch(Jp08.pwmModParameterNumber,0);
+					Synths(\jp08).modifyWorkingPatch(Jp08.vcfResonanceParameterNumber,225);
 				}),
 				Pfuncn({
 					postln("Now let's get silly...");
-					~jp08.modifyWorkingPatch(Jp08.sourceMixParameterNumber,255);
-					~jp08.modifyWorkingPatch(Jp08.vco2RangeParameterNumber,147);
-					~jp08.modifyWorkingPatch(Jp08.vcoEnvModParameterNumber,80);
-					~jp08.modifyWorkingPatch(Jp08.vco2WaveformParameterNumber,1);
+					Synths(\jp08).modifyWorkingPatch(Jp08.sourceMixParameterNumber,255);
+					Synths(\jp08).modifyWorkingPatch(Jp08.vco2RangeParameterNumber,147);
+					Synths(\jp08).modifyWorkingPatch(Jp08.vcoEnvModParameterNumber,80);
+					Synths(\jp08).modifyWorkingPatch(Jp08.vco2WaveformParameterNumber,1);
 				}),
 				Pfuncn({
 					postln("Bip bip...");
-					~jp08.modifyWorkingPatch(Jp08.sourceMixParameterNumber,128);
-					~jp08.modifyWorkingPatch(Jp08.vco1WaveformParameterNumber,0);
-					~jp08.modifyWorkingPatch(Jp08.vco2WaveformParameterNumber,0);
-					~jp08.modifyWorkingPatch(Jp08.vco1RangeParameterNumber,4);
-					~jp08.modifyWorkingPatch(Jp08.vco2RangeParameterNumber,225);
-					~jp08.modifyWorkingPatch(Jp08.vco2TuneParameterNumber,130);
-					~jp08.modifyWorkingPatch(Jp08.vcoEnvModParameterNumber,0);
-					~jp08.modifyWorkingPatch(Jp08.envelope2DecayParameterNumber,100);
-					~jp08.modifyWorkingPatch(Jp08.envelope2SustainParameterNumber,0);
-					~jp08.modifyWorkingPatch(Jp08.delayFeedbackParameterNumber,12);
-					~jp08.modifyWorkingPatch(Jp08.delayLevelParameterNumber,12);
-					~jp08.modifyWorkingPatch(Jp08.delayTimeParameterNumber,10);
+					Synths(\jp08).modifyWorkingPatch(Jp08.sourceMixParameterNumber,128);
+					Synths(\jp08).modifyWorkingPatch(Jp08.vco1WaveformParameterNumber,0);
+					Synths(\jp08).modifyWorkingPatch(Jp08.vco2WaveformParameterNumber,0);
+					Synths(\jp08).modifyWorkingPatch(Jp08.vco1RangeParameterNumber,5);
+					Synths(\jp08).modifyWorkingPatch(Jp08.vco2RangeParameterNumber,225);
+					Synths(\jp08).modifyWorkingPatch(Jp08.vco2TuneParameterNumber,255);
+					Synths(\jp08).modifyWorkingPatch(Jp08.vcoEnvModParameterNumber,0);
+					Synths(\jp08).modifyWorkingPatch(Jp08.envelope2DecayParameterNumber,100);
+					Synths(\jp08).modifyWorkingPatch(Jp08.envelope2SustainParameterNumber,0);
+					Synths(\jp08).modifyWorkingPatch(Jp08.delayFeedbackParameterNumber,12);
+					Synths(\jp08).modifyWorkingPatch(Jp08.delayLevelParameterNumber,12);
+					Synths(\jp08).modifyWorkingPatch(Jp08.delayTimeParameterNumber,10);
 				})
 			]),
 			\dur, 8

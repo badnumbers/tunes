@@ -190,7 +190,10 @@ Synthesizer {
 	}
 
 	programChange {
-		|programNumber|
+		|bankNumber, programNumber|
+		Validator.validateMethodParameterType(bankNumber, Integer, "bankNumber", "Synthesizer", "programChange");
+		Validator.validateMethodParameterType(programNumber, Integer, "programNumber", "Synthesizer", "programChange");
+		midiout.control(midiChannel,0,bankNumber);
 		midiout.program(midiChannel, programNumber);
 	}
 
