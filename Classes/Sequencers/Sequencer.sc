@@ -4,6 +4,7 @@ Sequencer {
 	var prPreKeySets;
 	var prPostKeySets;
 	var prSections;
+	var prTempoClock;
 
 	addGlobalPreKeys {
 		|keysArray|
@@ -15,19 +16,19 @@ Sequencer {
 	}
 
 	addMidiPart {
-		|section,synthesizer,pattern|
+		|section,synthId,pattern|
 		Validator.validateMethodParameterType(section, Symbol, "section", "Sequencer", "addMidiPart");
-		Validator.validateMethodParameterType(synthesizer, Synthesizer, "synthesizer", "Sequencer", "addMidiPart");
+		Validator.validateMethodParameterType(synthId, Symbol, "synthId", "Sequencer", "addMidiPart");
 		Validator.validateMethodParameterType(pattern, Pattern, "pattern", "Sequencer", "addMidiPart");
 		if (prSections.includesKey(section) == false,{
 			prSections.put(section, Dictionary());
 		});
 
-		if (prSections[section].includesKey(synthesizer),{
-			Error(format("The section % in the sequencer already has a MIDI part for the % part %.", section, synthesizer.class, synthesizer)).throw;
-		});
+		/*if (prSections[section].includesKey(synthId),{
+			Error(format("The section % in the sequencer already has a MIDI part for the synth '%'.", section, synthId)).throw;
+		});*/
 
-		prSections[section].put(synthesizer,[\midi,pattern]);
+		prSections[section].put(synthId,[\midi,pattern]);
 	}
 
 	addScPart {
@@ -54,7 +55,16 @@ Sequencer {
 	}
 
 	init {
-		var convertFromPitch = {
+		|tempo|
+		var convertFromPitch;
+		Validator.validateMethodParameterType(tempo, Integer, "tempo", "Sequencer", "init", allowNil: true);
+		if (tempo.isNil, {
+			tempo = 2;
+		});
+
+		prTempoClock = TempoClock(tempo);
+
+		convertFromPitch = {
 			// This function MUST NOT use ^ to return a value
 			// Otherwise you get awful 'PauseStream-awake' Out of context return of value errors
 			|event|
@@ -62,14 +72,20 @@ Sequencer {
 			if (num.isNil, {
 				num = 101; // Whatever, sometimes a pattern sticks a rest in here with no pitch key
 			});
-			num = num - 1;
-			numberOfDegrees = event.scale.size;
-			degree = num % 10;
-			if (degree > 7, {
-				Error("The pitch value of % must not end in a number higher than 7.", event.pitch).throw;
+
+			if (num.class == Symbol, {
+				answer = num; // Just pass the Symbol on to the \midinote key
+			},{
+				num = num - 1;
+				numberOfDegrees = event.scale.size;
+				degree = num % 10;
+				if (degree > numberOfDegrees, {
+					Error("The pitch value of % must not end in a number higher than the number of degrees in the scale, which is %.", event.pitch, numberOfDegrees).throw;
+				});
+				octave = num - degree / 10;
+				answer = (octave * 12 + event.scale[degree]).asInteger;
 			});
-			octave = num - degree / 10;
-			answer = (octave * 12 + event.scale[degree]).asInteger;
+
 			answer;
 		};
 
@@ -78,7 +94,7 @@ Sequencer {
 		prSections = Dictionary();
 
 		prPartWrapper = {
-			|section,synth,part|
+			|section,synthId,part|
 			var preKeys, postKeys;
 			var partType = part[0];
 			var pattern = part[1];
@@ -91,8 +107,8 @@ Sequencer {
 			if (partType == \midi,{
 				[
 					\type,\midi,
-					\midiout,synth.midiout,
-					\chan,synth.midiChannel,
+					\midiout,Synths(synthId).midiout,
+					\chan,Synths(synthId).midiChannel,
 				].do({
 					|element|
 					preKeys.add(element);
@@ -110,7 +126,7 @@ Sequencer {
 			prPreKeySets.do({
 				|newKeySet,index|
 				// Decide whether the current set of prekeys should be applied by evaluating its Function
-				if (newKeySet[0].value(synth,part),{
+				if (newKeySet[0].value(synthId,part),{
 					newKeySet[1].do({
 						|newKey,newKeyIndex|
 						// Only look at even-numbered elements
@@ -121,7 +137,7 @@ Sequencer {
 								// Only look at even-numbered elements
 								if (index % 2 == 0,{
 									if (newKey == existingKey,{
-										warn(format("The new pre-key % duplicates the existing pre-key % for synth % and section %.", newKey, existingKey, synth, section));
+										warn(format("The new pre-key % duplicates the existing pre-key % for synth ID '%' and section '%'.", newKey, existingKey, synthId, section));
 									});
 								});
 							});
@@ -134,7 +150,7 @@ Sequencer {
 			prPostKeySets.do({
 				|newKeySet,index|
 				// Decide whether the current set of postkeys should be applied by evaluating its Function
-				if (newKeySet[0].value(synth,part),{
+				if (newKeySet[0].value(synthId,part),{
 					newKeySet[1].do({
 						|newKey,newKeyIndex|
 						// Check for duplicates in even-numbered elements
@@ -145,7 +161,7 @@ Sequencer {
 								// Only look at even-numbered elements
 								if (index % 2 == 0,{
 									if (newKey == existingKey,{
-										warn(format("The new post-key % duplicates the existing post-key % for synth % and section %.", newKey, existingKey, synth, section));
+										warn(format("The new post-key % duplicates the existing post-key % for synth ID % and section %.", newKey, existingKey, synthId, section));
 									});
 								});
 							});
@@ -164,7 +180,9 @@ Sequencer {
 	}
 
 	*new {
-		^super.new.init;
+		|tempo|
+		Validator.validateMethodParameterType(tempo, Integer, "tempo", "Sequencer", "new", allowNil: true);
+		^super.new.init(tempo);
 	}
 
 	play {
@@ -177,12 +195,21 @@ Sequencer {
 				|section|
 				sp.seq(Ppar(prSections[section].keys.collect({|instrument|prPartWrapper.value(section,instrument,prSections[section][instrument])})));
 			});
-		}).play;
+		}).play(prTempoClock);
 	}
 
 	stop {
 		if (prEventStreamPlayer.isMemberOf(EventStreamPlayer), {
 			prEventStreamPlayer.stop;
 		});
+	}
+
+	tempo {
+		^prTempoClock.tempo;
+	}
+
+	tempo_ {
+		|value|
+		prTempoClock.tempo = value;
 	}
 }

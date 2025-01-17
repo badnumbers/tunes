@@ -28,13 +28,17 @@ CODE::
 ::
 
 METHOD::addMidiPart
-Adds a MIDI sequence to the specified section for the specified LINK::Classes/Synthesizer::.
+Adds a MIDI sequence to the specified section for the LINK::Classes/Synthesizer:: with the specified ID.
 
 ARGUMENT::section
 A LINK::Classes/Symbol:: representing the section of the piece.
 
-ARGUMENT::synthesizer
-A LINK::Classes/Synthesizer:: that the part is for.
+ARGUMENT::synthId
+A LINK::Classes/Symbol:: indicating the hardware synthesizer that the part is for.
+
+NOTE::
+This ID corresponds to the TELETYPE::Id:: property of a hardware synthesizer defined in the STRONG::configuration file::. See LINK::Classes/Config#*hardwareSynthesizers::.
+::
 
 ARGUMENT::pattern
 A LINK::Classes/Pattern:: to play on the synthesizer. There is no need to specify the TELETYPE::\type::, TELETYPE::\midiout:: or TELETYPE::\chan:: keys since these are included automatically.
@@ -80,16 +84,15 @@ Stops playback.
 EXAMPLES::
 
 CODE::
-~rev2 = ~rev2 ?? Rev2(); // If necessary
 (
 ~seq = Sequencer();
-~seq.addMidiPart(\part1, ~rev2, Pbind(
+~seq.addMidiPart(\part1, \rev2, Pbind(
 	\dur, 1,
-	\pitch, Pseq([31,41,51,61])
+	\pitch, Pseq([31,41,51,61]).trace
 ));
-~seq.addMidiPart(\part2, ~rev2, Pbind(
+~seq.addMidiPart(\part2, \rev2, Pbind(
 	\dur, 0.5,
-	\pitch, Pseq([71,61,51,41,31])
+	\pitch, Pseq([71,61,51,41,31]).trace
 ));
 ~seq.play([\part1,\part2]);
 )
