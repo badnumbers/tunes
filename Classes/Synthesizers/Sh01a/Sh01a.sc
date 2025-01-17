@@ -31,7 +31,9 @@ Sh01a : Synthesizer {
 	classvar <vcoSubTypeCcNo = 22;
 
 	init {
-		super.init(Sh01aPatch,Sh01aScGuiControlSurface,\control,"~sh01a");
+		|id|
+		Validator.validateMethodParameterType(id, Symbol, "id", "Sh01a", "init");
+		super.init(id,Sh01aPatch,Sh01aScGuiControlSurface,\control);
 	}
 
 	*randomisePatch {

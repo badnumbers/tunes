@@ -7,8 +7,8 @@ CLASSMETHODS::
 METHOD:: new
 Creates a new instance of CODE::HardwareSynthesizerConfig::.
 
-ARGUMENT:: name
-The name of the hardware synthesizer, for example "TB-303".
+ARGUMENT:: id
+A LINK::Classes/Symbol:: which is ID of this particular hardware synthesizer, for example TELETYPE::\tb303:: or TELETYPE::\minimoog2::.
 
 ARGUMENT:: synthesizerClass
 The subclass of LINK::Classes/Synthesizer:: that represents this hardware synthesizer.
@@ -27,8 +27,12 @@ An LINK::Classes/Array:: of (most likely) one (for a mono synthesizer) or two (f
 METHOD:: midiChannels
 An LINK::Classes/Array:: of (most likely) one MIDI channels that the hardware synthesizer is configured to receive MIDI on.
 
-METHOD:: name
-The name of the hardware synthesizer, for example "TB-303".
+METHOD:: id
+The ID of this particular hardware synthesizer, for example TELETYPE::\tb303:: or TELETYPE::\minimoog2::.
+
+NOTE::
+This ID allows multiple hardware synths of the same type (and which consequently have the same LINK::#-synthesizerClass::) to be managed separately.
+::
 
 METHOD:: synthesizerClass
 The subclass of LINK::Classes/Synthesizer:: that represents this hardware synthesizer.

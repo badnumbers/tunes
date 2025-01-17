@@ -1,5 +1,7 @@
 MegaFm : Synthesizer {
 	init {
-		super.init(nil,nil,nil,"~megafm");
+		|id|
+		Validator.validateMethodParameterType(id, Symbol, "id", "MegaFm", "init");
+		super.init(id,nil,nil,nil);
 	}
 }

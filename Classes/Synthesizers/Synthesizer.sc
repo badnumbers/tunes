@@ -5,8 +5,8 @@ Synthesizer {
 	var <midiChannel;
 	var <midiChannels;
 	var <>midiout;
-	var prDefaultVariableName;
 	var prGuiType;
+	var prId;
 	var prMidiMessageType;
 	var prNoSavedPatchesMessage = "To save the working patch, call saveWorkingPatch().";
 	var prPatchDictionary;
@@ -62,28 +62,28 @@ Synthesizer {
 	}
 
 	init {
-		|patchType,guiType,midiMessageType,defaultVariableName|
+		|id,patchType,guiType,midiMessageType|
+		Validator.validateMethodParameterType(id, Symbol, "id", "Synthesizer", "init");
 		Validator.validateMethodParameterType(patchType, Class, "patchType", "Synthesizer", "init",allowNil:true);
 		Validator.validateMethodParameterType(guiType, Class, "guiType", "Synthesizer", "init",allowNil:true);
 		Validator.validateMethodParameterType(midiMessageType, Symbol, "midiMessageType", "Synthesizer", "init",allowNil:true);
-		Validator.validateMethodParameterType(defaultVariableName, String, "defaultVariableName", "Synthesizer", "init");
 
 		if ((midiMessageType != \control) && (midiMessageType != \sysex), {
 			Error(format("The '{midiMessageType}' parameter of %.init must be one of the values \control, \sysex. The value % was provided.", this.class.name, midiMessageType));
 		});
 
-		midiout= Setup.midi;
+		midiout = Setup.midi;
+		prId = id;
 		prPatchType = patchType;
 		prGuiType = guiType;
 		prMidiMessageType = midiMessageType;
-		prDefaultVariableName = defaultVariableName;
 
-		if (Config.hardwareSynthesizers[this.class.name].isNil, {
-			Error(format("No config was found for the Synthesizer with the class %. See the helpfile for the Config class for details.", this.class.name)).throw;
+		if (Config.hardwareSynthesizers[id].isNil, {
+			Error(format("No config was found for the Synthesizer with the ID '%'. See the helpfile for the Config class for details.", id)).throw;
 		});
 
-		inputBusChannels = Config.hardwareSynthesizers[this.class.name].inputBusChannels;
-		midiChannels = Config.hardwareSynthesizers[this.class.name].midiChannels;
+		inputBusChannels = Config.hardwareSynthesizers[id].inputBusChannels;
+		midiChannels = Config.hardwareSynthesizers[id].midiChannels;
 		midiChannel = midiChannels[0];
 
 		if (prPatchType.notNil, {
@@ -155,7 +155,9 @@ Synthesizer {
 	}
 
 	*new {
-		^super.new.init;
+		|id|
+		Validator.validateMethodParameterType(id, Symbol, "id", "Synthesizer", "new");
+		^super.new.init(id);
 	}
 
 	nrpn {
@@ -304,7 +306,7 @@ Synthesizer {
 		postln("(");
 		postln(format("var patch = %();", prPatchType));
 		this.prWritePatch(prWorkingPatch);
-		postln(format("%.setWorkingPatch(patch);", prDefaultVariableName));
+		postln(format("%.setWorkingPatch(patch);", format("Synths['%']", prId)));
 		postln(")");
 	}
 
@@ -322,7 +324,7 @@ Synthesizer {
 			var patch = prPatchDictionary[key];
 			postln(format("patch = %();", prPatchType));
 			this.prWritePatch(patch);
-			postln(format("%.setWorkingPatch(patch);", prDefaultVariableName));
+			postln(format("%.setWorkingPatch(patch);", format("Synths['%']", prId)));
 		});
 		postln(")");
 	}

@@ -1,19 +1,19 @@
 HardwareSynthesizerConfig {
-	var prSynthesizerClass;
-	var prName;
+	var prId;
 	var prInputBusChannels;
 	var prMidiChannels;
+	var prSynthesizerClass;
 
-	synthesizerClass {
-		^prSynthesizerClass;
+	id {
+		^prId;
 	}
 
 	init {
-		|name, synthesizerClass, midiChannels, inputBusChannels|
-		prSynthesizerClass = synthesizerClass;
-		prName = name;
+		|id, synthesizerClass, midiChannels, inputBusChannels|
+		prId = id;
 		prInputBusChannels = inputBusChannels;
 		prMidiChannels = midiChannels;
+		prSynthesizerClass = synthesizerClass;
 	}
 
 	inputBusChannels {
@@ -24,17 +24,17 @@ HardwareSynthesizerConfig {
 		^prMidiChannels;
 	}
 
-	name {
-		^prName;
+	*new {
+		|id, synthesizerClass, midiChannels, inputBusChannels|
+		Validator.validateMethodParameterType(id, Symbol, "id", "HardwareSynthesizerConfig", "new");
+		Validator.validateMethodParameterType(inputBusChannels, Array, "inputBusChannels", "HardwareSynthesizerConfig", "new");
+		Validator.validateMethodParameterType(midiChannels, Array, "midiChannels", "HardwareSynthesizerConfig", "new");
+		Validator.validateMethodParameterType(synthesizerClass, Class, "synthesizerClass", "HardwareSynthesizerConfig", "new");
+
+		^super.new.init(id, synthesizerClass, midiChannels, inputBusChannels);
 	}
 
-	*new {
-		|name, synthesizerClass, midiChannels, inputBusChannels|
-		Validator.validateMethodParameterType(name, String, "name", "HardwareSynthesizerConfig", "new");
-		Validator.validateMethodParameterType(synthesizerClass, Class, "synthesizerClass", "HardwareSynthesizerConfig", "new");
-		Validator.validateMethodParameterType(midiChannels, Array, "midiChannels", "HardwareSynthesizerConfig", "new");
-		Validator.validateMethodParameterType(inputBusChannels, Array, "inputBusChannels", "HardwareSynthesizerConfig", "new");
-
-		^super.new.init(name, synthesizerClass, midiChannels, inputBusChannels);
+	synthesizerClass {
+		^prSynthesizerClass;
 	}
 }

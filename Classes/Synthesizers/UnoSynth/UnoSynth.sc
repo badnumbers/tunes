@@ -57,7 +57,15 @@ UnoSynth : Synthesizer {
 	classvar <wahOnOffCcNo = 78;
 
 	init {
-		super.init(UnoSynthPatch,UnoSynthScGuiControlSurface,\control,"~unoSynth");
+		|id|
+		Validator.validateMethodParameterType(id, Symbol, "id", "UnoSynth", "init");
+		super.init(id, UnoSynthPatch,UnoSynthScGuiControlSurface,\control);
+	}
+
+	*new {
+		|id|
+		Validator.validateMethodParameterType(id, Symbol, "id", "UnoSynth", "new");
+		^super.new.init(id);
 	}
 
 	randomisePatch {

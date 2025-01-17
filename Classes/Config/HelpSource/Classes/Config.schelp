@@ -12,14 +12,14 @@ The expected structure of the STRONG::Configuration File:: is something like the
 
 CODE::
 HardwareSynthesizers:
-  - Class: "Dx7"
-    Name: "DX7"
+  - Id: "dx7"
+    Class: "Dx7"
     MIDIChannels:
       - 9
     InputBusChannels:
       - 0
-  - Class: "Rev2"
-    Name: "REV2"
+  - Id: "rev2"
+    Class: "Rev2"
     MIDIChannels:
       - 13
       - 14

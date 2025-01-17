@@ -45,7 +45,9 @@ Jp08 : Synthesizer {
 	classvar <vcoModDestinationParameterNumber = 0x0104;
 
 	init {
-		super.init(Jp08Patch,Jp08ScGuiControlSurface,\sysex,"~jp08");
+		|id|
+		Validator.validateMethodParameterType(id, Symbol, "id", "Jp08", "init");
+		super.init(id,Jp08Patch,Jp08ScGuiControlSurface,\sysex);
 	}
 
 	updateParameterInHardwareSynth {

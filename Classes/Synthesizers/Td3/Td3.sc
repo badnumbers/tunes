@@ -1,5 +1,7 @@
 Td3 : Synthesizer {
 	init {
-		super.init(nil,nil,nil,"~td3");
+		|id|
+		Validator.validateMethodParameterType(id, Symbol, "id", "Td3", "init");
+		super.init(id,nil,nil,nil);
 	}
 }

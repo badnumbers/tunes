@@ -1,0 +1,46 @@
+TITLE:: Synths
+SUMMARY:: Dictionary of hardware synths.
+CATEGORIES:: External Control
+RELATED:: Classes/Config, Classes/Synthesizer
+
+DESCRIPTION::
+TELETYPE::Synths:: is a convenient dictionary for accessing instances of hardware synthesizers (i.e. classes which extend LINK::Classes/Synthesizer::.) If the synth being accessed does not yet exist, one is created based on the STRONG::configuration file:: (see LINK::Classes/Config::.)
+
+
+CLASSMETHODS::
+
+METHOD:: new
+Returns an instance of a subclass of LINK::Classes/Synthesizer:: corresponding to the TELETYPE::synthId:: provided by looking it up in the STRONG::configuration file:: (see LINK::Classes/Config::). Creates an instance of the LINK::Classes/Synthesizer:: if none currently exists.
+
+NOTE::
+This is not actually a constructor! It does not return an instance of TELETYPE::Synths::.
+::
+
+ARGUMENT:: synthId
+The ID of the synthesizer to return, as defined in the STRONG::configuration file::.
+
+RETURNS:: an instance of a subclass of LINK::Classes/Synthesizer:: corresponding to the TELETYPE::synthId:: provided.
+
+INSTANCEMETHODS::
+
+PRIVATE::initClass
+
+EXAMPLES::
+
+Assuming the STRONG::configuration file:: contains an entry in TELETYPE::HardwareSynthesizers:: like this:
+
+CODE::
+  - Id: "jp08"
+    Class: "Jp08"
+    MIDIChannels:
+      - 5
+    InputBusChannels:
+      - 15
+      - 16
+::
+
+Then an instance of LINK::Classes/Jp08:: can be accessed like this:
+
+CODE::
+Synths(\jp08);
+::

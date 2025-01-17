@@ -10,7 +10,9 @@ Tb03 : Synthesizer {
 	classvar <tuningCcNo = 104;
 
 	init {
-		super.init(Tb03Patch,\control,"~tb03");
+		|id|
+		Validator.validateMethodParameterType(id, Symbol, "id", "Tb03", "init");
+		super.init(id,Tb03Patch,nil,\control);
 	}
 
 	*randomisePatch {

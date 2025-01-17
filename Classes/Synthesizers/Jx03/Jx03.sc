@@ -40,7 +40,9 @@ Jx03 : Synthesizer {
 	}
 
 	init {
-		super.init(Jx03Patch,Jx03ScGuiControlSurface,\sysex,"~jx03");
+		|id|
+		Validator.validateMethodParameterType(id, Symbol, "id", "Jx03", "init");
+		super.init(id,Jx03Patch,Jx03ScGuiControlSurface,\sysex);
 	}
 
 	randomisePatch {

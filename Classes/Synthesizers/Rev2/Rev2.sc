@@ -1,5 +1,7 @@
 Rev2 : Synthesizer {
 	init {
-		super.init(nil,nil,nil,"~rev2");
+		|id|
+		Validator.validateMethodParameterType(id, Symbol, "id", "Rev2", "init");
+		super.init(id,nil,nil,nil);
 	}
 }

@@ -1,5 +1,7 @@
 UnoDrum : Synthesizer {
 	init {
-		super.init(nil,nil,nil,"~unodrum");
+		|id|
+		Validator.validateMethodParameterType(id, Symbol, "id", "UnoDrum", "init");
+		super.init(id,nil,nil,nil);
 	}
 }

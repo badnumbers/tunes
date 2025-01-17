@@ -38,6 +38,8 @@ PerformVe : Synthesizer {
 	classvar <looperHiHatTriggerCcNo = 83;
 
 	init {
-		super.init(PerformVePatch,PerformVeScGuiControlSurface,\control,"~performVe");
+		|id|
+		Validator.validateMethodParameterType(id, Symbol, "id", "PerformVe", "init");
+		super.init(id,PerformVePatch,PerformVeScGuiControlSurface,\control);
 	}
 }

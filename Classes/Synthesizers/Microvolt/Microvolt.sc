@@ -2,6 +2,8 @@ Microvolt : Synthesizer {
 	classvar <modCcNo = 1;
 
 	init {
-		super.init(nil,nil,nil,"~microvolt");
+		|id|
+		Validator.validateMethodParameterType(id, Symbol, "id", "Microvolt", "init");
+		super.init(id,nil,nil,nil);
 	}
 }

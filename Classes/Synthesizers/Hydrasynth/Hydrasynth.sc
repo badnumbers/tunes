@@ -5,6 +5,8 @@ Hydrasynth : Synthesizer {
 	classvar <sustainPedal = 64;
 
 	init {
-		super.init(nil,nil,nil,"~hydrasynth");
+		|id|
+		Validator.validateMethodParameterType(id, Symbol, "id", "Hydrasynth", "init");
+		super.init(id,nil,nil,nil);
 	}
 }

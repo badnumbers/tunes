@@ -5,6 +5,8 @@ OhCoast {
 	classvar <portamentoOnOrOffCcNo = 65;
 
 	init {
-		super.init(nil,nil,nil,"~ohcoast");
+		|id|
+		Validator.validateMethodParameterType(id, Symbol, "id", "OhCoast", "init");
+		super.init(id,nil,nil,nil);
 	}
 }

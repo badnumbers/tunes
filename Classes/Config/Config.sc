@@ -32,6 +32,22 @@ Config {
 					if (config["HardwareSynthesizers"].isMemberOf(Array) == false, {
 						warn(format("The configuration file at % has a section called 'HardwareSynthesizers', but this section is expected to be a YAML collection. See the help file for the Config class for guidance.", Platform.userConfigDir +/+ configFileName));
 					},{
+						// First, check none of the IDs are duplicated
+						var dict = Dictionary();
+						config["HardwareSynthesizers"].do({
+							|item, index|
+							if (item.isMemberOf(Dictionary), {
+								if (item["Id"].notNil, {
+									if (item["Id"].isMemberOf(String), {
+										if (dict.includesKey(item["Id"]), {
+											Error(format("The config cannot be loaded because the configuration file contains more than one hardware synthesizer with the Id of '%'.", item["Id"])).throw;
+										});
+										dict.put(item["Id"], 0);
+									});
+								});
+							});
+						});
+						// Then process them and add them to the collection of HardwareSynthesizerConfig
 						config["HardwareSynthesizers"].do({
 							|item, index|
 							var addSynthesizer = true;
@@ -40,7 +56,7 @@ Config {
 								warn(format("Item % in the 'HardwareSynthesizers' section of the configuration file at % is not a YAML mapping. This item will not be added to the configuration. See the help file for the Config class for guidance.", index + 1, Platform.userConfigDir +/+ configFileName));
 								addSynthesizer = false;
 							}, {
-								["Class","Name"].do({
+								["Id","Class"].do({
 									|key|
 									if (item[key].isNil, {
 										warn(format("Item % in the 'HardwareSynthesizers' section of the configuration file at % does not have a property called '%'. This item will not be added to the configuration. See the help file for the Config class for guidance.", index + 1, Platform.userConfigDir +/+ configFileName, key));
@@ -67,7 +83,7 @@ Config {
 								addSynthesizer = false;
 									},{
 										if (item[key].isMemberOf(Array) == false, {
-											warn(format("Item % in the 'HardwareSynthesizers' section of the configuration file at % has a '%' property but its value is expected to be a String. This item will not be added to the configuration. See the help file for the Config class for guidance.", index + 1, Platform.userConfigDir +/+ configFileName, key));
+											warn(format("Item % in the 'HardwareSynthesizers' section of the configuration file at % has a '%' property but its value is expected to be an Array. This item will not be added to the configuration. See the help file for the Config class for guidance.", index + 1, Platform.userConfigDir +/+ configFileName, key));
 											addSynthesizer = false;
 										},{
 											item[key].do({
@@ -94,7 +110,7 @@ Config {
 								});
 							});
 							if (addSynthesizer, {
-								prHardwareSynthesizers.put(item["Class"].asSymbol, HardwareSynthesizerConfig(item["Name"],synthesizerClass[0], item["MIDIChannels"].collect(_.asInteger - 1), item["InputBusChannels"].collect(_.asInteger)));
+								prHardwareSynthesizers.put(item["Id"].asSymbol, HardwareSynthesizerConfig(item["Id"].asSymbol,synthesizerClass[0], item["MIDIChannels"].collect(_.asInteger - 1), item["InputBusChannels"].collect(_.asInteger)));
 							});
 						});
 					});

@@ -29,7 +29,9 @@ Dx7 : Synthesizer {
 	}
 
 	init {
-		super.init(Dx7Patch,Dx7ScGuiControlSurface,\sysex,"~dx7");
+		|id|
+		Validator.validateMethodParameterType(id, Symbol, "id", "Dx7", "init");
+		super.init(id,Dx7Patch,Dx7ScGuiControlSurface,\sysex);
 		prOperatorMappings = [32,16,8,4,2,1];
 	}
 
