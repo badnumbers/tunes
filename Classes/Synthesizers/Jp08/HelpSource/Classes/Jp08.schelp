@@ -198,19 +198,6 @@ The range for values for this parameter is STRONG::0 to 255::.
 
 RETURNS:: 0x1102.
 
-METHOD:: programChange
-Sends bank and program change messages to the JP-08 in order to change the current preset. Note that the JP-08 has 8 banks of 8 presets.
-
-NOTE::
-This changes between the presets EMPHASIS::stored on the synthesizer itself::, and is different from the patches that are maintained in this class.
-::
-
-ARGUMENT:: bankNumber
-The number (1-based) of the bank to change to. The values 1 to 8 are accepted.
-
-ARGUMENT:: programNumber
-The number (1-based) of the preset to change to. The values 1 to 8 are accepted
-
 METHOD:: pwmModParameterNumber
 The sysex parameter number that is used to control the amount of pulse width modulation. This only applies to the pulse waveform.
 
@@ -411,6 +398,19 @@ TABLE::
 RETURNS:: 0x0104.
 
 INSTANCEMETHODS::
+
+METHOD:: programChange
+Sends bank and program change messages to the JP-08 in order to change the current preset. Note that the JP-08 has 8 banks of 8 presets.
+
+NOTE::
+This changes between the presets EMPHASIS::stored on the synthesizer itself::, and is different from the patches that are maintained in this class.
+::
+
+ARGUMENT:: bankNumber
+The number (1-based) of the bank to change to. The values 1 to 8 are accepted.
+
+ARGUMENT:: programNumber
+The number (1-based) of the preset to change to. The values 1 to 8 are accepted.
 
 EXAMPLES::
 

@@ -61,7 +61,7 @@ Jp08 : Synthesizer {
 		});
 
 		if ((programNumber < 1) || (programNumber > 8), {
-			Error(format("Each JP-08 bank has 8 presets. You must provide a program number between 1 and 8 when you call programChange on it but you provided %.", bankNumber)).throw;
+			Error(format("Each JP-08 bank has 8 presets. You must provide a program number between 1 and 8 when you call programChange on it but you provided %.", programNumber)).throw;
 		});
 
 		actualProgramNumber = (bankNumber - 1) * 8  + (programNumber - 1);

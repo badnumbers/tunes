@@ -9,3 +9,18 @@ Contains information about working with a Prophet REV2.
 NOTE::
 This class does not support patch management for the REV2. Patches should be managed in the hardware itself.
 ::
+
+INSTANCEMETHODS::
+
+METHOD:: programChange
+Sends bank and program change messages to the REV2 in order to change the current preset. Note that the REV2 has 8 banks of 128 presets.
+
+NOTE::
+This changes between the presets EMPHASIS::stored on the synthesizer itself::, and is different from the patches that are maintained in this class.
+::
+
+ARGUMENT:: bankNumber
+The number (1-based) of the bank to change to. The values 1 to 8 are accepted.
+
+ARGUMENT:: programNumber
+The number (1-based) of the preset to change to. The values 1 to 128 are accepted.
