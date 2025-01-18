@@ -12,7 +12,7 @@ Sequencer {
 
 		// TODO validate keysArray - even numbered, every even numbered element is a Symbol
 
-		prPreKeySets.add([{true},keysArray]);
+		prPreKeySets.add(AutoKeySet({true},keysArray));
 	}
 
 	addMidiPart {
@@ -45,19 +45,19 @@ Sequencer {
 	}
 
 	addSynthesizerPostKeys {
-		|synthesizer,keysArray|
-		Validator.validateMethodParameterType(synthesizer, Synthesizer, "synthesizer", "Sequencer", "addSynthesizerPostKeys");
+		|synthId,keysArray|
+		Validator.validateMethodParameterType(synthId, Symbol, "synthId", "Sequencer", "addSynthesizerPostKeys");
 		Validator.validateMethodParameterType(keysArray, Array, "keysArray", "Sequencer", "addSynthesizerPostKeys");
 
 		// TODO validate keysArray - even numbered, every even numbered element is a Symbol
 
-		prPostKeySets.add([{|synth,section|synth==synthesizer},keysArray]);
+		prPostKeySets.add(AutoKeySet({|synth,section|synth==synthId},keysArray));
 	}
 
 	init {
 		|tempo|
 		var convertFromPitch;
-		Validator.validateMethodParameterType(tempo, Integer, "tempo", "Sequencer", "init", allowNil: true);
+		Validator.validateMethodParameterType(tempo, SimpleNumber, "tempo", "Sequencer", "init", allowNil: true);
 		if (tempo.isNil, {
 			tempo = 2;
 		});
@@ -70,22 +70,25 @@ Sequencer {
 			|event|
 			var numberOfDegrees, degree, octave, answer, num = event.pitch;
 			if (num.isNil, {
-				num = 101; // Whatever, sometimes a pattern sticks a rest in here with no pitch key
-			});
-
-			if (num.class == Symbol, {
-				answer = num; // Just pass the Symbol on to the \midinote key
+				answer = event.midinote; // Whatever, sometimes a pattern sticks a rest in here with no pitch key
 			},{
-				num = num - 1;
-				numberOfDegrees = event.scale.size;
-				degree = num % 10;
-				if (degree > numberOfDegrees, {
-					Error("The pitch value of % must not end in a number higher than the number of degrees in the scale, which is %.", event.pitch, numberOfDegrees).throw;
+				if (num.class == Symbol, {
+					answer = num; // Just pass the Symbol on to the \midinote key
+				},{
+					num = num - 1;
+					numberOfDegrees = event.scale.size;
+					degree = num % 10;
+					if (degree > numberOfDegrees, {
+						Error("The pitch value of % must not end in a number higher than the number of degrees in the scale, which is %.", event.pitch, numberOfDegrees).throw;
+					});
+					octave = num - degree / 10;
+					answer = (octave * 12 + event.scale[degree]).asInteger;
 				});
-				octave = num - degree / 10;
-				answer = (octave * 12 + event.scale[degree]).asInteger;
 			});
 
+			if (event.log == true, {
+				postln(answer);
+			});
 			answer;
 		};
 
@@ -124,10 +127,10 @@ Sequencer {
 			// prPreKeys = [{},[key,value,key,value]]
 			// preKeys = [key,value,key,value]
 			prPreKeySets.do({
-				|newKeySet,index|
+				|preKeySet,index|
 				// Decide whether the current set of prekeys should be applied by evaluating its Function
-				if (newKeySet[0].value(synthId,part),{
-					newKeySet[1].do({
+				if (preKeySet.selectFunc.value(synthId,part),{
+					preKeySet.keysArray.do({
 						|newKey,newKeyIndex|
 						// Only look at even-numbered elements
 						if (newKeyIndex % 2 == 0,{
@@ -148,10 +151,10 @@ Sequencer {
 			});
 
 			prPostKeySets.do({
-				|newKeySet,index|
+				|postKeySet,index|
 				// Decide whether the current set of postkeys should be applied by evaluating its Function
-				if (newKeySet[0].value(synthId,part),{
-					newKeySet[1].do({
+				if (postKeySet.selectFunc.value(synthId,part),{
+					postKeySet.keysArray.do({
 						|newKey,newKeyIndex|
 						// Check for duplicates in even-numbered elements
 						if (newKeyIndex % 2 == 0,{
@@ -171,6 +174,13 @@ Sequencer {
 				});
 			});
 
+			if (synthId == \unodrum, {
+				postln("PRE KEYS:");
+				postln(preKeys);
+				postln("POST KEYS:");
+				postln(postKeys);
+			});
+
 			Pchain(
 				Pbind(*postKeys), // The asterisk converts the array into a set of parameters
 				pattern,
@@ -181,7 +191,7 @@ Sequencer {
 
 	*new {
 		|tempo|
-		Validator.validateMethodParameterType(tempo, Integer, "tempo", "Sequencer", "new", allowNil: true);
+		Validator.validateMethodParameterType(tempo, SimpleNumber, "tempo", "Sequencer", "new", allowNil: true);
 		^super.new.init(tempo);
 	}
 
@@ -197,6 +207,14 @@ Sequencer {
 			});
 		}).play(prTempoClock);
 	}
+
+	/*prAddKey {
+		|keysCollection,key|
+		keysCollection.do({
+			|currentkey|
+			if (currentkey[
+		});
+	}*/
 
 	stop {
 		if (prEventStreamPlayer.isMemberOf(EventStreamPlayer), {
