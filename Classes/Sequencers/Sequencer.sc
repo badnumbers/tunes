@@ -70,10 +70,10 @@ Sequencer {
 			|event|
 			var numberOfDegrees, degree, octave, answer, num = event.pitch;
 			if (num.isNil, {
-				answer = event.midinote; // Whatever, sometimes a pattern sticks a rest in here with no pitch key
+				answer = [event.octave, event.degree]; // Whatever, sometimes a pattern sticks a rest in here with missing pitch information
 			},{
 				if (num.class == Symbol, {
-					answer = num; // Just pass the Symbol on to the \midinote key
+					answer = [num,num]; // Just pass the Symbol on to the \octave and \degree keys
 				},{
 					num = num - 1;
 					numberOfDegrees = event.scale.size;
@@ -82,7 +82,7 @@ Sequencer {
 						Error("The pitch value of % must not end in a number higher than the number of degrees in the scale, which is %.", event.pitch, numberOfDegrees).throw;
 					});
 					octave = num - degree / 10;
-					answer = (octave * 12 + event.scale[degree]).asInteger;
+					answer = [octave.asInteger,degree]
 				});
 			});
 
@@ -121,7 +121,7 @@ Sequencer {
 			// TODO: replace this with a function which converts pitch to degree instead
 			// This could then also be used for SC parts
 			postKeys = List.newUsing([
-				\midinote, Pfunc({|ev|convertFromPitch.value(ev)})
+				[\octave,\degree], Pfunc({|ev|convertFromPitch.value(ev)})
 			]);
 
 			// prPreKeys = [{},[key,value,key,value]]
@@ -174,14 +174,15 @@ Sequencer {
 				});
 			});
 
-			if (synthId == \unodrum, {
+			/*if (synthId == \unodrum, {
 				postln("PRE KEYS:");
 				postln(preKeys);
 				postln("POST KEYS:");
 				postln(postKeys);
-			});
+			});*/
 
 			Pchain(
+				Pbind(\debug,Pfunc({|ev|ev.postln;})),
 				Pbind(*postKeys), // The asterisk converts the array into a set of parameters
 				pattern,
 				Pbind(*preKeys)
