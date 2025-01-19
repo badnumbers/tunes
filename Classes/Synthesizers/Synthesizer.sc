@@ -193,8 +193,8 @@ Synthesizer {
 		|bankNumber, programNumber|
 		Validator.validateMethodParameterType(bankNumber, Integer, "bankNumber", "Synthesizer", "programChange");
 		Validator.validateMethodParameterType(programNumber, Integer, "programNumber", "Synthesizer", "programChange");
-		midiout.control(midiChannel,0,bankNumber);
-		midiout.program(midiChannel, programNumber);
+		midiout.control(midiChannel,0,bankNumber-1);
+		midiout.program(midiChannel, programNumber-1);
 	}
 
 	// Writes code describing the supplied patch to the post window.
