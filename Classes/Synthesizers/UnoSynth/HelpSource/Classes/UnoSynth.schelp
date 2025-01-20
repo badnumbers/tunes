@@ -429,17 +429,13 @@ EXAMPLES::
 
 CODE::
 (
-var midiout;
-Setup.server;
-midiout = Setup.midi;
-
 Pdef(\unosynth,
 	Ppar([
 		Pbind(
 			\type, \midi,
 			\midicmd, \noteOn,
-			\midiout, midiout,
-			\chan, UnoSynth.midiChannel,
+			\midiout, Synths(\unosynth).midiout,
+			\chan, Synths(\unosynth).midiChannel,
 			\octave, 3,
 			\degree, 0,
 			\dur, 1/4,
@@ -447,8 +443,8 @@ Pdef(\unosynth,
 		),
 		Pbind(
 			\type, \midi,
-			\midiout, midiout,
-			\chan, UnoSynth.midiChannel,
+			\midiout, Synths(\unosynth).midiout,
+			\chan, Synths(\unosynth).midiChannel,
 			\midicmd, \control,
 			\ctlNum, UnoSynth.cutoffCcNo,
 			\control, Pseg([10,120,10,120],[2,2],\sin,inf),
