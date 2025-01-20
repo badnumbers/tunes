@@ -62,12 +62,6 @@ UnoSynth : Synthesizer {
 		super.init(id, UnoSynthPatch,UnoSynthScGuiControlSurface,\control);
 	}
 
-	*new {
-		|id|
-		Validator.validateMethodParameterType(id, Symbol, "id", "UnoSynth", "new");
-		^super.new.init(id);
-	}
-
 	randomisePatch {
         |patchType|
 		var patch = UnoSynthPatch();
