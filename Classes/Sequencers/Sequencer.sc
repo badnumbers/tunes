@@ -12,7 +12,7 @@ Sequencer {
 
 		// TODO validate keysArray - even numbered, every even numbered element is a Symbol
 
-		prPreKeySets.add(AutoKeySet({true},keysArray));
+		this.prAddKeySet(prPreKeySets,AutoKeySet({true},keysArray));
 	}
 
 	addMidiPart {
@@ -51,7 +51,7 @@ Sequencer {
 
 		// TODO validate keysArray - even numbered, every even numbered element is a Symbol
 
-		prPostKeySets.add(AutoKeySet({|synth,section|synth==synthId},keysArray));
+		this.prAddKeySet(prPostKeySets,AutoKeySet({|synth,section|synth==synthId},keysArray));
 	}
 
 	init {
@@ -182,7 +182,7 @@ Sequencer {
 			});*/
 
 			Pchain(
-				Pbind(\debug,Pfunc({|ev|ev.postln;})),
+				//Pbind(\debug,Pfunc({|ev|ev.postln;})),
 				Pbind(*postKeys), // The asterisk converts the array into a set of parameters
 				pattern,
 				Pbind(*preKeys)
@@ -209,13 +209,18 @@ Sequencer {
 		}).play(prTempoClock);
 	}
 
-	/*prAddKey {
-		|keysCollection,key|
-		keysCollection.do({
-			|currentkey|
-			if (currentkey[
+	prAddKeySet {
+		|existingkeysets,newkeyset|
+		existingkeysets.do({
+			|existingkeyset|
+			if (existingkeyset.hash == newkeyset.hash, {
+				warn(postln("A keyset is being replaced."));
+				existingkeysets.remove(existingkeyset);
+			});
 		});
-	}*/
+
+		existingkeysets.add(newkeyset);
+	}
 
 	stop {
 		if (prEventStreamPlayer.isMemberOf(EventStreamPlayer), {

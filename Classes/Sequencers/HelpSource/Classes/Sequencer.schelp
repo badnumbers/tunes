@@ -58,8 +58,8 @@ A LINK::Classes/Pattern:: to play on the LINK::Classes/SynthDef::. There is no n
 METHOD::addSynthesizerPostKeys
 Adds a set of pattern keys which are added EMPHASIS::after:: every section for the specified LINK::Classes/Synthesizer::. These post-keys are generally patterns which use LINK::Classes/Pkey:: to access keys defined previously, for example by LINK::#-addMidiPart:: and LINK::#-addScPart::, and modify them in some way.
 
-ARGUMENT::synthesizer
-The LINK::Classes/Synthesizer:: that these post-keys will be applied to.
+ARGUMENT::synthId
+The ID of the LINK::Classes/Synthesizer:: that these post-keys will be applied to.
 
 ARGUMENT::keysArray
 An even-numbered LINK::Classes/Array:: of keys and values. Each key (i.e. odd-numbered item) must be a LINK::Classes/Symbol::.

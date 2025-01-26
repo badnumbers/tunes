@@ -25,7 +25,7 @@ AutoKeySet {
 			});
 		});
 
-		prHash = selectFunc.basicHash;
+		prHash = selectFunc.def.code.hash;
 		prKeysArray = keysArray;
 		prSelectFunc = selectFunc;
 	}
