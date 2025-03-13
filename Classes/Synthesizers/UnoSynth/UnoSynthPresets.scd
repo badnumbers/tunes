@@ -18,7 +18,6 @@ patch.name = "Tangerines";
 patch.kvps[90]=0;patch.kvps[44]=0;patch.kvps[19]=0;patch.kvps[23]=78;patch.kvps[103]=0;patch.kvps[67]=21;patch.kvps[72]=0;patch.kvps[91]=0;patch.kvps[45]=13;patch.kvps[17]=0;patch.kvps[12]=127;patch.kvps[71]=0;patch.kvps[70]=0;patch.kvps[47]=40;patch.kvps[105]=64;patch.kvps[18]=64;patch.kvps[46]=49;patch.kvps[73]=74;patch.kvps[22]=92;patch.kvps[20]=19;patch.kvps[7]=63;patch.kvps[102]=127;patch.kvps[81]=64;patch.kvps[75]=0;patch.kvps[104]=21;patch.kvps[76]=0;patch.kvps[74]=52;patch.kvps[78]=0;patch.kvps[13]=127;patch.kvps[66]=127;patch.kvps[15]=103;patch.kvps[14]=0;patch.kvps[106]=0;patch.kvps[89]=0;patch.kvps[77]=0;patch.kvps[92]=0;patch.kvps[26]=54;patch.kvps[16]=99;patch.kvps[24]=0;patch.kvps[80]=103;patch.kvps[68]=1;patch.kvps[49]=127;patch.kvps[69]=0;patch.kvps[27]=67;patch.kvps[25]=79;patch.kvps[21]=25;patch.kvps[5]=0;
 Synths(\unosynth).setWorkingPatch(patch);
 )
-
 (
 Pdef(\tangerine).stop;
 Pdef(\tangerine,
@@ -48,4 +47,32 @@ var patch = UnoSynthPatch();
 patch.name = "Trinity";
 patch.kvps[103]=0;patch.kvps[22]=124;patch.kvps[79]=0;patch.kvps[17]=73;patch.kvps[5]=0;patch.kvps[67]=58;patch.kvps[45]=0;patch.kvps[48]=64;patch.kvps[105]=64;patch.kvps[18]=55;patch.kvps[13]=127;patch.kvps[68]=0;patch.kvps[23]=15;patch.kvps[71]=0;patch.kvps[21]=31;patch.kvps[15]=56;patch.kvps[102]=127;patch.kvps[51]=64;patch.kvps[90]=0;patch.kvps[16]=23;patch.kvps[73]=0;patch.kvps[104]=0;patch.kvps[12]=127;patch.kvps[27]=10;patch.kvps[26]=108;patch.kvps[66]=0;patch.kvps[69]=0;patch.kvps[44]=3;patch.kvps[24]=1;patch.kvps[50]=64;patch.kvps[81]=0;patch.kvps[25]=4;patch.kvps[77]=0;patch.kvps[80]=0;patch.kvps[75]=0;patch.kvps[49]=64;patch.kvps[74]=0;patch.kvps[47]=0;patch.kvps[46]=0;patch.kvps[78]=0;patch.kvps[92]=0;patch.kvps[19]=0;patch.kvps[70]=0;patch.kvps[20]=48;patch.kvps[76]=0;patch.kvps[14]=11;patch.kvps[72]=0;patch.kvps[89]=0;patch.kvps[91]=0;patch.kvps[7]=64;
 Synths(\unosynth).setWorkingPatch(patch);
+)
+
+(
+var patch = UnoSynthPatch();
+patch.name = "Hours of fun";
+patch.kvps[81]=108;patch.kvps[72]=0;patch.kvps[21]=64;patch.kvps[70]=0;patch.kvps[17]=64;patch.kvps[66]=10;patch.kvps[73]=0;patch.kvps[46]=0;patch.kvps[76]=0;patch.kvps[51]=64;patch.kvps[44]=0;patch.kvps[69]=0;patch.kvps[20]=0;patch.kvps[77]=0;patch.kvps[71]=0;patch.kvps[22]=0;patch.kvps[19]=0;patch.kvps[18]=64;patch.kvps[50]=64;patch.kvps[47]=0;patch.kvps[80]=71;patch.kvps[102]=127;patch.kvps[106]=0;patch.kvps[49]=64;patch.kvps[103]=0;patch.kvps[89]=0;patch.kvps[25]=64;patch.kvps[15]=90;patch.kvps[45]=5;patch.kvps[48]=64;patch.kvps[5]=54;patch.kvps[16]=40;patch.kvps[105]=64;patch.kvps[12]=127;patch.kvps[24]=0;patch.kvps[91]=0;patch.kvps[26]=127;patch.kvps[67]=18;patch.kvps[68]=0;patch.kvps[75]=0;patch.kvps[92]=0;patch.kvps[104]=0;patch.kvps[7]=64;patch.kvps[13]=0;patch.kvps[14]=0;patch.kvps[23]=80;patch.kvps[78]=0;patch.kvps[27]=0;patch.kvps[74]=0;patch.kvps[90]=0;patch.kvps[79]=0;
+Synths(\unosynth).setWorkingPatch(patch);
+)
+(
+Pdef(\bass).stop;
+Pdef(\bass,
+	Pseq([
+		Pbind(
+			\type,\midi,
+			\midiout,Setup.midi,
+			\chan,Synths(\unosynth).midiChannel,
+			\degree, Pseq({28.rand}!16),
+			\octave,2,
+			\dur,0.125,
+			\legato,Pseq({exprand(2.0,0.1)}!16),
+			\cutoff,Pfunc({Setup.midi.control(Synths(\unosynth).midiChannel,UnoSynth.cutoffCcNo,40.rand+30)}),
+			\envamt, Pseg(Pseq({60.rand+40}!4),2,\sin),
+			\envamt, Pfunc({|e|Setup.midi.control(Synths(\unosynth).midiChannel,UnoSynth.envAmtCcNo,e.envamt)}),
+			\amp, 1,
+			\timingOffset,Pseg(Pseq([0,0.02]),0.5,\sin,8)
+		)
+	],inf)
+).play(TempoClock(1));
 )
