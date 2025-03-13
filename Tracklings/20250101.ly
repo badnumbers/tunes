@@ -26,9 +26,19 @@
     fs4. gs8~ gs2 | % 12
     a4. gs4. e4 | % 13
     gs4. fs4. b,4 | % 14
-    \key g \major
+    \key d \major
     d4. e8~ e2 | % 15
     d4. e8~ e2 | % 16
+    g4. fs4. d4 | % 17
+    fs4. e4. a,4 | % 18
+    \key c \major
+    c4. d8~ d2 | % 19
+    c4. d8~ d2 | % 20
+    c4. d8~ d2 | % 21
+    c4. d8~ d2 | % 22
+    e1 | % 23
+    \key e \major
+    cs1 | % 24
   }
   \new Staff \with { instrumentName = "Hydrasynth" } \relative c' {
     \key a \major
@@ -47,9 +57,19 @@
     d, a' d, a' d, a' d, a' | % 12
     fs cs' fs, cs' fs, cs' fs, cs' | % 13
     e, b' e, b' e, b' e, b' | % 14
-    \key g \major
+    \key d \major
     a fs' a, fs' a, fs' a, fs' | % 15
     g, e' g, e' g, e' g, e' | % 16
+    e, b' e, b' e, b' e, b' | % 17
+    d, a' d, a' d, a' d, a' | % 18
+    \key c \major
+    g e' g, e' g, e' g, e' | % 19
+    f,^"Going up a note here also sounds good" d' f, d' f, d' f, d' | % 20
+    g, e' g, e' g, e' g, e' | % 21
+    f, d' f, d' f, d' f, d' | % 22
+    c, g' c, g' c, g' c, g' | % 23
+    \key e \major
+    cs, gs' cs, gs' cs, gs' cs, gs' | % 24
   }
 >>
 
