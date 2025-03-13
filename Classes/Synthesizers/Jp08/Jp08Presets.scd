@@ -198,9 +198,16 @@ Pdef(\pattern,
 			\chan,Synths(\jp08).midiChannel,
 			\midinote, Pseq([ 39,  \,  \, 39,  \, 51, 46, 39,  \,  \,  \,  \,  \, 39, 46, 49]),
 			\dur,      h,
-			\legato,   Pseq([2.5,  \,  \,0.9,  \,0.9,0.9,0.9,  \,  \,  \,  \,  \,0.9,0.9,0.7]),
+			\legato,   Pseq([2.5,  \,  \,0.9,  \,0.9,0.9,0.9,  \,  \,  \,  \,  \,0.9,0.9,0.6]),
 			\amp,      Pseq([  6,  \,  \,  7,  \,7.5,  7,  6,  \,  \,  \,  \,  \,  6,  7,  5] * 0.1),
 		)
 	],2)
 ).play(TempoClock(2.2));
+)
+
+(
+var patch = Jp08Patch();
+patch.name = "McTinkles";
+patch.kvps[4102]=11;patch.kvps[4358]=0;patch.kvps[1282]=128;patch.kvps[1286]=128;patch.kvps[268]=3;patch.kvps[770]=0;patch.kvps[1284]=128;patch.kvps[4]=0;patch.kvps[274]=165;patch.kvps[264]=1;patch.kvps[280]=124;patch.kvps[1288]=3;patch.kvps[768]=255;patch.kvps[1032]=1;patch.kvps[260]=1;patch.kvps[278]=0;patch.kvps[522]=1;patch.kvps[524]=0;patch.kvps[4098]=14;patch.kvps[270]=0;patch.kvps[276]=128;patch.kvps[1026]=128;patch.kvps[1024]=0;patch.kvps[272]=0;patch.kvps[4352]=0;patch.kvps[4360]=2;patch.kvps[514]=135;patch.kvps[262]=0;patch.kvps[4100]=14;patch.kvps[258]=0;patch.kvps[1028]=128;patch.kvps[518]=0;patch.kvps[516]=243;patch.kvps[0]=128;patch.kvps[266]=163;patch.kvps[526]=160;patch.kvps[512]=0;patch.kvps[4354]=128;patch.kvps[4096]=1;patch.kvps[520]=0;patch.kvps[1280]=0;patch.kvps[256]=0;patch.kvps[2]=128;patch.kvps[1030]=128;
+Synths(\jp08).setWorkingPatch(patch);
 )
