@@ -222,6 +222,12 @@ Sequencer {
 		existingkeysets.add(newkeyset);
 	}
 
+	showGui {
+		SequencerGui.new(this,(
+			sections: {prSections}.value
+		));
+	}
+
 	stop {
 		if (prEventStreamPlayer.isMemberOf(EventStreamPlayer), {
 			prEventStreamPlayer.stop;
