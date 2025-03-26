@@ -93,7 +93,34 @@ SequencerGui {
 			};
 			partView.mouseUpAction = {
 				postln(format("User clicked on part %.", partName));
+				this.prUpdateSequencesSection(section[partName][1]);
 			};
+			currentTop = currentTop + 25;
+		});
+	}
+
+	prUpdateSequencesSection {
+		|pattern|
+		var currentTop = 0;
+		var analyser = {
+			|pattern,messages,depth=0|
+			postln(format("analyser function called, pattern is a %, depth is %.",pattern,depth));
+			switch (pattern.class,
+				Pseq,   { var message = ""; depth.do({message = message + "- ";}); messages.add(message + "Pseq"); pattern.list.do({|subpat|analyser.value(subpat,messages,depth+1)}); },
+				Ppar,   { var message = ""; depth.do({message = message + "- ";}); messages.add(message + "Ppar"); pattern.list.do({|subpat|analyser.value(subpat,messages,depth+1)}); },
+				Pbind, { var message = ""; depth.do({message = message + "-  ";}); messages.add(message + "Pbind"); },
+				{ postln(format("Depth: %. Unexpectedly this was a %.", depth, pattern.class)); }
+			);
+			messages;
+		};
+		var messages = analyser.value(pattern,List.new(size:100));
+		prSequencesBodyView.children.do({
+			|child|
+			child.remove;
+		});
+		messages.do({
+			|message|
+			StaticText(prSequencesBodyView,Rect(0,currentTop,180,25)).string_(message).stringColor_(Color.white);
 			currentTop = currentTop + 25;
 		});
 	}
