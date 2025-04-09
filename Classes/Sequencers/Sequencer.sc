@@ -62,27 +62,42 @@ Sequencer {
 			tempo = 2;
 		});
 
-		prTempoClock = TempoClock(tempo);
+		prTempoClock = TempoClock(tempo:tempo);
 
 		convertFromPitch = {
 			// This function MUST NOT use ^ to return a value
 			// Otherwise you get awful 'PauseStream-awake' Out of context return of value errors
 			|event|
-			var numberOfDegrees, degree, octave, answer, num = event.pitch;
-			if (num.isNil, {
+			var numberOfDegrees, degree, octave, answer, pitches;
+			var thisIsAnArray = event.pitch.class == Array;
+			if (event.pitch.isNil, {
 				answer = [event.octave, event.degree]; // Whatever, sometimes a pattern sticks a rest in here with missing pitch information
 			},{
-				if (num.class == Symbol, {
-					answer = [num,num]; // Just pass the Symbol on to the \octave and \degree keys
+				if (event.pitch.class == Symbol, {
+					answer = [event.pitch,event.pitch]; // Just pass the Symbol on to the \octave and \degree keys
 				},{
-					num = num - 1;
-					numberOfDegrees = event.scale.size;
-					degree = num % 10;
-					if (degree > numberOfDegrees, {
-						Error("The pitch value of % must not end in a number higher than the number of degrees in the scale, which is %.", event.pitch, numberOfDegrees).throw;
+					if (thisIsAnArray,{
+						pitches = event.pitch;
+					},{
+						pitches = [event.pitch];
 					});
-					octave = num - degree / 10;
-					answer = [octave.asInteger,degree]
+					answer = pitches.collect({
+						|pitch|
+						pitch = pitch - 1;
+						numberOfDegrees = event.scale.size;
+						degree = pitch % 10;
+						if (degree > numberOfDegrees, {
+							Error("The pitch value of % must not end in a number higher than the number of degrees in the scale, which is %.", event.pitch, numberOfDegrees).throw;
+						});
+						octave = pitch - degree / 10;
+						[octave.asInteger,degree]
+					});
+
+					if (thisIsAnArray,{
+						answer = [answer.collect({|ans|ans[0]}),answer.collect({|ans|ans[1]})];
+					},{
+						answer = answer[0];
+					});
 				});
 			});
 
