@@ -61,42 +61,60 @@ SequencerGui {
 	}
 
 	prDisplayPattern {
-		|parentView,patterntype|
+		|parentView,pattern|
 		var newView = View().minHeight_(25).minWidth_(25);
-		switch (patterntype,
+		switch (pattern.class,
 			Pseq,   {
-				parentView.layout.add(BorderView().background_(prColours[\colour3]).layout_(
+				parentView.layout.add(BorderView().background_(prColours[\colour3]).borderColor_(prColours[\extreme1]).layout_(
 					VLayout(
-						StaticText().string_("Pseq").minHeight_(25),
+						StaticText().string_("Pseq").stringColor_(prColours[\extreme1]).minHeight_(25),
 						newView
 					)
 				));
 				newView.layout_(HLayout());
 			},
 			Ppar,   {
-				parentView.layout.add(BorderView().background_(prColours[\colour2]).layout_(
+				parentView.layout.add(BorderView().background_(prColours[\colour2]).borderColor_(prColours[\extreme1]).layout_(
 					VLayout(
-						StaticText().string_("Ppar").minHeight_(25),
+						StaticText().string_("Ppar").stringColor_(prColours[\extreme1]).minHeight_(25),
 						newView
 					)
 				));
 				newView.layout_(VLayout());
 			},
 			Pbind, {
-				parentView.layout.add(BorderView().background_(prColours[\colour1]).layout_(
+				parentView.layout.add(BorderView().background_(prColours[\colour1]).borderColor_(prColours[\extreme1]).layout_(
 					VLayout(
-						StaticText().string_("Pbind").minHeight_(25),
+						StaticText().string_("Pbind").stringColor_(prColours[\extreme1]).minHeight_(25),
 						newView
 					)
 				));
-				newView.layout_(VLayout());
+				newView.layout_(HLayout());
+				this.prDisplayPbind(newView, pattern);
 			},
 			{
-				Error(format("I don't know how to render a display for the pattern type %.", patterntype)).throw;
+				Error(format("I don't know how to render a display for the pattern type %.", pattern.class)).throw;
 			}
 		);
-		//parentView.layout.add(newView);
 		^newView;
+	}
+
+	prDisplayPbind {
+		|parentView,pbind|
+		var nameView, valueView, isEven = true;
+		parentView.layout.add(nameView = View().layout_(VLayout()));
+		parentView.layout.add(valueView = View().layout_(VLayout()));
+		pbind.patternpairs.do({
+			|item|
+			if (isEven, {
+				nameView.layout.add(StaticText().string_(item.asString).stringColor_(prColours[\extreme1]).minHeight_(25));
+			}, {
+				valueView.layout.add(StaticText().string_(item.asString).stringColor_(prColours[\extreme1]).minHeight_(25));
+			});
+			isEven = isEven.not; // invert the value
+		});
+		nameView.layout.add(nil, 1);
+		valueView.layout.add(nil, 1);
 	}
 
 	prLoadParts {
@@ -146,17 +164,17 @@ SequencerGui {
 			|pattern,parentView|
 			switch (pattern.class,
 				Pseq,   {
-					var newview = this.prDisplayPattern(parentView,Pseq);
+					var newview = this.prDisplayPattern(parentView,pattern);
 					pattern.list.do({|subpat|traversePatternGraph.value(subpat,newview)});
 					newview.layout.add(nil, 1);
 				},
 				Ppar,   {
-					var newview = this.prDisplayPattern(parentView,Ppar);
+					var newview = this.prDisplayPattern(parentView,pattern);
 					pattern.list.do({|subpat|traversePatternGraph.value(subpat,newview)});
 					newview.layout.add(nil, 1);
 				},
 				Pbind, {
-					var newview = this.prDisplayPattern(parentView,Pbind);
+					var newview = this.prDisplayPattern(parentView,pattern);
 					newview.layout.add(nil, 1);
 				},
 				{
