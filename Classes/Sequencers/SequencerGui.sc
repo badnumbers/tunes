@@ -1,4 +1,5 @@
 SequencerGui {
+	var prDocument;
 	var prMainHeader;
 	var prLeftPanelBody;
 	var prLeftPanelHeader;
@@ -17,6 +18,8 @@ SequencerGui {
 		Validator.validateMethodParameterType(sequencer, Sequencer, "sequencer", "SequencerGui", "init");
 		prSequencer = sequencer;
 		prSequencerData = privateSequencerData;
+
+		prDocument = Document.open(thisProcess.nowExecutingPath);
 
 		prColours = Dictionary.newFrom([
 			\colour1, Color.fromHexString("6b4e71"),
@@ -118,7 +121,7 @@ SequencerGui {
 	}
 
 	prLoadParts {
-		|section|
+		|sectionName, section|
 		prMiddlePanelBody.removeAll;
 		prMiddlePanelBody.layout = VLayout();
 		section.keys.do({
@@ -131,6 +134,17 @@ SequencerGui {
 				text.background_(Color.clear);
 			};
 			text.mouseUpAction = {
+				var regex = format("~seq.addMidiPart%( *%%, *%% *,", "\\", "\\\\", sectionName, "\\\\", partName);
+				var location = prDocument.getText.findRegexp(regex);
+				if (location.size == 0,{
+					warn(format("Could not find the location in document %.", prDocument.path));
+				},{
+					if (location.size > 1,{
+						warn(format("Found more than one location in document %: see lines %.", prDocument.path, location.collect(_[0])));
+					},{
+						prDocument.selectRange(location[0][0],location[0][1].size);
+					});
+				});
 				this.prLoadSequences(section[partName][1]);
 			};
 			prMiddlePanelBody.layout.add(text);
@@ -151,7 +165,7 @@ SequencerGui {
 				text.background_(Color.clear);
 			};
 			text.mouseUpAction = {
-				this.prLoadParts(prSequencerData.sections[sectionName]);
+				this.prLoadParts(sectionName, prSequencerData.sections[sectionName]);
 			};
 			prLeftPanelBody.layout.add(text);
 		});
