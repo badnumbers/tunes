@@ -1,9 +1,9 @@
 TITLE:: Sequencer
 SUMMARY:: A sequencer for managing and playing patterns
-CATEGORIES:: Undocumented classes
+CATEGORIES:: Streams-Patterns-Events
 
 DESCRIPTION::
-TELETYPE::Sequencer:: is intended to cut down the amount of boilerplate code required to sequence tracks. For example, it reduces the amount of keys that you need to specify when writing a pattern, and provides a new way of specifying musical notes.
+LINK::Classes/Sequencer:: is intended to cut down the amount of boilerplate code required to sequence tracks. For example, it reduces the amount of keys that you need to specify when writing a pattern, and provides a new way of specifying musical notes.
 
 CLASSMETHODS::
 
@@ -77,6 +77,9 @@ Plays the specified sections by playing all of the parts in each section in para
 
 ARGUMENT::sections
 An LINK::Classes/Array:: of LINK::Classes/Symbol::s denoting the sections to play.
+
+METHOD::showGui
+Opens a LINK::Classes/SequencerGui:: to provide a visual representation of the sequencers defined by this LINK::Classes/Sequencer::.
 
 METHOD::stop
 Stops playback.
