@@ -86,15 +86,15 @@ EXAMPLES::
 CODE::
 (
 ~seq = Sequencer();
-~seq.addMidiPart(\part1, \rev2, Pbind(
+~seq.addMidiPart(\section1, \rev2, Pbind(
 	\dur, 1,
 	\pitch, Pseq([31,41,51,61]).trace
 ));
-~seq.addMidiPart(\part2, \rev2, Pbind(
+~seq.addMidiPart(\section2, \rev2, Pbind(
 	\dur, 0.5,
 	\pitch, Pseq([71,61,51,41,31]).trace
 ));
-~seq.play([\part1,\part2]);
+~seq.play([\section1,\section2]);
 )
 
 ~seq.stop;
