@@ -64,13 +64,15 @@ SequencerGui {
 	}
 
 	prDisplayPattern {
-		|parentView,pattern|
+		|parentView,pattern,sectionName,partName,address|
 		var newView = View().minHeight_(25).minWidth_(25);
 		switch (pattern.class,
 			Pseq,   {
 				parentView.layout.add(BorderView().background_(prColours[\colour3]).borderColor_(prColours[\extreme1]).layout_(
 					VLayout(
-						StaticText().string_("Pseq").stringColor_(prColours[\extreme1]).minHeight_(25),
+						StaticText().string_("Pseq").stringColor_(prColours[\extreme1]).minHeight_(25).mouseUpAction_({
+							this.prSelectPattern(sectionName, partName, address);
+						}),
 						newView
 					)
 				));
@@ -79,7 +81,9 @@ SequencerGui {
 			Ppar,   {
 				parentView.layout.add(BorderView().background_(prColours[\colour2]).borderColor_(prColours[\extreme1]).layout_(
 					VLayout(
-						StaticText().string_("Ppar").stringColor_(prColours[\extreme1]).minHeight_(25),
+						StaticText().string_("Ppar").stringColor_(prColours[\extreme1]).minHeight_(25).mouseUpAction_({
+							this.prSelectPattern(sectionName, partName, address);
+						}),
 						newView
 					)
 				));
@@ -88,7 +92,9 @@ SequencerGui {
 			Pbind, {
 				parentView.layout.add(BorderView().background_(prColours[\colour1]).borderColor_(prColours[\extreme1]).layout_(
 					VLayout(
-						StaticText().string_("Pbind").stringColor_(prColours[\extreme1]).minHeight_(25),
+						StaticText().string_("Pbind").stringColor_(prColours[\extreme1]).minHeight_(25).mouseUpAction_({
+							this.prSelectPattern(sectionName, partName, address);
+						}),
 						newView
 					)
 				));
@@ -145,7 +151,7 @@ SequencerGui {
 						prDocument.selectRange(location[0][0],location[0][1].size);
 					});
 				});
-				this.prLoadSequences(section[partName][1]);
+				this.prLoadSequences(section[partName][1],sectionName,partName);
 			};
 			prMiddlePanelBody.layout.add(text);
 		});
@@ -173,22 +179,24 @@ SequencerGui {
 	}
 
 	prLoadSequences {
-		|pattern|
+		|pattern,sectionName,partName|
 		var traversePatternGraph = {
-			|pattern,parentView|
+			|pattern,parentView,sectionName,partName,address|
 			switch (pattern.class,
 				Pseq,   {
-					var newview = this.prDisplayPattern(parentView,pattern);
-					pattern.list.do({|subpat|traversePatternGraph.value(subpat,newview)});
+					var newview = this.prDisplayPattern(parentView,pattern,sectionName,partName,address);
+					var childIndex = 0;
+					pattern.list.do({|subpat|traversePatternGraph.value(subpat,newview,sectionName,partName,address++[childIndex]);childIndex = childIndex + 1;});
 					newview.layout.add(nil, 1);
 				},
 				Ppar,   {
-					var newview = this.prDisplayPattern(parentView,pattern);
-					pattern.list.do({|subpat|traversePatternGraph.value(subpat,newview)});
+					var newview = this.prDisplayPattern(parentView,pattern,sectionName,partName,address);
+					var childIndex = 0;
+					pattern.list.do({|subpat|traversePatternGraph.value(subpat,newview,sectionName,partName,address++[childIndex]);childIndex = childIndex + 1;});
 					newview.layout.add(nil, 1);
 				},
 				Pbind, {
-					var newview = this.prDisplayPattern(parentView,pattern);
+					var newview = this.prDisplayPattern(parentView,pattern,sectionName,partName,address);
 					newview.layout.add(nil, 1);
 				},
 				{
@@ -198,7 +206,97 @@ SequencerGui {
 		};
 		prRightPanelBody.removeAll;
 		prRightPanelBody.layout = VLayout();
-		traversePatternGraph.value(pattern,prRightPanelBody);
+		traversePatternGraph.value(pattern,prRightPanelBody,sectionName,partName,[0]);
 		prRightPanelBody.layout.add(nil, 1);
+	}
+
+	prSelectPattern {
+		|sectionName, partName, address|
+		var regex = format("~seq.addMidiPart%( *%%, *%% *,", "\\", "\\\\", sectionName, "\\\\", partName);
+		var text = prDocument.getText;
+		var location = prDocument.getText.findRegexp(regex);
+		var patternSubstring = "";
+		var isSpace = false;
+		var inASingleLineComment = false;
+		var inAMultiLineComment = false;
+		var inAComment = false;
+		var bracketIndent = 0;
+		var chars = Array.newClear(10);
+		var index = location[0][0];
+		var parentPatternText = PatternText(Sequencer, nil, index);
+		var currentPatternText = parentPatternText;
+		var continue = true;
+		// Throw an error if there are no results
+		while ({continue},{ // No early break possible from for loop in SC :(
+			if (index == (text.size-1), {
+				continue = false;
+			});
+
+			// Figure out if we're in a comment
+			if (inASingleLineComment && text[index] == $\n,{
+				inASingleLineComment = false;
+			});
+			if (inAMultiLineComment && text[index-1] == $* && text[index] == $\/,{
+				inAMultiLineComment = false;
+			});
+			if (text[index-1] == $/ && text[index] == $/,{
+				inASingleLineComment = true;
+			});
+			if (text[index-1] == $/ && text[index] == $*,{
+				inAMultiLineComment = true;
+			});
+			inAComment = inASingleLineComment || inAMultiLineComment;
+
+			// Figure out the bracket indent
+			if (inAComment == false,{
+				if (text[index] == $(,{
+					bracketIndent = bracketIndent + 1;
+					if (currentPatternText.notNil,{ // This nesting is necessary because SC is too dumb to short-circuit
+						if (currentPatternText.bracketIndent.isNil,{
+							currentPatternText.bracketIndent = bracketIndent;
+						});
+					});
+				});
+				if (text[index] == $),{
+					bracketIndent = bracketIndent - 1;
+					if (currentPatternText.notNil,{
+						if (currentPatternText.bracketIndent.notNil,{
+							if (bracketIndent < currentPatternText.bracketIndent,{
+								currentPatternText.endIndex = index;
+								if (currentPatternText.parent.notNil,{
+									currentPatternText = currentPatternText.parent;
+								},{
+									continue = false; // Break out of loop
+								});
+							});
+						});
+					});
+				});
+			});
+
+			// Figure out if we're defining a new Pattern instance
+			if (inAComment == false,{
+				if (text[index-3] ++ text[index-2] ++ text[index-1] ++ text[index] == "Pseq",{
+					currentPatternText = PatternText(Pseq, currentPatternText, index-3);
+				});
+				if (text[index-3] ++ text[index-2] ++ text[index-1] ++ text[index] == "Ppar",{
+					currentPatternText = PatternText(Ppar, currentPatternText, index-3);
+				});
+				if (text[index-4] ++ text[index-3] ++ text[index-2] ++ text[index-1] ++ text[index] == "Pbind",{
+					currentPatternText = PatternText(Pbind, currentPatternText, index-4);
+				});
+			});
+
+			// Write down what we know
+			//postln(format("%: %, bracketIndent: %, inASingleLineComment: %, inAMultiLineComment: %", index, text[index], bracketIndent, inASingleLineComment, inAMultiLineComment));
+
+			index = index + 1;
+		});
+		currentPatternText = parentPatternText;
+		address.do({
+			|childIndex|
+			currentPatternText = currentPatternText.children[childIndex];
+		});
+		prDocument.selectRange(currentPatternText.startIndex, currentPatternText.endIndex-currentPatternText.startIndex+1);
 	}
 }
