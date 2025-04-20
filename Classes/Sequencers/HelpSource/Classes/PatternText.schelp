@@ -1,0 +1,47 @@
+TITLE:: PatternText
+SUMMARY:: Represents a pattern definition found in a Document
+CATEGORIES:: Streams-Patterns-Events
+RELATED:: Classes/SequencerGui, Classes/Document
+
+DESCRIPTION::
+The LINK::Classes/SequencerGui:: reads a LINK::Classes/Document:: to find where in the LINK::Classes/Document:: text the patterns shown in the GUI are defined. It records each one as an instance of this class.
+
+CLASSMETHODS::
+
+METHOD:: new
+(describe method here)
+
+ARGUMENT:: patternType
+(describe argument here)
+
+ARGUMENT:: parent
+(describe argument here)
+
+ARGUMENT:: startIndex
+(describe argument here)
+
+RETURNS:: (describe returnvalue here)
+
+
+INSTANCEMETHODS::
+
+METHOD:: init
+(describe method here)
+
+ARGUMENT:: patternType
+(describe argument here)
+
+ARGUMENT:: parent
+(describe argument here)
+
+ARGUMENT:: startIndex
+(describe argument here)
+
+RETURNS:: (describe returnvalue here)
+
+
+EXAMPLES::
+
+CODE::
+(some example code)
+::
