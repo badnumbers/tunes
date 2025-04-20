@@ -6,39 +6,63 @@ RELATED:: Classes/SequencerGui, Classes/Document
 DESCRIPTION::
 The LINK::Classes/SequencerGui:: reads a LINK::Classes/Document:: to find where in the LINK::Classes/Document:: text the patterns shown in the GUI are defined. It records each one as an instance of this class.
 
+WARNING::
+This class is used internally by LINK::Classes/SequencerGui::. Its use outside of that context is unlikely to be valid.
+::
+
 CLASSMETHODS::
 
 METHOD:: new
-(describe method here)
+Creates an instance of LINK::Classes/PatternText::.
 
 ARGUMENT:: patternType
-(describe argument here)
+The LINK::Classes/Class:: of the LINK::Classes/Pattern:: whose position in the LINK::Classes/Document:: this LINK::Classes/PatternText:: is describing.
 
 ARGUMENT:: parent
-(describe argument here)
+The LINK::Classes/Pattern:: that this LINK::Classes/Pattern:: is contained within, or LINK::Classes/Nil:: if it is not inside another LINK::Classes/Pattern::.
 
 ARGUMENT:: startIndex
-(describe argument here)
-
-RETURNS:: (describe returnvalue here)
-
+The index of the character in this LINK::Classes/Document:: that begins the definition of this LINK::Classes/Pattern::.
 
 INSTANCEMETHODS::
 
-METHOD:: init
-(describe method here)
+METHOD:: addChild
+Adds the specified instance of LINK::Classes/PatternText:: to the private LINK::Classes/Array:: of this one's children. Only used within the TELETYPE::init:: method to add the LINK::Classes/PatternText:: to its parent's children.
 
-ARGUMENT:: patternType
-(describe argument here)
+ARGUMENT:: childPatternText
+The LINK::Classes/PatternText:: to add.
 
-ARGUMENT:: parent
-(describe argument here)
+METHOD:: bracketIndent
+The indentation level of round brackets which contains the body of this LINK::Classes/Pattern::. LINK::Classes/SequencerGui:: uses the bracket indentation to determine when declarations of LINK::Classes/Pattern:: end.
 
-ARGUMENT:: startIndex
-(describe argument here)
+For example, consider the following:
 
-RETURNS:: (describe returnvalue here)
+CODE::
+~seq.addMidiPart(\intro, \unodrum, Pseq([ // This Pseq has bracket indent 1
+	Ppar([ // This Ppar has bracket indent 2
+		Pbind( // This Pbind has bracket indent 3
+			\midinote, Pseq([36, 40, 36, 40]),
+			\dur, 0.25,
+			\amp, 0.9
+		)
+	])
+])
+);
+::
 
+METHOD:: endIndex
+The index of the character in this LINK::Classes/Document:: that ends the definition of this LINK::Classes/Pattern::.
+
+METHOD:: parent
+The LINK::Classes/Pattern:: that this LINK::Classes/Pattern:: is contained within, or LINK::Classes/Nil:: if it is not inside another LINK::Classes/Pattern::.
+
+METHOD:: patternType
+The LINK::Classes/Class:: of the LINK::Classes/Pattern:: whose position in the LINK::Classes/Document:: this LINK::Classes/PatternText:: is describing, for example LINK::Classes/Pseq:: or LINK::Classes/Ppar::.
+
+METHOD:: startIndex
+The index of the character in this LINK::Classes/Document:: that begins the definition of this LINK::Classes/Pattern::.
+
+PRIVATE:: init
 
 EXAMPLES::
 
