@@ -4,85 +4,23 @@ CATEGORIES:: Streams-Patterns-Events
 RELATED:: Classes/Sequencer
 
 DESCRIPTION::
-LINK::Classes/SequencerGui:: provides a visualisation of a graph of LINK::Classes/Pattern::s created using a LINK::Classes/Sequencer::.
-
+LINK::Classes/SequencerGui:: provides a visualisation of a graph of LINK::Classes/Pattern::s created using a LINK::Classes/Sequencer::. This is created when calling LINK::Classes/Sequencer#-showGui::.
 
 CLASSMETHODS::
 
 METHOD:: new
-(describe method here)
+Creates an instance of LINK::Classes/SequencerGui::.
 
 ARGUMENT:: sequencer
-(describe argument here)
+The LINK::Classes/Sequencer:: that this LINK::Classes/SequencerGui:: provides a visual representation of.
 
 ARGUMENT:: privateSequencerData
-(describe argument here)
+An LINK::Classes/Event:: containing private data from the LINK::Classes/Sequencer:: that is needed by the LINK::Classes/SequencerGui::. This must contain the following keys:
 
-RETURNS:: (describe returnvalue here)
-
+TABLE::
+    ## sections || The value of TELETYPE::prSections::.
+::
 
 INSTANCEMETHODS::
 
-METHOD:: prLoadParts
-(describe method here)
-
-ARGUMENT:: sectionName
-(describe argument here)
-
-ARGUMENT:: section
-(describe argument here)
-
-RETURNS:: (describe returnvalue here)
-
-METHOD:: prDisplayPattern
-(describe method here)
-
-ARGUMENT:: parentView
-(describe argument here)
-
-ARGUMENT:: pattern
-(describe argument here)
-
-RETURNS:: (describe returnvalue here)
-
-METHOD:: init
-(describe method here)
-
-ARGUMENT:: sequencer
-(describe argument here)
-
-ARGUMENT:: privateSequencerData
-(describe argument here)
-
-RETURNS:: (describe returnvalue here)
-
-METHOD:: prLoadSections
-(describe method here)
-
-RETURNS:: (describe returnvalue here)
-
-METHOD:: prDisplayPbind
-(describe method here)
-
-ARGUMENT:: parentView
-(describe argument here)
-
-ARGUMENT:: pbind
-(describe argument here)
-
-RETURNS:: (describe returnvalue here)
-
-METHOD:: prLoadSequences
-(describe method here)
-
-ARGUMENT:: pattern
-(describe argument here)
-
-RETURNS:: (describe returnvalue here)
-
-
-EXAMPLES::
-
-CODE::
-(some example code)
-::
+PRIVATE:: init, prDisplayPattern, prDisplayPbind, prLoadParts, prLoadSections, prLoadSequences
