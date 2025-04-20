@@ -2,7 +2,7 @@
 
 (
 ~findPattern = {
-	|sectionName, partName ... pairs|
+	|sectionName, partName, address|
 	var regex = format("~seq.addMidiPart%( *%%, *%% *,", "\\", "\\\\", sectionName, "\\\\", partName);
 	var text = ~prDocument.getText;
 	var location = ~prDocument.getText.findRegexp(regex);
@@ -13,48 +13,51 @@
 	var inAComment = false;
 	var bracketIndent = 0;
 	var chars = Array.newClear(10);
-	var currentPatternText;
-	warn(format("location[0][0]: %", location[0][0]));
+	var index = location[0][0];
+	var parentPatternText = PatternText(Sequencer, nil, index);
+	var currentPatternText = parentPatternText;
+	var continue = true;
 	// Throw an error if there are no results
-	for((location[0][0])+(location[0][1].size), text.size) { // Iterate through the text following the matched regex
-		|i|
+	while ({continue},{ // No early break possible from for loop in SC :(
+		if (index == (text.size-1), {
+			continue = false;
+		});
+
 		// Figure out if we're in a comment
-		if (inASingleLineComment && text[i] == $\n,{
+		if (inASingleLineComment && text[index] == $\n,{
 			inASingleLineComment = false;
 		});
-		if (inAMultiLineComment && text[i-1] == $* && text[i] == $\/,{
+		if (inAMultiLineComment && text[index-1] == $* && text[index] == $\/,{
 			inAMultiLineComment = false;
 		});
-		if (text[i-1] == $/ && text[i] == $/,{
+		if (text[index-1] == $/ && text[index] == $/,{
 			inASingleLineComment = true;
 		});
-		if (text[i-1] == $/ && text[i] == $*,{
+		if (text[index-1] == $/ && text[index] == $*,{
 			inAMultiLineComment = true;
 		});
 		inAComment = inASingleLineComment || inAMultiLineComment;
 
 		// Figure out the bracket indent
 		if (inAComment == false,{
-			if (text[i] == $(,{
+			if (text[index] == $(,{
 				bracketIndent = bracketIndent + 1;
 				if (currentPatternText.notNil,{ // This nesting is necessary because SC is too dumb to short-circuit
 					if (currentPatternText.bracketIndent.isNil,{
 						currentPatternText.bracketIndent = bracketIndent;
-						warn(format("Found the opening bracket for this % at position %.", currentPatternText.patternType, i));
 					});
 				});
 			});
-			if (text[i] == $),{
+			if (text[index] == $),{
 				bracketIndent = bracketIndent - 1;
 				if (currentPatternText.notNil,{
 					if (currentPatternText.bracketIndent.notNil,{
 						if (bracketIndent < currentPatternText.bracketIndent,{
-							warn(format("Found the closing bracket for the % starting at position % at position %.", currentPatternText.patternType, currentPatternText.startIndex, i));
-							currentPatternText.endIndex = i;
+							currentPatternText.endIndex = index;
 							if (currentPatternText.parent.notNil,{
 								currentPatternText = currentPatternText.parent;
 							},{
-								currentPatternText = nil;
+								continue = false; // Break out of loop
 							});
 						});
 					});
@@ -64,22 +67,30 @@
 
 		// Figure out if we're defining a new Pattern instance
 		if (inAComment == false,{
-			if (text[i-3] ++ text[i-2] ++ text[i-1] ++ text[i] == "Pseq",{
-				currentPatternText = PatternText(Pseq, currentPatternText, i-3);
+			if (text[index-3] ++ text[index-2] ++ text[index-1] ++ text[index] == "Pseq",{
+				currentPatternText = PatternText(Pseq, currentPatternText, index-3);
 			});
-			if (text[i-3] ++ text[i-2] ++ text[i-1] ++ text[i] == "Ppar",{
-				currentPatternText = PatternText(Ppar, currentPatternText, i-3);
+			if (text[index-3] ++ text[index-2] ++ text[index-1] ++ text[index] == "Ppar",{
+				currentPatternText = PatternText(Ppar, currentPatternText, index-3);
 			});
-			if (text[i-4] ++ text[i-3] ++ text[i-2] ++ text[i-1] ++ text[i] == "Pbind",{
-				currentPatternText = PatternText(Pbind, currentPatternText, i-4);
+			if (text[index-4] ++ text[index-3] ++ text[index-2] ++ text[index-1] ++ text[index] == "Pbind",{
+				currentPatternText = PatternText(Pbind, currentPatternText, index-4);
 			});
 		});
 
 		// Write down what we know
-		//postln(format("%: %, bracketIndent: %, inASingleLineComment: %, inAMultiLineComment: %", i, text[i], bracketIndent, inASingleLineComment, inAMultiLineComment));
-	};
+		//postln(format("%: %, bracketIndent: %, inASingleLineComment: %, inAMultiLineComment: %", index, text[index], bracketIndent, inASingleLineComment, inAMultiLineComment));
+
+		index = index + 1;
+	});
+	currentPatternText = parentPatternText;
+	address.do({
+		|childIndex|
+		currentPatternText = currentPatternText.children[childIndex];
+	});
+	~prDocument.selectRange(currentPatternText.startIndex, currentPatternText.endIndex-currentPatternText.startIndex+1);
 };
-~findPattern.value(\intro, \unosynth, Pseq, 1);
+~findPattern.value(\intro, \unosynth, [0,2,0]);
 )
 
 (

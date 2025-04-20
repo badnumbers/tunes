@@ -1,6 +1,6 @@
 PatternText {
 	var <>endIndex;
-	var prChildren;
+	var <>children;
 	var <>parent;
 	var <>patternType;
 	var <>bracketIndent;
@@ -9,7 +9,7 @@ PatternText {
 	addChild {
 		|childPatternText|
 		Validator.validateMethodParameterType(childPatternText, PatternText, "childPatternText", "PatternText", "addChild");
-		prChildren = prChildren.add(childPatternText);
+		children = children.add(childPatternText);
 	}
 
 	init {
@@ -22,7 +22,7 @@ PatternText {
 		this.parent = parent;
 		this.startIndex = startIndex;
 
-		prChildren = [];
+		children = [];
 		if (parent.notNil,{
 			parent.addChild(this);
 		});
