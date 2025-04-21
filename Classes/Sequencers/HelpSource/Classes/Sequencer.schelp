@@ -1,6 +1,7 @@
 TITLE:: Sequencer
 SUMMARY:: A sequencer for managing and playing patterns
 CATEGORIES:: Streams-Patterns-Events
+RELATED:: Classes/SequencerGui
 
 DESCRIPTION::
 LINK::Classes/Sequencer:: is intended to cut down the amount of boilerplate code required to sequence tracks. For example, it reduces the amount of keys that you need to specify when writing a pattern, and provides a new way of specifying musical notes.
