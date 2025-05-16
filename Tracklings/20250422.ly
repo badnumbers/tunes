@@ -23,8 +23,8 @@
    b2 a4 g | % 13
    fs2 e | % 14
    fs1 | % 15
-   r1^"?" \break | % 16
-   c2 b2~ | % 17
+   e1 \break | % 16
+   cs2 b2~ | % 17
    b2 e4 g | % 18
    b2 a | % 19
    g f \break | % 20
@@ -51,7 +51,7 @@
    d, g b g d g b g | % 13
    e as d as e as d as | % 14
    fs a d a fs a d a | % 15
-   r1^"?" | % 16
+   e g b g e g cs a | % 16
    g8 b d b g b d b | % 17
    g8 b d b g b e b | % 18
    a c e c a c e c | % 19
