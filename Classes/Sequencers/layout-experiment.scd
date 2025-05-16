@@ -119,17 +119,61 @@ StaticText(~prRightPanelHeader, Rect(30, 30, 200, 40)).string_("Sequences").stri
 	parentLayout.insert(BorderView().background_(prColours[\colour1]).borderColor_(prColours[\extreme1]).layout_(
 		VLayout(
 			~renderPbindHeader.value(),
-			View().layout_(newLayout = VLayout([nil, s: 1])),
+			View().layout_(newLayout = VLayout()),
 			[nil, s: 1]
 		)
 	),index);
-	newLayout;
+	~renderPbindPairsAsGrid.value(newLayout);
 };
 ~renderPbindHeader = {
 	var prColours = ~prColours;
 	StaticText().string_("Pbind").stringColor_(prColours[\extreme1]).minHeight_(25).mouseUpAction_({
 		postln("Clicked on Pbind");
 	})
+};
+~renderPbindPairs = {
+	|parentLayout|
+	var prColours = ~prColours;
+	var nameLayout, valueLayout, isEven = true;
+	var pbind = Pbind(
+		\degree, Pseq([1,2,3,4,5,6,7,8]),
+		\amp, Pseq([0,1,0,1,0,1,0,1]),
+		\dur, 0.25
+	);
+	parentLayout.add(View().layout_(nameLayout = VLayout()));
+	parentLayout.add(View().layout_(valueLayout = VLayout()));
+	pbind.patternpairs.do({
+		|item|
+		if (isEven, {
+			nameLayout.add(StaticText().string_(item.asString).stringColor_(prColours[\extreme1]).minHeight_(25));
+		}, {
+			valueLayout.add(StaticText().string_(item.asString).stringColor_(prColours[\extreme1]).minHeight_(25));
+		});
+		isEven = isEven.not; // invert the value
+	});
+	nameLayout.add(nil, 1);
+	valueLayout.add(nil, 1);
+};
+~renderPbindPairsAsGrid = {
+	|parentLayout|
+	var prColours = ~prColours;
+	var pbind = Pbind(
+		\degree, Pseq([1,2,3,4,5,6,7,8]),
+		\amp, Pseq([0,1,0,1,0,1,0,1]),
+		\dur, 0.25
+	);
+	var gridLayout,numRows=0,numColumns=0, isEven = true;
+	parentLayout.add(View().layout_(gridLayout = GridLayout()));
+	pbind.patternpairs.do({
+		|item,index|
+		if (isEven, {
+			warn(format("index/2:%",(index/2).asInteger));
+			gridLayout.add(StaticText().string_(item.asString),(index/2).asInteger,0);
+		}, {
+			gridLayout.add(TextField().value_(item.asString),(index/2).asInteger,1);
+		});
+		isEven = isEven.not; // invert the value
+	});
 };
 )
 
@@ -142,12 +186,6 @@ var childIndex = 0;
 // Container
 ~prRightPanelBody.removeAll;
 ~prRightPanelBody.layout_(HLayout(View().layout_(containerLayout = VLayout([nil, s: 1])),[nil, s: 1]));
-/*~prRightPanelBody.layout_(HLayout(
-	View().minHeight_(25).minWidth_(25).layout_(containerLayout = VLayout(
-		[nil, s: 1]
-	)),
-	[nil, s: 1]
-));*/
 // Pseq
 pseqLayout = ~renderPseq.value(containerLayout,0);
 pparLayout1 = ~renderPpar.value(pseqLayout,0);
