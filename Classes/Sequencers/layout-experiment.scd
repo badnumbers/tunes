@@ -163,14 +163,23 @@ StaticText(~prRightPanelHeader, Rect(30, 30, 200, 40)).string_("Sequences").stri
 		\dur, 0.25
 	);
 	var gridLayout,numRows=0,numColumns=0, isEven = true;
+	var currentKeyName;
 	parentLayout.add(View().layout_(gridLayout = GridLayout()));
 	pbind.patternpairs.do({
 		|item,index|
 		if (isEven, {
-			warn(format("index/2:%",(index/2).asInteger));
-			gridLayout.add(StaticText().string_(item.asString),(index/2).asInteger,0);
+			currentKeyName = item.asString();
+			gridLayout.add(StaticText().string_(currentKeyName),(index/2).asInteger,0);
 		}, {
-			gridLayout.add(TextField().value_(item.asString),(index/2).asInteger,1);
+			if (item.isKindOf(Pseq),{
+				gridLayout.add(StaticText().string_(item.asString()),(index/2).asInteger,1);
+				item.list.do({
+
+				});
+			},{
+				gridLayout.add(TextField().value_(item.asString),(index/2).asInteger,1);
+			});
+
 		});
 		isEven = isEven.not; // invert the value
 	});
