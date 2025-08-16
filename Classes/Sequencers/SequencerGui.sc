@@ -19,7 +19,8 @@ SequencerGui {
 		prSequencer = sequencer;
 		prSequencerData = privateSequencerData;
 
-		prDocument = Document.open(thisProcess.nowExecutingPath);
+		//prDocument = Document.open(thisProcess.nowExecutingPath);
+		prDocument = Document.current;
 
 		prColours = Dictionary.newFrom([
 			\colour1, Color.fromHexString("6b4e71"),
