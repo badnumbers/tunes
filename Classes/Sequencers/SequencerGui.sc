@@ -3,8 +3,11 @@ SequencerGui {
 	var prMainHeader;
 	var prLeftPanelBody;
 	var prLeftPanelHeader;
+	var prMainHeaderData;
+	var prMainHeaderTitle;
 	var prMiddlePanelBody;
 	var prMiddlePanelHeader;
+	var prMidiNoteNumbersStaticText;
 	var prRightPanelBody;
 	var prRightPanelHeader;
 	var prSequencer;
@@ -34,7 +37,11 @@ SequencerGui {
 
 		prWindow = Window("Sequencer").background_(prColours[\colour1]).front;
 		prWindow.layout = VLayout(
-			prMainHeader = BorderView().background_(prColours[\colour2]).minHeight_(100).maxHeight_(100).borderWidth_(0),
+			prMainHeader = BorderView().background_(prColours[\colour2]).minHeight_(100).maxHeight_(100).borderWidth_(0).layout_(HLayout(
+				prMainHeaderTitle = View().minSize_(250@100).maxWidth_(250),
+				[nil, s: 1],
+				prMainHeaderData = View().background_(Color.blue).minSize_(250@100).maxWidth_(250)
+			).margins_(0).spacing_(0)),
 			HLayout(
 				BorderView().background_(prColours[\colour2]).minSize_(200@200).maxWidth_(200).borderWidth_(0).layout_(VLayout(
 					prLeftPanelHeader = BorderView().background_(prColours[\colour3]).minHeight_(100).maxHeight_(100).borderWidth_(0),
@@ -50,12 +57,26 @@ SequencerGui {
 				))
 		)).margins_(30).spacing_(20);
 
-		StaticText(prMainHeader, Rect(30, 30, 200, 40)).string_("Sequencer").stringColor_(prColours[\colour5]).font_(Font(size:32));
+		StaticText(prMainHeaderTitle, Rect(30, 30, 200, 40)).string_("Sequencer").stringColor_(prColours[\colour5]).font_(Font(size:32));
 		StaticText(prLeftPanelHeader, Rect(30, 30, 200, 40)).string_("Sections").stringColor_(prColours[\extreme2]).font_(Font(size:24));
 		StaticText(prMiddlePanelHeader, Rect(30, 30, 200, 40)).string_("Parts").stringColor_(prColours[\extreme2]).font_(Font(size:24));
 		StaticText(prRightPanelHeader, Rect(30, 30, 200, 40)).string_("Sequences").stringColor_(prColours[\extreme2]).font_(Font(size:24));
 
+		this.prLoadMainHeader();
 		this.prLoadSections();
+
+		Setup.midi;
+		MIDIdef.noteOn(\SequencerGuiNoteOn, {
+			|val, num, chan, src|
+			AppClock.sched(0.0, {
+				prMidiNoteNumbersStaticText.string_(num);
+			});
+		});
+		MIDIdef.noteOff(\SequencerGuiNoteOff, {
+			AppClock.sched(0.0, {
+				prMidiNoteNumbersStaticText.string_("");
+			});
+		});
 	}
 
 	*new {
@@ -125,6 +146,10 @@ SequencerGui {
 		});
 		nameView.layout.add(nil, 1);
 		valueView.layout.add(nil, 1);
+	}
+
+	prLoadMainHeader {
+		prMidiNoteNumbersStaticText = StaticText(prMainHeaderData,Rect(25,25,200,50));
 	}
 
 	prLoadParts {
