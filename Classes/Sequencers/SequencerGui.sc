@@ -39,7 +39,7 @@ SequencerGui {
 			prMainHeader = BorderView().background_(prColours[\colour2]).minHeight_(100).maxHeight_(100).borderWidth_(0).layout_(HLayout(
 				prMainHeaderTitle = View().minSize_(250@100).maxWidth_(250),
 				[nil, s: 1],
-				prMainHeaderData = View().background_(Color.blue).minSize_(250@100).maxWidth_(250)
+				prMainHeaderData = View().minSize_(400@100).maxWidth_(400)//.background_(Color.blue)
 			).margins_(0).spacing_(0)),
 			HLayout(
 				BorderView().background_(prColours[\colour2]).minSize_(200@200).maxWidth_(200).borderWidth_(0).layout_(VLayout(
@@ -63,8 +63,6 @@ SequencerGui {
 
 		this.prLoadMainHeader();
 		this.prLoadSections();
-
-
 	}
 
 	*new {
@@ -137,7 +135,7 @@ SequencerGui {
 	}
 
 	prLoadMainHeader {
-		MidiDisplay(prMainHeaderData,Rect(25,25,100,50));
+		MidiDisplay(prMainHeaderData,Rect(20,20,350,60),prColours[\colour3],prColours[\extreme1],prColours[\colour4],prColours[\extreme2]);
 	}
 
 	prLoadParts {
