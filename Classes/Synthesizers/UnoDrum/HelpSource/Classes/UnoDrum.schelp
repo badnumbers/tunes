@@ -8,38 +8,62 @@ Contains information about working with an Uno Drum, such as its controller CC n
 
 CLASSMETHODS::
 
-EXAMPLES::
+METHOD:: kick1NoteNumber
+The MIDI note number that is used to trigger the UnoDrum's STRONG::KICK 1:: sound.
 
-CODE::
-(
-var midiout;
-Setup.server;
-midiout = Setup.midi;
+RETURNS:: 36.
 
-Pdef(\unosynth,
-	Ppar([
-		Pbind(
-			\type, \midi,
-			\midicmd, \noteOn,
-			\midiout, midiout,
-			\chan, UnoSynth.midiChannel,
-			\octave, 3,
-			\degree, 0,
-			\dur, 1/4,
-			\amp, 1
-		),
-		Pbind(
-			\type, \midi,
-			\midiout, midiout,
-			\chan, UnoSynth.midiChannel,
-			\midicmd, \control,
-			\ctlNum, UnoSynth.cutoffCcNo,
-			\control, Pseg([10,120,10,120],[2,2],\sin,inf),
-			\dur, 1/64
-		)
-	])
-);
-Pdef(\unosynth).play;
-)
-Pdef(\unosynth).stop;
-::
+METHOD:: kick2NoteNumber
+The MIDI note number that is used to trigger the UnoDrum's STRONG::KICK 2:: sound.
+
+RETURNS:: 35.
+
+METHOD:: rimNoteNumber
+The MIDI note number that is used to trigger the UnoDrum's STRONG::RIM:: sound.
+
+RETURNS:: 37.
+
+METHOD:: snareNoteNumber
+The MIDI note number that is used to trigger the UnoDrum's STRONG::SNARE:: sound.
+
+RETURNS:: 38.
+
+METHOD:: clapNoteNumber
+The MIDI note number that is used to trigger the UnoDrum's STRONG::CLAP:: sound.
+
+RETURNS:: 39.
+
+METHOD:: tom1NoteNumber
+The MIDI note number that is used to trigger the UnoDrum's STRONG::TOM 1:: sound.
+
+RETURNS:: 41.
+
+METHOD:: closedHhNoteNumber
+The MIDI note number that is used to trigger the UnoDrum's STRONG::CLOSED HH:: sound.
+
+RETURNS:: 42.
+
+METHOD:: tom2NoteNumber
+The MIDI note number that is used to trigger the UnoDrum's STRONG::TOM 2:: sound.
+
+RETURNS:: 43.
+
+METHOD:: openHhNoteNumber
+The MIDI note number that is used to trigger the UnoDrum's STRONG::OPEN HH:: sound.
+
+RETURNS:: 46.
+
+METHOD:: cymbalNoteNumber
+The MIDI note number that is used to trigger the UnoDrum's STRONG::CYMBAL:: sound.
+
+RETURNS:: 49.
+
+METHOD:: rideNoteNumber
+The MIDI note number that is used to trigger the UnoDrum's STRONG::RIDE:: sound.
+
+RETURNS:: 51.
+
+METHOD:: cowbellNoteNumber
+The MIDI note number that is used to trigger the UnoDrum's STRONG::COWBELL:: sound.
+
+RETURNS:: 56.
