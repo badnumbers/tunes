@@ -7,7 +7,6 @@ SequencerGui {
 	var prMainHeaderTitle;
 	var prMiddlePanelBody;
 	var prMiddlePanelHeader;
-	var prMidiNoteNumbersStaticText;
 	var prRightPanelBody;
 	var prRightPanelHeader;
 	var prSequencer;
@@ -65,18 +64,7 @@ SequencerGui {
 		this.prLoadMainHeader();
 		this.prLoadSections();
 
-		Setup.midi;
-		MIDIdef.noteOn(\SequencerGuiNoteOn, {
-			|val, num, chan, src|
-			AppClock.sched(0.0, {
-				prMidiNoteNumbersStaticText.string_(num);
-			});
-		});
-		MIDIdef.noteOff(\SequencerGuiNoteOff, {
-			AppClock.sched(0.0, {
-				prMidiNoteNumbersStaticText.string_("");
-			});
-		});
+
 	}
 
 	*new {
@@ -149,7 +137,7 @@ SequencerGui {
 	}
 
 	prLoadMainHeader {
-		prMidiNoteNumbersStaticText = StaticText(prMainHeaderData,Rect(25,25,200,50));
+		MidiDisplay(prMainHeaderData,Rect(25,25,100,50));
 	}
 
 	prLoadParts {
