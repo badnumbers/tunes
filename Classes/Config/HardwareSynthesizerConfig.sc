@@ -1,6 +1,7 @@
 HardwareSynthesizerConfig {
 	var prId;
 	var prInputBusChannels;
+	var prLogoImage;
 	var prMidiChannels;
 	var prSynthesizerClass;
 
@@ -18,6 +19,26 @@ HardwareSynthesizerConfig {
 
 	inputBusChannels {
 		^prInputBusChannels;
+	}
+
+	logoImage {
+		// Originally I used Image.openSVG for this, but the size parameter just seems to be ignored and you get a very large image
+		// So instead we'll have to pre-create a png of the expected size and return that.
+		var path;
+
+		if (prLogoImage.notNil,{
+			^prLogoImage;
+		});
+
+		path = format("%logo.png", PathName(prSynthesizerClass.filenameSymbol.asString).pathOnly);
+		if (File.exists(path), {
+			postln(format("Loading image at %.", path));
+			prLogoImage = Image.open(path);
+			^prLogoImage;
+		}, {
+			postln(format("No file exists for the % hardware synthesizer at the expected location of %.", prSynthesizerClass, path));
+		});
+
 	}
 
 	midiChannels {

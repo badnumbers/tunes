@@ -24,6 +24,18 @@ INSTANCEMETHODS::
 METHOD:: inputBusChannels
 An LINK::Classes/Array:: of (most likely) one (for a mono synthesizer) or two (for a stereo synthesizer) input bus channels that the hardware synthesizer's audio can be read from.
 
+METHOD:: logoImage
+Looks for a file called TELETYPE::logo.png:: in the same directory as the file defining the LINK::Classes/HardwareSynthesizerConfig#-synthesizerClass::. If it finds this file, it returns an LINK::Classes/Image:: containing the logo and stores it so that it does not need to be loaded again. If it does find the file, it writes a message to the post window and returns a different type.
+
+NOTE::
+The file TELETYPE::logo.png:: is assumed to be a PNG image of width STRONG::170px:: and height STRONG::120px::.
+::
+
+NOTE::
+You should not call LINK::Classes/Image#-free:: on the LINK::Classes/Image:: returned by this method as the intention is for it to be stored here so that it can be reused in any number of places.
+::
+
+
 METHOD:: midiChannels
 An LINK::Classes/Array:: of (most likely) one MIDI channels that the hardware synthesizer is configured to receive MIDI on.
 
