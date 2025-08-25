@@ -58,7 +58,6 @@ MidiDisplay {
 
 	prUpdate {
 		prContainer.children[0].remove;
-		postln(format("The size of prCurrentNotes is %.", prCurrentNotes.size));
 		if (prCurrentNotes.size > 0,{
 			var noteNums = prCurrentNotes.keys.array.reject({|item|item.isNil}).sort;
 			var control = View(prContainer,Rect(0,0,prContainer.bounds.width,prContainer.bounds.height));

@@ -206,15 +206,25 @@ FxBank {
 		|synthConfig,index,window,carousel|
 		var fxControls = Dictionary();
 		var delayCheckBox, reverbCheckBox;
-		var tile = View(carousel,Rect(0,index*100,195,100));
+		var tile = UserView(carousel,Rect(0,index*140,210,140)).mouseEnterAction_({
+			|view|
+			view.background_(Color.white);
+		}).mouseLeaveAction_({
+			|view|
+			view.background_(Color.clear);
+		});
 
 		var detailView = View(window,Rect(200,0,1000,800)).background_(Color.black).visible_(false);
 		var headerView = View(detailView, Rect(10, 10, 980, 180)).background_(Color.magenta);
 		var effectsView = View(detailView, Rect(10, 210, 980, 580)).background_(Color.yellow);
 
-		// Carousel
-		StaticText(tile, Rect(5,5,150,50)).string_(synthConfig.id);
-		StaticText(tile, Rect(5,65,150,50)).string_(synthConfig.midiChannels);
+		if (synthConfig.logoImage.isKindOf(Image),{
+			tile.drawFunc_({
+				synthConfig.logoImage.drawInRect(Rect(20, 10, 170,120), Rect(0, 0, 170,120), 2, 1.0);
+			});
+		},{
+			StaticText(tile, Rect(0,60,210,20)).string_(synthConfig.id).stringColor_(Color.black).align_(\center);
+		});
 
 		tile.mouseUpAction_({
 			prDetailViews.do({
@@ -256,7 +266,7 @@ FxBank {
 
 	prRenderUi {
 		var window = Window("FX Bank",Rect(10,10,1200,800));
-		var carousel = ScrollView(window,Rect(0,0,200,800)).background_(Color.green);
+		var carousel = ScrollView(window,Rect(0,0,210,800)).hasHorizontalScroller_(false);
 		prDetailViews = Array.newClear(Config.hardwareSynthesizers.size);
 
 		Config.hardwareSynthesizers.select({
