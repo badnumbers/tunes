@@ -189,6 +189,15 @@ Config {
 		^prMidi;
 	}
 
+	*openConfigFile {
+		var configFilePath = Platform.userConfigDir +/+ "config.yaml";
+		if ((File.exists(configFilePath) == true), {
+			Document.open(configFilePath);
+		},{
+			warn(format("The configuration file was not found at %. See the help file for the Config class for guidance.", configFilePath));
+		});
+	}
+
 	*server {
 		if (prConfigLoaded == false, {
 			this.load;

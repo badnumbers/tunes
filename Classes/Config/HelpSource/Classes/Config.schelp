@@ -65,6 +65,9 @@ NOTE::
 If the STRONG::Configuration File:: does not contain the STRONG::MIDI:: section then CODE::nil:: is returned.
 ::
 
+METHOD:: openConfigFile
+Opens the STRONG::Configuration File:: in the SuperCollider IDE.
+
 METHOD:: server
 If the configuration has not been loaded yet, calls LINK::#*load::. Then returns a LINK::Classes/ServerConfig:: containing the server configuration read from the STRONG::Configuration File::.
 
