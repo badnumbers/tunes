@@ -1,0 +1,58 @@
+HardwareSynthesizers:
+  - Id: "hydrasynth"
+    Class: "Hydrasynth"
+    MIDIChannels:
+      - 7
+    InputBusChannels:
+      - 4
+      - 5
+  - Id: "microvolt"
+    Class: "Microvolt"
+    MIDIChannels:
+      - 8
+    InputBusChannels:
+      - 3
+  - Id: "dx7"
+    Class: "Dx7"
+    MIDIChannels:
+      - 9
+    InputBusChannels:
+      - 0
+  - Id: "unodrum"
+    Class: "UnoDrum"
+    MIDIChannels:
+      - 10
+    InputBusChannels:
+      - 1
+  - Id: "crave"
+    Class: "Crave"
+    MIDIChannels:
+      - 11
+    InputBusChannels:
+      - 12
+  - Id: "performve"
+    Class: "PerformVe"
+    MIDIChannels:
+      - 12
+    InputBusChannels:
+      - 19
+  - Id: "rev2"
+    Class: "Rev2"
+    MIDIChannels:
+      - 13
+      - 14
+    InputBusChannels:
+      - 6
+      - 7
+  - Id: "unosynth"
+    Class: "UnoSynth"
+    MIDIChannels:
+      - 16
+    InputBusChannels:
+      - 2
+MIDI:
+  DeviceName: "Scarlett 18i8 USB"
+  PortName: "Scarlett 18i8 USB MIDI 1"
+Server:
+  NumInputBusChannels: 20
+  NumOutputBusChannels: 2
