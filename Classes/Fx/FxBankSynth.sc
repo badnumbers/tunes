@@ -9,21 +9,25 @@ FxBankSynth {
 
 	arrange {
 		var previousNdefId = prNdefId;
-		var currentNdefId;
+		var currentNdefId = prNdefId;
 		postln("arrange has been called");
 		prEffectTypes.do({
 			|effectType|
-			currentNdefId = prEffectTypeDictionary[effectType].ndefId;
+			Ndef(currentNdefId).stop();
 			if (prEffectTypeDictionary[effectType].enabled,{
+				currentNdefId = prEffectTypeDictionary[effectType].ndefId;
+				postln(format("Feeding % into %.", previousNdefId, currentNdefId));
 				Ndef(currentNdefId).set(\in, Ndef(previousNdefId));
+				previousNdefId = currentNdefId;
 			});
 		});
+		postln(format("% is being played.", currentNdefId));
 		Ndef(currentNdefId).play;
 	}
 
 	init {
 		|synthConfig, uiContainer|
-		prEffectTypes = [FxBankChorus];
+		prEffectTypes = [FxBankGain,FxBankChorus,FxBankNHHall];
 		prEffectTypeDictionary = Dictionary();
 		prSynthConfig = synthConfig;
 		prNdefId = format("%_in",prSynthConfig.id).asSymbol;
@@ -46,13 +50,6 @@ FxBankSynth {
 									prEffectTypeDictionary[effectType].toggle(checkBox.value);
 								});
 							}),
-							VLayout(
-								prGainKnob = Knob().mode_(\vert).value_(1).minSize_(80@80).maxSize_(80@80).action_({
-									|knob|
-									Ndef(format("%_in",prSynthConfig.id).asSymbol).set(\gain,knob.value);
-								}),
-								StaticText().string_("GAIN").align_(\center).stringColor_(Color.white).minSize_(80@20).maxSize_(80@20).background_(Color.rand)
-							),
 							[nil,s:1]
 					)),
 					//Effects section
@@ -81,21 +78,17 @@ FxBankSynth {
 		prToggle = {
 			|enabled|
 			if (enabled,{
-				postln(format("Synth % enabled", prSynthConfig.id));
 				if (prSynthConfig.inputBusChannels.size == 1, {
 					Ndef(prNdefId,{
-						SoundIn.ar(prSynthConfig.inputBusChannels[0]) ! 2 * \gain.kr;
+						SoundIn.ar(prSynthConfig.inputBusChannels[0]) ! 2;
 					});
 				},{
 					Ndef(prNdefId,{
-						SoundIn.ar(prSynthConfig.inputBusChannels) * \gain.kr;
+						SoundIn.ar(prSynthConfig.inputBusChannels);
 					});
 				});
-
-				Ndef(prNdefId).set(\gain, prGainKnob.value);
 				Ndef(prNdefId).play;
 			},{
-				postln(format("Synth % disabled", prSynthConfig.id));
 				Ndef(prNdefId).end;
 			});
 		};
