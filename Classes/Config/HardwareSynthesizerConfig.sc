@@ -36,7 +36,7 @@ HardwareSynthesizerConfig {
 			prLogoImage = Image.open(path);
 			^prLogoImage;
 		}, {
-			postln(format("No file exists for the % hardware synthesizer at the expected location of %.", prSynthesizerClass, path));
+			postln(format("No logo file exists for the % hardware synthesizer at the expected location of %.", prSynthesizerClass, path));
 		});
 
 	}
