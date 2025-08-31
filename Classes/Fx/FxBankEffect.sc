@@ -18,7 +18,7 @@ FxBankEffect {
 	}
 
 	init {
-		|fxBankSynth, uiContainer|
+		|fxBankSynth,uiContainer,tempoClock|
 		var controlMappings;
 		prFxBankSynth = fxBankSynth;
 		ndefId = format("%_%",prFxBankSynth.synthConfig.id, this.class.name).asSymbol;
@@ -32,10 +32,10 @@ FxBankEffect {
 		prToggleEffect = {
 			|enabled|
 			if (enabled, {
-				Ndef(ndefId,this.prNdefFunction());
+				Ndef(ndefId,this.prNdefFunction(tempoClock));
 				controlMappings.keys.do({
 					|key|
-					Ndef(ndefId).set(key, controlMappings[key].value); // Set the Ndef's parameters according to the values of the GUI controls
+					Ndef(ndefId).set(key, controlMappings[key][\mappingFunction].value(controlMappings[key][\control].value)); // Set the Ndef's parameters according to the values of the GUI controls
 				});
 			},{
 				Ndef(ndefId).end;
@@ -71,19 +71,21 @@ FxBankEffect {
 		// Map all defined controls to their synth parameters
 		controlMappings.keys.do({
 			|key|
-			if (controlMappings[key].action.isNil,{
-				controlMappings[key].action_({
-					Ndef(ndefId).set(key,controlMappings[key].value);
+			if (controlMappings[key][\control].action.isNil,{
+				controlMappings[key][\control].action_({
+					postln(format("Ndef: %, control: %, value %.", ndefId, key, controlMappings[key][\control].value));
+					Ndef(ndefId).set(key,controlMappings[key][\mappingFunction].value(controlMappings[key][\control].value));
 				});
 			});
 		});
 	}
 
 	*new {
-		|fxBankSynth, uiContainer|
-		Validator.validateMethodParameterType(fxBankSynth,FxBankSynth,"fxBankSynth","FxBankChorus","new");
-		Validator.validateMethodParameterType(uiContainer,VLayout,"uiContainer","FxBankChorus","new");
-		^super.new.init(fxBankSynth, uiContainer);
+		|fxBankSynth,uiContainer,tempoClock|
+		Validator.validateMethodParameterType(fxBankSynth,FxBankSynth,"fxBankSynth","FxBankEffect","new");
+		Validator.validateMethodParameterType(uiContainer,VLayout,"uiContainer","FxBankEffect","new");
+		Validator.validateMethodParameterType(tempoClock,TempoClock,"tempoClock","FxBankEffect","new");
+		^super.new.init(fxBankSynth,uiContainer,tempoClock);
 	}
 
 	toggle {

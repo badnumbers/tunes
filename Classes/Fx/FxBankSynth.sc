@@ -26,8 +26,8 @@ FxBankSynth {
 	}
 
 	init {
-		|synthConfig, uiContainer|
-		prEffectTypes = [FxBankGain,FxBankChorus,FxBankNHHall];
+		|synthConfig,uiContainer,tempoClock|
+		prEffectTypes = [FxBankGain,FxBankChorus,FxBankPowerChorus,FxBankDelay,FxBankNHHall];
 		prEffectTypeDictionary = Dictionary();
 		prSynthConfig = synthConfig;
 		prNdefId = format("%_in",prSynthConfig.id).asSymbol;
@@ -70,7 +70,7 @@ FxBankSynth {
 
 			prEffectTypes.do({
 				|effectType|
-				prEffectTypeDictionary.put(effectType, effectType.new(this,effectsLayout));
+				prEffectTypeDictionary.put(effectType, effectType.new(this,effectsLayout,tempoClock));
 			});
 			effectsLayout.add(nil,1);
 		};
@@ -97,10 +97,11 @@ FxBankSynth {
 	}
 
 	*new {
-		|synthConfig, uiContainer|
+		|synthConfig, uiContainer, tempoClock|
 		Validator.validateMethodParameterType(synthConfig,HardwareSynthesizerConfig,"synthConfig","FxBankSynth","new");
 		Validator.validateMethodParameterType(uiContainer,StackLayout,"uiContainer","FxBankSynth","new");
-		^super.new.init(synthConfig,uiContainer);
+		Validator.validateMethodParameterType(tempoClock,TempoClock,"tempoClock","FxBankSynth","new");
+		^super.new.init(synthConfig,uiContainer,tempoClock);
 	}
 
 	synthConfig {

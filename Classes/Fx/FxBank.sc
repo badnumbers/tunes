@@ -11,7 +11,7 @@ FxBank {
 			var window, carousel, synthsStackContainer;
 			window = Window("FX Bank",Rect(10,10,600,400)).front;
 			window.layout = HLayout(
-				View().background_(Color.green).layout_(synthsStackContainer = StackLayout().mode_(0)),
+				View().background_(Color.rand).layout_(synthsStackContainer = StackLayout().mode_(0)),
 				carousel = ScrollView().minWidth_(210).maxWidth_(210).hasHorizontalScroller_(false)
 			);
 
@@ -45,7 +45,7 @@ FxBank {
 				StaticText(tile, Rect(0,60,210,20)).string_(synthConfig.id).stringColor_(Color.black).align_(\center);
 			});
 
-			fxBankSynth = FxBankSynth(synthConfig,synthsStackContainer);
+			fxBankSynth = FxBankSynth(synthConfig,synthsStackContainer,prTempoClock);
 		};
 
 		prBuildDesk.value();

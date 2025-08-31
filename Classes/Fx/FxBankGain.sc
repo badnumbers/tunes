@@ -3,7 +3,10 @@ FxBankGain : FxBankEffect {
 
 	prGetControlMappings {
 		^Dictionary.with(*[
-			\gain -> prGainKnob
+			\gain -> Dictionary.with(*[
+				\control -> prGainKnob,
+				\mappingFunction -> {|val|val.linexp(0,1,0.25,4)}
+			])
 		]);
 	}
 
@@ -25,7 +28,7 @@ FxBankGain : FxBankEffect {
 	prNdefFunction {
 		^{
 			var audio = NamedControl.ar(\in, 0!2);
-			var gain =  NamedControl.kr(\gain, 0).linexp(0,1,0.25,4);
+			var gain =  NamedControl.kr(\gain, 0);
 			audio * gain;
 		};
 	}

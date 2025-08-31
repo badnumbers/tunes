@@ -4,13 +4,19 @@ FxBankNHHall : FxBankEffect {
 
 	prGetControlMappings {
 		^Dictionary.with(*[
-			\drywet -> prDryWetKnob,
-			\decay -> prDecayKnob
+			\drywet -> Dictionary.with(*[
+				\control -> prDryWetKnob,
+				\mappingFunction -> {|val|val.linexp(0,1,1,3)-2}
+			]),
+			\decay -> Dictionary.with(*[
+				\control -> prDecayKnob,
+				\mappingFunction -> {|val|val.linexp(0,1,1,21)-1}
+			])
 		]);
 	}
 
 	prGetTitle {
-		^"Reverb";
+		^"Lush reverb";
 	}
 
 	prRenderControlsView {
@@ -31,8 +37,8 @@ FxBankNHHall : FxBankEffect {
 	prNdefFunction {
 		^{
 			var audio = NamedControl.ar(\in, 0!2);
-			var drywet =  NamedControl.kr(\drywet, 0).linexp(0,1,1,3)-2;
-			var decay = NamedControl.kr(\decay,3).linexp(0,1,1,21)-1;
+			var drywet =  NamedControl.kr(\drywet, 0);
+			var decay = NamedControl.kr(\decay,3);
 			XFade2.ar(audio,NHHall.ar(audio, decay),drywet);
 		};
 	}
