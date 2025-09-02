@@ -27,7 +27,7 @@ FxBankSynth {
 
 	init {
 		|synthConfig,uiContainer,tempoClock|
-		prEffectTypes = [FxBankGain,FxBankChorus,FxBankPowerChorus,FxBankDelay,FxBankNHHall];
+		prEffectTypes = [FxBankGain,FxBankChorus,FxBankPowerChorus,FxBankDelay,FxBankNHHall,FxBankLPF,FxBankHPF];
 		prEffectTypeDictionary = Dictionary();
 		prSynthConfig = synthConfig;
 		prNdefId = format("%_in",prSynthConfig.id).asSymbol;
