@@ -123,6 +123,12 @@ Sequencer {
 					|element|
 					preKeys.add(element);
 				});
+				[
+					\amp,Pfunc({|e|if (e.velocity.isNil, {e.amp}, {e.velocity.linlin(0,127,0,1)})})
+				].do({
+					|element|
+					postKeys.add(element);
+				});
 			});
 
 			// TODO: replace this with a function which converts pitch to degree instead
