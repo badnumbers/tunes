@@ -51,7 +51,7 @@ ExampleClass {
 ::
 
 METHOD:: validateMethodParameterPropertyType
-Validates that a parameter provided to a method contains a named property of the expected type, and throws an LINK::Classes/Error:: if it is not. The error message is as follows:
+Validates that a parameter provided to a method contains a named property of the expected type, and throws an LINK::Classes/Error:: if it does not. The error message is as follows:
 CODE::
 "The '{parameterName}' parameter of {className}.{methodName} must contain a member called {propertyNameAsSymbol} which is a {expectedType}. The provided value {parameterValue} had a property {propertyNameAsSymbol} but it was a {actual type of the property}."
 ::

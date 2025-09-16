@@ -4,7 +4,6 @@ Sequencer {
 	var prPreKeySets;
 	var prPostKeySets;
 	var prSections;
-	var prTempoClock;
 
 	addGlobalPreKeys {
 		|keysArray|
@@ -55,14 +54,7 @@ Sequencer {
 	}
 
 	init {
-		|tempo|
 		var convertFromPitch;
-		Validator.validateMethodParameterType(tempo, SimpleNumber, "tempo", "Sequencer", "init", allowNil: true);
-		if (tempo.isNil, {
-			tempo = 2;
-		});
-
-		prTempoClock = TempoClock(tempo:tempo);
 
 		convertFromPitch = {
 			// This function MUST NOT use ^ to return a value
@@ -206,22 +198,34 @@ Sequencer {
 	}
 
 	*new {
-		|tempo|
-		Validator.validateMethodParameterType(tempo, SimpleNumber, "tempo", "Sequencer", "new", allowNil: true);
-		^super.new.init(tempo);
+		^super.new.init();
+	}
+
+	loop {
+		|section|
+		Validator.validateMethodParameterType(section, Symbol, "section", "Sequencer", "loop");
+		this.play([section],loop:true);
 	}
 
 	play {
-		|sections|
+		|sections,loop=false|
+		var repeats;
+		if (loop == true, {
+			repeats = inf;
+		}, {
+			repeats = 1;
+		});
 		Validator.validateMethodParameterType(sections, Array, "sections", "Sequencer", "play");
 		this.stop;
 		prEventStreamPlayer = Pspawner({
 			|sp|
-			sections.do({
-				|section|
-				sp.seq(Ppar(prSections[section].keys.collect({|instrument|prPartWrapper.value(section,instrument,prSections[section][instrument])})));
+			repeats.do({
+				sections.do({
+					|section|
+					sp.seq(Ppar(prSections[section].keys.collect({|instrument|prPartWrapper.value(section,instrument,prSections[section][instrument])})));
+				})
 			});
-		}).play(prTempoClock);
+		}).play;
 	}
 
 	prAddKeySet {
@@ -247,14 +251,5 @@ Sequencer {
 		if (prEventStreamPlayer.isMemberOf(EventStreamPlayer), {
 			prEventStreamPlayer.stop;
 		});
-	}
-
-	tempo {
-		^prTempoClock.tempo;
-	}
-
-	tempo_ {
-		|value|
-		prTempoClock.tempo = value;
 	}
 }
