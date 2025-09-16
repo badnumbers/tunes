@@ -113,6 +113,7 @@ Sequencer {
 				\amp,0.5,
 				\timingOffset,0
 			]);
+			postKeys = List();
 
 			if (partType == \midi,{
 				[
@@ -124,18 +125,12 @@ Sequencer {
 					preKeys.add(element);
 				});
 				[
-					\amp,Pfunc({|e|if (e.velocity.isNil, {e.amp}, {e.velocity.linlin(0,127,0,1)})})
+					\amp,Pfunc({|e|if ((e.velocity.isNil) || e.velocity.isMemberOf(Symbol), {e.amp}, {e.velocity.linlin(0,127,0,1)})})
 				].do({
 					|element|
 					postKeys.add(element);
 				});
 			});
-
-			// TODO: replace this with a function which converts pitch to degree instead
-			// This could then also be used for SC parts
-			postKeys = List.newUsing([
-				[\octave,\degree], Pfunc({|ev|convertFromPitch.value(ev)})
-			]);
 
 			// prPreKeys = [{},[key,value,key,value]]
 			// preKeys = [key,value,key,value]
