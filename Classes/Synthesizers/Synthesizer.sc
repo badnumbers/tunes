@@ -309,7 +309,7 @@ Synthesizer {
 		postln("(");
 		postln(format("var patch = %();", prPatchType));
 		this.prWritePatch(prWorkingPatch);
-		postln(format("%.setWorkingPatch(patch);", format("Synths['%']", prId)));
+		postln(format("%.setWorkingPatch(patch);", format("Synths(%%)", "\\", prId)));
 		postln(")");
 	}
 
@@ -327,7 +327,7 @@ Synthesizer {
 			var patch = prPatchDictionary[key];
 			postln(format("patch = %();", prPatchType));
 			this.prWritePatch(patch);
-			postln(format("%.setWorkingPatch(patch);", format("Synths['%']", prId)));
+			postln(format("%.setWorkingPatch(patch);", format("Synths(%%)", "\\", prId)));
 		});
 		postln(")");
 	}
