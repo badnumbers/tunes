@@ -294,3 +294,41 @@ Pdef(\jx03,
 	)
 ).play();
 )
+
+(
+var patch = Jx03Patch();
+patch.name = "I am Orbital";
+// All four settings for chorus are interesting in their own way
+patch.kvps[1304]=255;patch.kvps[1314]=224;patch.kvps[1402]=128;patch.kvps[1102]=128;patch.kvps[1206]=0;patch.kvps[1306]=0;patch.kvps[1702]=128;patch.kvps[1204]=0;patch.kvps[1200]=3;patch.kvps[1504]=128;patch.kvps[1500]=0;patch.kvps[1210]=2;patch.kvps[1606]=9;patch.kvps[1220]=0;patch.kvps[1708]=12;patch.kvps[1700]=0;patch.kvps[1216]=4;patch.kvps[1308]=0;patch.kvps[1100]=0;patch.kvps[1600]=3;patch.kvps[1502]=128;patch.kvps[1602]=9;patch.kvps[1226]=1;patch.kvps[1706]=0;patch.kvps[1506]=78;patch.kvps[1104]=0;patch.kvps[1300]=128;patch.kvps[1222]=0;patch.kvps[1302]=0;patch.kvps[1310]=1;patch.kvps[1214]=128;patch.kvps[1218]=0;patch.kvps[1224]=0;patch.kvps[1202]=2;patch.kvps[1312]=0;patch.kvps[1604]=11;patch.kvps[1400]=1;patch.kvps[1212]=215;patch.kvps[1208]=1;
+Synths(\jx03).setWorkingPatch(patch);
+)
+(
+Pdef(\jx03).stop;
+Pdef(\jx03,
+	Ppar([
+		Pseq([
+			Pbind(
+				\type,\midi,
+				\midiout,Setup.midi,
+				\chan,Synths(\jx03).midiChannel,
+				\amp,0.8,
+				\legato, Pseq([h,h,h, h,h, h,h,0.7, 0.8,0.7]), // I really can't get the rhythm right
+				\midinote,Pseq([67,67,67, 65, 65, 62,62,62, 60,60]),
+				\dur,Pseq([h,h,w, h+q,h+q, w,h+q,w, h+q,h])
+			)
+		]),
+		Pseq([
+			Pbind(
+				\type,\midi,
+				\midiout,Setup.midi,
+				\chan,Synths(\unodrum).midiChannel,
+				\amp,0.8,
+				\midinote,Pseq([36,42],8),
+				\dur,h
+			)
+		])
+	],inf)
+).play(TempoClock(1.8));
+)
+
+[h,h,w, h+q, h+q, h+q, h+q,h+q,h+q, h+q,h+q].sum
