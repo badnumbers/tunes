@@ -19,10 +19,10 @@ Jx03ScGuiControlSurface : ScGuiControlSurface {
 		this.addControlLabel(container, Rect(0,25,100,25), "LFO", \center, Color.white);
 		this.addControlLabel(container, Rect(100,25,100,25), "ENV", \center, Color.white);
 		this.addToggleButton(container,Rect(15,50,70,70),lfoModParameterNumber,[
-			[False, [0] ], [True, [1] ]
+			[false, [0] ], [true, [1] ]
 		],Color.white,this.darkgrey,Color.white,Color.black,this.darkgrey);
 		this.addToggleButton(container,Rect(115,50,70,70),envModParameterNumber,[
-			[False, [0] ], [True, [1] ]
+			[false, [0] ], [true, [1] ]
 		],Color.white,this.darkgrey,Color.white,Color.black,this.darkgrey);
 	}
 
