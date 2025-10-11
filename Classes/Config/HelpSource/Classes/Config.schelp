@@ -49,11 +49,17 @@ CLASSMETHODS::
 METHOD:: hardwareSynthesizers
 If the configuration has not been loaded yet, calls LINK::#*load::. Then returns an LINK::Classes/Dictionary:: of instances of LINK::Classes/HardwareSynthesizerConfig:: containing the configuration for hardware synthesizers read from the STRONG::Configuration File::.
 
-The key used by the dictionary is the TELETYPE::Class:: property for each hardware synthesizer taken from the STRONG::Configuration File::, which should also match the name of the subclass of LINK::Classes/Synthesizer:: which represents that synthesizer.
+The key used by the dictionary is the TELETYPE::Id:: property for each hardware synthesizer taken from the STRONG::Configuration File::.
 
 NOTE::
 If the STRONG::Configuration File:: does not contain the STRONG::HardwareSynthesizers:: section then an empty CODE::Dictionary:: is returned.
 ::
+
+METHOD:: hasHardwareSynthesizer
+A convenience method to check if a hardware synthesizer with the supplied TELETYPE::Id:: exists in the STRONG::Configuration File::.
+
+ARGUMENT::synthId
+The ID of the synth to check.
 
 METHOD:: load
 Loads the configuration from the STRONG::Configuration File:: in the user's config directory (i.e. CODE::config.yaml:: in LINK::Classes/Platform#*userConfigDir::).

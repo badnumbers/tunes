@@ -177,6 +177,11 @@ Config {
 		});
 	}
 
+	*hasHardwareSynthesizer {
+		|synthId|
+		^this.hardwareSynthesizers.includesKey(synthId);
+	}
+
 	*midi {
 		if (prConfigLoaded == false, {
 			this.load;
