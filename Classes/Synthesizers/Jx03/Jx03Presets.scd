@@ -331,4 +331,9 @@ Pdef(\jx03,
 ).play(TempoClock(1.8));
 )
 
-[h,h,w, h+q, h+q, h+q, h+q,h+q,h+q, h+q,h+q].sum
+(
+var patch = Jx03Patch();
+patch.name = "Cute as hell";
+patch.kvps[1304]=137;patch.kvps[1314]=224;patch.kvps[1402]=128;patch.kvps[1102]=128;patch.kvps[1206]=0;patch.kvps[1306]=143;patch.kvps[1702]=128;patch.kvps[1204]=1;patch.kvps[1200]=3;patch.kvps[1504]=154;patch.kvps[1500]=0;patch.kvps[1210]=4;patch.kvps[1606]=9;patch.kvps[1220]=1;patch.kvps[1708]=12;patch.kvps[1700]=0;patch.kvps[1216]=1;patch.kvps[1308]=139;patch.kvps[1100]=0;patch.kvps[1600]=0;patch.kvps[1502]=134;patch.kvps[1602]=11;patch.kvps[1226]=1;patch.kvps[1706]=0;patch.kvps[1506]=174;patch.kvps[1104]=0;patch.kvps[1300]=149;patch.kvps[1222]=16;patch.kvps[1302]=0;patch.kvps[1310]=1;patch.kvps[1214]=128;patch.kvps[1218]=0;patch.kvps[1224]=86;patch.kvps[1202]=1;patch.kvps[1312]=0;patch.kvps[1604]=11;patch.kvps[1400]=1;patch.kvps[1212]=199;patch.kvps[1208]=3;
+Synths(\jx03).setWorkingPatch(patch);
+)
