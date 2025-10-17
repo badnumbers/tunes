@@ -1,4 +1,48 @@
 HardwareSynthesizers:
+#  - Id: "megafm"
+#    Class: "MegaFm"
+#    MIDIChannels:
+#      - ?
+#    InputBusChannels:
+#      - ?
+  - Id: "td3"
+    Class: "Td3"
+    MIDIChannels:
+      - 1
+    InputBusChannels:
+      - 19
+#  - Id: "tb03"
+#    Class: "Tb03"
+#    MIDIChannels:
+#      - 2
+#    InputBusChannels:
+#      - ?
+  - Id: "sh01a"
+    Class: "Sh01a"
+    MIDIChannels:
+      - 3
+    InputBusChannels:
+      - 18
+#  - Id: "ohcoast"
+#    Class: "OhCoast"
+#    MIDIChannels:
+#      - 4
+#    InputBusChannels:
+#      - ?
+  - Id: "jp08"
+    Class: "Jp08"
+    MIDIChannels:
+      - 5
+    InputBusChannels:
+      - 16
+      - 17
+  - Id: "jx03"
+    Class: "Jx03"
+    MIDIChannels:
+      - 6
+    InputBusChannels:
+      - 14
+      - 15
   - Id: "hydrasynth"
     Class: "Hydrasynth"
     MIDIChannels:
@@ -11,19 +55,19 @@ HardwareSynthesizers:
     MIDIChannels:
       - 8
     InputBusChannels:
-      - 3
+      - 13
   - Id: "dx7"
     Class: "Dx7"
     MIDIChannels:
       - 9
     InputBusChannels:
-      - 0
+      - 3
   - Id: "unodrum"
     Class: "UnoDrum"
     MIDIChannels:
       - 10
     InputBusChannels:
-      - 1
+      - 0
   - Id: "crave"
     Class: "Crave"
     MIDIChannels:
@@ -35,7 +79,7 @@ HardwareSynthesizers:
     MIDIChannels:
       - 12
     InputBusChannels:
-      - 19
+      - 2
   - Id: "rev2"
     Class: "Rev2"
     MIDIChannels:
@@ -49,7 +93,7 @@ HardwareSynthesizers:
     MIDIChannels:
       - 16
     InputBusChannels:
-      - 2
+      - 1
 MIDI:
   DeviceName: "Scarlett 18i8 USB"
   PortName: "Scarlett 18i8 USB MIDI 1"
