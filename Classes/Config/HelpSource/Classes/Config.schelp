@@ -62,7 +62,7 @@ ARGUMENT::synthId
 The ID of the synth to check.
 
 METHOD:: load
-Loads the configuration from the STRONG::Configuration File:: in the user's config directory (i.e. CODE::config.yaml:: in LINK::Classes/Platform#*userConfigDir::).
+Loads the configuration from the STRONG::Configuration File:: from the user's config directory (i.e. CODE::config.yaml:: in LINK::Classes/Platform#*userConfigDir::).
 
 METHOD:: midi
 If the configuration has not been loaded yet, calls LINK::#*load::. Then returns a LINK::Classes/MIDIConfig:: containing the MIDI configuration read from the STRONG::Configuration File::.

@@ -1,0 +1,45 @@
+TITLE:: Metronome
+SUMMARY:: A simple metronome
+CATEGORIES:: Streams-Patterns-Events
+RELATED:: Classes/Sequencer
+
+DESCRIPTION::
+This class plays short bursts of noise on the beat of LINK::Classes/TempoClock#*default::, and quieter bursts on the offbeats.
+
+NOTE::
+The metronome depends on the server running.
+::
+
+CLASSMETHODS::
+
+METHOD:: play
+Starts playing the metronome.
+
+NOTE::
+As this method will add the LINK::Classes/SynthDef:: TELETYPE::\metronome:: if it hasn't already, there could conceivably be a delay or some warnings to the post window while this is happening.
+::
+
+METHOD:: stop
+Stops the metronome.
+
+METHOD:: volume
+Sets the playback volume of the metronome, clipping to between 0 and 1. The default volume is 0.5.
+
+ARGUMENT:: newValue
+The new volume.
+
+EXAMPLES::
+
+CODE::
+// Start the server
+Setup.server;
+
+// Play the metronome
+Metronome.play;
+
+// Make it quieter
+Metronome.volume_(0.1);
+
+// Stop it
+Metronome.stop;
+::
