@@ -27,33 +27,29 @@ CODE::
 ]);
 ::
 
-METHOD::addMidiPart
-Adds a MIDI sequence to the specified section for the LINK::Classes/Synthesizer:: with the specified ID.
+METHOD::addMidiSequence
+Adds the supplied sequence (generally a LINK::Classes/Pbind::, LINK::Classes/Pseq:: or LINK::Classes/Ppar::), which defines a MIDI sequence to be sent to some synthesizer, to the sequencer.
 
-ARGUMENT::section
-A LINK::Classes/Symbol:: representing the section of the piece.
+ARGUMENT::id
+A LINK::Classes/Symbol:: which is the ID of the sequence. This is used to identify it when using it to compose larger patterns, or to play on its own (see LINK::#-play::).
 
 ARGUMENT::synthId
-A LINK::Classes/Symbol:: indicating the hardware synthesizer that the part is for.
+A LINK::Classes/Symbol:: which is the ID of synthesizer this MIDI sequence should be sent to. The MIDI channel is determined by configuration: see LINK::Classes/Config::.
 
-NOTE::
-This ID corresponds to the TELETYPE::Id:: property of a hardware synthesizer defined in the STRONG::configuration file::. See LINK::Classes/Config#*hardwareSynthesizers::.
+ARGUMENT::pattern
+A pattern (generally a LINK::Classes/Pbind::, LINK::Classes/Pseq:: or LINK::Classes/Ppar::) to be played on the synthesizer identified by the TELETYPE::synthId:: parameter. This pattern does not need certain keys such as TELETYPE::\type:: or TELETYPE::\midicmd:: since these will be filled in automatically.
+
+DISCUSSION::
+CODE::
+(
+~seq.addMidiSequence(\arp,\jx03,Pbind(
+	\midinote, Pseq([51,63,70,82]),
+	\amp, 1,
+	\dur, 0.25,
+	\legato, 0.5
+));
+)
 ::
-
-ARGUMENT::pattern
-A LINK::Classes/Pattern:: to play on the synthesizer. There is no need to specify the TELETYPE::\type::, TELETYPE::\midiout:: or TELETYPE::\chan:: keys since these are included automatically.
-
-METHOD::addScPart
-Adds a sequence to be played using a LINK::Classes/SynthDef::.
-
-ARGUMENT::section
-A LINK::Classes/Symbol:: representing the name of the LINK::Classes/SynthDef::.
-
-ARGUMENT::synthDefName
-A LINK::Classes/SynthDef:: that the part is for.
-
-ARGUMENT::pattern
-A LINK::Classes/Pattern:: to play on the LINK::Classes/SynthDef::. There is no need to specify the TELETYPE::\type::, TELETYPE::\midiout:: or TELETYPE::\chan:: keys since these are included automatically.
 
 METHOD::addSynthesizerPostKeys
 Adds a set of pattern keys which are added EMPHASIS::after:: every section for the specified LINK::Classes/Synthesizer::. These post-keys are generally patterns which use LINK::Classes/Pkey:: to access keys defined previously, for example by LINK::#-addMidiPart:: and LINK::#-addScPart::, and modify them in some way.
@@ -73,13 +69,13 @@ CODE::
 ::
 
 METHOD::play
-Plays the specified sections by playing all of the parts in each section in parallel.
+Plays the specified sequence.
 
-ARGUMENT::sections
-An LINK::Classes/Array:: of LINK::Classes/Symbol::s denoting the sections to play.
+ARGUMENT::sequenceId
+A LINK::Classes/Symbol:: which is the ID of the sequence to play (see (see LINK::#-addMidiSequence::).
 
-METHOD::showGui
-Opens a LINK::Classes/SequencerGui:: to provide a visual representation of the sequencers defined by this LINK::Classes/Sequencer::.
+ARGUMENT::loop
+Whether or not the sequence should be looped indefinitely.
 
 METHOD::stop
 Stops playback.
@@ -88,17 +84,13 @@ EXAMPLES::
 
 CODE::
 (
-~seq = Sequencer();
-~seq.addMidiPart(\section1, \rev2, Pbind(
-	\dur, 1,
-	\pitch, Pseq([31,41,51,61]).trace
+~seq = Sequencer2();
+~seq.addMidiSequence(\arp,\jx03,Pbind(
+	\midinote, Pseq([51,63,70,82]),
+	\amp, 1,
+	\dur, 0.25,
+	\legato, 0.5
 ));
-~seq.addMidiPart(\section2, \rev2, Pbind(
-	\dur, 0.5,
-	\pitch, Pseq([71,61,51,41,31]).trace
-));
-~seq.play([\section1,\section2]);
-)
-
+~seq.play(\arp,true);
 ~seq.stop;
 ::
