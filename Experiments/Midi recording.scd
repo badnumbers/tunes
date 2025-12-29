@@ -4,7 +4,7 @@ Setup.midi
 
 (
 var synthid = \megafm;
-w = Window.new("Recording");
+w = Window.new("Recording", Rect(50,50,1000,1000));
 Button(w, Rect(50,50,100,50)).states_([
 	["Start recording", Color.white, Color.red],
 	["Stop recording", Color.black, Color.gray]
@@ -26,7 +26,9 @@ Button(w, Rect(50,50,100,50)).states_([
 ~midiMonitor = View(w, Rect(300,50,50,50)).background_(Color.grey);
 ~startTimeText = StaticText(w, Rect(50, 200, 300, 25));
 ~stopTimeText = StaticText(w, Rect(50, 225, 300, 25));
-~notesListView = ListView(w, Rect(50, 250, 300, 500));
+~notesListView = ListView(w, Rect(50, 150, 300, 500));
+~noteviewscale = Dictionary.with(*[\horizontal -> 5, \vertical -> 5]);
+~pianoRoll = View(w, Rect(50, 500, 800, 128 * ~noteviewscale[\vertical])).background_(Color.green);
 w.front;
 ~startMonitoring.value(Synths(synthid));
 w.onClose_({
@@ -45,11 +47,12 @@ w.onClose_({
 			|velocity,noteNumber,chan,src|
 			var now = {(TempoClock.default.beats - (Server.default.latency * TempoClock.tempo)) - startbeat};
 			if (msgType == \noteOn, {
-				~recordingData.currentNotes.put(noteNumber, Dictionary.with(*[\start -> (now.value()), \velocity -> velocity]));
+				~recordingData.currentNotes.put(noteNumber, Dictionary.with(*[\start -> (now.value()), \velocity -> velocity, \notenumber -> noteNumber]));
 			},{
 				if (~recordingData.currentNotes[noteNumber].notNil, {
 					~recordingData.currentNotes[noteNumber].put(\stop, now.value());
 					~recordingData.completedNotes.add(~recordingData.currentNotes[noteNumber]);
+					~drawNote.value(~recordingData.currentNotes[noteNumber]);
 					~recordingData.currentNotes[noteNumber] = nil;
 				});
 			});
@@ -84,9 +87,9 @@ w.onClose_({
 				});
 			});
 			if (~totalMidiNoteCount > 0, {
-				~midiMonitor.background_(Color.red);
+				AppClock.sched(0.0, { ~midiMonitor.background_(Color.red); });
 			}, {
-				~midiMonitor.background_(Color.grey);
+				AppClock.sched(0.0, { ~midiMonitor.background_(Color.grey); });
 			});
 		},chan: synth.midiChannel, msgType:msgType);
 	})
@@ -98,15 +101,8 @@ w.onClose_({
 	});
 	postln("Monitoring stopped.");
 };
-)
-
-Synths(\megafm).midiChannel
-
-MIDIdef.trace(false)
-
-~floor = TempoClock.default.beats.floor;
-(
-var beats = TempoClock.default.beats;
-var floor = (beats - ~floor);
-postln(format("beats: %, floor: %", beats, floor));
+~drawNote = {
+	|note|
+	AppClock.sched(0.0,{View(~pianoRoll, Rect(note[\start] * ~noteviewscale[\horizontal], (127 - note[\notenumber]) * ~noteviewscale[\vertical] , (note[\stop] - note[\start]) * ~noteviewscale[\horizontal], ~noteviewscale[\vertical])).background_(Color.magenta);});
+};
 )
