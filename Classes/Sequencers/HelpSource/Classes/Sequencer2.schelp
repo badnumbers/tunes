@@ -8,7 +8,7 @@ LINK::Classes/Sequencer2:: is intended to cut down the amount of boilerplate cod
 CLASSMETHODS::
 
 METHOD::new
-Creates an instance of LINK::Classes/Sequencer::.
+Creates an instance of LINK::Classes/Sequencer2::.
 
 INSTANCEMETHODS::
 
@@ -76,6 +76,9 @@ A LINK::Classes/Symbol:: which is the ID of the sequence to play (see (see LINK:
 
 ARGUMENT::loop
 Whether or not the sequence should be looped indefinitely.
+
+METHOD::showGui
+Opens an instance of LINK::Classes/Sequencer2Gui:: to help manage the sequences for this track.
 
 METHOD::stop
 Stops playback.

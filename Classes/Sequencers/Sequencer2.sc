@@ -163,7 +163,7 @@ Sequencer2 {
 	}
 
 	showGui {
-		SequencerGui2.new(this,(
+		Sequencer2Gui.new(this,(
 			sequences: {prSequences}.value
 		));
 	}
