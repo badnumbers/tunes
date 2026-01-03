@@ -18,6 +18,7 @@ Sequencer2Gui {
 		|sequencer|
 		var window, midiIndicator;
 		var totalMidiNoteCount = 0;
+		var renderButtonFunc;
 		Validator.validateMethodParameterType(sequencer, Sequencer2, "sequencer", "Sequencer2Gui", "init");
 		Setup.midi;
 		prSequencer = sequencer;
@@ -40,7 +41,7 @@ Sequencer2Gui {
 			prMainHeader = BorderView().background_(prColours[\colour2]).minHeight_(100).maxHeight_(100).borderWidth_(0).layout_(HLayout(
 				prMainHeaderTitle = View().minSize_(250@100).maxWidth_(250),
 				[nil, s: 1],
-				prMainHeaderButtons = View().minSize_(400@100).maxSize_(400@100).background_(Color.blue)
+				prMainHeaderButtons = View().minSize_(350@100).maxSize_(350@100)//.background_(Color.blue)
 			).margins_(0).spacing_(0)),
 			HLayout(
 				BorderView().background_(prColours[\colour2]).minSize_(200@200).maxWidth_(200).borderWidth_(0).layout_(VLayout(
@@ -62,9 +63,14 @@ Sequencer2Gui {
 		StaticText(prMiddlePanelHeader, Rect(30, 30, 200, 40)).string_("Parts").stringColor_(prColours[\extreme2]).font_(Font(size:24));
 		StaticText(prRightPanelHeader, Rect(30, 30, 200, 40)).string_("Sequences").stringColor_(prColours[\extreme2]).font_(Font(size:24));
 
+		renderButtonFunc = {
+			|parent,bounds,text|			StaticText(parent,bounds).string_(text).background_(prColours[\colour3]).stringColor_(prColours[\colour5]).font_(Font(size:16)).align_(\center);
+		};
+
 		// Draw buttons in main header
-		StaticText(prMainHeaderButtons, Rect(25,25,100,50)).string_("Record").background_(prColours[\colour3]).stringColor_(prColours[\colour5]).font_(Font(size:24));
-		midiIndicator = View(prMainHeaderButtons, Rect(150,25,50,50)).background_(prColours[\extreme1]);
+		renderButtonFunc.value(prMainHeaderButtons, Rect(25,25,100,50),"Arrange");
+		renderButtonFunc.value(prMainHeaderButtons, Rect(150,25,100,50),"Record");
+		midiIndicator = View(prMainHeaderButtons, Rect(275,25,50,50)).background_(prColours[\colour3]);
 		midiIndicator = View(midiIndicator, Rect(2,2,46,46)).background_(prColours[\colour2]);
 
 		// Set up MIDI indicator
