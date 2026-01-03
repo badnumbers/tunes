@@ -4,18 +4,18 @@ CATEGORIES:: Streams-Patterns-Events
 RELATED:: Classes/Sequencer
 
 DESCRIPTION::
-LINK::Classes/SequencerGui2:: provides a visualisation of a graph of LINK::Classes/Pattern::s created using a LINK::Classes/Sequencer::. This is created when calling LINK::Classes/Sequencer2#-showGui::.
+LINK::Classes/Sequencer2Gui:: provides a visualisation of a graph of LINK::Classes/Pattern::s created using a LINK::Classes/Sequencer::. This is created when calling LINK::Classes/Sequencer2#-showGui::.
 
 CLASSMETHODS::
 
 METHOD:: new
-Creates an instance of LINK::Classes/SequencerGui2::.
+Creates an instance of LINK::Classes/Sequencer2Gui::.
 
 ARGUMENT:: sequencer
-The LINK::Classes/Sequencer2:: that this LINK::Classes/SequencerGui2:: provides a visual representation of.
+The LINK::Classes/Sequencer2:: that this LINK::Classes/Sequencer2Gui:: provides a visual representation of.
 
 ARGUMENT:: privateSequencerData
-An LINK::Classes/Event:: containing private data from the LINK::Classes/Sequencer2:: that is needed by the LINK::Classes/SequencerGui2::. This must contain the following keys:
+An LINK::Classes/Event:: containing private data from the LINK::Classes/Sequencer2:: that is needed by the LINK::Classes/Sequencer2Gui::. This must contain the following keys:
 
 TABLE::
     ## sections || The value of TELETYPE::prSections::.

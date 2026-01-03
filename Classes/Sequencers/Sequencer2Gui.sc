@@ -3,7 +3,7 @@ Sequencer2Gui {
 	var prMainHeader;
 	var prLeftPanelBody;
 	var prLeftPanelHeader;
-	var prMainHeaderData;
+	var prMainHeaderButtons;
 	var prMainHeaderTitle;
 	var prMiddlePanelBody;
 	var prMiddlePanelHeader;
@@ -16,8 +16,10 @@ Sequencer2Gui {
 
 	init {
 		|sequencer|
-		var window, red, green, blue, scrollview;
+		var window, midiIndicator;
+		var totalMidiNoteCount = 0;
 		Validator.validateMethodParameterType(sequencer, Sequencer2, "sequencer", "Sequencer2Gui", "init");
+		Setup.midi;
 		prSequencer = sequencer;
 
 		//prDocument = Document.open(thisProcess.nowExecutingPath);
@@ -38,7 +40,7 @@ Sequencer2Gui {
 			prMainHeader = BorderView().background_(prColours[\colour2]).minHeight_(100).maxHeight_(100).borderWidth_(0).layout_(HLayout(
 				prMainHeaderTitle = View().minSize_(250@100).maxWidth_(250),
 				[nil, s: 1],
-				prMainHeaderData = View().minSize_(400@100).maxWidth_(400)//.background_(Color.blue)
+				prMainHeaderButtons = View().minSize_(400@100).maxSize_(400@100).background_(Color.blue)
 			).margins_(0).spacing_(0)),
 			HLayout(
 				BorderView().background_(prColours[\colour2]).minSize_(200@200).maxWidth_(200).borderWidth_(0).layout_(VLayout(
@@ -59,6 +61,40 @@ Sequencer2Gui {
 		StaticText(prLeftPanelHeader, Rect(30, 30, 200, 40)).string_("Sections").stringColor_(prColours[\extreme2]).font_(Font(size:24));
 		StaticText(prMiddlePanelHeader, Rect(30, 30, 200, 40)).string_("Parts").stringColor_(prColours[\extreme2]).font_(Font(size:24));
 		StaticText(prRightPanelHeader, Rect(30, 30, 200, 40)).string_("Sequences").stringColor_(prColours[\extreme2]).font_(Font(size:24));
+
+		// Draw buttons in main header
+		StaticText(prMainHeaderButtons, Rect(25,25,100,50)).string_("Record").background_(prColours[\colour3]).stringColor_(prColours[\colour5]).font_(Font(size:24));
+		midiIndicator = View(prMainHeaderButtons, Rect(150,25,50,50)).background_(prColours[\extreme1]);
+		midiIndicator = View(midiIndicator, Rect(2,2,46,46)).background_(prColours[\colour2]);
+
+		// Set up MIDI indicator
+		[\noteOn,\noteOff].do({
+			|msgType|
+			MIDIdef(format("%_%", \monitorMidi, msgType).asSymbol,{
+				|velocity,noteNumber,chan,src|
+				if (msgType == \noteOn, {
+					totalMidiNoteCount = totalMidiNoteCount + 1;
+				},{
+					if (totalMidiNoteCount > 0, {
+						totalMidiNoteCount	= totalMidiNoteCount - 1;
+					});
+				});
+				if (totalMidiNoteCount > 0, {
+					AppClock.sched(0.0, { midiIndicator.background_(prColours[\extreme2]); });
+				}, {
+					AppClock.sched(0.0, { midiIndicator.background_(prColours[\colour2]); });
+				});
+			},msgType:msgType);
+		});
+
+		// Tidy up when the window is closed
+		prWindow.onClose_({
+			[\noteOn,\noteOff].do({
+				|msgType|
+				MIDIdef(format("%_%", \monitorMidi, msgType).asSymbol).free;
+			});
+			postln("Monitoring stopped.");
+		});
 	}
 
 	*new {
