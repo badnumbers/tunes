@@ -337,3 +337,10 @@ patch.name = "Cute as hell";
 patch.kvps[1304]=137;patch.kvps[1314]=224;patch.kvps[1402]=128;patch.kvps[1102]=128;patch.kvps[1206]=0;patch.kvps[1306]=143;patch.kvps[1702]=128;patch.kvps[1204]=1;patch.kvps[1200]=3;patch.kvps[1504]=154;patch.kvps[1500]=0;patch.kvps[1210]=4;patch.kvps[1606]=9;patch.kvps[1220]=1;patch.kvps[1708]=12;patch.kvps[1700]=0;patch.kvps[1216]=1;patch.kvps[1308]=139;patch.kvps[1100]=0;patch.kvps[1600]=0;patch.kvps[1502]=134;patch.kvps[1602]=11;patch.kvps[1226]=1;patch.kvps[1706]=0;patch.kvps[1506]=174;patch.kvps[1104]=0;patch.kvps[1300]=149;patch.kvps[1222]=16;patch.kvps[1302]=0;patch.kvps[1310]=1;patch.kvps[1214]=128;patch.kvps[1218]=0;patch.kvps[1224]=86;patch.kvps[1202]=1;patch.kvps[1312]=0;patch.kvps[1604]=11;patch.kvps[1400]=1;patch.kvps[1212]=199;patch.kvps[1208]=3;
 Synths(\jx03).setWorkingPatch(patch);
 )
+
+(
+var patch = Jx03Patch();
+patch.name = "Straight to 1982";
+patch.kvps[1304]=36;patch.kvps[1314]=224;patch.kvps[1402]=128;patch.kvps[1102]=128;patch.kvps[1206]=0;patch.kvps[1306]=143;patch.kvps[1702]=128;patch.kvps[1204]=0;patch.kvps[1200]=2;patch.kvps[1504]=176;patch.kvps[1500]=0;patch.kvps[1210]=2;patch.kvps[1606]=9;patch.kvps[1220]=1;patch.kvps[1708]=12;patch.kvps[1700]=0;patch.kvps[1216]=2;patch.kvps[1308]=112;patch.kvps[1100]=0;patch.kvps[1600]=2;patch.kvps[1502]=128;patch.kvps[1602]=11;patch.kvps[1226]=1;patch.kvps[1706]=0;patch.kvps[1506]=128;patch.kvps[1104]=0;patch.kvps[1300]=158;patch.kvps[1222]=40;patch.kvps[1302]=0;patch.kvps[1310]=1;patch.kvps[1214]=136;patch.kvps[1218]=1;patch.kvps[1224]=2;patch.kvps[1202]=2;patch.kvps[1312]=56;patch.kvps[1604]=13;patch.kvps[1400]=1;patch.kvps[1212]=220;patch.kvps[1208]=3;
+Synths(\jx03).setWorkingPatch(patch);
+)
