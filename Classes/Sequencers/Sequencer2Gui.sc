@@ -43,22 +43,26 @@ Sequencer2Gui {
 				[nil, s: 1],
 				prMainHeaderButtons = View().minSize_(350@100).maxSize_(350@100)//.background_(Color.blue)
 			).margins_(0).spacing_(0)),
-			stackLayout = StackLayout(View().layout_(
-				HLayout(
-					BorderView().background_(prColours[\colour2]).minSize_(200@200).maxWidth_(200).borderWidth_(0).layout_(VLayout(
-						prLeftPanelHeader = BorderView().background_(prColours[\colour3]).minHeight_(100).maxHeight_(100).borderWidth_(0),
-						ScrollView().canvas_(prLeftPanelBody = View().background_(prColours[\colour4]))
-					)),
-					BorderView().background_(prColours[\colour2]).minSize_(200@200).maxWidth_(200).borderWidth_(0).layout_(VLayout(
-						prMiddlePanelHeader = BorderView().background_(prColours[\colour3]).minHeight_(100).maxHeight_(100).borderWidth_(0),
-						ScrollView().canvas_(prMiddlePanelBody = View().background_(prColours[\colour4])),
-					)),
-					BorderView().background_(prColours[\colour2]).minSize_(200@200).borderWidth_(0).layout_(VLayout(
-						prRightPanelHeader = BorderView().background_(prColours[\colour3]).minHeight_(100).maxHeight_(100).borderWidth_(0),
-						ScrollView().canvas_(prRightPanelBody = View().background_(prColours[\colour4]))
-					))
-				).margins_(0).spacing_(20)
-		))).margins_(20).spacing_(20);
+			stackLayout = StackLayout(
+				View().layout_(
+					HLayout(
+						BorderView().background_(prColours[\colour2]).minSize_(200@200).maxWidth_(200).borderWidth_(0).layout_(VLayout(
+							prLeftPanelHeader = BorderView().background_(prColours[\colour3]).minHeight_(100).maxHeight_(100).borderWidth_(0),
+							ScrollView().canvas_(prLeftPanelBody = View().background_(prColours[\colour4]))
+						)),
+						BorderView().background_(prColours[\colour2]).minSize_(200@200).maxWidth_(200).borderWidth_(0).layout_(VLayout(
+							prMiddlePanelHeader = BorderView().background_(prColours[\colour3]).minHeight_(100).maxHeight_(100).borderWidth_(0),
+							ScrollView().canvas_(prMiddlePanelBody = View().background_(prColours[\colour4])),
+						)),
+						BorderView().background_(prColours[\colour2]).minSize_(200@200).borderWidth_(0).layout_(VLayout(
+							prRightPanelHeader = BorderView().background_(prColours[\colour3]).minHeight_(100).maxHeight_(100).borderWidth_(0),
+							ScrollView().canvas_(prRightPanelBody = View().background_(prColours[\colour4]))
+						)
+						)
+					).margins_(0).spacing_(20)
+				),
+				View().background_(Color.magenta)
+		)).margins_(20).spacing_(20);
 
 		StaticText(prMainHeaderTitle, Rect(30, 30, 200, 40)).string_("Sequencer").stringColor_(prColours[\colour5]).font_(Font(size:32));
 		StaticText(prLeftPanelHeader, Rect(30, 30, 200, 40)).string_("Sections").stringColor_(prColours[\extreme2]).font_(Font(size:24));
@@ -70,8 +74,12 @@ Sequencer2Gui {
 		};
 
 		// Draw buttons in main header
-		renderButtonFunc.value(prMainHeaderButtons, Rect(25,25,100,50),"Arrange");
-		renderButtonFunc.value(prMainHeaderButtons, Rect(150,25,100,50),"Record");
+		renderButtonFunc.value(prMainHeaderButtons, Rect(25,25,100,50),"Arrange").mouseUpAction_({
+			stackLayout.index_(0);
+		});
+		renderButtonFunc.value(prMainHeaderButtons, Rect(150,25,100,50),"Record").mouseUpAction_({
+			stackLayout.index_(1);
+		});
 		midiIndicator = View(prMainHeaderButtons, Rect(275,25,50,50)).background_(prColours[\colour3]);
 		midiIndicator = View(midiIndicator, Rect(2,2,46,46)).background_(prColours[\colour2]);
 
