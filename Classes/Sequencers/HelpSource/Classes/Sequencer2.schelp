@@ -1,6 +1,7 @@
 TITLE:: Sequencer2
 SUMMARY:: A new and experimental version of a sequencer for managing and playing patterns
 CATEGORIES:: Streams-Patterns-Events
+RELATED:: Classes/Sequencer2Gui
 
 DESCRIPTION::
 LINK::Classes/Sequencer2:: is intended to cut down the amount of boilerplate code required to sequence tracks. For example, it reduces the amount of keys that you need to specify when writing a pattern.

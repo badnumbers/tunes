@@ -14,13 +14,7 @@ Creates an instance of LINK::Classes/Sequencer2Gui::.
 ARGUMENT:: sequencer
 The LINK::Classes/Sequencer2:: that this LINK::Classes/Sequencer2Gui:: provides a visual representation of.
 
-ARGUMENT:: privateSequencerData
-An LINK::Classes/Event:: containing private data from the LINK::Classes/Sequencer2:: that is needed by the LINK::Classes/Sequencer2Gui::. This must contain the following keys:
-
-TABLE::
-    ## sections || The value of TELETYPE::prSections::.
-::
 
 INSTANCEMETHODS::
 
-PRIVATE:: init, prDisplayPattern, prDisplayPbind, prLoadParts, prLoadSections, prLoadSequences
+PRIVATE:: init
