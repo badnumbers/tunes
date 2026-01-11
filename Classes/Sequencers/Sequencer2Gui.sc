@@ -7,6 +7,7 @@ Sequencer2Gui {
 	var prMainHeaderTitle;
 	var prMiddlePanelBody;
 	var prMiddlePanelHeader;
+	var prMidiRecordingButtons;
 	var prRightPanelBody;
 	var prRightPanelHeader;
 	var prSequencer;
@@ -61,7 +62,15 @@ Sequencer2Gui {
 						)
 					).margins_(0).spacing_(20)
 				),
-				View().background_(Color.magenta)
+				BorderView().background_(prColours[\colour2]).layout_(VLayout(
+					MidiRecordingGui().minHeight_(100),
+					BorderView().background_(prColours[\colour3]).minHeight_(100).maxHeight_(100).layout_(
+						HLayout(
+							prMidiRecordingButtons = View().minSize_(250@100).maxWidth_(250),
+							[nil, s: 1]
+						)
+					)
+				))
 		)).margins_(20).spacing_(20);
 
 		StaticText(prMainHeaderTitle, Rect(30, 30, 200, 40)).string_("Sequencer").stringColor_(prColours[\colour5]).font_(Font(size:32));
@@ -101,6 +110,10 @@ Sequencer2Gui {
 					AppClock.sched(0.0, { midiIndicator.background_(prColours[\colour2]); });
 				});
 			},msgType:msgType);
+		});
+
+		renderButtonFunc.value(prMidiRecordingButtons, Rect(150,25,100,50),"Start recording").mouseUpAction_({
+			postln("Starting recording");
 		});
 
 		// Tidy up when the window is closed
