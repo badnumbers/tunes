@@ -12,7 +12,6 @@ BorderView : SCViewHolder {
 	background_ {
 		|colour|
 		backgroundColour = colour;
-		this.view.drawFunc(this.view);
 	}
 
 	drawFunc_ {
