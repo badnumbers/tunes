@@ -1,21 +1,48 @@
-BorderView : UserView {
-	var <>borderColor;
+BorderView : SCViewHolder {
+	var backgroundColour;
+	var <>borderColour;
 	var <>borderRadius = 0;
 	var <>borderWidth = 1;
+	var prDrawBorder;
+
+	background {
+		^backgroundColour;
+	}
+
+	background_ {
+		|colour|
+		backgroundColour = colour;
+		this.view.drawFunc(this.view);
+	}
+
+	drawFunc_ {
+		|userDrawFunc|
+		this.view.drawFunc_({
+			userDrawFunc.value(this.view);
+			prDrawBorder.value(this.view);
+		});
+	}
 
 	init {
 		|parent,bounds|
-		this.drawFunc_({ |v|
+		this.view = UserView();
+		backgroundColour = Color.clear;
+		prDrawBorder = { |v|
 			var w = v.bounds.width;
 			var h = v.bounds.height;
 
-			if (borderColor.notNil,{
-				Pen.strokeColor_(borderColor);
+			if (borderColour.notNil,{
+				Pen.strokeColor_(borderColour);
 			});
 
 			Pen.width_(borderWidth).joinStyle_(1);
 			Pen.addRoundedRect(Rect(0,0,w,h).insetBy(borderWidth/2),borderRadius,borderRadius);
-			Pen.stroke;
+			Pen.fillColor_(backgroundColour);
+			Pen.fillStroke;
+		};
+
+		this.view.drawFunc_({
+			prDrawBorder.value(this.view);
 		});
 	}
 
