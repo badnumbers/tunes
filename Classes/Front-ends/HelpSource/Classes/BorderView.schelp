@@ -6,14 +6,6 @@ RELATED:: Classes/View, Classes/UserView
 DESCRIPTION::
 This is a subclass of LINK::Classes/UserView:: that optionally draws a border around the edge.
 
-NOTE::LINK::Classes/BorderView:: comes with the following caveats:
-LIST::
-## Since it simply extends LINK::Classes/UserView:: and sets LINK::Classes/UserView#-drawFunc::, if the user extends LINK::Classes/UserView#-drawFunc:: themself then the border is lost.
-## The LINK::Classes/View#-background:: property is inherited from LINK::Classes/View:: and will simply fill the rectangular background, including sticking out past rounded corners of the border.
-::
-See https://scsynth.org/t/rectangular-container-with-border/11486/12 for a discussion of these issues.
-::
-
 CLASSMETHODS::
 
 METHOD:: new
@@ -21,7 +13,7 @@ Creates an instance of LINK::Classes/BorderView::.
 
 INSTANCEMETHODS::
 
-METHOD:: borderColor
+METHOD:: borderColour
 The colour of the border.
 
 METHOD:: borderRadius
@@ -29,6 +21,9 @@ The radius of the rounded corners of the border.
 
 METHOD:: borderWidth
 The width of the border.
+
+METHOD:: refresh
+Force refreshes the view. This is not typically necessary, but it appears that setting, for example, LINK::Classes/View#-background:: from inside an LINK::Classes/AppClock:: does not cause the underlying LINK::Classes/View:: to refresh itself. In that case, call this method too.
 
 EXAMPLES::
 

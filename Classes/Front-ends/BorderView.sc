@@ -4,6 +4,7 @@ BorderView : SCViewHolder {
 	var <>borderRadius = 0;
 	var <>borderWidth = 1;
 	var prDrawBorder;
+	var prView;
 
 	background {
 		^backgroundColour;
@@ -24,7 +25,8 @@ BorderView : SCViewHolder {
 
 	init {
 		|parent,bounds|
-		this.view = UserView();
+		prView = UserView();
+		this.view = prView;
 		backgroundColour = Color.clear;
 		prDrawBorder = { |v|
 			var w = v.bounds.width;
@@ -48,5 +50,9 @@ BorderView : SCViewHolder {
 	*new {
 		|parent,bounds|
 		^super.new.init(parent,bounds);
+	}
+
+	refresh {
+		prView.refresh;
 	}
 }
