@@ -1,7 +1,7 @@
 TITLE:: Sequencer2Gui
 SUMMARY:: Provides a GUI to visually represent sequences created using a Sequencer2.
 CATEGORIES:: Streams-Patterns-Events
-RELATED:: Classes/Sequencer
+RELATED:: Classes/Sequencer2, Classes/MidiRecordingGui
 
 DESCRIPTION::
 LINK::Classes/Sequencer2Gui:: provides a visualisation of a graph of LINK::Classes/Pattern::s created using a LINK::Classes/Sequencer::. This is created when calling LINK::Classes/Sequencer2#-showGui::.

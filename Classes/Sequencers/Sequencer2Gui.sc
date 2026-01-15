@@ -3,8 +3,6 @@ Sequencer2Gui {
 	var prMainHeader;
 	var prLeftPanelBody;
 	var prLeftPanelHeader;
-	var prMainHeaderButtons;
-	var prMainHeaderTitle;
 	var prMiddlePanelBody;
 	var prMiddlePanelHeader;
 	var prMidiRecordingButtons;
@@ -17,11 +15,11 @@ Sequencer2Gui {
 
 	init {
 		|sequencer|
-		var window, stackLayout, midiIndicator;
+		var window, stackLayout, midiIndicator, arrangeButton, recordButton, startRecordingButton;
 		var totalMidiNoteCount = 0;
 		var renderButtonFunc;
 		Validator.validateMethodParameterType(sequencer, Sequencer2, "sequencer", "Sequencer2Gui", "init");
-		Setup.midi;
+		//Setup.midi;
 		prSequencer = sequencer;
 
 		//prDocument = Document.open(thisProcess.nowExecutingPath);
@@ -37,13 +35,21 @@ Sequencer2Gui {
 			\extreme2, Color.white,
 		]);
 
+		renderButtonFunc = {
+			|text,width=100|
+			var size = width@50;
+			StaticText().string_(text).background_(prColours[\colour3]).stringColor_(prColours[\colour5]).font_(Font(size:16)).align_(\center).minSize_(size).maxSize_(size);
+		};
+
 		prWindow = Window("Sequencer version 2").background_(prColours[\colour1]).front;
 		prWindow.layout = VLayout(
 			prMainHeader = BorderView().background_(prColours[\colour2]).minHeight_(100).maxHeight_(100).borderWidth_(0).layout_(HLayout(
-				prMainHeaderTitle = View().minSize_(250@100).maxWidth_(250),
+				StaticText().string_("Sequencer").stringColor_(prColours[\colour5]).font_(Font(size:32)),
 				[nil, s: 1],
-				prMainHeaderButtons = View().minSize_(350@100).maxSize_(350@100)//.background_(Color.blue)
-			).margins_(0).spacing_(0)),
+				arrangeButton = renderButtonFunc.value("Arrange"),
+				recordButton = renderButtonFunc.value("Record"),
+				midiIndicator = BorderView().background_(prColours[\colour2]).borderColour_(prColours[\colour3]).minSize_(50@50).maxSize_(50@50).borderWidth_(2);
+			).margins_(25).spacing_(25)),
 			stackLayout = StackLayout(
 				View().layout_(
 					HLayout(
@@ -64,33 +70,29 @@ Sequencer2Gui {
 				),
 				BorderView().background_(prColours[\colour2]).layout_(VLayout(
 					MidiRecordingGui().minHeight_(100),
-					BorderView().background_(prColours[\colour3]).minHeight_(100).maxHeight_(100).layout_(
+					View().background_(prColours[\colour4]).minHeight_(70).maxHeight_(70).layout_(
 						HLayout(
-							prMidiRecordingButtons = View().minSize_(250@100).maxWidth_(250),
+							startRecordingButton = renderButtonFunc.value("Start recording", width:150),
 							[nil, s: 1]
-						)
+						).margins_(10).spacing_(10)
 					)
 				))
 		)).margins_(20).spacing_(20);
 
-		StaticText(prMainHeaderTitle, Rect(30, 30, 200, 40)).string_("Sequencer").stringColor_(prColours[\colour5]).font_(Font(size:32));
 		StaticText(prLeftPanelHeader, Rect(30, 30, 200, 40)).string_("Sections").stringColor_(prColours[\extreme2]).font_(Font(size:24));
 		StaticText(prMiddlePanelHeader, Rect(30, 30, 200, 40)).string_("Parts").stringColor_(prColours[\extreme2]).font_(Font(size:24));
 		StaticText(prRightPanelHeader, Rect(30, 30, 200, 40)).string_("Sequences").stringColor_(prColours[\extreme2]).font_(Font(size:24));
 
-		renderButtonFunc = {
-			|parent,bounds,text|			StaticText(parent,bounds).string_(text).background_(prColours[\colour3]).stringColor_(prColours[\colour5]).font_(Font(size:16)).align_(\center);
-		};
-
 		// Draw buttons in main header
-		renderButtonFunc.value(prMainHeaderButtons, Rect(25,25,100,50),"Arrange").mouseUpAction_({
+		arrangeButton.mouseUpAction_({
 			stackLayout.index_(0);
 		});
-		renderButtonFunc.value(prMainHeaderButtons, Rect(150,25,100,50),"Record").mouseUpAction_({
+		recordButton.mouseUpAction_({
 			stackLayout.index_(1);
 		});
-		midiIndicator = View(prMainHeaderButtons, Rect(275,25,50,50)).background_(prColours[\colour3]);
-		midiIndicator = View(midiIndicator, Rect(2,2,46,46)).background_(prColours[\colour2]);
+		startRecordingButton.mouseUpAction_({
+			postln("Starting recording!");
+		});
 
 		// Set up MIDI indicator
 		[\noteOn,\noteOff].do({
@@ -105,15 +107,11 @@ Sequencer2Gui {
 					});
 				});
 				if (totalMidiNoteCount > 0, {
-					AppClock.sched(0.0, { midiIndicator.background_(prColours[\extreme2]); });
+					AppClock.sched(0.0, { midiIndicator.background_(prColours[\extreme2]).refresh; });
 				}, {
-					AppClock.sched(0.0, { midiIndicator.background_(prColours[\colour2]); });
+					AppClock.sched(0.0, { midiIndicator.background_(prColours[\colour2]).refresh; });
 				});
 			},msgType:msgType);
-		});
-
-		renderButtonFunc.value(prMidiRecordingButtons, Rect(150,25,100,50),"Start recording").mouseUpAction_({
-			postln("Starting recording");
 		});
 
 		// Tidy up when the window is closed
@@ -122,7 +120,6 @@ Sequencer2Gui {
 				|msgType|
 				MIDIdef(format("%_%", \monitorMidi, msgType).asSymbol).free;
 			});
-			postln("Monitoring stopped.");
 		});
 	}
 
