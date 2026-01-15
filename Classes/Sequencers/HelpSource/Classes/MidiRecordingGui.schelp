@@ -1,0 +1,105 @@
+TITLE:: MidiRecordingGui
+SUMMARY:: Shows the result of recording some MIDI notes as a kind of piano-roll.
+CATEGORIES:: Streams-Patterns-Events
+RELATED:: Classes/SequencerGui
+
+DESCRIPTION::
+LINK::Classes/Sequencer:: is intended to cut down the amount of boilerplate code required to sequence tracks. For example, it reduces the amount of keys that you need to specify when writing a pattern.
+
+CLASSMETHODS::
+
+METHOD::new
+Creates an instance of LINK::Classes/Sequencer::.
+
+INSTANCEMETHODS::
+
+METHOD::addGlobalPreKeys
+Adds a set of pattern keys which are added EMPHASIS::before:: a pattern. This is generally done to provide defaults which can be overridden in the patterns provided by LINK::#-addMidiPart:: and LINK::#-addScPart::.
+
+ARGUMENT::keysArray
+An even-numbered LINK::Classes/Array:: of keys and values. Each key (i.e. odd-numbered item) must be a LINK::Classes/Symbol::.
+
+DISCUSSION::
+CODE::
+// All parts will use the E♭ minor scale by default
+~mysequencer.addGlobalPreKeys([
+	\scale,Scale.minor,
+	\ctranspose,3
+]);
+::
+
+METHOD::addMidiPart
+Adds a MIDI sequence to the specified section for the LINK::Classes/Synthesizer:: with the specified ID.
+
+ARGUMENT::section
+A LINK::Classes/Symbol:: representing the section of the piece.
+
+ARGUMENT::synthId
+A LINK::Classes/Symbol:: indicating the hardware synthesizer that the part is for.
+
+NOTE::
+This ID corresponds to the TELETYPE::Id:: property of a hardware synthesizer defined in the STRONG::configuration file::. See LINK::Classes/Config#*hardwareSynthesizers::.
+::
+
+ARGUMENT::pattern
+A LINK::Classes/Pattern:: to play on the synthesizer. There is no need to specify the TELETYPE::\type::, TELETYPE::\midiout:: or TELETYPE::\chan:: keys since these are included automatically.
+
+METHOD::addScPart
+Adds a sequence to be played using a LINK::Classes/SynthDef::.
+
+ARGUMENT::section
+A LINK::Classes/Symbol:: representing the name of the LINK::Classes/SynthDef::.
+
+ARGUMENT::synthDefName
+A LINK::Classes/SynthDef:: that the part is for.
+
+ARGUMENT::pattern
+A LINK::Classes/Pattern:: to play on the LINK::Classes/SynthDef::. There is no need to specify the TELETYPE::\type::, TELETYPE::\midiout:: or TELETYPE::\chan:: keys since these are included automatically.
+
+METHOD::addSynthesizerPostKeys
+Adds a set of pattern keys which are added EMPHASIS::after:: every section for the specified LINK::Classes/Synthesizer::. These post-keys are generally patterns which use LINK::Classes/Pkey:: to access keys defined previously, for example by LINK::#-addMidiPart:: and LINK::#-addScPart::, and modify them in some way.
+
+ARGUMENT::synthId
+The ID of the LINK::Classes/Synthesizer:: that these post-keys will be applied to.
+
+ARGUMENT::keysArray
+An even-numbered LINK::Classes/Array:: of keys and values. Each key (i.e. odd-numbered item) must be a LINK::Classes/Symbol::.
+
+DISCUSSION::
+CODE::
+// Add a little randomness to the \amp key for all notes generated for the REV2 synthesizer
+~mysequencer.addSynthesizerPostKeys(~rev2, [
+	\amp, (Pkey(\amp) * Pbrown(0.8,1.2,0.1)).clip(0,1)
+]);
+::
+
+METHOD::play
+Plays the specified sections by playing all of the parts in each section in parallel.
+
+ARGUMENT::sections
+An LINK::Classes/Array:: of LINK::Classes/Symbol::s denoting the sections to play.
+
+METHOD::showGui
+Opens a LINK::Classes/SequencerGui:: to provide a visual representation of the sequencers defined by this LINK::Classes/Sequencer::.
+
+METHOD::stop
+Stops playback.
+
+EXAMPLES::
+
+CODE::
+(
+~seq = Sequencer();
+~seq.addMidiPart(\section1, \rev2, Pbind(
+	\dur, 1,
+	\pitch, Pseq([31,41,51,61]).trace
+));
+~seq.addMidiPart(\section2, \rev2, Pbind(
+	\dur, 0.5,
+	\pitch, Pseq([71,61,51,41,31]).trace
+));
+~seq.play([\section1,\section2]);
+)
+
+~seq.stop;
+::
