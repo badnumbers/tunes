@@ -15,7 +15,7 @@ Sequencer2Gui {
 
 	init {
 		|sequencer|
-		var window, stackLayout, midiIndicator, arrangeButton, recordButton, startRecordingButton;
+		var window, stackLayout, midiIndicator, arrangeButton, recordButton, startRecordingButton, midiRecordingGui;
 		var totalMidiNoteCount = 0;
 		var renderButtonFunc;
 		Validator.validateMethodParameterType(sequencer, Sequencer2, "sequencer", "Sequencer2Gui", "init");
@@ -69,7 +69,7 @@ Sequencer2Gui {
 					).margins_(0).spacing_(20)
 				),
 				BorderView().background_(prColours[\colour2]).layout_(VLayout(
-					MidiRecordingGui().minHeight_(100),
+					midiRecordingGui = MidiRecordingGui().minHeight_(100),
 					View().background_(prColours[\colour4]).minHeight_(70).maxHeight_(70).layout_(
 						HLayout(
 							startRecordingButton = renderButtonFunc.value("Start recording", width:150),
@@ -93,8 +93,10 @@ Sequencer2Gui {
 		startRecordingButton.mouseUpAction_({
 			if (startRecordingButton.string == "Start recording", {
 				startRecordingButton.string_("Stop recording");
+				midiRecordingGui.startRecording;
 			}, {
 				startRecordingButton.string_("Start recording");
+				midiRecordingGui.stopRecording;
 			})
 		});
 
