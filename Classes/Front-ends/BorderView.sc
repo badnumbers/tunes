@@ -26,7 +26,7 @@ BorderView : SCViewHolder {
 
 	init {
 		|parent,bounds|
-		prView = UserView().background_(Color.clear);
+		prView = UserView(parent,bounds).background_(Color.clear);
 		this.view = prView;
 		backgroundColour = Color.clear;
 		prDrawView = { |v|
@@ -40,7 +40,7 @@ BorderView : SCViewHolder {
 			Pen.width_(borderWidth).joinStyle_(1);
 			Pen.addRoundedRect(Rect(0,0,w,h).insetBy(borderWidth/2),borderRadius,borderRadius);
 			Pen.fillColor_(backgroundColour);
-			if (borderWidth > 0, {
+			if ((borderWidth > 0) && (borderColour.notNil) && (borderColour != Color.clear) && (borderColour != backgroundColour), {
 				Pen.fillStroke;
 			},{
 				Pen.fill;
@@ -54,8 +54,4 @@ BorderView : SCViewHolder {
 		|parent,bounds|
 		^super.new.init(parent,bounds);
 	}
-
-	/*refresh {
-		prView.refresh;
-	}*/
 }

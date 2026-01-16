@@ -38,9 +38,7 @@ Sequencer2Gui {
 		renderButtonFunc = {
 			|text,width=100|
 			var size = width@50;
-			var container = BorderView().background_(prColours[\colour3]).borderWidth_(0).borderRadius_(3).minSize_(size).maxSize_(size);
-			StaticText(container, Rect(0,0,width,50)).string_(text).stringColor_(prColours[\colour5]).font_(Font(size:16)).align_(\center);
-			container;
+			EnhancedButton().background_(prColours[\colour3]).borderRadius_(3).minSize_(size).maxSize_(size).font_(Font(size:16)).string_(text).stringColor_(prColours[\colour5]).align_(\center);
 		};
 
 		prWindow = Window("Sequencer version 2").background_(prColours[\colour1]).front;
@@ -93,7 +91,11 @@ Sequencer2Gui {
 			stackLayout.index_(1);
 		});
 		startRecordingButton.mouseUpAction_({
-			postln("Starting recording!");
+			if (startRecordingButton.string == "Start recording", {
+				startRecordingButton.string_("Stop recording");
+			}, {
+				startRecordingButton.string_("Start recording");
+			})
 		});
 
 		// Set up MIDI indicator
