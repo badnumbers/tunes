@@ -19,7 +19,7 @@ Sequencer2Gui {
 		var totalMidiNoteCount = 0;
 		var renderButtonFunc;
 		Validator.validateMethodParameterType(sequencer, Sequencer2, "sequencer", "Sequencer2Gui", "init");
-		//Setup.midi;
+		Setup.midi;
 		prSequencer = sequencer;
 
 		//prDocument = Document.open(thisProcess.nowExecutingPath);
@@ -38,7 +38,9 @@ Sequencer2Gui {
 		renderButtonFunc = {
 			|text,width=100|
 			var size = width@50;
-			StaticText().string_(text).background_(prColours[\colour3]).stringColor_(prColours[\colour5]).font_(Font(size:16)).align_(\center).minSize_(size).maxSize_(size);
+			var container = BorderView().background_(prColours[\colour3]).borderWidth_(0).borderRadius_(3).minSize_(size).maxSize_(size);
+			StaticText(container, Rect(0,0,width,50)).string_(text).stringColor_(prColours[\colour5]).font_(Font(size:16)).align_(\center);
+			container;
 		};
 
 		prWindow = Window("Sequencer version 2").background_(prColours[\colour1]).front;
@@ -48,7 +50,7 @@ Sequencer2Gui {
 				[nil, s: 1],
 				arrangeButton = renderButtonFunc.value("Arrange"),
 				recordButton = renderButtonFunc.value("Record"),
-				midiIndicator = BorderView().background_(prColours[\colour2]).borderColour_(prColours[\colour3]).minSize_(50@50).maxSize_(50@50).borderWidth_(2);
+				midiIndicator = BorderView().background_(prColours[\colour2]).borderColour_(prColours[\colour3]).borderRadius_(3).borderWidth_(2).minSize_(50@50).maxSize_(50@50);
 			).margins_(25).spacing_(25)),
 			stackLayout = StackLayout(
 				View().layout_(
@@ -107,9 +109,9 @@ Sequencer2Gui {
 					});
 				});
 				if (totalMidiNoteCount > 0, {
-					AppClock.sched(0.0, { midiIndicator.background_(prColours[\extreme2]).refresh; });
+					AppClock.sched(0.0, { midiIndicator.background_(prColours[\extreme2]); });
 				}, {
-					AppClock.sched(0.0, { midiIndicator.background_(prColours[\colour2]).refresh; });
+					AppClock.sched(0.0, { midiIndicator.background_(prColours[\colour2]); });
 				});
 			},msgType:msgType);
 		});
