@@ -19,7 +19,7 @@ Sequencer2Gui {
 		var totalMidiNoteCount = 0;
 		var renderButtonFunc;
 		Validator.validateMethodParameterType(sequencer, Sequencer2, "sequencer", "Sequencer2Gui", "init");
-		//Setup.midi;
+		Setup.midi;
 		prSequencer = sequencer;
 
 		//prDocument = Document.open(thisProcess.nowExecutingPath);
@@ -38,7 +38,7 @@ Sequencer2Gui {
 		renderButtonFunc = {
 			|text,width=100|
 			var size = width@50;
-			EnhancedButton().background_(prColours[\colour3]).borderRadius_(3).borderWidth_(2).minSize_(size).maxSize_(size).font_(Font(size:16)).string_(text).stringColor_(prColours[\colour5]).align_(\center).mouseEnterBackgroundColour_(Color.black).mouseEnterBorderColour_(Color.rand).mouseEnterStringColour_(Color.white);
+			EnhancedButton().background_(prColours[\colour3]).borderRadius_(3).borderWidth_(2).minSize_(size).maxSize_(size).font_(Font(size:16)).string_(text).stringColor_(prColours[\colour5]).align_(\center).mouseEnterBorderColour_(Color.white).mouseEnterStringColour_(Color.white).mouseDownBackgroundColour_(prColours[\colour2]);
 		};
 
 		prWindow = Window("Sequencer version 2").background_(prColours[\colour1]).front;
