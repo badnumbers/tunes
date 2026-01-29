@@ -41,13 +41,25 @@ Synths(\jx03).showGui
 ~maxscale = 5.0;
 ~originalHeight = 500;
 ~originalWidth = 500;
-~zoomme = DragBoth(~scrollview, Rect(0, 0, ~originalWidth*2, ~originalHeight*2)).background_(Color.black).beginDragAction_({|me,x,y|me.object=x@y}).receiveDragHandler_({
+~zoomme = DragBoth(~scrollview, Rect(0, 0, ~originalWidth*2, ~originalHeight*2)).background_(Color.black).beginDragAction_({|me,x,y|me.object=x@y;~selectionView.visible_(true);}).receiveDragHandler_({
 	|me,x,y|
-	postln("Drag operation ended.");
+	~selectionView.visible_(false);
+	~childViews.do({
+		|child|
+		var cv = child[\view];
+		if (
+			(cv.bounds.top >= ~selectionView.bounds.top)
+			&& (cv.bounds.left >= ~selectionView.bounds.left)
+			&& ((cv.bounds.left + cv.bounds.width) <= (~selectionView.bounds.left + ~selectionView.bounds.width))
+			&& ((cv.bounds.top + cv.bounds.height) <= (~selectionView.bounds.top + ~selectionView.bounds.height)),{
+				cv.borderWidth_(2)
+		},{
+				cv.borderWidth_(0)
+		});
+	});
 }).canReceiveDragHandler_({
 	|me,x,y|
 	var left,top,width,height;
-	postln([x,y]);
 	if ((me.object.x) < x,{
 		left = me.object.x;
 		width = x - (me.object.x);
@@ -63,6 +75,7 @@ Synths(\jx03).showGui
 		height = (me.object.y) - y;
 	});
 	~selectionView.bounds = Rect(left,top,width,height);
+	true; // Allow receiveDragHandler to do something
 });
 /*.mouseWheelAction_({
 	|view, x, y, modifiers, xDelta, yDelta|
@@ -74,7 +87,7 @@ Synths(\jx03).showGui
 	~zoomme.resizeTo(~originalWidth * ~scale, ~originalHeight * ~scale);
 	~resizeChildren.value(~scale);
 }).mouseDownAction_({postln("I'm black!")});*/
-~selectionView = BorderView(~zoomme,Rect(10,10,10,10)).background_(Color.clear).borderColour_(Color.magenta).borderWidth_(2).acceptsMouse_(false);
+~selectionView = BorderView(~zoomme,Rect(10,10,10,10)).background_(Color.clear).borderColour_(Color.magenta).borderWidth_(2).acceptsMouse_(false).visible_(false);
 ~lefts = ((1..10)*50).scramble;
 ~tops = ((1..10)*50).scramble;
 ~lefts.size.do({
