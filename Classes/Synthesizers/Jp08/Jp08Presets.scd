@@ -213,7 +213,7 @@ Synths(\jp08).setWorkingPatch(patch);
 )
 
 (
-var patch = Jp08Patch();
+var patch = Jp08Patch(); // Set VCO2 tune all the way up for a weird metallic vibratey sound
 patch.name = "Ring piano";
 patch.kvps[4102]=15;patch.kvps[4358]=0;patch.kvps[1282]=213;patch.kvps[1286]=120;patch.kvps[268]=3;patch.kvps[770]=0;patch.kvps[1284]=104;patch.kvps[4]=0;patch.kvps[274]=165;patch.kvps[264]=1;patch.kvps[280]=128;patch.kvps[1288]=2;patch.kvps[768]=255;patch.kvps[1032]=1;patch.kvps[260]=1;patch.kvps[278]=0;patch.kvps[522]=1;patch.kvps[524]=124;patch.kvps[4098]=0;patch.kvps[270]=0;patch.kvps[276]=114;patch.kvps[1026]=255;patch.kvps[1024]=0;patch.kvps[272]=0;patch.kvps[4352]=0;patch.kvps[4360]=2;patch.kvps[514]=197;patch.kvps[262]=0;patch.kvps[4100]=15;patch.kvps[258]=0;patch.kvps[1028]=129;patch.kvps[518]=1;patch.kvps[516]=72;patch.kvps[0]=114;patch.kvps[266]=0;patch.kvps[526]=139;patch.kvps[512]=76;patch.kvps[4354]=128;patch.kvps[4096]=0;patch.kvps[520]=38;patch.kvps[1280]=0;patch.kvps[256]=0;patch.kvps[2]=0;patch.kvps[1030]=141;
 Synths(\jp08).setWorkingPatch(patch);
