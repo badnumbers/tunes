@@ -10,17 +10,19 @@ Sequencer2Gui {
 	var prRightPanelHeader;
 	var prSequencer;
 	var prSequencerData;
+	var prTempoClock;
 	var prWindow;
 	var prColours;
 
 	init {
-		|sequencer|
+		|sequencer,tempoClock|
 		var window, stackLayout, midiIndicator, arrangeButton, recordButton, startRecordingButton, midiRecordingGui;
 		var totalMidiNoteCount = 0;
 		var renderButtonFunc;
 		Validator.validateMethodParameterType(sequencer, Sequencer2, "sequencer", "Sequencer2Gui", "init");
-		Setup.midi;
+		//Setup.midi;
 		prSequencer = sequencer;
+		prTempoClock = TempoClock.default;
 
 		//prDocument = Document.open(thisProcess.nowExecutingPath);
 		prDocument = Document.current;
@@ -69,7 +71,7 @@ Sequencer2Gui {
 					).margins_(0).spacing_(20)
 				),
 				BorderView().background_(prColours[\colour2]).layout_(VLayout(
-					midiRecordingGui = MidiRecordingGui().minHeight_(100),
+					midiRecordingGui = MidiRecordingGui(tempoClock:prTempoClock).minHeight_(100),
 					View().background_(prColours[\colour4]).minHeight_(70).maxHeight_(70).layout_(
 						HLayout(
 							startRecordingButton = renderButtonFunc.value("Start recording", width:150),
@@ -120,6 +122,14 @@ Sequencer2Gui {
 			},msgType:msgType);
 		});
 
+
+		////////////////////////////
+		stackLayout.index_(1);
+		midiRecordingGui.startRecording;
+		midiRecordingGui.stopRecording;
+		////////////////////////////
+
+
 		// Tidy up when the window is closed
 		prWindow.onClose_({
 			[\noteOn,\noteOff].do({
@@ -130,8 +140,9 @@ Sequencer2Gui {
 	}
 
 	*new {
-		|sequencer|
+		|sequencer,tempoClock|
 		Validator.validateMethodParameterType(sequencer, Sequencer2, "sequencer", "Sequencer2Gui", "new");
-		^super.new.init(sequencer);
+		Validator.validateMethodParameterType(tempoClock, TempoClock, "tempoClock", "Sequencer2Gui", "new");
+		^super.new.init(sequencer,tempoClock);
 	}
 }

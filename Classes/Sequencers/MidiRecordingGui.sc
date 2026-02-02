@@ -2,15 +2,16 @@ MidiRecordingGui : SCViewHolder {
 	var prDrawNote;
 	var prMidiRecording;
 	var prNoteViewScale;
+	var prTempoClock;
 	var prView;
 
 	init {
-		|parent,bounds|
-		Setup.server;
+		|parent,bounds,tempoClock|
 		prView = View();
 		this.view = prView;
 		prView.background_(Color.white);
-		prNoteViewScale = Dictionary.with(*[\horizontal -> 5, \vertical -> 5]);
+		prTempoClock = tempoClock;
+		prNoteViewScale = Dictionary.with(*[\horizontal -> 20, \vertical -> 5]);
 
 		prDrawNote = {
 			|note|
@@ -19,34 +20,47 @@ MidiRecordingGui : SCViewHolder {
 	}
 
 	*new {
-		|parent,bounds|
-		^super.new.init(parent,bounds);
+		|parent,bounds,tempoClock|
+		Validator.validateMethodParameterType(tempoClock, TempoClock, "tempoClock", "MidiRecordingGui", "new");
+		^super.new.init(parent,bounds,tempoClock);
 	}
 
 	startRecording {
-		prMidiRecording = MidiRecording();
+		var fakeNotes;
+		prMidiRecording = FakeMidiRecording(prTempoClock);
+		fakeNotes = prMidiRecording.startRecording;
+		fakeNotes.do({
+			|fakeNote|
+			prDrawNote.value(fakeNote);
+		});
+		prMidiRecording.stopRecording;
+
+		/*prMidiRecording = MidiRecording(prTempoClock);
 		prMidiRecording.startRecording;
 		[\noteOn,\noteOff].do({
-		|msgType|
-		var startbeat = TempoClock.default.beats.floor;
-		MIDIdef(format("%_%", \recordMidi, msgType).asSymbol,{
-			|velocity,noteNumber,chan,src|
-			var now = {(TempoClock.default.beats - (Server.default.latency * TempoClock.tempo)) - startbeat};
-			if (msgType == \noteOn, {
-					prMidiRecording.startNote(now.value(),noteNumber,velocity);
-			},{
-					var stoppedNote = prMidiRecording.stopNote(now.value(),noteNumber);
+			|msgType|
+			MIDIdef(format("%_%", \recordMidi, msgType).asSymbol,{
+				|velocity,noteNumber,chan,src|
+				if (msgType == \noteOn, {
+					prMidiRecording.startNote(noteNumber,velocity);
+				},{
+					var stoppedNote = prMidiRecording.stopNote(noteNumber);
 					AppClock.sched(0.0,{
 						prDrawNote.value(stoppedNote);
 					});
-			});
-		},msgType:msgType);
-	});
-	Metronome.play;
+				});
+			},msgType:msgType);
+		});
+		Setup.server;
+		Metronome.play;*/
 	}
 
 	stopRecording {
+		/*[\noteOn,\noteOff].do({
+			|msgType|
+			MIDIdef(format("%_%", \recordMidi, msgType).asSymbol).free;
+		});
 		prMidiRecording.stopRecording;
-		Metronome.stop;
+		Metronome.stop;*/
 	}
 }

@@ -4,6 +4,7 @@ Sequencer2 {
 	var prPostKeySets;
 	var prSequences;
 	var prSequenceWrapper;
+	var prTempoClock;
 
 	addGlobalPreKeys {
 		|keysArray|
@@ -40,6 +41,7 @@ Sequencer2 {
 		prPreKeySets = List();
 		prPostKeySets = List();
 		prSequences = Dictionary();
+		prTempoClock = TempoClock.default;
 
 		prSequenceWrapper = {
 			|sequence|
@@ -163,9 +165,7 @@ Sequencer2 {
 	}
 
 	showGui {
-		Sequencer2Gui.new(this,(
-			sequences: {prSequences}.value
-		));
+		Sequencer2Gui.new(this,prTempoClock);
 	}
 
 	stop {

@@ -1,4 +1,4 @@
-MidiRecording {
+FakeMidiRecording {
 	var prAbsoluteStartTime;
 	var prCompletedNotes;
 	var prCurrentNotes;
@@ -28,30 +28,34 @@ MidiRecording {
 	startNote {
 		|noteNumber,velocity|
 		var now = prNowFunc.value();
-		prCurrentNotes.put(noteNumber, Dictionary.with(*[\start -> now, \velocity -> velocity, \notenumber -> noteNumber]));
 	}
 
 	stopNote {
 		|noteNumber|
-		var now = prNowFunc.value();
-		if (prCurrentNotes[noteNumber].notNil, {
-			var stoppedNote;
-			prCurrentNotes[noteNumber].put(\stop, now);
-			prCompletedNotes.add(prCurrentNotes[noteNumber]);
-			stoppedNote = prCurrentNotes[noteNumber];
-			prCurrentNotes[noteNumber] = nil;
-			^stoppedNote;
-		});
 	}
 
 	startRecording {
-		postln(format("The type of prTempoClock is %.", prTempoClock.class));
+		var startOffset = 5.0.rand + 2;
 		prAbsoluteStartTime = prTempoClock.beats.floor;
 		prStartTime = prNowFunc.value();
+
+		16.do({
+			var start = prNowFunc.value() + startOffset + 10.0.rand;
+			var stop = start + 10.0.rand;
+			prCompletedNotes.add(Dictionary.with(*[\start -> start, \velocity -> 127.rand, \notenumber -> 127.rand, \stop -> stop]));
+		});
+		^prCompletedNotes;
 	}
 
 	stopRecording {
-		prStopTime = prNowFunc.value();
+		var highestEndTime = 0;
+		prCompletedNotes.do({
+			|note|
+			if ((note[\start] + note[\end]) > highestEndTime,{
+				highestEndTime = (note[\start] + note[\end]);
+			});
+		});
+		prStopTime = highestEndTime + 5.rand + 2;
 	}
 
 	startTime {
