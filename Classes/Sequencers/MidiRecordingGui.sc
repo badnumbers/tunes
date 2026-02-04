@@ -1,8 +1,9 @@
 MidiRecordingGui : SCViewHolder {
+	var prAbsoluteStartTime;
 	var prBackgroundView;
 	var prDrawNote;
-	var prMidiRecording;
 	var prNoteViewScale;
+	var prRecordedNotes;
 	var prTempoClock;
 	var prView;
 
@@ -13,6 +14,7 @@ MidiRecordingGui : SCViewHolder {
 		this.view = prView;
 		prView.background_(Color.white);
 		prTempoClock = tempoClock;
+		prRecordedNotes = Array.newClear;
 
 		prBackgroundView = DragBoth(prView, Rect(0, 0, 2000, 1000)).background_(Color.black)
 		.beginDragAction_({|me,x,y|me.object=x@y;selectionView.visible_(true);})
@@ -59,8 +61,8 @@ MidiRecordingGui : SCViewHolder {
 		prNoteViewScale = Dictionary.with(*[\horizontal -> 20, \vertical -> 5]);
 
 		prDrawNote = {
-			|note|
-			BorderView(prBackgroundView, Rect(note[\start] * prNoteViewScale[\horizontal], (127 - note[\notenumber]) * prNoteViewScale[\vertical] , (note[\stop] - note[\start]) * prNoteViewScale[\horizontal], prNoteViewScale[\vertical]))
+			|startTime,noteNumber,stopTime|
+			BorderView(prBackgroundView, Rect(startTime * prNoteViewScale[\horizontal], (127 - noteNumber) * prNoteViewScale[\vertical] , (stopTime - startTime) * prNoteViewScale[\horizontal], prNoteViewScale[\vertical]))
 			.background_(Color.magenta)
 			.borderColour_(Color.white)
 			.borderRadius_(2);
@@ -75,13 +77,17 @@ MidiRecordingGui : SCViewHolder {
 
 	startRecording {
 		var fakeNotes;
-		prMidiRecording = FakeMidiRecording(prTempoClock);
-		fakeNotes = prMidiRecording.startRecording;
-		fakeNotes.do({
-			|fakeNote|
-			prDrawNote.value(fakeNote);
+		var startOffset = 5.0.rand + 2;
+		var absoluteStartTime = prTempoClock.beats.floor;
+		var now = (TempoClock.default.beats - (Server.default.latency * TempoClock.tempo)) - absoluteStartTime;
+
+		16.do({
+			var start = now + startOffset + 10.0.rand;
+			var stop = start + 10.0.rand;
+			var sequencerNote = SequencerNote(start,127.rand,127.rand,prDrawNote);
+			sequencerNote.stop(stop);
+			prRecordedNotes = prRecordedNotes.add(sequencerNote);
 		});
-		prMidiRecording.stopRecording;
 
 		/*prMidiRecording = MidiRecording(prTempoClock);
 		prMidiRecording.startRecording;
