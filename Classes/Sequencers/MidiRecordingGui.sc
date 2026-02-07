@@ -3,20 +3,22 @@ MidiRecordingGui : SCViewHolder {
 	var prBackgroundView;
 	var prDrawNote;
 	var prNoteViewScale;
+	var prPalette;
 	var prRecordedNotes;
 	var prTempoClock;
 	var prView;
 
 	init {
-		|parent,bounds,tempoClock|
+		|parent,bounds,palette,tempoClock|
 		var selectionView;
 		prView = ScrollView();
 		this.view = prView;
-		prView.background_(Color.white);
+		prPalette = palette;
+		prView.background_(prPalette.extreme2);
 		prTempoClock = tempoClock;
 		prRecordedNotes = Array.newClear;
 
-		prBackgroundView = DragBoth(prView, Rect(0, 0, 2000, 1000)).background_(Color.black)
+		prBackgroundView = DragBoth(prView, Rect(0, 0, 2000, 1000)).background_(prPalette.extreme2)
 		.beginDragAction_({|me,x,y|me.object=x@y;selectionView.visible_(true);})
 		.receiveDragHandler_({
 			|me,x,y|
@@ -56,23 +58,25 @@ MidiRecordingGui : SCViewHolder {
 			true; // Allow receiveDragHandler to do something
 		});
 
-		selectionView = BorderView(prBackgroundView,Rect(10,10,10,10)).background_(Color.clear).borderColour_(Color.magenta).borderWidth_(2).acceptsMouse_(false).visible_(false);
+		selectionView = BorderView(prBackgroundView,Rect(10,10,10,10)).background_(Color.clear).borderColour_(prPalette.colour5).borderWidth_(2).acceptsMouse_(false).visible_(false);
 
-		prNoteViewScale = Dictionary.with(*[\horizontal -> 20, \vertical -> 5]);
+		prNoteViewScale = Dictionary.with(*[\horizontal -> 20, \vertical -> 10]);
 
 		prDrawNote = {
-			|startTime,noteNumber,stopTime|
-			BorderView(prBackgroundView, Rect(startTime * prNoteViewScale[\horizontal], (127 - noteNumber) * prNoteViewScale[\vertical] , (stopTime - startTime) * prNoteViewScale[\horizontal], prNoteViewScale[\vertical]))
-			.background_(Color.magenta)
-			.borderColour_(Color.white)
-			.borderRadius_(2);
+			|sequencerNote|
+			BorderView(prBackgroundView, Rect(sequencerNote.startTime * prNoteViewScale[\horizontal], (127 - sequencerNote.noteNumber) * prNoteViewScale[\vertical] , (sequencerNote.stopTime - sequencerNote.startTime) * prNoteViewScale[\horizontal], prNoteViewScale[\vertical]))
+			.background_(prPalette.colour1)
+			.borderColour_(prPalette.colour5)
+			.borderRadius_(2)
+			.mouseDownAction_({postln("i've been clicked")});
 		}
 	}
 
 	*new {
-		|parent,bounds,tempoClock|
+		|parent,bounds,palette,tempoClock|
+		Validator.validateMethodParameterType(palette, GuiPalette, "palette", "MidiRecordingGui", "new");
 		Validator.validateMethodParameterType(tempoClock, TempoClock, "tempoClock", "MidiRecordingGui", "new");
-		^super.new.init(parent,bounds,tempoClock);
+		^super.new.init(parent,bounds,palette,tempoClock);
 	}
 
 	startRecording {

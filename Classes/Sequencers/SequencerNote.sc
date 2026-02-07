@@ -20,10 +20,22 @@ SequencerNote {
 		^super.new.init(startTime,noteNumber,velocity,viewFunc);
 	}
 
+	noteNumber {
+		^prNoteNumber;
+	}
+
+	startTime {
+		^prStartTime;
+	}
+
 	stop {
 		|stopTime|
 		prStopTime = stopTime;
-		prView = prViewFunc.value(prStartTime, prNoteNumber, prStopTime);
+		prView = prViewFunc.value(this);
 		prOriginalBounds = prView.bounds;
+	}
+
+	stopTime {
+		^prStopTime;
 	}
 }

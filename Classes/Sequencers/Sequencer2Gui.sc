@@ -70,7 +70,7 @@ Sequencer2Gui {
 					).margins_(0).spacing_(20)
 				),
 				BorderView().background_(prPalette.colour2).layout_(VLayout(
-					midiRecordingGui = MidiRecordingGui(tempoClock:prTempoClock).minHeight_(100),
+					midiRecordingGui = MidiRecordingGui(palette: prPalette, tempoClock:prTempoClock).minHeight_(100),
 					View().background_(prPalette.colour4).minHeight_(70).maxHeight_(70).layout_(
 						HLayout(
 							startRecordingButton = renderButtonFunc.value("Start recording", width:150),
