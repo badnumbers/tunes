@@ -1,0 +1,59 @@
+TITLE:: GuiPalette
+SUMMARY:: A palette of colours to be used in GUIs.
+CATEGORIES:: GUI
+RELATED:: Classes/SequencerGui
+
+DESCRIPTION::
+Defines a collection of colours which can be referred to by a user interface. The palette can be swapped out, enabling the colours used in the GUI to be changed easily.
+
+CLASSMETHODS::
+
+METHOD:: new
+Creates an instance of LINK::Classes/GuiPalette::.
+
+ARGUMENT:: colour1
+An instance of LINK::Classes/Color:: describing the first colour.
+
+ARGUMENT:: colour2
+An instance of LINK::Classes/Color:: describing the second colour.
+
+ARGUMENT:: colour3
+An instance of LINK::Classes/Color:: describing the third colour.
+
+ARGUMENT:: colour4
+An instance of LINK::Classes/Color:: describing the fourth colour.
+
+ARGUMENT:: colour5
+An instance of LINK::Classes/Color:: describing the fifth colour.
+
+ARGUMENT:: extreme1
+An instance of LINK::Classes/Color:: describing the first of the two extreme colours. Generally this will be either TELETYPE::Color.black:: or TELETYPE::Color.white::.
+
+ARGUMENT:: extreme2
+An instance of LINK::Classes/Color:: describing the second of the two extreme colours. Generally this will be either TELETYPE::Color.black:: or TELETYPE::Color.white::.
+
+
+INSTANCEMETHODS::
+
+METHOD:: colour1
+An instance of LINK::Classes/Color:: describing the first colour.
+
+METHOD:: colour2
+An instance of LINK::Classes/Color:: describing the second colour.
+
+METHOD:: colour3
+An instance of LINK::Classes/Color:: describing the third colour.
+
+METHOD:: colour4
+An instance of LINK::Classes/Color:: describing the fourth colour.
+
+METHOD:: colour5
+An instance of LINK::Classes/Color:: describing the fifth colour.
+
+METHOD:: extreme1
+An instance of LINK::Classes/Color:: describing the first of the two extreme colours. Generally this will be either TELETYPE::Color.black:: or TELETYPE::Color.white::.
+
+METHOD:: extreme2
+An instance of LINK::Classes/Color:: describing the second of the two extreme colours. Generally this will be either TELETYPE::Color.black:: or TELETYPE::Color.white::.
+
+PRIVATE::init
