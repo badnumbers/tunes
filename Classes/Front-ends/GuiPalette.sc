@@ -72,7 +72,7 @@ GuiPalette {
 		if (colour5.isNil,{
 			prColour5 = Color.fromHexString("f5dddd");
 		},{
-			prColour5 = colour1;
+			prColour5 = colour5;
 		});
 
 		if (extreme1.isNil,{
