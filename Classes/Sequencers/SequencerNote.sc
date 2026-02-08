@@ -1,6 +1,9 @@
 SequencerNote {
+	var prDeselectFunc;
 	var prNoteNumber;
 	var prOriginalBounds;
+	var prSelectFunc;
+	var prSelected = false;
 	var prStartTime;
 	var prStopTime;
 	var prVelocity;
@@ -8,16 +11,24 @@ SequencerNote {
 	var prViewFunc;
 
 	init {
-		|startTime,noteNumber,velocity,viewFunc|
+		|startTime,noteNumber,velocity,viewFunc,selectFunc,deselectFunc|
 		prStartTime = startTime;
 		prNoteNumber = noteNumber;
 		prVelocity = velocity;
 		prViewFunc = viewFunc;
+		prSelectFunc = selectFunc;
+		prDeselectFunc = deselectFunc;
 	}
 
 	*new {
-		|startTime,noteNumber,velocity,viewFunc|
-		^super.new.init(startTime,noteNumber,velocity,viewFunc);
+		|startTime,noteNumber,velocity,viewFunc,selectFunc,deselectFunc|
+		Validator.validateMethodParameterType(startTime,SimpleNumber,"startTime","SequencerNote","new");
+		Validator.validateMethodParameterType(noteNumber,Integer,"noteNumber","SequencerNote","new");
+		Validator.validateMethodParameterType(velocity,Integer,"velocity","SequencerNote","new");
+		Validator.validateMethodParameterType(viewFunc,Function,"viewFunc","SequencerNote","new");
+		Validator.validateMethodParameterType(selectFunc,Function,"selectFunc","SequencerNote","new");
+		Validator.validateMethodParameterType(deselectFunc,Function,"deselectFunc","SequencerNote","new");
+		^super.new.init(startTime,noteNumber,velocity,viewFunc,selectFunc,deselectFunc);
 	}
 
 	noteNumber {
@@ -37,5 +48,15 @@ SequencerNote {
 
 	stopTime {
 		^prStopTime;
+	}
+
+	toggleSelect {
+		if (prSelected,{
+			prSelected = false;
+			prDeselectFunc.value(prView);
+		},{
+			prSelected = true;
+			prSelectFunc.value(prView);
+		});
 	}
 }

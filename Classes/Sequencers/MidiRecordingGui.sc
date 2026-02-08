@@ -68,7 +68,7 @@ MidiRecordingGui : SCViewHolder {
 			.background_(prPalette.colour1)
 			.borderColour_(prPalette.colour5)
 			.borderRadius_(2)
-			.mouseDownAction_({postln("i've been clicked")});
+			.mouseDownAction_({sequencerNote.toggleSelect();});
 		}
 	}
 
@@ -88,7 +88,7 @@ MidiRecordingGui : SCViewHolder {
 		16.do({
 			var start = now + startOffset + 10.0.rand;
 			var stop = start + 10.0.rand;
-			var sequencerNote = SequencerNote(start,127.rand,127.rand,prDrawNote);
+			var sequencerNote = SequencerNote(start,127.rand,127.rand,prDrawNote,{|view|view.borderWidth_(2);},{|view|view.borderWidth_(0);});
 			sequencerNote.stop(stop);
 			prRecordedNotes = prRecordedNotes.add(sequencerNote);
 		});
