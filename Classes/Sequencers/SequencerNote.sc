@@ -35,6 +35,20 @@ SequencerNote {
 		^prNoteNumber;
 	}
 
+	selectIfEnclosed {
+		|possiblyEnclosingView|
+		if (
+			(prView.bounds.top >= possiblyEnclosingView.bounds.top)
+			&& (prView.bounds.left >= possiblyEnclosingView.bounds.left)
+			&& ((prView.bounds.left + prView.bounds.width) <= (possiblyEnclosingView.bounds.left + possiblyEnclosingView.bounds.width))
+			&& ((prView.bounds.top + prView.bounds.height) <= (possiblyEnclosingView.bounds.top + possiblyEnclosingView.bounds.height)),{
+				prSelected = true;
+				prSelectFunc.value(prView);
+			},{
+
+		});
+	}
+
 	startTime {
 		^prStartTime;
 	}

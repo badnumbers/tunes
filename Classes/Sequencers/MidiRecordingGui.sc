@@ -23,19 +23,7 @@ MidiRecordingGui : SCViewHolder {
 		.receiveDragHandler_({
 			|me,x,y|
 			selectionView.visible_(false);
-			/*~childViews.do({
-				|child|
-				var cv = child[\view];
-				if (
-					(cv.bounds.top >= selectionView.bounds.top)
-					&& (cv.bounds.left >= selectionView.bounds.left)
-					&& ((cv.bounds.left + cv.bounds.width) <= (selectionView.bounds.left + selectionView.bounds.width))
-					&& ((cv.bounds.top + cv.bounds.height) <= (selectionView.bounds.top + selectionView.bounds.height)),{
-						cv.borderWidth_(2)
-					},{
-						cv.borderWidth_(0)
-				});
-			});*/
+			prRecordedNotes.do({|recordedNote|recordedNote.selectIfEnclosed(selectionView);});
 		})
 		.canReceiveDragHandler_({
 			|me,x,y|
