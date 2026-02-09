@@ -23,7 +23,18 @@ MidiRecordingGui : SCViewHolder {
 		.beginDragAction_({|me,x,y|me.object=x@y;selectionView.visible_(true);})
 		.keyDownAction_({
 			|view, char, modifiers, unicode, keycode, key|
+			var partNumberToSet;
 			prActiveModifierKeys = modifiers;
+			if (char.notNil,{
+				switch (char,
+					$1, { partNumberToSet = 1; },
+					$2, { partNumberToSet = 2; },
+					$3, { partNumberToSet = 3; },
+					$4, { partNumberToSet = 4; }
+			)});
+			if (partNumberToSet.notNil,{
+				prRecordedNotes.do({|recordedNote|recordedNote.setPartIfSelected(partNumberToSet);});
+			});
 		})
 		.keyUpAction_({
 			|view, char, modifiers, unicode, keycode, key|
@@ -88,7 +99,11 @@ MidiRecordingGui : SCViewHolder {
 			var sequencerNote = SequencerNote(start,127.rand,127.rand,
 				viewFunc:prDrawNote,
 				selectFunc:{|view|view.borderWidth_(2);},
-				deselectFunc:{|view|view.borderWidth_(0);}
+				deselectFunc:{|view|view.borderWidth_(0);},
+				setPart1Func:{|view|view.background_(prPalette.colour1);},
+				setPart2Func:{|view|view.background_(prPalette.colour2);},
+				setPart3Func:{|view|view.background_(prPalette.colour3);},
+				setPart4Func:{|view|view.background_(prPalette.colour4);},
 			);
 			sequencerNote.stop(stop);
 			prRecordedNotes = prRecordedNotes.add(sequencerNote);
