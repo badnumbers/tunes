@@ -1,5 +1,6 @@
 MidiRecordingGui : SCViewHolder {
 	var prAbsoluteStartTime;
+	var prActiveModifierKeys=0;
 	var prBackgroundView;
 	var prDrawNote;
 	var prNoteViewScale;
@@ -20,10 +21,18 @@ MidiRecordingGui : SCViewHolder {
 
 		prBackgroundView = DragBoth(prView, Rect(0, 0, 2000, 1000)).background_(prPalette.extreme2)
 		.beginDragAction_({|me,x,y|me.object=x@y;selectionView.visible_(true);})
+		.keyDownAction_({
+			|view, char, modifiers, unicode, keycode, key|
+			prActiveModifierKeys = modifiers;
+		})
+		.keyUpAction_({
+			|view, char, modifiers, unicode, keycode, key|
+			prActiveModifierKeys = modifiers;
+		})
 		.receiveDragHandler_({
 			|me,x,y|
 			selectionView.visible_(false);
-			prRecordedNotes.do({|recordedNote|recordedNote.selectIfEnclosed(selectionView);});
+			prRecordedNotes.do({|recordedNote|recordedNote.selectIfEnclosed(selectionView,prActiveModifierKeys.isShift);});
 		})
 		.canReceiveDragHandler_({
 			|me,x,y|

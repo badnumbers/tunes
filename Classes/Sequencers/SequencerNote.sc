@@ -10,6 +10,11 @@ SequencerNote {
 	var prView;
 	var prViewFunc;
 
+	deselect {
+		prSelected = false;
+		prDeselectFunc.value(prView);
+	}
+
 	init {
 		|startTime,noteNumber,velocity,viewFunc,selectFunc,deselectFunc|
 		prStartTime = startTime;
@@ -36,7 +41,7 @@ SequencerNote {
 	}
 
 	selectIfEnclosed {
-		|possiblyEnclosingView|
+		|possiblyEnclosingView,addToExistingSelection = false|
 		if (
 			(prView.bounds.top >= possiblyEnclosingView.bounds.top)
 			&& (prView.bounds.left >= possiblyEnclosingView.bounds.left)
@@ -45,7 +50,10 @@ SequencerNote {
 				prSelected = true;
 				prSelectFunc.value(prView);
 			},{
-
+				if (addToExistingSelection.not, {
+					prSelected = false;
+					prDeselectFunc.value(prView);
+				});
 		});
 	}
 
