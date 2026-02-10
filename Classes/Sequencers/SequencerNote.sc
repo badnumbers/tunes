@@ -93,9 +93,12 @@ SequencerNote {
 
 	stop {
 		|stopTime|
+		Validator.validateMethodParameterType(stopTime,Float,"stopTime","SequencerNote","stop");
 		prStopTime = stopTime;
-		prView = prViewFunc.value(this);
-		prOriginalBounds = prView.bounds;
+		AppClock.sched(0.0,{
+			prView = prViewFunc.value(this);
+			prOriginalBounds = prView.bounds;
+		});
 	}
 
 	stopTime {

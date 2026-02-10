@@ -2,6 +2,7 @@ MidiRecordingGui : SCViewHolder {
 	var prAbsoluteStartTime;
 	var prActiveModifierKeys=0;
 	var prBackgroundView;
+	var prDevMode = false;
 	var prDrawNote;
 	var prNoteViewScale;
 	var prPalette;
@@ -91,50 +92,67 @@ MidiRecordingGui : SCViewHolder {
 		var fakeNotes;
 		var startOffset = 5.0.rand + 2;
 		var absoluteStartTime = prTempoClock.beats.floor;
-		var now = (TempoClock.default.beats - (Server.default.latency * TempoClock.tempo)) - absoluteStartTime;
+		var nowFunc = {(TempoClock.default.beats - (Server.default.latency * TempoClock.tempo)) - absoluteStartTime};
 
-		16.do({
-			var start = now + startOffset + 10.0.rand;
-			var stop = start + 10.0.rand;
-			var sequencerNote = SequencerNote(start,127.rand,127.rand,
-				viewFunc:prDrawNote,
-				selectFunc:{|view|view.borderWidth_(2);},
-				deselectFunc:{|view|view.borderWidth_(0);},
-				setPart1Func:{|view|view.background_(prPalette.colour1);},
-				setPart2Func:{|view|view.background_(prPalette.colour2);},
-				setPart3Func:{|view|view.background_(prPalette.colour3);},
-				setPart4Func:{|view|view.background_(prPalette.colour4);},
-			);
-			sequencerNote.stop(stop);
-			prRecordedNotes = prRecordedNotes.add(sequencerNote);
-		});
-
-		/*prMidiRecording = MidiRecording(prTempoClock);
-		prMidiRecording.startRecording;
-		[\noteOn,\noteOff].do({
-			|msgType|
-			MIDIdef(format("%_%", \recordMidi, msgType).asSymbol,{
-				|velocity,noteNumber,chan,src|
-				if (msgType == \noteOn, {
-					prMidiRecording.startNote(noteNumber,velocity);
-				},{
-					var stoppedNote = prMidiRecording.stopNote(noteNumber);
-					AppClock.sched(0.0,{
-						prDrawNote.value(stoppedNote);
+		if (prDevMode,{
+			var now = nowFunc.value();
+			16.do({
+				var start = now + startOffset + 10.0.rand;
+				var stop = start + 10.0.rand;
+				var sequencerNote = SequencerNote(start,127.rand,127.rand,
+					viewFunc:prDrawNote,
+					selectFunc:{|view|view.borderWidth_(2);},
+					deselectFunc:{|view|view.borderWidth_(0);},
+					setPart1Func:{|view|view.background_(prPalette.colour1);},
+					setPart2Func:{|view|view.background_(prPalette.colour2);},
+					setPart3Func:{|view|view.background_(prPalette.colour3);},
+					setPart4Func:{|view|view.background_(prPalette.colour4);},
+				);
+				sequencerNote.stop(stop);
+				prRecordedNotes = prRecordedNotes.add(sequencerNote);
+			});
+		},{
+			[\noteOn,\noteOff].do({
+				|msgType|
+				MIDIdef(format("%_%", \recordMidi, msgType).asSymbol,{
+					|velocity,noteNumber,chan,src|
+					if (msgType == \noteOn, {
+						var sequencerNote = SequencerNote(nowFunc.value(),noteNumber,velocity,
+							viewFunc:prDrawNote,
+							selectFunc:{|view|view.borderWidth_(2);},
+							deselectFunc:{|view|view.borderWidth_(0);},
+							setPart1Func:{|view|view.background_(prPalette.colour1);},
+							setPart2Func:{|view|view.background_(prPalette.colour2);},
+							setPart3Func:{|view|view.background_(prPalette.colour3);},
+							setPart4Func:{|view|view.background_(prPalette.colour4);}
+						);
+						prRecordedNotes = prRecordedNotes.add(sequencerNote);
+					},{
+						var activeNotesForThisNoteNumber = prRecordedNotes.select({|note|(note.noteNumber == noteNumber) && (note.stopTime.isNil)});
+						if (activeNotesForThisNoteNumber.size > 1, {
+							Error(format("Something has gone really wrong here. There was more than one active note for note number %.", noteNumber)).throw;
+						});
+						if (activeNotesForThisNoteNumber.size == 1, {
+							activeNotesForThisNoteNumber[0].stop(nowFunc.value());
+						});
 					});
-				});
-			},msgType:msgType);
+				},msgType:msgType);
+			});
+			Setup.midi;
+			Setup.server;
+			Metronome.play;
 		});
-		Setup.server;
-		Metronome.play;*/
 	}
 
 	stopRecording {
-		/*[\noteOn,\noteOff].do({
+		if (prDevMode,{
+
+		},{
+			[\noteOn,\noteOff].do({
 			|msgType|
 			MIDIdef(format("%_%", \recordMidi, msgType).asSymbol).free;
 		});
-		prMidiRecording.stopRecording;
-		Metronome.stop;*/
+		Metronome.stop;
+		});
 	}
 }
