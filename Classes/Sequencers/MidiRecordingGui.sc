@@ -2,7 +2,7 @@ MidiRecordingGui : SCViewHolder {
 	var prAbsoluteStartTime;
 	var prActiveModifierKeys=0;
 	var prBackgroundView;
-	var prDevMode = true;
+	var prDevMode = false;
 	var prDrawNote;
 	var prNoteViewScale;
 	var prPalette;
@@ -13,7 +13,7 @@ MidiRecordingGui : SCViewHolder {
 	init {
 		|parent,bounds,palette,tempoClock|
 		var selectionView;
-		var pianoRollHeight;
+		var pianoRollHeight,pianoRollWidth;
 		prView = ScrollView();
 		this.view = prView;
 		prPalette = palette;
@@ -21,10 +21,11 @@ MidiRecordingGui : SCViewHolder {
 		prTempoClock = tempoClock;
 		prRecordedNotes = Array.newClear;
 
-		prNoteViewScale = Dictionary.with(*[\horizontal -> 20, \vertical -> 10]);
+		prNoteViewScale = Dictionary.with(*[\horizontal -> 40, \vertical -> 10]);
 		pianoRollHeight = (128 + 10) * prNoteViewScale[\vertical];
+		pianoRollWidth = (64) * prNoteViewScale[\horizontal];
 
-		prBackgroundView = DragBoth(prView, Rect(0, 0, 2000, pianoRollHeight)).background_(prPalette.extreme1)
+		prBackgroundView = DragBoth(prView, Rect(0, 0, pianoRollWidth, pianoRollHeight)).background_(prPalette.extreme1)
 		.beginDragAction_({|me,x,y|me.object=x@y;selectionView.visible_(true);})
 		.keyDownAction_({
 			|view, char, modifiers, unicode, keycode, key|
