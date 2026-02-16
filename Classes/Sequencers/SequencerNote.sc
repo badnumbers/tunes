@@ -114,4 +114,8 @@ SequencerNote {
 			prSelectFunc.value(prView);
 		});
 	}
+
+	velocity {
+		^prVelocity;
+	}
 }
