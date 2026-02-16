@@ -71,6 +71,11 @@ MidiRecordingGui : SCViewHolder {
 			true; // Allow receiveDragHandler to do something
 		});
 
+		(prBackgroundView.bounds.width / prNoteViewScale[\horizontal]).do({
+			|index|
+			View(prBackgroundView,Rect(index * prNoteViewScale[\horizontal], 0, 1, prBackgroundView.bounds.height)).background_(prPalette.colour1.multiply(0.5));
+		});
+
 		selectionView = BorderView(prBackgroundView,Rect(10,10,10,10)).background_(Color.clear).borderColour_(prPalette.colour1).borderWidth_(2).acceptsMouse_(false).visible_(false);
 
 		prDrawNote = {
