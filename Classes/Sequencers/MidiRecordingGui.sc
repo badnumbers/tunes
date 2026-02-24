@@ -14,6 +14,7 @@ MidiRecordingGui : SCViewHolder {
 		|parent,bounds,palette,tempoClock|
 		var selectionView;
 		var pianoRollHeight,pianoRollWidth;
+		var snapNotesFunc;
 		prView = ScrollView();
 		this.view = prView;
 		prPalette = palette;
@@ -30,14 +31,18 @@ MidiRecordingGui : SCViewHolder {
 		.keyDownAction_({
 			|view, char, modifiers, unicode, keycode, key|
 			var partNumberToSet;
-			postln("keyDownAction is being called");
 			prActiveModifierKeys = modifiers;
 			if (char.notNil,{
 				switch (char,
 					$1, { partNumberToSet = 1; },
 					$2, { partNumberToSet = 2; },
 					$3, { partNumberToSet = 3; },
-					$4, { partNumberToSet = 4; }
+					$4, { partNumberToSet = 4; },
+					$w, { snapNotesFunc.value(1); },
+					$h, { snapNotesFunc.value(0.5); },
+					$q, { snapNotesFunc.value(0.25); },
+					$e, { snapNotesFunc.value(0.125); },
+					$s, { snapNotesFunc.value(0.0625); }
 			)});
 			if (partNumberToSet.notNil,{
 				prRecordedNotes.do({|recordedNote|recordedNote.setPartIfSelected(partNumberToSet);});
@@ -101,7 +106,12 @@ MidiRecordingGui : SCViewHolder {
 				});
 
 			})
-		}
+		};
+
+		snapNotesFunc = {
+			|resolution|
+			prRecordedNotes.do({|recordedNote|recordedNote.snap(resolution);});
+		};
 	}
 
 	*new {
@@ -134,6 +144,7 @@ MidiRecordingGui : SCViewHolder {
 					setPart2Func:{|view|view.background_(prPalette.colour2);},
 					setPart3Func:{|view|view.background_(prPalette.colour3);},
 					setPart4Func:{|view|view.background_(prPalette.colour4);},
+					moveFunc:{|view,startTime,stopTime|view.bounds_( Rect(startTime * prNoteViewScale[\horizontal],view.bounds.top,(stopTime - startTime) * prNoteViewScale[\horizontal],view.bounds.height));},
 				);
 				sequencerNote.stop(stop);
 				prRecordedNotes = prRecordedNotes.add(sequencerNote);

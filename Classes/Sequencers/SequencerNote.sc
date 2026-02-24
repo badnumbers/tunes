@@ -1,8 +1,11 @@
 SequencerNote {
+	var prAdjustedStartTime;
+	var prAdjustedStopTime;
 	var prDeselectFunc;
 	var prNoteNumber;
 	var prOriginalBounds;
 	var prPartNumber = 1;
+	var prMoveFunc;
 	var prSelectFunc;
 	var prSelected = false;
 	var prSetPart1Func;
@@ -21,7 +24,7 @@ SequencerNote {
 	}
 
 	init {
-		|startTime,noteNumber,velocity,viewFunc,selectFunc,deselectFunc,setPart1Func,setPart2Func,setPart3Func,setPart4Func|
+		|startTime,noteNumber,velocity,viewFunc,selectFunc,deselectFunc,setPart1Func,setPart2Func,setPart3Func,setPart4Func,moveFunc|
 		prStartTime = startTime;
 		prNoteNumber = noteNumber;
 		prVelocity = velocity;
@@ -32,10 +35,11 @@ SequencerNote {
 		prSetPart2Func = setPart2Func;
 		prSetPart3Func = setPart3Func;
 		prSetPart4Func = setPart4Func;
+		prMoveFunc = moveFunc;
 	}
 
 	*new {
-		|startTime,noteNumber,velocity,viewFunc,selectFunc,deselectFunc,setPart1Func,setPart2Func,setPart3Func,setPart4Func|
+		|startTime,noteNumber,velocity,viewFunc,selectFunc,deselectFunc,setPart1Func,setPart2Func,setPart3Func,setPart4Func,moveFunc|
 		Validator.validateMethodParameterType(startTime,SimpleNumber,"startTime","SequencerNote","new");
 		Validator.validateMethodParameterType(noteNumber,Integer,"noteNumber","SequencerNote","new");
 		Validator.validateMethodParameterType(velocity,Integer,"velocity","SequencerNote","new");
@@ -46,7 +50,8 @@ SequencerNote {
 		Validator.validateMethodParameterType(setPart2Func,Function,"setPart2Func","SequencerNote","new");
 		Validator.validateMethodParameterType(setPart3Func,Function,"setPart3Func","SequencerNote","new");
 		Validator.validateMethodParameterType(setPart4Func,Function,"setPart4Func","SequencerNote","new");
-		^super.new.init(startTime,noteNumber,velocity,viewFunc,selectFunc,deselectFunc,setPart1Func,setPart2Func,setPart3Func,setPart4Func);
+		Validator.validateMethodParameterType(moveFunc,Function,"moveFunc","SequencerNote","new");
+		^super.new.init(startTime,noteNumber,velocity,viewFunc,selectFunc,deselectFunc,setPart1Func,setPart2Func,setPart3Func,setPart4Func,moveFunc);
 	}
 
 	noteNumber {
@@ -85,6 +90,13 @@ SequencerNote {
 				4, { prSetPart4Func.value(prView); }
 			);
 		});
+	}
+
+	snap {
+		|resolution|
+		prAdjustedStartTime = prStartTime.round(resolution);
+		prAdjustedStopTime = prStopTime - (prStartTime - prAdjustedStartTime);
+		prMoveFunc.value(prView,prAdjustedStartTime,prAdjustedStopTime);
 	}
 
 	startTime {
