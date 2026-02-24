@@ -2,7 +2,7 @@ MidiRecordingGui : SCViewHolder {
 	var prAbsoluteStartTime;
 	var prActiveModifierKeys=0;
 	var prBackgroundView;
-	var prDevMode = false;
+	var prDevMode = true;
 	var prDrawNote;
 	var prNoteViewScale;
 	var prPalette;
@@ -23,13 +23,14 @@ MidiRecordingGui : SCViewHolder {
 
 		prNoteViewScale = Dictionary.with(*[\horizontal -> 40, \vertical -> 10]);
 		pianoRollHeight = (128 + 10) * prNoteViewScale[\vertical];
-		pianoRollWidth = (64) * prNoteViewScale[\horizontal];
+		pianoRollWidth = (130) * prNoteViewScale[\horizontal];
 
-		prBackgroundView = DragBoth(prView, Rect(0, 0, pianoRollWidth, pianoRollHeight)).background_(prPalette.extreme1)
-		.beginDragAction_({|me,x,y|me.object=x@y;selectionView.visible_(true);})
+		prBackgroundView = UserView(prView, Rect(0, 0, pianoRollWidth, pianoRollHeight)).background_(prPalette.extreme1)
+		.beginDragAction_({|me,x,y|selectionView.visible_(true);x@y;})
 		.keyDownAction_({
 			|view, char, modifiers, unicode, keycode, key|
 			var partNumberToSet;
+			postln("keyDownAction is being called");
 			prActiveModifierKeys = modifiers;
 			if (char.notNil,{
 				switch (char,
@@ -54,22 +55,26 @@ MidiRecordingGui : SCViewHolder {
 		.canReceiveDragHandler_({
 			|me,x,y|
 			var left,top,width,height;
-			if ((me.object.x) < x,{
-				left = me.object.x;
-				width = x - (me.object.x);
+			if ((View.currentDrag.x) < x,{
+				left = View.currentDrag.x;
+				width = x - (View.currentDrag.x);
 			},{
 				left = x;
-				width = (me.object.x) - x;
+				width = (View.currentDrag.x) - x;
 			});
-			if ((me.object.y) < y,{
-				top = me.object.y;
-				height = y - (me.object.y);
+			if ((View.currentDrag.y) < y,{
+				top = View.currentDrag.y;
+				height = y - (View.currentDrag.y);
 			},{
 				top = y;
-				height = (me.object.y) - y;
+				height = (View.currentDrag.y) - y;
 			});
 			selectionView.bounds = Rect(left,top,width,height);
 			true; // Allow receiveDragHandler to do something
+		})
+		.mouseDownAction_({
+			|view,x,y,modifiers,buttonNumber,clickCount|
+			prRecordedNotes.do({|recordedNote|recordedNote.deselect;});
 		});
 
 		(prBackgroundView.bounds.width / prNoteViewScale[\horizontal]).do({
