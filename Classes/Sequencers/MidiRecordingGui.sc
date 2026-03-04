@@ -2,11 +2,15 @@ MidiRecordingGui : SCViewHolder {
 	var prAbsoluteStartTime;
 	var prActiveModifierKeys=0;
 	var prBackgroundView;
-	var prDevMode = true;
+	var prDevMode = false;
 	var prDrawNote;
 	var prNoteViewScale;
 	var prPalette;
+	var prPianoRollHeight;
+	var prPianoRollWidth;
 	var prRecordedNotes;
+	var prStartLine;
+	var prStopLine;
 	var prTempoClock;
 	var prView;
 
@@ -23,10 +27,10 @@ MidiRecordingGui : SCViewHolder {
 		prRecordedNotes = Array.newClear;
 
 		prNoteViewScale = Dictionary.with(*[\horizontal -> 40, \vertical -> 10]);
-		pianoRollHeight = (128 + 10) * prNoteViewScale[\vertical];
-		pianoRollWidth = (130) * prNoteViewScale[\horizontal];
+		prPianoRollHeight = (128 + 10) * prNoteViewScale[\vertical];
+		prPianoRollWidth = (130) * prNoteViewScale[\horizontal];
 
-		prBackgroundView = UserView(prView, Rect(0, 0, pianoRollWidth, pianoRollHeight)).background_(prPalette.extreme1)
+		prBackgroundView = UserView(prView, Rect(0, 0, prPianoRollWidth, prPianoRollHeight)).background_(prPalette.extreme1)
 		.beginDragAction_({|me,x,y|selectionView.visible_(true);x@y;})
 		.keyDownAction_({
 			|view, char, modifiers, unicode, keycode, key|
@@ -162,7 +166,8 @@ MidiRecordingGui : SCViewHolder {
 							setPart1Func:{|view|view.background_(prPalette.colour1);},
 							setPart2Func:{|view|view.background_(prPalette.colour2);},
 							setPart3Func:{|view|view.background_(prPalette.colour3);},
-							setPart4Func:{|view|view.background_(prPalette.colour4);}
+							setPart4Func:{|view|view.background_(prPalette.colour4);},
+							moveFunc:{|view,startTime,stopTime|view.bounds_( Rect(startTime * prNoteViewScale[\horizontal],view.bounds.top,(stopTime - startTime) * prNoteViewScale[\horizontal],view.bounds.height));},
 						);
 						prRecordedNotes = prRecordedNotes.add(sequencerNote);
 					},{
@@ -183,8 +188,8 @@ MidiRecordingGui : SCViewHolder {
 	}
 
 	stopRecording {
+		var startTime = inf, stopTime = 0;
 		if (prDevMode,{
-
 		},{
 			[\noteOn,\noteOff].do({
 			|msgType|
@@ -192,5 +197,19 @@ MidiRecordingGui : SCViewHolder {
 		});
 		Metronome.stop;
 		});
+		prRecordedNotes.do({
+			|recordedNote|
+			if (recordedNote.startTime.trunc < startTime,{
+				startTime = recordedNote.startTime.trunc;
+			});
+			if (recordedNote.stopTime.roundUp > stopTime,{
+				stopTime = recordedNote.stopTime.roundUp;
+			});
+		});
+		if (startTime >= stopTime,{
+			stopTime = startTime + 1;
+		});
+		prStartLine = View(prBackgroundView,Rect(startTime * prNoteViewScale[\horizontal],0,1,prPianoRollHeight)).background_(prPalette.colour5);
+		prStopLine = View(prBackgroundView,Rect(stopTime * prNoteViewScale[\horizontal],0,1,prPianoRollHeight)).background_(prPalette.colour5);
 	}
 }
