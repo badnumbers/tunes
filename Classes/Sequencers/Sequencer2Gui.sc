@@ -124,8 +124,6 @@ Sequencer2Gui {
 
 		////////////////////////////
 		stackLayout.index_(1);
-		midiRecordingGui.startRecording;
-		midiRecordingGui.stopRecording;
 		////////////////////////////
 
 

@@ -194,8 +194,8 @@ MidiRecordingGui : SCViewHolder {
 			[\noteOn,\noteOff].do({
 			|msgType|
 			MIDIdef(format("%_%", \recordMidi, msgType).asSymbol).free;
-		});
-		Metronome.stop;
+			});
+			Metronome.stop;
 		});
 		prRecordedNotes.do({
 			|recordedNote|
