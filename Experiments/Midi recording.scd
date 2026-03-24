@@ -19,15 +19,22 @@ Setup.midi
 Setup.midi.note
 
 (
+var legato = 1;
 ~patternArray = [
-	(noteNumber:60,velocity:100,startTime:10,stopTime:10.5),
-	(noteNumber:64,velocity:100,startTime:10.5,stopTime:11),
-	(noteNumber:67,velocity:100,startTime:11,stopTime:11.5),
-	(noteNumber:72,velocity:100,startTime:11.5,stopTime:12),
+	(noteNumber:60,velocity:100,startTime:10,stopTime:(10 + (0.5 * legato))),
+	(noteNumber:64,velocity:100,startTime:10.5,stopTime:(10.5 + (0.5  * legato))),
+	(noteNumber:67,velocity:100,startTime:11,stopTime:(11 + (0.5  * legato))),
+	(noteNumber:72,velocity:100,startTime:11.5,stopTime:(11.5 + (0.5  * legato))),
 ];
 )
 
+~patternArray = [];
+)
+
+~patternArray
+
 ~isPlaying = false;
+TempoClock.default.tempo = 2
 
 (
 var loopStart = 10;
@@ -49,6 +56,21 @@ var updateSlice = {
 		|note|
 		Dictionary.with(*[\action->\stop,\time->note.stopTime,\chan->midiChannel,\note->note.noteNumber,\veloc->note.velocity]);
 	});
+	// Add stops for any currently playing notes that don't have stops before the end of the loop, because e.g. the user removed them
+	stops = stops ++ slice[\currentlyPlaying].select({
+		|currentlyPlayingNoteNumber|
+		// Find any currently playing notes that don't stop either:
+		// a) Before the next note of that note number, if the next note is within the loop
+		// b) Before the end of the loop
+		var nextNoteWithThisNoteNumber = ~patternArray.detect({|note|(note.noteNumber == currentlyPlayingNoteNumber) && (note.startTime >= startTime) && (note.startTime < loopEnd)}); // Kind of assumes that the first matching item in time is also the first in the array
+		var endOfRange = if (nextNoteWithThisNoteNumber.isNil,{loopEnd},{nextNoteWithThisNoteNumber.startTime});
+		var noteEndWithinRange = ~patternArray.detect({|note|(note.noteNumber == currentlyPlayingNoteNumber) && (note.stopTime >= startTime) && (note.stopTime <= endOfRange)});
+		if (noteEndWithinRange.isNil,{warn(format("Hanging note % found at time %!", currentlyPlayingNoteNumber, TempoClock.beats));});
+		if (noteEndWithinRange.isNil,{true},{false});
+	}).collect({
+		|currentlyPlayingNoteNumber|
+		Dictionary.with(*[\action->\stop,\time->startTime,\chan->midiChannel,\note->currentlyPlayingNoteNumber,\veloc->0]);
+	});
 
 	slice[\startTime] = startTime;
 	slice[\items] = (starts ++ stops).sort({ |a, b| a[\time] <= b[\time] });
@@ -61,20 +83,22 @@ var playFunc = {
 
 	if (~isPlaying,{
 		// play the next slice of notes
+		postln(format("Next time on grid is %!",TempoClock.nextTimeOnGrid(quant:delta)));
 		slice[\items].do({
 			|item|
 			var schedTime = TempoClock.nextTimeOnGrid(quant:delta) + (item[\time] - slice[\startTime]);
-			postln(format("Next time on grid is %!",TempoClock.nextTimeOnGrid(quant:delta)));
-			postln(format("Scheduling a note start or stop at time %!",schedTime));
 			if (item[\action] == \start,{
-				TempoClock.default.schedAbs(schedTime,{
+				postln(format("Scheduling a note start for note number % at time %!",item[\note],schedTime));
+				TempoClock.schedAbs(schedTime,{
 					Setup.midi.noteOn(chan:item[\chan],note:item[\note],veloc:item[\veloc]);
 					slice[\currentlyPlaying].add(item[\note]);
+
 				});
 			},{
-				TempoClock.default.schedAbs(schedTime,{
+				postln(format("Scheduling a note stop for note number % at time %!",item[\note],schedTime));
+				slice[\currentlyPlaying].remove(item[\note]); // Remove it from currently playing even before scheduling the stop
+				TempoClock.schedAbs(schedTime,{
 					Setup.midi.noteOff(chan:item[\chan],note:item[\note],veloc:item[\veloc]);
-					slice[\currentlyPlaying].remove(item[\note]);
 				});
 			});
 		});
