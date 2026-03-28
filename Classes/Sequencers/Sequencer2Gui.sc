@@ -27,14 +27,7 @@ Sequencer2Gui {
 		//prDocument = Document.open(thisProcess.nowExecutingPath);
 		prDocument = Document.current;
 
-		prPalette = GuiPalette(
-			Color.fromHexString("6b4e71"),
-			Color.fromHexString("3a4454"),
-			Color.fromHexString("53687e"),
-			Color.fromHexString("c2b2b4"),
-			Color.fromHexString("f5dddd"),
-			Color.black,
-			Color.white);
+		prPalette = GuiPalette.default;
 
 		renderButtonFunc = {
 			|text,width=100|

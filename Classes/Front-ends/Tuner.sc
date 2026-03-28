@@ -1,6 +1,6 @@
 Tuner {
 	init {
-		var window,synthSelector,selectedSynth,playButton,octaveOffset,pattern,tempoClock,tempoKnob,ampKnob,amp=0.5,isPlaying=false;
+		var window,palette,synthSelector,selectedSynth,playButton,octaveOffset,pattern,tempoClock,tempoKnob,ampKnob,amp=0.5,isPlaying=false;
 
 		Setup.server;
 
@@ -23,6 +23,8 @@ Tuner {
 				)
 			])
 		);
+
+		palette = GuiPalette.default;
 		window = Window("Tuner", Rect(100,100,400,400)).front.onClose_({Pdef(\tuner).stop;});
 		synthSelector = PopUpMenu(window,50,50,100,10);
 		synthSelector.items_(Config.hardwareSynthesizers.keys.asArray.sort);
