@@ -8,6 +8,9 @@ Defines a collection of colours which can be referred to by a user interface. Th
 
 CLASSMETHODS::
 
+METHOD:: default
+Returns a system default palette.
+
 METHOD:: new
 Creates an instance of LINK::Classes/GuiPalette::.
 

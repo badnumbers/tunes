@@ -1,4 +1,5 @@
 GuiPalette {
+	classvar prDefaultPalette;
 	var prColour1;
 	var prColour2;
 	var prColour3;
@@ -6,6 +7,20 @@ GuiPalette {
 	var prColour5;
 	var prExtreme1;
 	var prExtreme2;
+
+	*default {
+		if (prDefaultPalette.isNil,{
+			prDefaultPalette = GuiPalette(
+			Color.fromHexString("6b4e71"),
+			Color.fromHexString("3a4454"),
+			Color.fromHexString("53687e"),
+			Color.fromHexString("c2b2b4"),
+			Color.fromHexString("f5dddd"),
+			Color.black,
+			Color.white);
+		});
+		^prDefaultPalette;
+	}
 
 	colour1 {
 		^prColour1;
