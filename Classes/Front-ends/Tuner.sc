@@ -1,8 +1,11 @@
 Tuner {
 	init {
-		var window,palette,synthSelector,selectedSynth,playButton,octaveOffset,pattern,tempoClock,tempoKnob,ampKnob,amp=0.5,isPlaying=false;
+		var window,palette,topView,bottomView,synthView,ampView,tempoView,
+		synthSelector,selectedSynth,playButton,
+		octaveOffset,pattern,tempoClock,tempoKnob,ampKnob,fxBankButton,
+		amp=0.5,isPlaying=false;
 
-		Setup.server;
+		//Setup.server;
 
 		pattern = Pdef(\tuner,
 			Ppar([
@@ -25,12 +28,34 @@ Tuner {
 		);
 
 		palette = GuiPalette.default;
-		window = Window("Tuner", Rect(100,100,400,400)).front.onClose_({Pdef(\tuner).stop;});
-		synthSelector = PopUpMenu(window,50,50,100,10);
+		window = Window("Tuner", Rect(100,100,570,375),resizable:false).front.background_(palette.colour1).onClose_({Pdef(\tuner).stop;});
+
+		topView = View(window,Rect(25,25,520,100)).background_(palette.colour2);
+
+		StaticText(topView,Rect(25,25,100,50)).string_("Tuner").stringColor_(palette.colour5).font_(Font(size:32));
+
+		playButton = EnhancedButton(topView,Rect(270,25,100,50));
+		fxBankButton = EnhancedButton(topView,Rect(395,25,100,50));
+
+		bottomView = View(window,Rect(25,150,520,200)).background_(palette.colour2);
+
+		synthView = View(bottomView,Rect(25,25,140,150)).background_(palette.colour3);
+		StaticText(synthView,Rect(0,10,140,25)).align_(\center).string_("SYNTH").stringColor_(palette.colour5);
+		synthSelector = PopUpMenu(synthView,Rect(10,75,120,25));
+
+		tempoView = View(bottomView,Rect(190,25,140,150)).background_(palette.colour3);
+		StaticText(tempoView,Rect(0,10,140,25)).align_(\center).string_("TEMPO").stringColor_(palette.colour5);
+		tempoKnob = Knob(tempoView,Rect(30,50,80,80));
+
+		ampView = View(bottomView,Rect(355,25,140,150)).background_(palette.colour3);
+		StaticText(ampView,Rect(0,10,140,25)).align_(\center).string_("AMP").stringColor_(palette.colour5);
+		ampKnob = Knob(ampView,Rect(30,50,80,80));
+
+		synthSelector.background_(palette.colour3).stringColor_(palette.colour4);
 		synthSelector.items_(Config.hardwareSynthesizers.keys.asArray.sort);
 		synthSelector.action_({selectedSynth = synthSelector.item});
 		selectedSynth = synthSelector.item;
-		playButton = EnhancedButton(window,Rect(50,100,50,50)).background_(Color.rand).borderRadius_(3).borderWidth_(2).font_(Font(size:16)).string_("Play").stringColor_(Color.rand).align_(\center).mouseEnterBorderColour_(Color.rand).mouseEnterStringColour_(Color.rand).mouseDownBackgroundColour_(Color.rand).mouseUpAction_({
+		playButton.background_(palette.colour3).borderRadius_(3).borderWidth_(2).font_(Font(size:16)).string_("Play").stringColor_(palette.colour5).align_(\center).mouseEnterBorderColour_(palette.extreme2).mouseEnterStringColour_(palette.extreme2).mouseDownBackgroundColour_(palette.colour2).mouseUpAction_({
 			if (isPlaying,{
 				isPlaying = false;
 				playButton.string_("Play");
@@ -43,12 +68,13 @@ Tuner {
 				Pdef(\tuner).play(tempoClock);
 			});
 		});
+
 		tempoClock = TempoClock;
-		tempoKnob = Knob(window,Rect(0,150,50,50)).mode_(\vert).action_({|knob|tempoClock.tempo=knob.value.linexp(0,1,0.5,2);});
+		tempoKnob.mode_(\vert).color_([palette.extreme2,palette.colour2,palette.colour4,palette.colour2]).action_({|knob|tempoClock.tempo=knob.value.linexp(0,1,0.5,2);});
 		tempoKnob.valueAction_(0.5);
-		ampKnob = Knob(window,Rect(0,200,50,50)).mode_(\vert).action_({|knob|amp=knob.value;});
+		ampKnob.mode_(\vert).color_([palette.extreme2,palette.colour2,palette.colour4,palette.colour2]).action_({|knob|amp=knob.value;});
 		ampKnob.value_(amp);
-		EnhancedButton(window,Rect(50,250,50,50)).background_(Color.rand).borderRadius_(3).borderWidth_(2).font_(Font(size:16)).string_("Open FX bank").stringColor_(Color.rand).align_(\center).mouseEnterBorderColour_(Color.rand).mouseEnterStringColour_(Color.rand).mouseDownBackgroundColour_(Color.rand).mouseUpAction_({
+		fxBankButton.background_(palette.colour3).borderRadius_(3).borderWidth_(2).font_(Font(size:16)).string_("FX bank").stringColor_(palette.colour5).align_(\center).mouseEnterBorderColour_(palette.extreme2).mouseEnterStringColour_(palette.extreme2).mouseDownBackgroundColour_(palette.colour2).mouseUpAction_({
 			FxBank();
 		});
 	}
