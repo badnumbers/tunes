@@ -1,0 +1,32 @@
+TITLE:: Tuner
+SUMMARY:: A user interface to help tune a hardware synth.
+CATEGORIES:: Frontends
+RELATED:: Classes/FxBank
+
+DESCRIPTION::
+TELETYPE::Tuner:: provides a user interface to play an SC synth alongside a hardware synth, so that the hardware synth can be tuned.
+
+The Tuner screen has the following controls:
+
+TABLE::
+## TELETYPE::Play:: button || Starts playing a sequence on the default SC synth and the selected hardware synth simultaneously.
+## TELETYPE::Fx bank:: button || Opens the LINK::Classes/FxBank::, which may be necessary to connect synths to SC when the server starts.
+## TELETYPE::SYNTH:: drop-down list || Allows the hardware synth to be chosen.
+## TELETYPE::TEMPO:: knob || Allows the tempo of the sequence to be changed.
+## TELETYPE::AMP:: knob || Allows the amplitude of the default SC synth to be changed in order to match the hardware synth.
+::
+
+CLASSMETHODS::
+
+METHOD:: new
+Creates an instance of TELETYPE::Tuner::. This also calls LINK::Classes/Setup#*server:: in order to ensure the LINK::Classes/Server:: is started.
+
+PRIVATE:: init
+
+EXAMPLES::
+
+CODE::
+// Show the Tuner
+Tuner();
+// That's it!
+::
