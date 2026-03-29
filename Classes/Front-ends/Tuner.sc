@@ -1,11 +1,16 @@
 Tuner {
+	classvar isOpen = false;
+	classvar synthDropDownValue;
+	classvar tempoKnobValue = 0.5;
+	classvar ampKnobValue = 0.5;
+
 	init {
 		var window,palette,topView,bottomView,synthView,ampView,tempoView,
-		synthSelector,selectedSynth,playButton,
-		octaveOffset,pattern,tempoClock,tempoKnob,ampKnob,fxBankButton,
-		amp=0.5,isPlaying=false;
+		synthSelector,playButton,
+		pattern,tempoClock,tempoKnob,ampKnob,fxBankButton,isPlaying=false;
 
-		//Setup.server;
+		Setup.server;
+		isOpen = true;
 
 		pattern = Pdef(\tuner,
 			Ppar([
@@ -13,12 +18,12 @@ Tuner {
 					\degree,Pseq((0..15),inf),
 					\dur,0.25,
 					\legato,1,
-					\amp,Pfunc({amp})
+					\amp,Pfunc({ampKnobValue})
 				),
 				Pbind(
 					\type,\midi,
 					\midiout,Setup.midi,
-					\chan,Pfunc({Synths(selectedSynth).midiChannel}),
+					\chan,Pfunc({Synths(synthDropDownValue[1]).midiChannel}),
 					\degree,Pseq((0..15),inf),
 					\dur,0.25,
 					\legato,1,
@@ -28,7 +33,10 @@ Tuner {
 		);
 
 		palette = GuiPalette.default;
-		window = Window("Tuner", Rect(100,100,570,375),resizable:false).front.background_(palette.colour1).onClose_({Pdef(\tuner).stop;});
+		window = Window("Tuner", Rect(100,100,570,375),resizable:false).front.background_(palette.colour1).onClose_({
+			isOpen = false;
+			Pdef(\tuner).stop;
+		});
 
 		topView = View(window,Rect(25,25,520,100)).background_(palette.colour2);
 
@@ -53,33 +61,47 @@ Tuner {
 
 		synthSelector.background_(palette.colour3).stringColor_(palette.colour4);
 		synthSelector.items_(Config.hardwareSynthesizers.keys.asArray.sort);
-		synthSelector.action_({selectedSynth = synthSelector.item});
-		selectedSynth = synthSelector.item;
+		synthSelector.action_({synthDropDownValue = [synthSelector.value,synthSelector.item];});
+		if (synthDropDownValue.isNil,{
+			synthSelector.valueAction_(0);
+		},{
+			// This means the Tuner has been opened previously, and the previous value of the drop-down list is still in the classvar
+			synthSelector.valueAction_(synthDropDownValue[0]);
+		});
 		playButton.background_(palette.colour3).borderRadius_(3).borderWidth_(2).font_(Font(size:16)).string_("Play").stringColor_(palette.colour5).align_(\center).mouseEnterBorderColour_(palette.extreme2).mouseEnterStringColour_(palette.extreme2).mouseDownBackgroundColour_(palette.colour2).mouseUpAction_({
 			if (isPlaying,{
 				isPlaying = false;
 				playButton.string_("Play");
-				playButton.background_(Color.red);
 				Pdef(\tuner).stop;
 			},{
 				isPlaying = true;
 				playButton.string_("Stop");
-				playButton.background_(Color.blue);
 				Pdef(\tuner).play(tempoClock);
 			});
 		});
 
 		tempoClock = TempoClock;
-		tempoKnob.mode_(\vert).color_([palette.extreme2,palette.colour2,palette.colour4,palette.colour2]).action_({|knob|tempoClock.tempo=knob.value.linexp(0,1,0.5,2);});
-		tempoKnob.valueAction_(0.5);
-		ampKnob.mode_(\vert).color_([palette.extreme2,palette.colour2,palette.colour4,palette.colour2]).action_({|knob|amp=knob.value;});
-		ampKnob.value_(amp);
+		tempoKnob.mode_(\vert).color_([palette.extreme2,palette.colour2,palette.colour4,palette.colour2]).action_({
+			|knob|
+			tempoKnobValue = knob.value;
+			tempoClock.tempo=tempoKnobValue.linexp(0,1,0.5,2);
+		});
+		tempoKnob.valueAction_(tempoKnobValue);
+
+		ampKnob.mode_(\vert).color_([palette.extreme2,palette.colour2,palette.colour4,palette.colour2]).action_({
+			|knob|ampKnobValue=knob.value;
+		});
+		ampKnob.value_(ampKnobValue);
 		fxBankButton.background_(palette.colour3).borderRadius_(3).borderWidth_(2).font_(Font(size:16)).string_("FX bank").stringColor_(palette.colour5).align_(\center).mouseEnterBorderColour_(palette.extreme2).mouseEnterStringColour_(palette.extreme2).mouseDownBackgroundColour_(palette.colour2).mouseUpAction_({
 			FxBank();
 		});
 	}
 
 	*new {
-		^super.new.init;
+		if (isOpen,{
+			postln("The Tuner is already open.");
+		},{
+			^super.new.init;
+		});
 	}
 }
