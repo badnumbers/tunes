@@ -59,4 +59,7 @@ An instance of LINK::Classes/Color:: describing the first of the two extreme col
 METHOD:: extreme2
 An instance of LINK::Classes/Color:: describing the second of the two extreme colours. Generally this will be either TELETYPE::Color.black:: or TELETYPE::Color.white::.
 
+METHOD:: show
+Shows the GUI palette in a window.
+
 PRIVATE::init

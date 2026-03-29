@@ -107,4 +107,32 @@ GuiPalette {
 		|colour1,colour2,colour3,colour4,colour5,extreme1,extreme2|
 		^super.new.init(colour1,colour2,colour3,colour4,colour5,extreme1,extreme2);
 	}
+
+	show {
+		var textLeftAlign = 10;
+		var textWidth = 70;
+		var textTopOffset = 0;
+
+		var blockLeftAlign = 100;
+		var blockWidth = 250;
+		var blockHeight = 50;
+
+		var window = Window("Palette", Rect(50,50,blockLeftAlign+ blockWidth,blockHeight*7),resizable:false).front;
+
+		StaticText(window,Rect(textLeftAlign,blockHeight * 0 + textTopOffset,textWidth,blockHeight)).string_("Colour 1");
+		StaticText(window,Rect(textLeftAlign,blockHeight * 1 + textTopOffset,textWidth,blockHeight)).string_("Colour 2");
+		StaticText(window,Rect(textLeftAlign,blockHeight * 2 + textTopOffset,textWidth,blockHeight)).string_("Colour 3");
+		StaticText(window,Rect(textLeftAlign,blockHeight * 3 + textTopOffset,textWidth,blockHeight)).string_("Colour 4");
+		StaticText(window,Rect(textLeftAlign,blockHeight * 4 + textTopOffset,textWidth,blockHeight)).string_("Colour 5");
+		StaticText(window,Rect(textLeftAlign,blockHeight * 5 + textTopOffset,textWidth,blockHeight)).string_("Extreme 1");
+		StaticText(window,Rect(textLeftAlign,blockHeight * 6 + textTopOffset,textWidth,blockHeight)).string_("Extreme 2");
+
+		BorderView(window,Rect(blockLeftAlign,blockHeight * 0,blockWidth,blockHeight)).borderColour_(Color.black).background_(prColour1);
+		BorderView(window,Rect(blockLeftAlign,blockHeight * 1,blockWidth,blockHeight)).borderColour_(Color.black).background_(prColour2);
+		BorderView(window,Rect(blockLeftAlign,blockHeight * 2,blockWidth,blockHeight)).borderColour_(Color.black).background_(prColour3);
+		BorderView(window,Rect(blockLeftAlign,blockHeight * 3,blockWidth,blockHeight)).borderColour_(Color.black).background_(prColour4);
+		BorderView(window,Rect(blockLeftAlign,blockHeight * 4,blockWidth,blockHeight)).borderColour_(Color.black).background_(prColour5);
+		BorderView(window,Rect(blockLeftAlign,blockHeight * 5,blockWidth,blockHeight)).borderColour_(Color.black).background_(prExtreme1);
+		BorderView(window,Rect(blockLeftAlign,blockHeight * 6,blockWidth,blockHeight)).borderColour_(Color.black).background_(prExtreme2);
+	}
 }
