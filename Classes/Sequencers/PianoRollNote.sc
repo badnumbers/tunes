@@ -1,4 +1,4 @@
-SequencerNote {
+PianoRollNote {
 	var prAdjustedStartTime;
 	var prAdjustedStopTime;
 	var prDeselectFunc;

@@ -94,18 +94,18 @@ MidiRecordingGui : SCViewHolder {
 		selectionView = BorderView(prBackgroundView,Rect(10,10,10,10)).background_(Color.clear).borderColour_(prPalette.colour1).borderWidth_(2).acceptsMouse_(false).visible_(false);
 
 		prDrawNote = {
-			|sequencerNote|
-			BorderView(prBackgroundView, Rect(sequencerNote.startTime * prNoteViewScale[\horizontal], (127 - sequencerNote.noteNumber) * prNoteViewScale[\vertical] + (prNoteViewScale[\vertical] * 5), (sequencerNote.stopTime - sequencerNote.startTime) * prNoteViewScale[\horizontal], prNoteViewScale[\vertical]))
+			|pianoRollNote|
+			BorderView(prBackgroundView, Rect(pianoRollNote.startTime * prNoteViewScale[\horizontal], (127 - pianoRollNote.noteNumber) * prNoteViewScale[\vertical] + (prNoteViewScale[\vertical] * 5), (pianoRollNote.stopTime - pianoRollNote.startTime) * prNoteViewScale[\horizontal], prNoteViewScale[\vertical]))
 			.background_(prPalette.colour1)
 			.borderWidth_(0)
 			.borderColour_(prPalette.extreme2)
 			.mouseDownAction_({
 				|view, x, y, modifiers, buttonNumber, clickCount|
 				if (buttonNumber == 0,{
-					sequencerNote.toggleSelect();
+					pianoRollNote.toggleSelect();
 				},{
 					if (buttonNumber == 1,{
-						postln(format("Note number: %, velocity: %.", sequencerNote.noteNumber, sequencerNote.velocity));
+						postln(format("Note number: %, velocity: %.", pianoRollNote.noteNumber, pianoRollNote.velocity));
 					});
 				});
 
@@ -125,6 +125,17 @@ MidiRecordingGui : SCViewHolder {
 		^super.new.init(parent,bounds,palette,tempoClock);
 	}
 
+	playBackRecording {
+		var midinotes = Array();
+		var velocities = Array();
+		var legatoes = Array();
+
+		prRecordedNotes.do({
+
+		});
+
+	}
+
 	startRecording {
 		var fakeNotes;
 		var startOffset = 5.0.rand + 2;
@@ -140,7 +151,7 @@ MidiRecordingGui : SCViewHolder {
 				var noteNumber = if (index == 0,{0},{
 					if (index == 1,{127},{127.rand});
 				});
-				var sequencerNote = SequencerNote(start,noteNumber,127.rand,
+				var pianoRollNote = PianoRollNote(start,noteNumber,127.rand,
 					viewFunc:prDrawNote,
 					selectFunc:{|view|view.borderWidth_(1);},
 					deselectFunc:{|view|view.borderWidth_(0);},
@@ -150,8 +161,8 @@ MidiRecordingGui : SCViewHolder {
 					setPart4Func:{|view|view.background_(prPalette.colour4);},
 					moveFunc:{|view,startTime,stopTime|view.bounds_( Rect(startTime * prNoteViewScale[\horizontal],view.bounds.top,(stopTime - startTime) * prNoteViewScale[\horizontal],view.bounds.height));},
 				);
-				sequencerNote.stop(stop);
-				prRecordedNotes = prRecordedNotes.add(sequencerNote);
+				pianoRollNote.stop(stop);
+				prRecordedNotes = prRecordedNotes.add(pianoRollNote);
 			});
 		},{
 			[\noteOn,\noteOff].do({
@@ -159,7 +170,7 @@ MidiRecordingGui : SCViewHolder {
 				MIDIdef(format("%_%", \recordMidi, msgType).asSymbol,{
 					|velocity,noteNumber,chan,src|
 					if (msgType == \noteOn, {
-						var sequencerNote = SequencerNote(nowFunc.value(),noteNumber,velocity,
+						var pianoRollNote = PianoRollNote(nowFunc.value(),noteNumber,velocity,
 							viewFunc:prDrawNote,
 							selectFunc:{|view|view.borderWidth_(2);},
 							deselectFunc:{|view|view.borderWidth_(0);},
@@ -169,7 +180,7 @@ MidiRecordingGui : SCViewHolder {
 							setPart4Func:{|view|view.background_(prPalette.colour4);},
 							moveFunc:{|view,startTime,stopTime|view.bounds_( Rect(startTime * prNoteViewScale[\horizontal],view.bounds.top,(stopTime - startTime) * prNoteViewScale[\horizontal],view.bounds.height));},
 						);
-						prRecordedNotes = prRecordedNotes.add(sequencerNote);
+						prRecordedNotes = prRecordedNotes.add(pianoRollNote);
 					},{
 						var activeNotesForThisNoteNumber = prRecordedNotes.select({|note|(note.noteNumber == noteNumber) && (note.stopTime.isNil)});
 						if (activeNotesForThisNoteNumber.size > 1, {
