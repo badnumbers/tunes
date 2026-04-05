@@ -2,19 +2,18 @@ PianoRollNote {
 	var prAdjustedStartTime;
 	var prAdjustedStopTime;
 	var prDeselectFunc;
-	var prNoteNumber;
 	var prOriginalBounds;
 	var prPartNumber = 1;
 	var prMoveFunc;
+	var prPlayableNote;
+	var prOriginalStartTime;
+	var prOriginalStopTime;
 	var prSelectFunc;
 	var prSelected = false;
 	var prSetPart1Func;
 	var prSetPart2Func;
 	var prSetPart3Func;
 	var prSetPart4Func;
-	var prStartTime;
-	var prStopTime;
-	var prVelocity;
 	var prView;
 	var prViewFunc;
 
@@ -25,9 +24,6 @@ PianoRollNote {
 
 	init {
 		|startTime,noteNumber,velocity,viewFunc,selectFunc,deselectFunc,setPart1Func,setPart2Func,setPart3Func,setPart4Func,moveFunc|
-		prStartTime = startTime;
-		prNoteNumber = noteNumber;
-		prVelocity = velocity;
 		prViewFunc = viewFunc;
 		prSelectFunc = selectFunc;
 		prDeselectFunc = deselectFunc;
@@ -36,6 +32,8 @@ PianoRollNote {
 		prSetPart3Func = setPart3Func;
 		prSetPart4Func = setPart4Func;
 		prMoveFunc = moveFunc;
+		prOriginalStartTime = startTime;
+		prPlayableNote = PlayableNote(startTime,noteNumber,velocity);
 	}
 
 	*new {
@@ -55,7 +53,7 @@ PianoRollNote {
 	}
 
 	noteNumber {
-		^prNoteNumber;
+		^prPlayableNote.noteNumber;
 	}
 
 	selectIfEnclosed {
@@ -94,19 +92,22 @@ PianoRollNote {
 
 	snap {
 		|resolution|
-		prAdjustedStartTime = prStartTime.round(resolution);
-		prAdjustedStopTime = prStopTime - (prStartTime - prAdjustedStartTime);
+		prAdjustedStartTime = prOriginalStartTime.round(resolution);
+		prAdjustedStopTime = prOriginalStopTime - (prOriginalStartTime - prAdjustedStartTime);
+		prPlayableNote.startTime = prAdjustedStartTime;
+		prPlayableNote.stopTime = prAdjustedStopTime;
 		prMoveFunc.value(prView,prAdjustedStartTime,prAdjustedStopTime);
 	}
 
 	startTime {
-		^prStartTime;
+		^prPlayableNote.startTime;
 	}
 
 	stop {
 		|stopTime|
 		Validator.validateMethodParameterType(stopTime,Float,"stopTime","SequencerNote","stop");
-		prStopTime = stopTime;
+		prOriginalStopTime = stopTime;
+		prPlayableNote.stoptime = stopTime;
 		AppClock.sched(0.0,{
 			prView = prViewFunc.value(this);
 			prOriginalBounds = prView.bounds;
@@ -114,7 +115,7 @@ PianoRollNote {
 	}
 
 	stopTime {
-		^prStopTime;
+		^prPlayableNote.stopTime;
 	}
 
 	toggleSelect {
@@ -128,6 +129,6 @@ PianoRollNote {
 	}
 
 	velocity {
-		^prVelocity;
+		^prPlayableNote.velocity;
 	}
 }
