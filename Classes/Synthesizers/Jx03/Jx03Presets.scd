@@ -358,3 +358,26 @@ patch.name = "Rueful 80s";
 patch.kvps[1304]=255;patch.kvps[1314]=224;patch.kvps[1402]=255;patch.kvps[1102]=128;patch.kvps[1206]=1;patch.kvps[1306]=0;patch.kvps[1702]=0;patch.kvps[1204]=0;patch.kvps[1200]=3;patch.kvps[1504]=128;patch.kvps[1500]=0;patch.kvps[1210]=1;patch.kvps[1606]=0;patch.kvps[1220]=0;patch.kvps[1708]=12;patch.kvps[1700]=0;patch.kvps[1216]=1;patch.kvps[1308]=0;patch.kvps[1100]=0;patch.kvps[1600]=2;patch.kvps[1502]=128;patch.kvps[1602]=0;patch.kvps[1226]=0;patch.kvps[1706]=0;patch.kvps[1506]=128;patch.kvps[1104]=0;patch.kvps[1300]=224;patch.kvps[1222]=255;patch.kvps[1302]=0;patch.kvps[1310]=1;patch.kvps[1214]=240;patch.kvps[1218]=1;patch.kvps[1224]=4;patch.kvps[1202]=2;patch.kvps[1312]=0;patch.kvps[1604]=0;patch.kvps[1400]=1;patch.kvps[1212]=228;patch.kvps[1208]=2;
 Synths(\jx03).setWorkingPatch(patch);
 )
+
+(
+var patch = Jx03Patch();
+patch.name = "90s house wobbles";
+patch.kvps[1304]=4;patch.kvps[1314]=224;patch.kvps[1402]=255;patch.kvps[1102]=177;patch.kvps[1206]=0;patch.kvps[1306]=114;patch.kvps[1702]=128;patch.kvps[1204]=0;patch.kvps[1200]=3;patch.kvps[1504]=140;patch.kvps[1500]=0;patch.kvps[1210]=2;patch.kvps[1606]=0;patch.kvps[1220]=0;patch.kvps[1708]=12;patch.kvps[1700]=0;patch.kvps[1216]=3;patch.kvps[1308]=72;patch.kvps[1100]=0;patch.kvps[1600]=0;patch.kvps[1502]=132;patch.kvps[1602]=0;patch.kvps[1226]=1;patch.kvps[1706]=0;patch.kvps[1506]=138;patch.kvps[1104]=8;patch.kvps[1300]=210;patch.kvps[1222]=171;patch.kvps[1302]=0;patch.kvps[1310]=1;patch.kvps[1214]=102;patch.kvps[1218]=0;patch.kvps[1224]=0;patch.kvps[1202]=2;patch.kvps[1312]=139;patch.kvps[1604]=0;patch.kvps[1400]=1;patch.kvps[1212]=52;patch.kvps[1208]=3;
+Synths(\jx03).setWorkingPatch(patch);
+)
+(
+Pdef(\jx03).stop;
+Pdef(\jx03,
+	Pseq([
+		Pbind(
+			\type,\midi,
+			\midiout,Setup.midi,
+			\chan,Synths(\jx03).midiChannel,
+			\amp,0.8,
+			\midinote,Pseq([[61,70],[61,70],[56,73],[59,75]]),
+			\dur,Pseq([2*w,3*q,5*q,4*w]),
+			\legato,Pseq([0.7,0.7,0.7,0.5])
+		)
+	],2)
+).play(TempoClock(1.28));
+)
