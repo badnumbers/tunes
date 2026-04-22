@@ -18,7 +18,7 @@ MidiRecordingGui : SCViewHolder {
 		|parent,bounds,palette,tempoClock|
 		var selectionView;
 		var pianoRollHeight,pianoRollWidth;
-		var snapNotesFunc;
+		var snapNotesFunc, moveStartOrStopLineFunc;
 		prView = ScrollView();
 		this.view = prView;
 		prPalette = palette;
@@ -29,6 +29,10 @@ MidiRecordingGui : SCViewHolder {
 		prNoteViewScale = Dictionary.with(*[\horizontal -> 40, \vertical -> 10]);
 		prPianoRollHeight = (128 + 10) * prNoteViewScale[\vertical];
 		prPianoRollWidth = (130) * prNoteViewScale[\horizontal];
+
+		if (prDevMode == false,{
+			Setup.midi;
+		});
 
 		prBackgroundView = UserView(prView, Rect(0, 0, prPianoRollWidth, prPianoRollHeight)).background_(prPalette.extreme1)
 		.beginDragAction_({|me,x,y|selectionView.visible_(true);x@y;})
@@ -83,7 +87,12 @@ MidiRecordingGui : SCViewHolder {
 		})
 		.mouseDownAction_({
 			|view,x,y,modifiers,buttonNumber,clickCount|
-			prRecordedNotes.do({|recordedNote|recordedNote.deselect;});
+			if (clickCount == 1,{
+				prRecordedNotes.do({|recordedNote|recordedNote.deselect;});
+			},{
+				moveStartOrStopLineFunc.value(x);
+			});
+
 		});
 
 		(prBackgroundView.bounds.width / prNoteViewScale[\horizontal]).do({
@@ -115,6 +124,21 @@ MidiRecordingGui : SCViewHolder {
 		snapNotesFunc = {
 			|resolution|
 			prRecordedNotes.do({|recordedNote|recordedNote.snap(resolution);});
+		};
+
+		moveStartOrStopLineFunc = {
+			|mouseX|
+			//prStartLine = View(prBackgroundView,Rect(startTime * prNoteViewScale[\horizontal],0,1,prPianoRollHeight)).background_(prPalette.colour5);
+			var beat, closestLine;
+			beat = mouseX / prNoteViewScale[\horizontal];
+			closestLine = if ((mouseX - prStartLine.bounds.left).abs < (mouseX - prStopLine.bounds.left).abs,{
+				prStartLine;
+			},{
+				prStopLine;
+			});
+			postln(format("Moving start or stop line to %.", beat));
+			postln(format("The closest line is %.", closestLine));
+			closestLine.bounds_(Rect(mouseX.round(prNoteViewScale[\horizontal]), closestLine.bounds.top, closestLine.bounds.width, closestLine.bounds.height));
 		};
 	}
 
@@ -169,6 +193,7 @@ MidiRecordingGui : SCViewHolder {
 				|msgType|
 				MIDIdef(format("%_%", \recordMidi, msgType).asSymbol,{
 					|velocity,noteNumber,chan,src|
+					postln("Note pressed");
 					if (msgType == \noteOn, {
 						var pianoRollNote = PianoRollNote(nowFunc.value(),noteNumber,velocity,
 							viewFunc:prDrawNote,
@@ -192,7 +217,6 @@ MidiRecordingGui : SCViewHolder {
 					});
 				},msgType:msgType);
 			});
-			Setup.midi;
 			Setup.server;
 			Metronome.play;
 		});

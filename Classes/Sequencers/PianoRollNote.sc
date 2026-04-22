@@ -107,7 +107,7 @@ PianoRollNote {
 		|stopTime|
 		Validator.validateMethodParameterType(stopTime,Float,"stopTime","SequencerNote","stop");
 		prOriginalStopTime = stopTime;
-		prPlayableNote.stoptime = stopTime;
+		prPlayableNote.stopTime = stopTime;
 		AppClock.sched(0.0,{
 			prView = prViewFunc.value(this);
 			prOriginalBounds = prView.bounds;
