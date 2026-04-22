@@ -1,4 +1,5 @@
 FxBank {
+	classvar isOpen = false;
 	var prTempoClock;
 	var prBuildDesk;
 	var prSetupHardwareSynth;
@@ -9,6 +10,7 @@ FxBank {
 
 		prBuildDesk = {
 			var window, carousel, synthsStackContainer, carouselviews;
+			var serverQuitFunc;
 			window = Window("FX Bank",Rect(10,10,600,400)).front;
 			synthsStackContainer = StackLayout().mode_(0);
 
@@ -31,7 +33,20 @@ FxBank {
 				.canvas_(View().layout_(carousel = VLayout(*carouselviews)))
 			);
 
+			serverQuitFunc = {
+				window.close();
+			};
+
+			ServerQuit.add(serverQuitFunc);
+
+			window.onClose_({
+				isOpen = false;
+				ServerQuit.remove(serverQuitFunc);
+			});
+
 			carousel.add(nil,1);
+
+			isOpen = true;
 		};
 
 		prSetupHardwareSynth = {
@@ -62,9 +77,15 @@ FxBank {
 		};
 
 		prBuildDesk.value();
+
+		ServerQuit
 	}
 
 	*new {
-		^super.new.init;
+		if (isOpen,{
+			postln("The FX Bank is already open.");
+		},{
+			^super.new.init;
+		});
 	}
 }
