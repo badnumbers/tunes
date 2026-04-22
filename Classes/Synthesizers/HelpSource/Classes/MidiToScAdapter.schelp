@@ -1,0 +1,41 @@
+TITLE:: MidiToScAdapter
+SUMMARY:: Allows a SynthDef to be played via MIDI.
+CATEGORIES:: External Control
+RELATED:: Classes/Tuner
+
+DESCRIPTION::
+Sets up LINK::Classes/MIDIdef::s to play a LINK::Classes/SynthDef::, creating and destroying LINK::Classes/Synth:: instances in response to the incoming note on and note off messages.
+
+CLASSMETHODS::
+
+METHOD:: new
+Creates a new instance of TELETYPE::MidiToScAdapter::.
+
+ARGUMENT:: synthDefName
+A LINK::Classes/Symbol:: which is the name of the LINK::Classes/SynthDef:: to be played.
+
+ARGUMENT:: midiChannel
+An optional LINK::Classes/Integer:: specifying which MIDI channel should play the LINK::Classes/SynthDef::. If not specified, all MIDI channels will play the LINK::Classes/SynthDef::.
+
+INSTANCEMETHODS::
+
+METHOD:: free
+Frees all resources associated with the TELETYPE::MidiToScAdapter::, including any running LINK::Classes/Synth:: instances.
+
+METHOD:: set
+Allows parameters on any playing LINK::Classes/Synth:: instances to be set.
+
+ARGUMENT:: ... parameters
+The same as the parameters provided to LINK::Classes/Node#-set::, i.e. alternating keys and values.
+
+PRIVATE::init
+
+EXAMPLES::
+
+CODE::
+~foo = MidiToScAdapter(\default, 8);
+// Now noodle on the keyboard
+~foo.set(\amp,0); // Should silence any active instances (although they are still playing)
+// Noodle a bit more
+~foo.free;
+::
