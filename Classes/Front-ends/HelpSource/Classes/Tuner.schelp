@@ -6,15 +6,7 @@ RELATED:: Classes/FxBank
 DESCRIPTION::
 TELETYPE::Tuner:: provides a user interface to play an SC synth alongside a hardware synth, so that the hardware synth can be tuned.
 
-The Tuner screen has the following controls:
-
-TABLE::
-## TELETYPE::Play:: button || Starts playing a sequence on the default SC synth and the selected hardware synth simultaneously.
-## TELETYPE::Fx bank:: button || Opens the LINK::Classes/FxBank::, which may be necessary to connect synths to SC when the server starts.
-## TELETYPE::SYNTH:: drop-down list || Allows the hardware synth to be chosen.
-## TELETYPE::TEMPO:: knob || Allows the tempo of the sequence to be changed.
-## TELETYPE::AMP:: knob || Allows the amplitude of the default SC synth to be changed in order to match the hardware synth.
-::
+The Tuner screen has a button to open the LINK::Classes/FxBank::, which may be necessary to connect synths to SC when the server starts.
 
 CLASSMETHODS::
 
