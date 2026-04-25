@@ -233,30 +233,38 @@ PerformVeScGuiControlSurface : ScGuiControlSurface {
 	}
 
 	loadSample {
-		Buffer.loadDialog(Server.default, action: {
-			|buffer|
-			~routine = Routine({
-				prSynthesizer.modifyWorkingPatch(PerformVe.sampleRecordSwitchCcNo, 127, nil);
-				postln("Playing the sample into the Perform VE...");
-				{ var audio = PlayBuf.ar(1, buffer, BufRateScale.kr(buffer), doneAction: Done.freeSelf) * loadSampleVolume; Out.ar(2, audio); }.play;
-				buffer.duration.wait;
-				prSynthesizer.modifyWorkingPatch(PerformVe.sampleRecordSwitchCcNo, 0, nil);
-				postln("Finished!");
-				buffer.free;
-			}).play;
+		if (Server.default.serverRunning,{
+			Buffer.loadDialog(Server.default, action: {
+				|buffer|
+				~routine = Routine({
+					prSynthesizer.modifyWorkingPatch(PerformVe.sampleRecordSwitchCcNo, 127, nil);
+					postln("Playing the sample into the Perform VE...");
+					{ var audio = PlayBuf.ar(1, buffer, BufRateScale.kr(buffer), doneAction: Done.freeSelf) * loadSampleVolume; Out.ar(2, audio); }.play;
+					buffer.duration.wait;
+					prSynthesizer.modifyWorkingPatch(PerformVe.sampleRecordSwitchCcNo, 0, nil);
+					postln("Finished!");
+					buffer.free;
+				}).play;
+			});
+		},{
+			warn("Loading a sample won't work because the server is not running.");
 		});
 	}
 
 	setInputLevel {
-		Buffer.loadDialog(Server.default, action: {
-			|buffer|
-			~routine = Routine({
-				postln("Playing the sample into the Perform VE...");
-				{ var audio = PlayBuf.ar(1, buffer, BufRateScale.kr(buffer), doneAction: Done.freeSelf) * loadSampleVolume; Out.ar(2, audio); }.play;
-				buffer.duration.wait;
-				postln("Finished!");
-				buffer.free;
-			}).play;
+		if (Server.default.serverRunning,{
+			Buffer.loadDialog(Server.default, action: {
+				|buffer|
+				~routine = Routine({
+					postln("Playing the sample into the Perform VE...");
+					{ var audio = PlayBuf.ar(1, buffer, BufRateScale.kr(buffer), doneAction: Done.freeSelf) * loadSampleVolume; Out.ar(2, audio); }.play;
+					buffer.duration.wait;
+					postln("Finished!");
+					buffer.free;
+				}).play;
+			});
+		},{
+			warn("Setting the input level won't work because the server is not running.");
 		});
 	}
 }
