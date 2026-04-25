@@ -1,10 +1,10 @@
 HardwareSynthesizers:
-#  - Id: "megafm"
-#    Class: "MegaFm"
-#    MIDIChannels:
-#      - ?
-#    InputBusChannels:
-#      - ?
+  - Id: "megafm"
+    Class: "MegaFm"
+    MIDIChannels:
+      - 15
+    InputBusChannels:
+      - 1
   - Id: "td3"
     Class: "Td3"
     MIDIChannels:
