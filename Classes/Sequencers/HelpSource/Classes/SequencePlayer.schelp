@@ -1,0 +1,83 @@
+TITLE:: SequencePlayer
+SUMMARY:: Plays a sequence of notes from MidiRecordingGui.
+RELATED:: Classes/MidiRecordingGui, Classes/Sequencer2
+
+DESCRIPTION::
+Allows a set of notes displayed in a LINK::Classes/MidiRecordingGui::, for example which has just been recorded from a keyboard, to be played back.
+
+NOTE::
+You can run the unit tests for TELETYPE::Sequencer:: by running:
+CODE::
+(
+UnitTest.reportPasses_(false);
+SequencePlayerUnitTests.run;
+)
+::
+::
+
+
+CLASSMETHODS::
+
+METHOD:: new
+(describe method here)
+
+ARGUMENT:: sequence
+(describe argument here)
+
+ARGUMENT:: loopStart
+(describe argument here)
+
+ARGUMENT:: loopEnd
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+
+INSTANCEMETHODS::
+
+METHOD:: loopEnd
+(describe method here)
+
+ARGUMENT:: value
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: loopStart
+(describe method here)
+
+ARGUMENT:: value
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: play
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: stop
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: init
+(describe method here)
+
+ARGUMENT:: sequence
+(describe argument here)
+
+ARGUMENT:: loopStart
+(describe argument here)
+
+ARGUMENT:: loopEnd
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+
+EXAMPLES::
+
+code::
+(some example code)
+::
