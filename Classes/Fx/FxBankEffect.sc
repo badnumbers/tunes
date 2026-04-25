@@ -3,7 +3,6 @@ FxBankEffect {
 	var prControlMappings;
 	var prEffectEnabled = false;
 	var prControlsContainer;
-	var prDryWetKnob;
 	var prEnabledCheckBox;
 	var prEverythingContainer;
 	var prFxBankSynth;
@@ -11,7 +10,6 @@ FxBankEffect {
 	var prRenderControls;
 	var prToggle;
 	var prToggleEffect;
-	var prWanderKnob;
 
 	enabled {
 		^prEnabledCheckBox.value;

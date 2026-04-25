@@ -2,7 +2,6 @@ TouchOscSynth {
 	var <specs;
 	var <patch;
 	var <name;
-	var specs;
 	var presets;
 
     *new { | name, ugenGraphFunc, specs, presets, defaultPatch |
