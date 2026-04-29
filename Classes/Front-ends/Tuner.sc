@@ -10,37 +10,61 @@ Tuner {
 		isOpen = true;
 
 		palette = GuiPalette.default;
-		window = Window("Tuner", Rect(100,100,570,150),resizable:false).front.background_(palette.colour1).onClose_({
-			isOpen = false;
-			midiToScAdapter.free;
-			[\noteOn,\noteOff].do({
-				|msgType|
-				MIDIdef(format("%_%", \tunerMidiIndicator, msgType).asSymbol).free;
+		window = Window("Tuner", Rect(100, 100, 570, 150), resizable: false)
+			.front
+			.background_(palette.colour1)
+			.onClose_({
+				isOpen = false;
+				midiToScAdapter.free;
+				[\noteOn, \noteOff].do({
+					|msgType|
+					MIDIdef(format("%_%", \tunerMidiIndicator, msgType).asSymbol).free;
+				});
 			});
-		});
 
-		topView = View(window,Rect(25,25,520,100)).background_(palette.colour2);
-
-		StaticText(topView,Rect(25,25,100,50)).string_("Tuner").stringColor_(palette.colour5).font_(Font(size:32));
-
-		fxBankButton = EnhancedButton(topView,Rect(320,25,100,50));
-
-		midiIndicator = BorderView(topView,Rect(445,25,50,50)).background_(palette.colour2).borderColour_(palette.colour3).borderRadius_(3).borderWidth_(2);
+		window.layout = VLayout(
+			topView = View()
+				.background_(palette.colour2)
+				.layout_(
+					HLayout(
+						StaticText()
+							.string_("Tuner")
+							.stringColor_(palette.colour5)
+							.font_(Font(size:32))
+							.minSize_(100@50)
+							.maxSize_(100@50),
+						[nil, s: 1],
+						fxBankButton = EnhancedButton()
+							.minSize_(100@50)
+							.maxSize_(100@50),
+						View()
+							.minSize_(25@50)
+							.maxSize_(25@50),
+						midiIndicator = BorderView()
+							.background_(palette.colour2)
+							.borderColour_(palette.colour3)
+							.borderRadius_(3)
+							.borderWidth_(2)
+							.minSize_(50@50)
+							.maxSize_(50@50)
+					).margins_(25).spacing_(0)
+				)
+		).margins_(25).spacing_(0);
 
 		fxBankButton.background_(palette.colour3).borderRadius_(3).borderWidth_(2).font_(Font(size:16)).string_("FX bank").stringColor_(palette.colour5).align_(\center).mouseEnterBorderColour_(palette.extreme2).mouseEnterStringColour_(palette.extreme2).mouseDownBackgroundColour_(palette.colour2).mouseUpAction_({
 			FxBank();
 		});
 
 		// Set up MIDI indicator
-		[\noteOn,\noteOff].do({
+		[\noteOn, \noteOff].do({
 			|msgType|
-			MIDIdef(format("%_%", \tunerMidiIndicator, msgType).asSymbol,{
-				|velocity,noteNumber,chan,src|
+			MIDIdef(format("%_%", \tunerMidiIndicator, msgType).asSymbol, {
+				|velocity, noteNumber, chan, src|
 				if (msgType == \noteOn, {
 					totalMidiNoteCount = totalMidiNoteCount + 1;
-				},{
+				}, {
 					if (totalMidiNoteCount > 0, {
-						totalMidiNoteCount	= totalMidiNoteCount - 1;
+						totalMidiNoteCount = totalMidiNoteCount - 1;
 					});
 				});
 				if (totalMidiNoteCount > 0, {
@@ -48,16 +72,16 @@ Tuner {
 				}, {
 					AppClock.sched(0.0, { midiIndicator.background_(palette.colour2); });
 				});
-			},msgType:msgType);
+			}, msgType: msgType);
 		});
 
 		midiToScAdapter = MidiToScAdapter(\default);
 	}
 
 	*new {
-		if (isOpen,{
+		if (isOpen, {
 			postln("The Tuner is already open.");
-		},{
+		}, {
 			^super.new.init;
 		});
 	}
