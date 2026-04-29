@@ -3,7 +3,7 @@ Tuner {
 
 	init {
 		var window, palette, topView, midiIndicator, midiToScAdapter,
-			fxBankButton, totalMidiNoteCount = 0;
+			fxBankButton, totalMidiNoteCount = 0, serverQuitFunc;
 
 		Setup.midi;
 		Setup.server;
@@ -15,12 +15,18 @@ Tuner {
 			.background_(palette.colour1)
 			.onClose_({
 				isOpen = false;
+				ServerQuit.remove(serverQuitFunc);
 				midiToScAdapter.free;
 				[\noteOn, \noteOff].do({
 					|msgType|
 					MIDIdef(format("%_%", \tunerMidiIndicator, msgType).asSymbol).free;
 				});
 			});
+
+		serverQuitFunc = {
+			window.close();
+		};
+		ServerQuit.add(serverQuitFunc);
 
 		window.layout = VLayout(
 			topView = View()
