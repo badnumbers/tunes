@@ -2,9 +2,8 @@ Tuner {
 	classvar isOpen = false;
 
 	init {
-		var window,palette,topView,bottomView,synthView,ampView,
-		synthSelector,midiIndicator,midiToScAdapter,
-		pattern,ampKnob,fxBankButton,isPlaying=false,totalMidiNoteCount=0;
+		var window, palette, topView, midiIndicator, midiToScAdapter,
+			fxBankButton, totalMidiNoteCount = 0;
 
 		Setup.midi;
 		Setup.server;

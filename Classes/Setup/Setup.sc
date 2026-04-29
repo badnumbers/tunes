@@ -4,6 +4,7 @@ Setup {
 	*midi {
 		if (prMidiOut.isMemberOf(MIDIOut) == false, {
 			MIDIClient.init;
+			MIDIIn.connectAll;
 			prMidiOut = MIDIOut.newByName(Config.midi.deviceName, Config.midi.portName);
 		});
 
