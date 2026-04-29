@@ -4,7 +4,17 @@ Setup {
 	*midi {
 		if (prMidiOut.isMemberOf(MIDIOut) == false, {
 			MIDIClient.init;
-			MIDIIn.connectAll;
+			try {
+				if (MIDIClient.externalSources.size > 0, {
+					MIDIClient.externalSources.do({ |src, i|
+						MIDIIn.connect(i, src);
+					});
+				}, {
+					MIDIIn.connectAll;
+				});
+			} {
+				MIDIIn.connectAll;
+			};
 			prMidiOut = MIDIOut.newByName(Config.midi.deviceName, Config.midi.portName);
 		});
 
