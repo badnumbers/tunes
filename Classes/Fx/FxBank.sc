@@ -77,8 +77,6 @@ FxBank {
 		};
 
 		prBuildDesk.value();
-
-		ServerQuit
 	}
 
 	*new {
