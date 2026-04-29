@@ -70,55 +70,63 @@ FxBankNHHall : FxBankEffect {
 	}
 
 	prRenderControlsView {
-		^View().maxHeight_(300).background_(Color.rand).visible_(false).layout_(
+		var p = GuiPalette.default;
+		var labelBg = { |i|
+			[p.colour2, p.colour3, p.colour4, p.colour5, p.colour1].wrapAt(i);
+		};
+		var labelFg = { |i|
+			var bg = labelBg.(i);
+			((bg == p.colour4) || (bg == p.colour5)).if(p.extreme1, p.extreme2);
+		};
+		^View().maxHeight_(300).background_(p.colour1).visible_(false).layout_(
 			HLayout(
 				VLayout(
 					prDryWetKnob = Knob().mode_(\vert).value_(0.3).minSize_(80@80).maxSize_(80@80),
-					StaticText().string_("DRY / WET").align_(\center).stringColor_(Color.white).minSize_(80@20).maxSize_(80@20).background_(Color.rand)
+					StaticText().string_("DRY / WET").align_(\center).stringColor_(labelFg.(0)).minSize_(80@20).maxSize_(80@20).background_(labelBg.(0))
 				),
 				VLayout(
 					prDecayKnob = Knob().mode_(\vert).value_(0.5).minSize_(80@80).maxSize_(80@80),
-					StaticText().string_("DECAY").align_(\center).stringColor_(Color.white).minSize_(80@20).maxSize_(80@20).background_(Color.rand)
+					StaticText().string_("DECAY").align_(\center).stringColor_(labelFg.(1)).minSize_(80@20).maxSize_(80@20).background_(labelBg.(1))
 				),
 				VLayout(
 					prStereoKnob = Knob().mode_(\vert).value_(0.5).minSize_(80@80).maxSize_(80@80),
-					StaticText().string_("STEREO").align_(\center).stringColor_(Color.white).minSize_(80@20).maxSize_(80@20).background_(Color.rand)
+					StaticText().string_("STEREO").align_(\center).stringColor_(labelFg.(2)).minSize_(80@20).maxSize_(80@20).background_(labelBg.(2))
 				),
 				VLayout(
 					prLowFreqKnob = Knob().mode_(\vert).value_(0.2).minSize_(80@80).maxSize_(80@80),
-					StaticText().string_("LOW FREQ").align_(\center).stringColor_(Color.white).minSize_(80@20).maxSize_(80@20).background_(Color.rand)
+					StaticText().string_("LOW FREQ").align_(\center).stringColor_(labelFg.(3)).minSize_(80@20).maxSize_(80@20).background_(labelBg.(3))
 				),
 				VLayout(
 					prLowRatioKnob = Knob().mode_(\vert).value_(0.25).minSize_(80@80).maxSize_(80@80),
-					StaticText().string_("LOW RATIO").align_(\center).stringColor_(Color.white).minSize_(80@20).maxSize_(80@20).background_(Color.rand)
+					StaticText().string_("LOW RATIO").align_(\center).stringColor_(labelFg.(4)).minSize_(80@20).maxSize_(80@20).background_(labelBg.(4))
 				),
 				VLayout(
 					prHiFreqKnob = Knob().mode_(\vert).value_(0.9).minSize_(80@80).maxSize_(80@80),
-					StaticText().string_("HI FREQ").align_(\center).stringColor_(Color.white).minSize_(80@20).maxSize_(80@20).background_(Color.rand)
+					StaticText().string_("HI FREQ").align_(\center).stringColor_(labelFg.(5)).minSize_(80@20).maxSize_(80@20).background_(labelBg.(5))
 				),
 				VLayout(
 					prHiRatioKnob = Knob().mode_(\vert).value_(0.25).minSize_(80@80).maxSize_(80@80),
-					StaticText().string_("HI RATIO").align_(\center).stringColor_(Color.white).minSize_(80@20).maxSize_(80@20).background_(Color.rand)
+					StaticText().string_("HI RATIO").align_(\center).stringColor_(labelFg.(6)).minSize_(80@20).maxSize_(80@20).background_(labelBg.(6))
 				),
 				VLayout(
 					prEarlyDiffusionKnob = Knob().mode_(\vert).value_(0.5).minSize_(80@80).maxSize_(80@80),
-					StaticText().string_("EARLY DIFFUSION").align_(\center).stringColor_(Color.white).minSize_(80@20).maxSize_(80@20).background_(Color.rand)
+					StaticText().string_("EARLY DIFFUSION").align_(\center).stringColor_(labelFg.(7)).minSize_(80@20).maxSize_(80@20).background_(labelBg.(7))
 				),
 				VLayout(
 					prLateDiffusionKnob = Knob().mode_(\vert).value_(0.5).minSize_(80@80).maxSize_(80@80),
-					StaticText().string_("LATE DIFFUSION").align_(\center).stringColor_(Color.white).minSize_(80@20).maxSize_(80@20).background_(Color.rand)
+					StaticText().string_("LATE DIFFUSION").align_(\center).stringColor_(labelFg.(8)).minSize_(80@20).maxSize_(80@20).background_(labelBg.(8))
 				),
 				VLayout(
 					prModRateKnob = Knob().mode_(\vert).value_(0.2).minSize_(80@80).maxSize_(80@80),
-					StaticText().string_("MOD RATE").align_(\center).stringColor_(Color.white).minSize_(80@20).maxSize_(80@20).background_(Color.rand)
+					StaticText().string_("MOD RATE").align_(\center).stringColor_(labelFg.(9)).minSize_(80@20).maxSize_(80@20).background_(labelBg.(9))
 				),
 				VLayout(
 					prModDepthKnob = Knob().mode_(\vert).value_(0.3).minSize_(80@80).maxSize_(80@80),
-					StaticText().string_("MOD DEPTH").align_(\center).stringColor_(Color.white).minSize_(80@20).maxSize_(80@20).background_(Color.rand)
+					StaticText().string_("MOD DEPTH").align_(\center).stringColor_(labelFg.(10)).minSize_(80@20).maxSize_(80@20).background_(labelBg.(10))
 				),
 				VLayout(
 					prPreDelayKnob = Knob().mode_(\vert).value_(0.05).minSize_(80@80).maxSize_(80@80),
-					StaticText().string_("PREDELAY RATIO").align_(\center).stringColor_(Color.white).minSize_(80@20).maxSize_(80@20).background_(Color.rand)
+					StaticText().string_("PREDELAY RATIO").align_(\center).stringColor_(labelFg.(11)).minSize_(80@20).maxSize_(80@20).background_(labelBg.(11))
 				),
 				[nil,s:1]
 		));

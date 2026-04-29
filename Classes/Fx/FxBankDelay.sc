@@ -35,29 +35,30 @@ FxBankDelay : FxBankEffect {
 	}
 
 	prRenderControlsView {
-		^View().maxHeight_(300).background_(Color.rand).visible_(false).layout_(
+		var p = GuiPalette.default;
+		^View().maxHeight_(300).background_(p.colour1).visible_(false).layout_(
 			HLayout(
 				VLayout(
 					prDryWetKnob = Knob().mode_(\vert).value_(0.2).minSize_(80@80).maxSize_(80@80),
-					StaticText().string_("DRY / WET").align_(\center).stringColor_(Color.white).minSize_(80@20).maxSize_(80@20).background_(Color.rand)
+					StaticText().string_("DRY / WET").align_(\center).stringColor_(p.extreme2).minSize_(80@20).maxSize_(80@20).background_(p.colour2)
 				),
 				VLayout(
 					prDecayKnob = Knob().mode_(\vert).value_(0.5).minSize_(80@80).maxSize_(80@80),
-					StaticText().string_("DECAY").align_(\center).stringColor_(Color.white).minSize_(80@20).maxSize_(80@20).background_(Color.rand)
+					StaticText().string_("DECAY").align_(\center).stringColor_(p.extreme2).minSize_(80@20).maxSize_(80@20).background_(p.colour3)
 				),
 				VLayout(
 					HLayout(
-						StaticText().string_("LEFT DELAY").align_(\left).stringColor_(Color.white).minSize_(80@20).maxSize_(80@20).background_(Color.rand),
-						prLeftDelayDropDown = PopUpMenu().items_(["1/4", "1/3" , "1/2", "3/4" , "1", "5/4", "4/3", "1.5", "2", "3", "4"]).value_(4).background_(Color.rand)
+						StaticText().string_("LEFT DELAY").align_(\left).stringColor_(p.extreme2).minSize_(80@20).maxSize_(80@20).background_(p.colour4),
+						prLeftDelayDropDown = PopUpMenu().items_(["1/4", "1/3" , "1/2", "3/4" , "1", "5/4", "4/3", "1.5", "2", "3", "4"]).value_(4).background_(p.colour5)
 					),
 					HLayout(
-						StaticText().string_("RIGHT DELAY").align_(\left).stringColor_(Color.white).minSize_(80@20).maxSize_(80@20).background_(Color.rand),
-						prRightDelayDropDown = PopUpMenu().items_(["1/4", "1/3" , "1/2", "3/4" , "1", "5/4", "4/3", "1.5", "2", "3", "4"]).value_(4).background_(Color.rand)
+						StaticText().string_("RIGHT DELAY").align_(\left).stringColor_(p.extreme2).minSize_(80@20).maxSize_(80@20).background_(p.colour1),
+						prRightDelayDropDown = PopUpMenu().items_(["1/4", "1/3" , "1/2", "3/4" , "1", "5/4", "4/3", "1.5", "2", "3", "4"]).value_(4).background_(p.colour2)
 					)
 				),
 				VLayout(
 					prWanderKnob = Knob().mode_(\vert).value_(0).minSize_(80@80).maxSize_(80@80),
-					StaticText().string_("WANDER").align_(\center).stringColor_(Color.white).minSize_(80@20).maxSize_(80@20).background_(Color.rand)
+					StaticText().string_("WANDER").align_(\center).stringColor_(p.extreme2).minSize_(80@20).maxSize_(80@20).background_(p.colour3)
 				),
 				[nil,s:1]
 		));

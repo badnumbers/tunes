@@ -25,19 +25,20 @@ FxBankPowerChorus : FxBankEffect {
 	}
 
 	prRenderControlsView {
-		^View().maxHeight_(300).background_(Color.rand).visible_(false).layout_(
+		var p = GuiPalette.default;
+		^View().maxHeight_(300).background_(p.colour1).visible_(false).layout_(
 			HLayout(
 				VLayout(
 					prDryWetKnob = Knob().mode_(\vert).value_(1).minSize_(80@80).maxSize_(80@80),
-					StaticText().string_("DRY / WET").align_(\center).stringColor_(Color.white).minSize_(80@20).maxSize_(80@20).background_(Color.rand)
+					StaticText().string_("DRY / WET").align_(\center).stringColor_(p.extreme2).minSize_(80@20).maxSize_(80@20).background_(p.colour2)
 				),
 				VLayout(
 					prFreqSpreadKnob = Knob().mode_(\vert).value_(0.25).minSize_(80@80).maxSize_(80@80),
-					StaticText().string_("FREQ SPREAD").align_(\center).stringColor_(Color.white).minSize_(80@20).maxSize_(80@20).background_(Color.rand)
+					StaticText().string_("FREQ SPREAD").align_(\center).stringColor_(p.extreme2).minSize_(80@20).maxSize_(80@20).background_(p.colour3)
 				),
 				VLayout(
 					prWanderKnob = Knob().mode_(\vert).value_(0.5).minSize_(80@80).maxSize_(80@80),
-					StaticText().string_("WANDER").align_(\center).stringColor_(Color.white).minSize_(80@20).maxSize_(80@20).background_(Color.rand)
+					StaticText().string_("WANDER").align_(\center).stringColor_(p.extreme2).minSize_(80@20).maxSize_(80@20).background_(p.colour4)
 				),
 				[nil,s:1]
 		));

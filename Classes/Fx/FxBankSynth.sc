@@ -35,13 +35,14 @@ FxBankSynth {
 		prSetupHardwareSynth = {
 			|uiContainer|
 			var logoView, headerLayout, effectsLayout;
+			var palette = GuiPalette.default;
 
 			uiContainer.add(
-				View().background_(Color.black).layout_(VLayout(
+				View().background_(palette.colour2).layout_(VLayout(
 					// Header section
-					View().minHeight_(120).maxHeight_(120).background_(Color.rand).layout_(
+					View().minHeight_(120).maxHeight_(120).background_(palette.colour4).layout_(
 						HLayout(
-							logoView = UserView().minSize_(210@140).maxSize_(210@140).background_(Color.rand),
+							logoView = UserView().minSize_(170@120).maxSize_(170@120).background_(Color.rand),
 							CheckBox().action_({
 								|checkBox|
 								prToggle.value(checkBox.value);
@@ -53,8 +54,8 @@ FxBankSynth {
 							[nil,s:1]
 					)),
 					//Effects section
-					ScrollView().background_(Color.rand).canvas_(
-						View().layout_(
+					ScrollView().background_(palette.colour1).canvas_(
+						View().background_(palette.colour2).layout_(
 							effectsLayout = VLayout()
 						)
 					)
@@ -62,10 +63,10 @@ FxBankSynth {
 
 			if (prSynthConfig.logoImage.isKindOf(Image),{
 				logoView.drawFunc_({
-					prSynthConfig.logoImage.drawInRect(Rect(20, 10, 170,120), Rect(0, 0, 170,120), 2, 1.0);
+					prSynthConfig.logoImage.drawInRect(Rect(0, 0, 170,120), Rect(0, 0, 170,120), 2, 1.0);
 				});
 			},{
-				StaticText(logoView, Rect(0,60,210,20)).string_(prSynthConfig.id).stringColor_(Color.black).align_(\center);
+				StaticText(logoView, Rect(0,60,210,20)).string_(prSynthConfig.id).stringColor_(palette.extreme1).align_(\center);
 			});
 
 			prEffectTypes.do({

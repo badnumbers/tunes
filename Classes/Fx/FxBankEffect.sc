@@ -43,14 +43,15 @@ FxBankEffect {
 
 		prRenderControls = {
 			|fxBankSynth, uiContainer|
-			var controlsSection;
-			uiContainer.add(prEverythingContainer = View().background_(Color.rand).layout_(
+			var palette;
+			palette = GuiPalette.default;
+			uiContainer.add(prEverythingContainer = View().background_(palette.colour3).layout_(
 				VLayout(
 					// Title of effect and check box
-					View().minHeight_(50).maxHeight_(50).background_(Color.rand).layout_(
+					View().minHeight_(50).maxHeight_(50).background_(palette.colour4).layout_(
 						HLayout(
 							prEnabledCheckBox = CheckBox().action_({|checkBox|prToggle.value(checkBox.value);}),
-							StaticText().background_(Color.rand).string_(this.prGetTitle())
+							StaticText().background_(palette.colour5).stringColor_(palette.extreme1).string_(this.prGetTitle())
 						)
 					),
 					// Controls

@@ -11,7 +11,8 @@ FxBank {
 		prBuildDesk = {
 			var window, carousel, synthsStackContainer, carouselviews;
 			var serverQuitFunc;
-			window = Window("FX Bank",Rect(10,10,600,400)).front;
+			var palette = GuiPalette.default;
+			window = Window("FX Bank",Rect(10,10,600,400)).front.background_(palette.colour1);
 			synthsStackContainer = StackLayout().mode_(0);
 
 			// We have to create the carousel views first before adding them to the carousel
@@ -25,12 +26,13 @@ FxBank {
 			});
 
 			window.layout = HLayout(
-				View().background_(Color.rand).layout_(synthsStackContainer),
+				View().layout_(synthsStackContainer),
 				ScrollView()
 				.minWidth_(205)
 				.maxWidth_(205)
 				.hasHorizontalScroller_(false)
-				.canvas_(View().layout_(carousel = VLayout(*carouselviews)))
+				.background_(palette.colour2)
+				.canvas_(View().background_(palette.colour2).layout_(carousel = VLayout(*carouselviews)))
 			);
 
 			serverQuitFunc = {
