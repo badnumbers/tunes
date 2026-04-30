@@ -18,6 +18,7 @@ Sequencer2Gui {
 	init {
 		|sequencer,tempoClock|
 		var window, stackLayout, midiIndicator, fxBankButton, settingsButton, arrangeButton, recordButton, startRecordingButton, midiRecordingGui;
+		var tempoKnob;
 		var totalMidiNoteCount = 0;
 		var renderButtonFunc;
 		Validator.validateMethodParameterType(sequencer, Sequencer2, "sequencer", "Sequencer2Gui", "init");
@@ -78,6 +79,22 @@ Sequencer2Gui {
 				prSettingsView = View().background_(prPalette.colour2).layout_(
 					VLayout(
 						fxBankButton,
+						HLayout(
+							VLayout(
+								tempoKnob = Knob()
+									.mode_(\vert)
+									.minSize_(80@80)
+									.maxSize_(80@80),
+								StaticText()
+									.string_("TEMPO")
+									.align_(\center)
+									.stringColor_(prPalette.extreme2)
+									.minSize_(80@20)
+									.maxSize_(80@20)
+									.background_(prPalette.colour3)
+							),
+							[nil, s: 1]
+						),
 						[nil, s: 1]
 					).margins_(25).spacing_(25)
 				)
@@ -90,6 +107,16 @@ Sequencer2Gui {
 		// Draw buttons in main header
 		fxBankButton.mouseUpAction_({
 			FxBank();
+		});
+		{
+			var initialTempo = prTempoClock.tryPerform(\tempo) ? 1.0;
+			if (initialTempo.isNumber.not, { initialTempo = 1.0; });
+			initialTempo = initialTempo.clip(1, 4);
+			prTempoClock.tempo_(initialTempo);
+			tempoKnob.value_(initialTempo.explin(1, 4, 0, 1));
+		}.value;
+		tempoKnob.action_({ |knob|
+			prTempoClock.tempo_(knob.value.linexp(0, 1, 1, 4));
 		});
 		settingsButton.mouseUpAction_({
 			stackLayout.index_(2);
