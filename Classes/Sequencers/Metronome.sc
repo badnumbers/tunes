@@ -5,7 +5,6 @@ Metronome {
 	*play {
 		if (Server.default.serverRunning, {
 			if (synthDefSent == false, {
-			postln(format("synthDefSent is false"));
 			SynthDef(\metronome, { |out,gate = 0.5,amp=0.5|
 				var audio;
 				audio = WhiteNoise.ar;
@@ -19,7 +18,7 @@ Metronome {
 		Pdef(\metronome,
 			PmonoArtic(\metronome,
 				\dur, 0.5,
-				\amp, Pseq([0.5,0.1],inf) * Pfunc({prVolume}),
+				\amp, Pseq([1,0.2],inf) * Pfunc({prVolume}),
 				\freq, Pwhite(1, 8) * 100,
 				\legato, 0.2,
 				\trig, 1
@@ -28,8 +27,6 @@ Metronome {
 		},{
 			warn("The server is not running so the Metronome won't play.");
 		});
-
-
 	}
 
 	*stop {
