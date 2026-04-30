@@ -11,12 +11,13 @@ Sequencer2Gui {
 	var prRightPanelHeader;
 	var prSequencer;
 	var prSequencerData;
+	var prSettingsView;
 	var prTempoClock;
 	var prWindow;
 
 	init {
 		|sequencer,tempoClock|
-		var window, stackLayout, midiIndicator, fxBankButton, arrangeButton, recordButton, startRecordingButton, midiRecordingGui;
+		var window, stackLayout, midiIndicator, fxBankButton, settingsButton, arrangeButton, recordButton, startRecordingButton, midiRecordingGui;
 		var totalMidiNoteCount = 0;
 		var renderButtonFunc;
 		Validator.validateMethodParameterType(sequencer, Sequencer2, "sequencer", "Sequencer2Gui", "init");
@@ -41,6 +42,7 @@ Sequencer2Gui {
 				StaticText().string_("Sequencer").stringColor_(prPalette.colour5).font_(Font(size:32)),
 				[nil, s: 1],
 				fxBankButton = renderButtonFunc.value("FX bank"),
+				settingsButton = renderButtonFunc.value("Settings"),
 				arrangeButton = renderButtonFunc.value("Arrange"),
 				recordButton = renderButtonFunc.value("Record"),
 				midiIndicator = BorderView().background_(prPalette.colour2).borderColour_(prPalette.colour3).borderRadius_(3).borderWidth_(2).minSize_(50@50).maxSize_(50@50);
@@ -71,7 +73,8 @@ Sequencer2Gui {
 							[nil, s: 1]
 						).margins_(10).spacing_(10)
 					)
-				))
+				)),
+				prSettingsView = View().background_(prPalette.colour2)
 		)).margins_(20).spacing_(20);
 
 		StaticText(prLeftPanelHeader, Rect(30, 30, 200, 40)).string_("Sections").stringColor_(prPalette.extreme2).font_(Font(size:24));
@@ -81,6 +84,9 @@ Sequencer2Gui {
 		// Draw buttons in main header
 		fxBankButton.mouseUpAction_({
 			FxBank();
+		});
+		settingsButton.mouseUpAction_({
+			stackLayout.index_(2);
 		});
 		arrangeButton.mouseUpAction_({
 			stackLayout.index_(0);
