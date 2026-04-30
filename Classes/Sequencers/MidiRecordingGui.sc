@@ -218,7 +218,9 @@ MidiRecordingGui : SCViewHolder {
 				},msgType:msgType);
 			});
 			Setup.server;
-			Metronome.play;
+			Server.default.doWhenBooted({
+				Metronome.play;
+			});
 		});
 	}
 
