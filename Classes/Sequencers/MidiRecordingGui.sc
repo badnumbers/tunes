@@ -16,10 +16,11 @@ MidiRecordingGui : SCViewHolder {
 
 	init {
 		|parent,bounds,palette,tempoClock|
-		var selectionView;
+		var selectionView,timelineView;
 		var pianoRollHeight,pianoRollWidth;
 		var snapNotesFunc, moveStartOrStopLineFunc;
 		prView = ScrollView();
+		prView.action_({timelineView.bounds = Rect(timelineView.bounds.left,prView.visibleOrigin.y+2, timelineView.bounds.width,timelineView.bounds.height);});
 		this.view = prView;
 		prPalette = palette;
 		prView.background_(prPalette.extreme2);
@@ -140,6 +141,8 @@ MidiRecordingGui : SCViewHolder {
 			postln(format("The closest line is %.", closestLine));
 			closestLine.bounds_(Rect(mouseX.round(prNoteViewScale[\horizontal]), closestLine.bounds.top, closestLine.bounds.width, closestLine.bounds.height));
 		};
+
+		timelineView = View(prView, Rect(2,2,prPianoRollWidth-4,20)).background_(prPalette.colour1);
 	}
 
 	*new {
