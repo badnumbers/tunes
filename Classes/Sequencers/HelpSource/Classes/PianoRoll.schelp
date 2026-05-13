@@ -1,0 +1,37 @@
+TITLE:: PianoRoll
+SUMMARY:: Piano-roll view for MIDI recording and note editing.
+CATEGORIES:: Streams-Patterns-Events
+RELATED:: Classes/PianoRollNote, Classes/SequencerGui
+
+DESCRIPTION::
+LINK::Classes/PianoRoll:: is a LINK::Classes/SCViewHolder:: that shows recorded notes as a piano roll. It listens for MIDI note-on and note-off events (when not in dev mode) and draws LINK::Classes/PianoRollNote:: entries as LINK::Classes/BorderView:: regions. LINK::#-stopRecording:: frees the recording LINK::Classes/MIDIdef::s and draws vertical start/stop markers for loop bounds.
+
+CLASSMETHODS::
+
+METHOD:: new
+Creates a LINK::Classes/PianoRoll::.
+
+ARGUMENT:: parent
+Unused in the current implementation; reserved for embedding.
+
+ARGUMENT:: bounds
+Unused in the current implementation; reserved for layout.
+
+ARGUMENT:: palette
+A LINK::Classes/GuiPalette:: used for colours.
+
+ARGUMENT:: tempoClock
+The LINK::Classes/TempoClock:: used for timing when recording.
+
+INSTANCEMETHODS::
+
+METHOD:: startRecording
+Arms MIDI recording (or fills fake notes in dev mode), starts the metronome after the server boots when using live MIDI.
+
+METHOD:: stopRecording
+Stops recording, frees recording LINK::Classes/MIDIdef::s, stops the metronome, and updates loop start/stop lines from recorded notes.
+
+METHOD:: playBackRecording
+Placeholder for future playback of the recorded notes.
+
+PRIVATE:: init

@@ -1,9 +1,9 @@
 TITLE:: SequencePlayer
-SUMMARY:: Plays a sequence of notes from MidiRecordingGui.
-RELATED:: Classes/MidiRecordingGui, Classes/Sequencer
+SUMMARY:: Plays a sequence of notes from PianoRoll.
+RELATED:: Classes/PianoRoll, Classes/Sequencer
 
 DESCRIPTION::
-Allows a set of notes displayed in a LINK::Classes/MidiRecordingGui::, for example which has just been recorded from a keyboard, to be played back.
+Allows a set of notes displayed in a LINK::Classes/PianoRoll::, for example which has just been recorded from a keyboard, to be played back.
 
 NOTE::
 You can run the unit tests for TELETYPE::Sequencer:: by running:

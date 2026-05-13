@@ -1,4 +1,4 @@
-MidiRecordingGui : SCViewHolder {
+PianoRoll : SCViewHolder {
 	var prAbsoluteStartTime;
 	var prActiveModifierKeys=0;
 	var prBackgroundView;
@@ -151,8 +151,8 @@ MidiRecordingGui : SCViewHolder {
 
 	*new {
 		|parent,bounds,palette,tempoClock|
-		Validator.validateMethodParameterType(palette, GuiPalette, "palette", "MidiRecordingGui", "new");
-		Validator.validateMethodParameterType(tempoClock, TempoClock, "tempoClock", "MidiRecordingGui", "new");
+		Validator.validateMethodParameterType(palette, GuiPalette, "palette", "PianoRoll", "new");
+		Validator.validateMethodParameterType(tempoClock, TempoClock, "tempoClock", "PianoRoll", "new");
 		^super.new.init(parent,bounds,palette,tempoClock);
 	}
 

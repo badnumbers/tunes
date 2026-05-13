@@ -1,7 +1,7 @@
 TITLE:: SequencerGui
 SUMMARY:: Provides a GUI to visually represent sequences created using a Sequencer.
 CATEGORIES:: Streams-Patterns-Events
-RELATED:: Classes/Sequencer, Classes/MidiRecordingGui
+RELATED:: Classes/Sequencer, Classes/PianoRoll
 
 DESCRIPTION::
 LINK::Classes/SequencerGui:: provides a visualisation of a graph of LINK::Classes/Pattern::s created using a LINK::Classes/Sequencer::. This is created when calling LINK::Classes/Sequencer#-showGui::.
