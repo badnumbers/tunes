@@ -124,9 +124,13 @@ PianoRoll : SCViewHolder {
 		};
 
 		prLoopMarkers = PianoRollLoopMarkers(prBackgroundView, prNoteViewScale[\horizontal], prPianoRollHeight, prPalette, prPianoRollWidth / prNoteViewScale[\horizontal]);
-		prTimeline = PianoRollTimeline(prView, prPianoRollWidth - 4, prPalette, prNoteViewScale[\horizontal], { |beat, buttonNumber|
+		prTimeline = PianoRollTimeline(prView, prPianoRollWidth - 4, prPalette, prNoteViewScale[\horizontal], { |beat, buttonNumber, modifiers|
 			if (buttonNumber == 0, {
-				prLoopMarkers.loopStart_(beat);
+				if (modifiers.isShift, {
+					prLoopMarkers.playbackBeat_(beat);
+				}, {
+					prLoopMarkers.loopStart_(beat);
+				});
 			}, {
 				prLoopMarkers.loopEnd_(beat);
 			});

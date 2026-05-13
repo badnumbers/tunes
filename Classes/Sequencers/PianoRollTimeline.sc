@@ -13,7 +13,7 @@ PianoRollTimeline : SCViewHolder {
 				|view, x, y, modifiers, buttonNumber, clickCount|
 				if ((clickCount == 1) && ((buttonNumber == 0) || (buttonNumber == 1)), {
 					var beat = x / horizontalScale;
-					loopClickFunc.value(beat, buttonNumber);
+					loopClickFunc.value(beat, buttonNumber, modifiers);
 				});
 			});
 		});
