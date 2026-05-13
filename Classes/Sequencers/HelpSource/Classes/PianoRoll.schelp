@@ -29,7 +29,7 @@ METHOD:: startRecording
 Arms MIDI recording (or fills fake notes in dev mode), starts the metronome after the server boots when using live MIDI.
 
 METHOD:: stopRecording
-Stops recording, frees recording LINK::Classes/MIDIdef::s, stops the metronome, and updates LINK::Classes/PianoRollLoopMarkers:: from recorded notes.
+Stops recording, frees recording LINK::Classes/MIDIdef::s, stops the metronome, and updates LINK::Classes/PianoRollLoopMarkers:: from recorded notes (loop bounds plus LINK::Classes/PianoRollLoopMarkers#-playbackBeat_:: at the loop start beat).
 
 METHOD:: playBackRecording
 Placeholder for future playback of the recorded notes.

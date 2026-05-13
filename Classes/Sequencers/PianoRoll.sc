@@ -126,9 +126,9 @@ PianoRoll : SCViewHolder {
 		prLoopMarkers = PianoRollLoopMarkers(prBackgroundView, prNoteViewScale[\horizontal], prPianoRollHeight, prPalette, prPianoRollWidth / prNoteViewScale[\horizontal]);
 		prTimeline = PianoRollTimeline(prView, prPianoRollWidth - 4, prPalette, prNoteViewScale[\horizontal], { |beat, buttonNumber|
 			if (buttonNumber == 0, {
-				prLoopMarkers.setLoopStartFromClickBeat_(beat);
+				prLoopMarkers.loopStart_(beat);
 			}, {
-				prLoopMarkers.setLoopEndFromClickBeat_(beat);
+				prLoopMarkers.loopEnd_(beat);
 			});
 		});
 	}
@@ -237,7 +237,8 @@ PianoRoll : SCViewHolder {
 		if (startTime >= stopTime,{
 			stopTime = startTime + 1;
 		});
-		prLoopMarkers.setLoopStartFromClickBeat_(startTime);
-		prLoopMarkers.setLoopEndFromClickBeat_(stopTime);
+		prLoopMarkers.loopStart_(startTime);
+		prLoopMarkers.playbackBeat_(startTime);
+		prLoopMarkers.loopEnd_(stopTime);
 	}
 }

@@ -1,7 +1,10 @@
 PianoRollLoopMarkers {
 	var prHorizontalScale;
-	var prLineColour;
+	var prLoopLineColour;
 	var prParent;
+	var prPlaybackBeat;
+	var prPlaybackLine;
+	var prPlaybackLineColour;
 	var prRollHeight;
 	var prSnapResolutionBeats;
 	var prStartBeat;
@@ -14,31 +17,46 @@ PianoRollLoopMarkers {
 		prParent = parent;
 		prHorizontalScale = horizontalScale;
 		prRollHeight = rollHeight;
-		prLineColour = palette.colour5;
+		prLoopLineColour = palette.colour5;
+		prPlaybackLineColour = palette.colour3;
 		prSnapResolutionBeats = 0.25;
 		prStartBeat = 0;
 		prStopBeat = if (defaultStopBeat.notNil, { defaultStopBeat }, { 128 });
+		prPlaybackBeat = 0;
 	}
 
-	setLoopEndFromClickBeat_ {
+	playbackBeat_ {
 		|rawBeat|
-		var snapped = this.prSnapBeat(rawBeat);
-		if (snapped <= prStartBeat, {
-			"PianoRollLoopMarkers: cannot set loop end to % beats (would be at or before loop start at %); action ignored.".format(snapped, prStartBeat).warn;
-			^this;
-		});
-		prStopBeat = snapped;
+		var snapped;
+		Validator.validateMethodParameterType(rawBeat, Number, "rawBeat", "PianoRollLoopMarkers", "playbackBeat_");
+		snapped = this.prSnapBeat(rawBeat);
+		prPlaybackBeat = snapped;
 		this.prUpdateLineViews;
 	}
 
-	setLoopStartFromClickBeat_ {
+	loopStart_ {
 		|rawBeat|
-		var snapped = this.prSnapBeat(rawBeat);
+		var snapped;
+		Validator.validateMethodParameterType(rawBeat, Number, "rawBeat", "PianoRollLoopMarkers", "loopStart_");
+		snapped = this.prSnapBeat(rawBeat);
 		if (snapped >= prStopBeat, {
 			"PianoRollLoopMarkers: cannot set loop start to % beats (would be at or after loop end at %); action ignored.".format(snapped, prStopBeat).warn;
 			^this;
 		});
 		prStartBeat = snapped;
+		this.prUpdateLineViews;
+	}
+
+	loopEnd_ {
+		|rawBeat|
+		var snapped;
+		Validator.validateMethodParameterType(rawBeat, Number, "rawBeat", "PianoRollLoopMarkers", "loopEnd_");
+		snapped = this.prSnapBeat(rawBeat);
+		if (snapped <= prStartBeat, {
+			"PianoRollLoopMarkers: cannot set loop end to % beats (would be at or before loop start at %); action ignored.".format(snapped, prStartBeat).warn;
+			^this;
+		});
+		prStopBeat = snapped;
 		this.prUpdateLineViews;
 	}
 
@@ -48,14 +66,17 @@ PianoRollLoopMarkers {
 	}
 
 	prUpdateLineViews {
+		var playX = prPlaybackBeat * prHorizontalScale;
 		var startX = prStartBeat * prHorizontalScale;
 		var stopX = prStopBeat * prHorizontalScale;
 		if (prStartLine.isNil, {
-			prStartLine = View(prParent, Rect(startX, 0, 1, prRollHeight)).background_(prLineColour);
-			prStopLine = View(prParent, Rect(stopX, 0, 1, prRollHeight)).background_(prLineColour);
+			prStartLine = View(prParent, Rect(startX, 0, 1, prRollHeight)).background_(prLoopLineColour);
+			prStopLine = View(prParent, Rect(stopX, 0, 1, prRollHeight)).background_(prLoopLineColour);
+			prPlaybackLine = View(prParent, Rect(playX, 0, 1, prRollHeight)).background_(prPlaybackLineColour);
 		}, {
 			prStartLine.bounds_(Rect(startX, 0, 1, prRollHeight));
 			prStopLine.bounds_(Rect(stopX, 0, 1, prRollHeight));
+			prPlaybackLine.bounds_(Rect(playX, 0, 1, prRollHeight));
 		});
 	}
 
