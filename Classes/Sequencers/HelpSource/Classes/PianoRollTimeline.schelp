@@ -4,7 +4,7 @@ CATEGORIES:: Streams-Patterns-Events
 RELATED:: Classes/PianoRoll
 
 DESCRIPTION::
-TELETYPE::PianoRollTimeline:: is a LINK::Classes/SCViewHolder:: whose LINK::Classes/View:: sits above the note area inside the same LINK::Classes/ScrollView:: as LINK::Classes/PianoRoll::. Vertical scrolling of the roll updates the strip so it stays aligned with the visible top edge. Horizontal beat lines use the same spacing as the piano roll. Future marker placement (record start, loop bounds) can attach to LINK::#-view:: without competing with note selection gestures.
+TELETYPE::PianoRollTimeline:: is a LINK::Classes/SCViewHolder:: whose LINK::Classes/View:: sits above the note area inside the same LINK::Classes/ScrollView:: as LINK::Classes/PianoRoll::. Vertical scrolling of the roll updates the strip so it stays aligned with the visible top edge. Horizontal beat lines use the same spacing as the piano roll. If LINK::#-new:: is given a LINK::Classes/Function::, a single left click sets the loop start and a single right click sets the loop end via LINK::Classes/PianoRollLoopMarkers:: (see that class for snap and validation rules).
 
 NOTE::
 Pass a width in pixels that matches the scrollable piano-roll document (for example the roll LINK::Classes/UserView:: width), not the LINK::Classes/ScrollView:: viewport width alone.
@@ -25,5 +25,8 @@ A LINK::Classes/GuiPalette:: for background and grid line colours.
 
 ARGUMENT:: horizontalScale
 Pixels per beat, matching the piano roll's horizontal scale.
+
+ARGUMENT:: loopClickFunc
+Optional LINK::Classes/Function:: evaluated as CODE::func.value(beat, buttonNumber):: on a single left (0) or right (1) click. Beat is the click x-coordinate divided by horizontalScale. Pass nil to disable click handling.
 
 PRIVATE:: init

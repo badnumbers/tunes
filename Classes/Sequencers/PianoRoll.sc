@@ -123,8 +123,14 @@ PianoRoll : SCViewHolder {
 			prRecordedNotes.do({|recordedNote|recordedNote.snap(resolution);});
 		};
 
-		prLoopMarkers = PianoRollLoopMarkers(prBackgroundView, prNoteViewScale[\horizontal], prPianoRollHeight, prPalette);
-		prTimeline = PianoRollTimeline(prView, prPianoRollWidth - 4, prPalette, prNoteViewScale[\horizontal]);
+		prLoopMarkers = PianoRollLoopMarkers(prBackgroundView, prNoteViewScale[\horizontal], prPianoRollHeight, prPalette, prPianoRollWidth / prNoteViewScale[\horizontal]);
+		prTimeline = PianoRollTimeline(prView, prPianoRollWidth - 4, prPalette, prNoteViewScale[\horizontal], { |beat, buttonNumber|
+			if (buttonNumber == 0, {
+				prLoopMarkers.setLoopStartFromClickBeat_(beat);
+			}, {
+				prLoopMarkers.setLoopEndFromClickBeat_(beat);
+			});
+		});
 	}
 
 	*new {
@@ -231,6 +237,7 @@ PianoRoll : SCViewHolder {
 		if (startTime >= stopTime,{
 			stopTime = startTime + 1;
 		});
-		prLoopMarkers.loopBoundsInBeats_(startTime, stopTime);
+		prLoopMarkers.setLoopStartFromClickBeat_(startTime);
+		prLoopMarkers.setLoopEndFromClickBeat_(stopTime);
 	}
 }

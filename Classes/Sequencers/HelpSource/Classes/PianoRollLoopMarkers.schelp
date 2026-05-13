@@ -1,15 +1,17 @@
 TITLE:: PianoRollLoopMarkers
 SUMMARY:: Vertical loop start and stop lines on a piano roll.
 CATEGORIES:: Streams-Patterns-Events
-RELATED:: Classes/PianoRoll
+RELATED:: Classes/PianoRoll, Classes/PianoRollTimeline
 
 DESCRIPTION::
-TELETYPE::PianoRollLoopMarkers:: holds two LINK::Classes/View:: instances (one beat wide). LINK::Classes/PianoRoll#-stopRecording:: calls LINK::#-loopBoundsInBeats_:: with the recorded note range. The LINK::Classes/GuiPalette:: passed to LINK::#-new:: is only used for the marker colour (LINK::Classes/GuiPalette#-colour5::) when the lines are first created.
+TELETYPE::PianoRollLoopMarkers:: holds two LINK::Classes/View:: instances (one beat wide). LINK::Classes/PianoRoll#-stopRecording:: applies the recorded note range by calling LINK::#-setLoopStartFromClickBeat_:: and LINK::#-setLoopEndFromClickBeat_:: in that order (same snapping and ordering rules as timeline clicks). The LINK::Classes/GuiPalette:: passed to LINK::#-new:: is only used for the marker colour (LINK::Classes/GuiPalette#-colour5::) when the lines are first created.
+
+Snap resolution for timeline clicks is stored in the instance variable CODE::prSnapResolutionBeats:: (beats between snap grid points; default one sixteenth note). Clicks are snapped with rounding before the start/end ordering rules are applied.
 
 CLASSMETHODS::
 
 METHOD:: new
-Creates a TELETYPE::PianoRollLoopMarkers::. The line LINK::Classes/View::s are created on the first call to LINK::#-loopBoundsInBeats_::.
+Creates a TELETYPE::PianoRollLoopMarkers::. The line LINK::Classes/View::s are created on the first successful call to LINK::#-setLoopStartFromClickBeat_:: or LINK::#-setLoopEndFromClickBeat_::.
 
 ARGUMENT:: parent
 The roll surface (typically the piano roll LINK::Classes/UserView::) on which the lines are parented.
@@ -23,15 +25,21 @@ Height of the lines in pixels (typically the full roll height).
 ARGUMENT:: palette
 A LINK::Classes/GuiPalette::; only LINK::Classes/GuiPalette#-colour5:: is kept for drawing the lines.
 
+ARGUMENT:: defaultStopBeat
+Initial loop end beat before any marker is set (for example the roll length in beats). Pass nil to use a built-in default.
+
 INSTANCEMETHODS::
 
-METHOD:: loopBoundsInBeats_
-Creates or updates the start and stop lines at the given beat positions.
+METHOD:: setLoopStartFromClickBeat_
+Snaps the given beat using CODE::prSnapResolutionBeats::, then sets the start marker if the snapped beat is strictly before the current end marker. Otherwise posts a warning and does nothing. Also used when LINK::Classes/PianoRoll:: applies the recorded range after LINK::#-stopRecording::.
 
-ARGUMENT:: startBeat
-Beat index for the loop start line.
+ARGUMENT:: rawBeat
+Unsnapped beat position (e.g. from a timeline click or from recorded note timing).
 
-ARGUMENT:: stopBeat
-Beat index for the loop stop line.
+METHOD:: setLoopEndFromClickBeat_
+Snaps the given beat using CODE::prSnapResolutionBeats::, then sets the end marker if the snapped beat is strictly after the current start marker. Otherwise posts a warning and does nothing. Also used when LINK::Classes/PianoRoll:: applies the recorded range after LINK::#-stopRecording::.
 
-PRIVATE:: init
+ARGUMENT:: rawBeat
+Unsnapped beat position (e.g. from a timeline click or from recorded note timing).
+
+PRIVATE:: init, prSnapBeat, prUpdateLineViews
