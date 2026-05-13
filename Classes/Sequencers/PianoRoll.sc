@@ -142,7 +142,7 @@ PianoRoll : SCViewHolder {
 			closestLine.bounds_(Rect(mouseX.round(prNoteViewScale[\horizontal]), closestLine.bounds.top, closestLine.bounds.width, closestLine.bounds.height));
 		};
 
-		prTimeline = PianoRollTimeline(prView, prPianoRollWidth - 4, 20, prPalette, prNoteViewScale[\horizontal]);
+		prTimeline = PianoRollTimeline(prView, prPianoRollWidth - 4, prPalette, prNoteViewScale[\horizontal]);
 	}
 
 	*new {
