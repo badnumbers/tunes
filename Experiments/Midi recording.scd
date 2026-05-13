@@ -3,7 +3,7 @@ FxBank()
 TempoClock.tempo_(1.5)
 Setup.midi
 (
- ~seq = Sequencer2();
+ ~seq = Sequencer();
 ~seq.showGui;
 )
 Synths(\jx03).showGui
@@ -17,6 +17,11 @@ PipeWire.connectAllToSoundcard
 UnitTest.runTest("SequencePlayerUnitTests:test_something")
 
 Tuner()
+
+TempoClock.default.tempo = 3;
+
+PipeWire.connectAllToSoundcard
+PipeWire.disconnectAllFromSoundcard
 
 (
 var moo = Setup.midi.noteOn(15,15,15);

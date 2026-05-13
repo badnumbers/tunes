@@ -14,7 +14,7 @@
 	var bracketIndent = 0;
 	var chars = Array.newClear(10);
 	var index = location[0][0];
-	var parentPatternText = PatternText(Sequencer, nil, index);
+	var parentPatternText = PatternText(Sequencer_Old, nil, index);
 	var currentPatternText = parentPatternText;
 	var continue = true;
 	// Throw an error if there are no results

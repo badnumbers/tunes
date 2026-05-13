@@ -1,0 +1,256 @@
+Sequencer_Old {
+	var prEventStreamPlayer;
+	var prPartWrapper;
+	var prPreKeySets;
+	var prPostKeySets;
+	var prSections;
+
+	addGlobalPreKeys {
+		|keysArray|
+		Validator.validateMethodParameterType(keysArray, Array, "keysArray", "Sequencer_Old", "addGlobalPreKeys");
+
+		// TODO validate keysArray - even numbered, every even numbered element is a Symbol
+
+		this.prAddKeySet(prPreKeySets,AutoKeySet({true},keysArray));
+	}
+
+	addMidiPart {
+		|section,synthId,pattern|
+		Validator.validateMethodParameterType(section, Symbol, "section", "Sequencer_Old", "addMidiPart");
+		Validator.validateMethodParameterType(synthId, Symbol, "synthId", "Sequencer_Old", "addMidiPart");
+		Validator.validateMethodParameterType(pattern, Pattern, "pattern", "Sequencer_Old", "addMidiPart");
+		if (prSections.includesKey(section) == false,{
+			prSections.put(section, Dictionary());
+		});
+
+		/*if (prSections[section].includesKey(synthId),{
+			Error(format("The section % in the sequencer already has a MIDI part for the synth '%'.", section, synthId)).throw;
+		});*/
+
+		prSections[section].put(synthId,[\midi,pattern]);
+	}
+
+	addScPart {
+		|section,synthDefName,pattern|
+		Validator.validateMethodParameterType(section, Symbol, "section", "Sequencer_Old", "addScPart");
+		Validator.validateMethodParameterType(synthDefName, Symbol, "synthDefName", "Sequencer_Old", "addScPart");
+		Validator.validateMethodParameterType(pattern, Pattern, "pattern", "Sequencer_Old", "addScPart");
+
+		if (prSections.includesKey(section) == false,{
+			prSections.put(section, Dictionary());
+		});
+
+		prSections[section].put(synthDefName,[\sc,pattern]);
+	}
+
+	addSynthesizerPostKeys {
+		|synthId,keysArray|
+		Validator.validateMethodParameterType(synthId, Symbol, "synthId", "Sequencer_Old", "addSynthesizerPostKeys");
+		Validator.validateMethodParameterType(keysArray, Array, "keysArray", "Sequencer_Old", "addSynthesizerPostKeys");
+
+		// TODO validate keysArray - even numbered, every even numbered element is a Symbol
+
+		this.prAddKeySet(prPostKeySets,AutoKeySet({|synth,section|synth==synthId},keysArray));
+	}
+
+	init {
+		var convertFromPitch;
+
+		convertFromPitch = {
+			// This function MUST NOT use ^ to return a value
+			// Otherwise you get awful 'PauseStream-awake' Out of context return of value errors
+			|event|
+			var numberOfDegrees, degree, octave, answer, pitches;
+			var thisIsAnArray = event.pitch.class == Array;
+			if (event.pitch.isNil, {
+				answer = [event.octave, event.degree]; // Whatever, sometimes a pattern sticks a rest in here with missing pitch information
+			},{
+				if (event.pitch.class == Symbol, {
+					answer = [event.pitch,event.pitch]; // Just pass the Symbol on to the \octave and \degree keys
+				},{
+					if (thisIsAnArray,{
+						pitches = event.pitch;
+					},{
+						pitches = [event.pitch];
+					});
+					answer = pitches.collect({
+						|pitch|
+						pitch = pitch - 1;
+						numberOfDegrees = event.scale.size;
+						degree = pitch % 10;
+						if (degree > numberOfDegrees, {
+							Error("The pitch value of % must not end in a number higher than the number of degrees in the scale, which is %.", event.pitch, numberOfDegrees).throw;
+						});
+						octave = pitch - degree / 10;
+						[octave.asInteger,degree]
+					});
+
+					if (thisIsAnArray,{
+						answer = [answer.collect({|ans|ans[0]}),answer.collect({|ans|ans[1]})];
+					},{
+						answer = answer[0];
+					});
+				});
+			});
+
+			if (event.log == true, {
+				postln(answer);
+			});
+			answer;
+		};
+
+		prPreKeySets = List();
+		prPostKeySets = List();
+		prSections = Dictionary();
+
+		prPartWrapper = {
+			|section,synthId,part|
+			var preKeys, postKeys;
+			var partType = part[0];
+			var pattern = part[1];
+
+			preKeys = List.newUsing([
+				\amp,0.5,
+				\timingOffset,0
+			]);
+			postKeys = List();
+
+			if (partType == \midi,{
+				[
+					\type,\midi,
+					\midiout,Synths(synthId).midiout,
+					\chan,Synths(synthId).midiChannel,
+				].do({
+					|element|
+					preKeys.add(element);
+				});
+				[
+					\amp,Pfunc({|e|if ((e.velocity.isNil) || e.velocity.isMemberOf(Symbol), {e.amp}, {e.velocity.linlin(0,127,0,1)})})
+				].do({
+					|element|
+					postKeys.add(element);
+				});
+			});
+
+			// prPreKeys = [{},[key,value,key,value]]
+			// preKeys = [key,value,key,value]
+			prPreKeySets.do({
+				|preKeySet,index|
+				// Decide whether the current set of prekeys should be applied by evaluating its Function
+				if (preKeySet.selectFunc.value(synthId,part),{
+					preKeySet.keysArray.do({
+						|newKey,newKeyIndex|
+						// Only look at even-numbered elements
+						if (newKeyIndex % 2 == 0,{
+							// Check if the current key matches any existing key and warn if it does
+							preKeys.do({
+								|existingKey,existingIndex|
+								// Only look at even-numbered elements
+								if (index % 2 == 0,{
+									if (newKey == existingKey,{
+										warn(format("The new pre-key % duplicates the existing pre-key % for synth ID '%' and section '%'.", newKey, existingKey, synthId, section));
+									});
+								});
+							});
+						});
+						preKeys.add(newKey);
+					});
+				});
+			});
+
+			prPostKeySets.do({
+				|postKeySet,index|
+				// Decide whether the current set of postkeys should be applied by evaluating its Function
+				if (postKeySet.selectFunc.value(synthId,part),{
+					postKeySet.keysArray.do({
+						|newKey,newKeyIndex|
+						// Check for duplicates in even-numbered elements
+						if (newKeyIndex % 2 == 0,{
+							// Check if the current key matches any existing key and warn if it does
+							postKeys.do({
+								|existingKey,existingIndex|
+								// Only look at even-numbered elements
+								if (index % 2 == 0,{
+									if (newKey == existingKey,{
+										warn(format("The new post-key % duplicates the existing post-key % for synth ID % and section %.", newKey, existingKey, synthId, section));
+									});
+								});
+							});
+						});
+						postKeys.add(newKey);
+					});
+				});
+			});
+
+			/*if (synthId == \unodrum, {
+				postln("PRE KEYS:");
+				postln(preKeys);
+				postln("POST KEYS:");
+				postln(postKeys);
+			});*/
+
+			Pchain(
+				//Pbind(\debug,Pfunc({|ev|ev.postln;})),
+				Pbind(*postKeys), // The asterisk converts the array into a set of parameters
+				pattern,
+				Pbind(*preKeys)
+			)
+		};
+	}
+
+	*new {
+		^super.new.init();
+	}
+
+	loop {
+		|section|
+		Validator.validateMethodParameterType(section, Symbol, "section", "Sequencer_Old", "loop");
+		this.play([section],loop:true);
+	}
+
+	play {
+		|sections,loop=false|
+		var repeats;
+		if (loop == true, {
+			repeats = inf;
+		}, {
+			repeats = 1;
+		});
+		Validator.validateMethodParameterType(sections, Array, "sections", "Sequencer_Old", "play");
+		this.stop;
+		prEventStreamPlayer = Pspawner({
+			|sp|
+			repeats.do({
+				sections.do({
+					|section|
+					sp.seq(Ppar(prSections[section].keys.collect({|instrument|prPartWrapper.value(section,instrument,prSections[section][instrument])})));
+				})
+			});
+		}).play;
+	}
+
+	prAddKeySet {
+		|existingkeysets,newkeyset|
+		existingkeysets.do({
+			|existingkeyset|
+			if (existingkeyset.hash == newkeyset.hash, {
+				warn(postln("A keyset is being replaced."));
+				existingkeysets.remove(existingkeyset);
+			});
+		});
+
+		existingkeysets.add(newkeyset);
+	}
+
+	showGui {
+		SequencerGui_Old.new(this,(
+			sections: {prSections}.value
+		));
+	}
+
+	stop {
+		if (prEventStreamPlayer.isMemberOf(EventStreamPlayer), {
+			prEventStreamPlayer.stop;
+		});
+	}
+}

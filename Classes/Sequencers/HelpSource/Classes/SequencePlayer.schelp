@@ -1,6 +1,6 @@
 TITLE:: SequencePlayer
 SUMMARY:: Plays a sequence of notes from MidiRecordingGui.
-RELATED:: Classes/MidiRecordingGui, Classes/Sequencer2
+RELATED:: Classes/MidiRecordingGui, Classes/Sequencer
 
 DESCRIPTION::
 Allows a set of notes displayed in a LINK::Classes/MidiRecordingGui::, for example which has just been recorded from a keyboard, to be played back.

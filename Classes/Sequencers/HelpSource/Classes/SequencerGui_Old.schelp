@@ -1,0 +1,28 @@
+TITLE:: SequencerGui_Old
+SUMMARY:: Provides a GUI to visually represent sequences created using a Sequencer_Old.
+CATEGORIES:: Streams-Patterns-Events
+RELATED:: Classes/Sequencer_Old, Classes/SequencerGui
+
+DESCRIPTION::
+LINK::Classes/SequencerGui_Old:: is the previous version of the sequencer GUI, kept around because some existing tracks still depend on LINK::Classes/Sequencer_Old::. New work should use LINK::Classes/SequencerGui:: instead.
+
+LINK::Classes/SequencerGui_Old:: provides a visualisation of a graph of LINK::Classes/Pattern::s created using a LINK::Classes/Sequencer_Old::. This is created when calling LINK::Classes/Sequencer_Old#-showGui::.
+
+CLASSMETHODS::
+
+METHOD:: new
+Creates an instance of LINK::Classes/SequencerGui_Old::.
+
+ARGUMENT:: sequencer
+The LINK::Classes/Sequencer_Old:: that this LINK::Classes/SequencerGui_Old:: provides a visual representation of.
+
+ARGUMENT:: privateSequencerData
+An LINK::Classes/Event:: containing private data from the LINK::Classes/Sequencer_Old:: that is needed by the LINK::Classes/SequencerGui_Old::. This must contain the following keys:
+
+TABLE::
+    ## sections || The value of TELETYPE::prSections::.
+::
+
+INSTANCEMETHODS::
+
+PRIVATE:: init, prDisplayPattern, prDisplayPbind, prLoadParts, prLoadSections, prLoadSequences

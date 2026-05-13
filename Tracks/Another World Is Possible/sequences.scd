@@ -1,5 +1,5 @@
 var tapping = (), knocking = (), thumping = ();
-~seq = Sequencer();
+~seq = Sequencer_Old();
 ~seq.addGlobalPreKeys([
 	\scale,Scale.minor,
 	\ctranspose,3

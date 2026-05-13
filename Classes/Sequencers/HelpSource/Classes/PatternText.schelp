@@ -1,13 +1,13 @@
 TITLE:: PatternText
 SUMMARY:: Represents a pattern definition found in a Document
 CATEGORIES:: Streams-Patterns-Events
-RELATED:: Classes/SequencerGui, Classes/Document
+RELATED:: Classes/SequencerGui_Old, Classes/Document
 
 DESCRIPTION::
-The LINK::Classes/SequencerGui:: reads a LINK::Classes/Document:: to find where in the LINK::Classes/Document:: text the patterns shown in the GUI are defined. It records each one as an instance of this class.
+The LINK::Classes/SequencerGui_Old:: reads a LINK::Classes/Document:: to find where in the LINK::Classes/Document:: text the patterns shown in the GUI are defined. It records each one as an instance of this class.
 
 WARNING::
-This class is used internally by LINK::Classes/SequencerGui::. Its use outside of that context is unlikely to be valid.
+This class is used internally by LINK::Classes/SequencerGui_Old::. Its use outside of that context is unlikely to be valid.
 ::
 
 CLASSMETHODS::
@@ -33,7 +33,7 @@ ARGUMENT:: childPatternText
 The LINK::Classes/PatternText:: to add.
 
 METHOD:: bracketIndent
-The indentation level of round brackets which contains the body of this LINK::Classes/Pattern::. LINK::Classes/SequencerGui:: uses the bracket indentation to determine when declarations of LINK::Classes/Pattern:: end.
+The indentation level of round brackets which contains the body of this LINK::Classes/Pattern::. LINK::Classes/SequencerGui_Old:: uses the bracket indentation to determine when declarations of LINK::Classes/Pattern:: end.
 
 For example, consider the following:
 
