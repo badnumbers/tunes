@@ -1,0 +1,29 @@
+TITLE:: PianoRollTimeline
+SUMMARY:: Beat grid strip for a piano roll, anchored to the top of a scrolling roll.
+CATEGORIES:: Streams-Patterns-Events
+RELATED:: Classes/PianoRoll
+
+DESCRIPTION::
+TELETYPE::PianoRollTimeline:: is a LINK::Classes/SCViewHolder:: whose LINK::Classes/View:: sits above the note area inside the same LINK::Classes/ScrollView:: as LINK::Classes/PianoRoll::. Vertical scrolling of the roll updates the strip so it stays aligned with the visible top edge. Horizontal beat lines use the same spacing as the piano roll. Future marker placement (record start, loop bounds) can attach to LINK::#-view:: without competing with note selection gestures.
+
+CLASSMETHODS::
+
+METHOD:: new
+Creates a TELETYPE::PianoRollTimeline:: and installs a scroll LINK::Classes/View#-action:: handler on the given roll that keeps the strip vertically aligned with the scroll view's visible origin. Any previous scroll action is invoked first.
+
+ARGUMENT:: scrollView
+The LINK::Classes/ScrollView:: that contains the piano roll; the timeline is parented here.
+
+ARGUMENT:: width
+Width of the strip in pixels (typically slightly less than the roll width if margins are used).
+
+ARGUMENT:: height
+Height of the strip in pixels.
+
+ARGUMENT:: palette
+A LINK::Classes/GuiPalette:: for background and grid line colours.
+
+ARGUMENT:: horizontalScale
+Pixels per beat, matching the piano roll's horizontal scale.
+
+PRIVATE:: init
