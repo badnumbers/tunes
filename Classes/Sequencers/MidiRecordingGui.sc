@@ -2,7 +2,7 @@ MidiRecordingGui : SCViewHolder {
 	var prAbsoluteStartTime;
 	var prActiveModifierKeys=0;
 	var prBackgroundView;
-	var prDevMode = false;
+	var prDevMode = true;
 	var prDrawNote;
 	var prNoteViewScale;
 	var prPalette;
@@ -20,7 +20,7 @@ MidiRecordingGui : SCViewHolder {
 		var pianoRollHeight,pianoRollWidth;
 		var snapNotesFunc, moveStartOrStopLineFunc;
 		prView = ScrollView();
-		prView.action_({timelineView.bounds = Rect(timelineView.bounds.left,prView.visibleOrigin.y+2, timelineView.bounds.width,timelineView.bounds.height);});
+		prView.action_({timelineView.bounds = Rect(timelineView.bounds.left,prView.visibleOrigin.y, timelineView.bounds.width,timelineView.bounds.height);});
 		this.view = prView;
 		prPalette = palette;
 		prView.background_(prPalette.extreme2);
@@ -142,7 +142,11 @@ MidiRecordingGui : SCViewHolder {
 			closestLine.bounds_(Rect(mouseX.round(prNoteViewScale[\horizontal]), closestLine.bounds.top, closestLine.bounds.width, closestLine.bounds.height));
 		};
 
-		timelineView = View(prView, Rect(2,2,prPianoRollWidth-4,20)).background_(prPalette.colour1);
+		timelineView = View(prView, Rect(0,0,prPianoRollWidth-4,20)).background_(prPalette.colour1);
+		(timelineView.bounds.width / prNoteViewScale[\horizontal]).do({
+			|index|
+			View(timelineView,Rect(index * prNoteViewScale[\horizontal], 0, 1, timelineView.bounds.height)).background_(prPalette.colour1.multiply(0.5));
+		});
 	}
 
 	*new {
