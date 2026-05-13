@@ -128,8 +128,8 @@ SequencePlayerUnitTests : UnitTest {
 		var sequence = [
 			PlayableNote(startTime:11,noteNumber:1,velocity:100).stopTime_(12),
 			PlayableNote(startTime:12,noteNumber:2,velocity:100).stopTime_(13),
-			PlayableNote(startTime:13,noteNumber:3,velocity:100).stopTime_(14),
-			PlayableNote(startTime:14,noteNumber:4,velocity:100).stopTime_(15),
+			PlayableNote(startTime:13,noteNumber:3,velocity:100).stopTime_(14), // this note is in the loop
+			PlayableNote(startTime:14,noteNumber:4,velocity:100).stopTime_(15), // this note is in the loop
 			PlayableNote(startTime:15,noteNumber:5,velocity:100).stopTime_(16),
 			PlayableNote(startTime:16,noteNumber:6,velocity:100).stopTime_(17)
 		];
@@ -141,9 +141,35 @@ SequencePlayerUnitTests : UnitTest {
 		mockTempoClock.schedAbs(-0.1,{sequencePlayer.play()});
 		mockTempoClock.schedAbs(4.5,{sequencePlayer.stop()});
 		mockTempoClock.play();
-		mockMidiOut.sentMidiEvents.do({|item|item.postln;});
+		//mockMidiOut.sentMidiEvents.do({|item|item.postln;});
 
 		// Assert
+		this.assertSentMidi(mockMidiOut.sentMidiEvents,[
+			SentMidiEvent(scheduledTime: 0.0, type: \noteOn, midiChannel: 15, noteNumber: 3, velocity: 100),
+			SentMidiEvent(scheduledTime: 1.0, type: \noteOff, midiChannel: 15, noteNumber: 3, velocity: 100),
+			SentMidiEvent(scheduledTime: 1.0, type: \noteOn, midiChannel: 15, noteNumber: 4, velocity: 100),
+			SentMidiEvent(scheduledTime: 2.0, type: \noteOff, midiChannel: 15, noteNumber: 4, velocity: 100),
+			SentMidiEvent(scheduledTime: 2.0, type: \noteOn, midiChannel: 15, noteNumber: 3, velocity: 100),
+			SentMidiEvent(scheduledTime: 3.0, type: \noteOff, midiChannel: 15, noteNumber: 3, velocity: 100),
+			SentMidiEvent(scheduledTime: 3.0, type: \noteOn, midiChannel: 15, noteNumber: 4, velocity: 100),
+			SentMidiEvent(scheduledTime: 4.0, type: \noteOff, midiChannel: 15, noteNumber: 4, velocity: 100),
+			SentMidiEvent(scheduledTime: 4.0, type: \noteOn, midiChannel: 15, noteNumber: 3, velocity: 100),
+			SentMidiEvent(scheduledTime: 4.65, type: \noteOff, midiChannel: 15, noteNumber: 3, velocity: 0)
+		]);
+	}
+
+	assertSentMidi {
+		|actualMidiEvents,sentMidiEvents|
+		this.assertEquals(actualMidiEvents.size,sentMidiEvents.size);
+		sentMidiEvents.do({
+			|sentMidiEvent,index|
+			var actualMidiEvent = actualMidiEvents[index];
+			this.assertEquals(actualMidiEvent.scheduledTime, sentMidiEvent.scheduledTime);
+			this.assertEquals(actualMidiEvent.type, sentMidiEvent.type);
+			this.assertEquals(actualMidiEvent.midiChannel, sentMidiEvent.midiChannel);
+			this.assertEquals(actualMidiEvent.noteNumber, sentMidiEvent.noteNumber);
+			this.assertEquals(actualMidiEvent.velocity, sentMidiEvent.velocity);
+		});
 	}
 }
 
@@ -225,12 +251,12 @@ MockMIDIOut {
 
 	noteOff {
 		|chan,note,veloc|
-		prSentMidiEvents.add([prScheduledTime,Dictionary.with(*[\type->\noteOff, \chan->chan, \note->note, \velocity->veloc])]);
+		prSentMidiEvents.add(SentMidiEvent(prScheduledTime,\noteOff,chan,note,veloc));
 	}
 
 	noteOn {
 		|chan,note,veloc|
-		prSentMidiEvents.add([prScheduledTime,Dictionary.with(*[\type->\noteOff, \chan->chan, \note->note, \velocity->veloc])]);
+		prSentMidiEvents.add(SentMidiEvent(prScheduledTime,\noteOn,chan,note,veloc));
 	}
 
 	scheduledTime_ {
@@ -241,4 +267,40 @@ MockMIDIOut {
 	sentMidiEvents {
 		^prSentMidiEvents;
 	}
+}
+
+SentMidiEvent {
+	var prScheduledTime;
+	var prType;
+	var prMidiChannel;
+	var prNoteNumber;
+	var prVelocity;
+
+	init {
+		|scheduledTime,type,midiChannel,noteNumber,velocity|
+		prScheduledTime = scheduledTime;
+		prType = type;
+		prMidiChannel = midiChannel;
+		prNoteNumber = noteNumber;
+		prVelocity = velocity;
+	}
+
+	*new {
+		|scheduledTime,type,midiChannel,noteNumber,velocity|
+		^super.new.init(scheduledTime,type,midiChannel,noteNumber,velocity);
+	}
+
+	post {
+		post(format("Sent MIDI event: scheduled time %, type %, MIDI channel %, note number %, velocity %", prScheduledTime, prType, prMidiChannel, prNoteNumber, prVelocity));
+	}
+
+	postln {
+		postln(format("Sent MIDI event: scheduled time %, type %, MIDI channel %, note number %, velocity %", prScheduledTime, prType, prMidiChannel, prNoteNumber, prVelocity));
+	}
+
+	midiChannel { ^prMidiChannel; }
+	noteNumber { ^prNoteNumber; }
+	scheduledTime { ^prScheduledTime; }
+	type { ^prType; }
+	velocity { ^prVelocity; }
 }
