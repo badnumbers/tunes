@@ -1,97 +1,125 @@
 SequencePlayerUnitTests : UnitTest {
 	test_initialise_loopStartAndLoopEndSetCorrectly {
 		// Arrange, act
-		var sequencePlayer = SequencePlayer([],loopStart:10,loopEnd:12);
+		var mockMidiOut = MockMIDIOut();
+		var mockTempoClock = MockTempoClock(mockMidiOut);
+		var sequencePlayer = SequencePlayer([],loopStart:10,loopEnd:12,tempoClock:mockTempoClock,midiOut:mockMidiOut,midiChannel:15);
 		// Assert
 		this.assertEquals(sequencePlayer.loopStart,10);
 		this.assertEquals(sequencePlayer.loopEnd,12);
     }
 
-	test_setLoopMarker_setToLoopStart_NothingChanges {
+	test_setLoopStart_ValueNotChanged_NothingChanges {
 		// Arrange
-		var sequencePlayer = SequencePlayer([],loopStart:10,loopEnd:12);
+		var mockMidiOut = MockMIDIOut();
+		var mockTempoClock = MockTempoClock(mockMidiOut);
+		var sequencePlayer = SequencePlayer([],loopStart:10,loopEnd:12,tempoClock:mockTempoClock,midiOut:mockMidiOut,midiChannel:15);
 		// Act
-		var loopLength = sequencePlayer.setLoopMarker(10);
+		var loopLength = sequencePlayer.loopStart = 10;
 		// Assert
 		this.assertEquals(sequencePlayer.loopStart,10);
 		this.assertEquals(sequencePlayer.loopEnd,12);
 		this.assertEquals(loopLength,2);
 	}
 
-	test_setLoopMarker_setToLoopEnd_NothingChanges {
+	test_setLoopEnd_ValueNotChanged_NothingChanges {
 		// Arrange
-		var sequencePlayer = SequencePlayer([],loopStart:10,loopEnd:12);
+		var mockMidiOut = MockMIDIOut();
+		var mockTempoClock = MockTempoClock(mockMidiOut);
+		var sequencePlayer = SequencePlayer([],loopStart:10,loopEnd:12,tempoClock:mockTempoClock,midiOut:mockMidiOut,midiChannel:15);
 		// Act
-		var loopLength = sequencePlayer.setLoopMarker(12);
+		var loopLength = sequencePlayer.loopEnd = 12;
 		// Assert
 		this.assertEquals(sequencePlayer.loopStart,10);
 		this.assertEquals(sequencePlayer.loopEnd,12);
 		this.assertEquals(loopLength,2);
 	}
 
-	test_setLoopMarker_LoopIsQuarterBeat_SetToInBetween_NothingChanges {
+	test_setLoopStart_EqualToLoopEnd_Error {
 		// Arrange
-		var sequencePlayer = SequencePlayer([],loopStart:10,loopEnd:10.25);
-		// Act
-		var loopLength = sequencePlayer.setLoopMarker(10.1);
-		// Assert
-		this.assertEquals(sequencePlayer.loopStart,10);
-		this.assertEquals(sequencePlayer.loopEnd,10.25);
-		this.assertEquals(loopLength,0.25);
+		var mockMidiOut = MockMIDIOut();
+		var mockTempoClock = MockTempoClock(mockMidiOut);
+		var sequencePlayer = SequencePlayer([],loopStart:10,loopEnd:12,tempoClock:mockTempoClock,midiOut:mockMidiOut,midiChannel:15);
+		// Act, Assert
+		this.assertException({sequencePlayer.loopStart = 12;}, Error);
 	}
 
-	test_setLoopMarker_NewValueIsLaterThanStartAndCloserToStart_StartIsUpdated {
+	test_setLoopStart_AfterLoopEnd_Error {
 		// Arrange
-		var sequencePlayer = SequencePlayer([],loopStart:10,loopEnd:12);
+		var mockMidiOut = MockMIDIOut();
+		var mockTempoClock = MockTempoClock(mockMidiOut);
+		var sequencePlayer = SequencePlayer([],loopStart:10,loopEnd:12,tempoClock:mockTempoClock,midiOut:mockMidiOut,midiChannel:15);
+		// Act, Assert
+		this.assertException({sequencePlayer.loopStart = 13;}, Error);
+	}
+
+	test_setLoopEnd_EqualToLoopStart_Error {
+		// Arrange
+		var mockMidiOut = MockMIDIOut();
+		var mockTempoClock = MockTempoClock(mockMidiOut);
+		var sequencePlayer = SequencePlayer([],loopStart:10,loopEnd:12,tempoClock:mockTempoClock,midiOut:mockMidiOut,midiChannel:15);
+		// Act, Assert
+		this.assertException({sequencePlayer.loopEnd = 10;}, Error);
+	}
+
+	test_setLoopEnd_BeforeLoopStart_Error {
+		// Arrange
+		var mockMidiOut = MockMIDIOut();
+		var mockTempoClock = MockTempoClock(mockMidiOut);
+		var sequencePlayer = SequencePlayer([],loopStart:10,loopEnd:12,tempoClock:mockTempoClock,midiOut:mockMidiOut,midiChannel:15);
+		// Act, Assert
+		this.assertException({sequencePlayer.loopEnd = 9;}, Error);
+	}
+
+	test_setLoopStart_ValidValue_LoopStartUpdated {
+		// Arrange
+		var mockMidiOut = MockMIDIOut();
+		var mockTempoClock = MockTempoClock(mockMidiOut);
+		var sequencePlayer = SequencePlayer([],loopStart:10,loopEnd:12,tempoClock:mockTempoClock,midiOut:mockMidiOut,midiChannel:15);
 		// Act
-		var loopLength = sequencePlayer.setLoopMarker(10.8);
+		var loopLength = sequencePlayer.loopStart = 11;
 		// Assert
-		this.assertEquals(sequencePlayer.loopStart,10.75);
+		this.assertEquals(sequencePlayer.loopStart,11);
 		this.assertEquals(sequencePlayer.loopEnd,12);
-		this.assertEquals(loopLength,1.25);
+		this.assertEquals(loopLength,1);
 	}
 
-	test_setLoopMarker_NewValueIsEarlierThanEndAndCloserToEnd_EndIsUpdated {
+	test_setLoopEnd_ValidValue_LoopEndUpdated {
 		// Arrange
-		var sequencePlayer = SequencePlayer([],loopStart:10,loopEnd:12);
+		var mockMidiOut = MockMIDIOut();
+		var mockTempoClock = MockTempoClock(mockMidiOut);
+		var sequencePlayer = SequencePlayer([],loopStart:10,loopEnd:12,tempoClock:mockTempoClock,midiOut:mockMidiOut,midiChannel:15);
 		// Act
-		var loopLength = sequencePlayer.setLoopMarker(11.3);
+		var loopLength = sequencePlayer.loopEnd = 11;
 		// Assert
 		this.assertEquals(sequencePlayer.loopStart,10);
-		this.assertEquals(sequencePlayer.loopEnd,11.25);
-		this.assertEquals(loopLength,1.25);
+		this.assertEquals(sequencePlayer.loopEnd,11);
+		this.assertEquals(loopLength,1);
 	}
 
-	test_setLoopMarker_MakeStartEarlier_StartIsUpdated {
+	test_setLoopStart_RoundsToNearestQuarterBeat {
 		// Arrange
-		var sequencePlayer = SequencePlayer([],loopStart:10,loopEnd:12);
+		var mockMidiOut = MockMIDIOut();
+		var mockTempoClock = MockTempoClock(mockMidiOut);
+		var sequencePlayer = SequencePlayer([],loopStart:10,loopEnd:12,tempoClock:mockTempoClock,midiOut:mockMidiOut,midiChannel:15);
 		// Act
-		var loopLength = sequencePlayer.setLoopMarker(9);
-		// Assert
-		this.assertEquals(sequencePlayer.loopStart,9);
-		this.assertEquals(sequencePlayer.loopEnd,12);
-		this.assertEquals(loopLength,3);
-	}
-
-	test_setLoopMarker_MakeEndLater_EndIsUpdated {
-		// Arrange
-		var sequencePlayer = SequencePlayer([],loopStart:10,loopEnd:12);
-		// Act
-		var loopLength = sequencePlayer.setLoopMarker(13);
-		// Assert
-		this.assertEquals(sequencePlayer.loopStart,10);
-		this.assertEquals(sequencePlayer.loopEnd,13);
-		this.assertEquals(loopLength,3);
-	}
-
-	test_setLoopMarker_RoundsToNearestQuarterBeat {
-		// Arrange
-		var sequencePlayer = SequencePlayer([],loopStart:10,loopEnd:12);
-		// Act
-		var loopLength = sequencePlayer.setLoopMarker(9.8);
+		var loopLength = sequencePlayer.loopStart = 9.8;
 		// Assert
 		this.assertEquals(sequencePlayer.loopStart,9.75);
 		this.assertEquals(sequencePlayer.loopEnd,12);
+		this.assertEquals(loopLength,2.25);
+	}
+
+	test_setLoopEnd_RoundsToNearestQuarterBeat {
+		// Arrange
+		var mockMidiOut = MockMIDIOut();
+		var mockTempoClock = MockTempoClock(mockMidiOut);
+		var sequencePlayer = SequencePlayer([],loopStart:10,loopEnd:12,tempoClock:mockTempoClock,midiOut:mockMidiOut,midiChannel:15);
+		// Act
+		var loopLength = sequencePlayer.loopEnd = 12.2;
+		// Assert
+		this.assertEquals(sequencePlayer.loopStart,10);
+		this.assertEquals(sequencePlayer.loopEnd,12.25);
 		this.assertEquals(loopLength,2.25);
 	}
 

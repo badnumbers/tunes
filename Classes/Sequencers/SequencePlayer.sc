@@ -1,6 +1,6 @@
 SequencePlayer {
 	classvar prDelta = 0.25;
-	classvar prPlayFunc;
+	classvar prPlaySliceFunc;
 	classvar prUpdateSliceFunc;
 	var prIsPlaying = false;
 	var prLoopEnd = 64;
@@ -70,7 +70,7 @@ SequencePlayer {
 			prMidiOut = midiOut;
 		});
 
-		prPlayFunc = {
+		prPlaySliceFunc = {
 			|slice|
 			var nextStartTime;
 
@@ -100,7 +100,7 @@ SequencePlayer {
 				slice[\startTime] = nextStartTime;
 				prUpdateSliceFunc.value(slice,nextStartTime,prDelta);
 
-				prTempoClock.schedAbs(prTempoClock.nextTimeOnGrid(quant:prDelta) + prDelta - 0.1,{prPlayFunc.value(slice);});
+				prTempoClock.schedAbs(prTempoClock.nextTimeOnGrid(quant:prDelta) + prDelta - 0.1,{prPlaySliceFunc.value(slice);});
 			},{
 				slice[\currentlyPlaying].do({
 					|note|
@@ -141,6 +141,52 @@ SequencePlayer {
 		};
 	}
 
+	loopEnd_ {
+		|newTime|
+		Validator.validateMethodParameterType(newTime,SimpleNumber,"newTime","SequencePlayer","loopEnd_");
+
+		if (newTime < 0, {
+			Error(format("The newTime parameter provided to SequencePlayer.loopEnd_ must not be less than 0. The value % was provided.", newTime)).throw;
+		});
+
+		if (newTime > prMaximumSequenceLength, {
+			Error(format("The newTime parameter provided to SequencePlayer.loopEnd_ must not be greater than %. The value % was provided.", prMaximumSequenceLength, newTime)).throw;
+		});
+
+		newTime = newTime.round(0.25);
+
+		if (newTime <= prLoopStart,{
+			Error(format("The newTime parameter provided to SequencePlayer.loopEnd_ must be later than the loop start value of %. The value % was provided.", prLoopStart, newTime)).throw;
+		});
+
+		prLoopEnd = newTime;
+
+		^(prLoopEnd - prLoopStart);
+	}
+
+	loopStart_ {
+		|newTime|
+		Validator.validateMethodParameterType(newTime,SimpleNumber,"newTime","SequencePlayer","loopStart_");
+
+		if (newTime < 0, {
+			Error(format("The newTime parameter provided to SequencePlayer.loopStart_ must not be less than 0. The value % was provided.", newTime)).throw;
+		});
+
+		if (newTime > prMaximumSequenceLength, {
+			Error(format("The newTime parameter provided to SequencePlayer.loopStart_ must not be greater than %. The value % was provided.", prMaximumSequenceLength, newTime)).throw;
+		});
+
+		newTime = newTime.round(0.25);
+
+		if (newTime >= prLoopEnd,{
+			Error(format("The newTime parameter provided to SequencePlayer.loopStart_ must be earlier than the loop end value of %. The value % was provided.", prLoopEnd, newTime)).throw;
+		});
+
+		prLoopStart = newTime;
+
+		^(prLoopEnd - prLoopStart);
+	}
+
 	*new {
 		|sequence,loopStart,loopEnd,midiChannel=0,tempoClock=nil,midiOut=nil|
 		^super.new.init(sequence,loopStart,loopEnd,midiChannel,tempoClock,midiOut);
@@ -150,57 +196,7 @@ SequencePlayer {
 		var currentSlice = Dictionary.with(*[\startTime->0,\items->nil,\currentlyPlaying->IdentityBag()]);
 		prIsPlaying = true;
 		prUpdateSliceFunc.value(currentSlice,prLoopStart,prDelta);
-		prPlayFunc.value(currentSlice);
-	}
-
-	// Sets whichever loop marker is closest to the provided value
-	// Returns the loop length
-	setLoopMarker {
-		|newTime|
-		Validator.validateMethodParameterType(newTime,SimpleNumber,"newTime","SequencePlayer","setLoopMarker");
-
-		if (newTime < 0, {
-			Error(format("The newTime parameter provided to SequencePlayer.setLoopMarker must not be less than 0. The value % was provided.", newTime)).throw;
-		});
-
-		if (newTime > prMaximumSequenceLength, {
-			Error(format("The newTime parameter provided to SequencePlayer.setLoopMarker must not be greater than %. The value % was provided.", prMaximumSequenceLength, newTime)).throw;
-		});
-
-		newTime = newTime.round(0.25);
-
-		if (newTime == prLoopStart,{
-			^(prLoopEnd - prLoopStart);
-		});
-
-		if (newTime == prLoopEnd,{
-			^(prLoopEnd - prLoopStart);
-		});
-
-		if (newTime > prLoopStart,{
-			if (newTime < prLoopEnd, {
-				if (prLoopEnd - prLoopStart <= 0.25,{
-					// Don't allow loops of less than 0.25
-					^0.25;
-				},{
-					if ((newTime - prLoopStart) < (prLoopEnd - newTime), {
-						// We're closest to the start marker
-						prLoopStart = newTime;
-						^(prLoopEnd - prLoopStart);
-					}, {
-						// We're closest to the end marker
-						prLoopEnd = newTime;
-						^(prLoopEnd - prLoopStart);
-					});
-				});
-			}, {
-				prLoopEnd = newTime;
-				^(prLoopEnd - prLoopStart);
-			});
-		},{
-			prLoopStart = newTime;
-			^(prLoopEnd - prLoopStart);
-		});
+		prPlaySliceFunc.value(currentSlice);
 	}
 
 	stop {
