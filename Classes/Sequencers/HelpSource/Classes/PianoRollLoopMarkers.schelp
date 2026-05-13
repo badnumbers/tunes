@@ -1,0 +1,37 @@
+TITLE:: PianoRollLoopMarkers
+SUMMARY:: Vertical loop start and stop lines on a piano roll.
+CATEGORIES:: Streams-Patterns-Events
+RELATED:: Classes/PianoRoll
+
+DESCRIPTION::
+TELETYPE::PianoRollLoopMarkers:: holds two LINK::Classes/View:: instances (one beat wide). LINK::Classes/PianoRoll#-stopRecording:: calls LINK::#-loopBoundsInBeats_:: with the recorded note range. The LINK::Classes/GuiPalette:: passed to LINK::#-new:: is only used for the marker colour (LINK::Classes/GuiPalette#-colour5::) when the lines are first created.
+
+CLASSMETHODS::
+
+METHOD:: new
+Creates a TELETYPE::PianoRollLoopMarkers::. The line LINK::Classes/View::s are created on the first call to LINK::#-loopBoundsInBeats_::.
+
+ARGUMENT:: parent
+The roll surface (typically the piano roll LINK::Classes/UserView::) on which the lines are parented.
+
+ARGUMENT:: horizontalScale
+Pixels per beat, matching the roll's horizontal scale.
+
+ARGUMENT:: rollHeight
+Height of the lines in pixels (typically the full roll height).
+
+ARGUMENT:: palette
+A LINK::Classes/GuiPalette::; only LINK::Classes/GuiPalette#-colour5:: is kept for drawing the lines.
+
+INSTANCEMETHODS::
+
+METHOD:: loopBoundsInBeats_
+Creates or updates the start and stop lines at the given beat positions.
+
+ARGUMENT:: startBeat
+Beat index for the loop start line.
+
+ARGUMENT:: stopBeat
+Beat index for the loop stop line.
+
+PRIVATE:: init

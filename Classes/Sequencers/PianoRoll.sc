@@ -9,8 +9,7 @@ PianoRoll : SCViewHolder {
 	var prPianoRollHeight;
 	var prPianoRollWidth;
 	var prRecordedNotes;
-	var prStartLine;
-	var prStopLine;
+	var prLoopMarkers;
 	var prTempoClock;
 	var prTimeline;
 	var prView;
@@ -19,7 +18,7 @@ PianoRoll : SCViewHolder {
 		|parent,bounds,palette,tempoClock|
 		var selectionView;
 		var pianoRollHeight,pianoRollWidth;
-		var snapNotesFunc, moveStartOrStopLineFunc;
+		var snapNotesFunc;
 		prView = ScrollView();
 		this.view = prView;
 		prPalette = palette;
@@ -90,10 +89,7 @@ PianoRoll : SCViewHolder {
 			|view,x,y,modifiers,buttonNumber,clickCount|
 			if (clickCount == 1,{
 				prRecordedNotes.do({|recordedNote|recordedNote.deselect;});
-			},{
-				moveStartOrStopLineFunc.value(x);
 			});
-
 		});
 
 		(prBackgroundView.bounds.width / prNoteViewScale[\horizontal]).do({
@@ -127,21 +123,7 @@ PianoRoll : SCViewHolder {
 			prRecordedNotes.do({|recordedNote|recordedNote.snap(resolution);});
 		};
 
-		moveStartOrStopLineFunc = {
-			|mouseX|
-			//prStartLine = View(prBackgroundView,Rect(startTime * prNoteViewScale[\horizontal],0,1,prPianoRollHeight)).background_(prPalette.colour5);
-			var beat, closestLine;
-			beat = mouseX / prNoteViewScale[\horizontal];
-			closestLine = if ((mouseX - prStartLine.bounds.left).abs < (mouseX - prStopLine.bounds.left).abs,{
-				prStartLine;
-			},{
-				prStopLine;
-			});
-			postln(format("Moving start or stop line to %.", beat));
-			postln(format("The closest line is %.", closestLine));
-			closestLine.bounds_(Rect(mouseX.round(prNoteViewScale[\horizontal]), closestLine.bounds.top, closestLine.bounds.width, closestLine.bounds.height));
-		};
-
+		prLoopMarkers = PianoRollLoopMarkers(prBackgroundView, prNoteViewScale[\horizontal], prPianoRollHeight, prPalette);
 		prTimeline = PianoRollTimeline(prView, prPianoRollWidth - 4, prPalette, prNoteViewScale[\horizontal]);
 	}
 
@@ -249,7 +231,6 @@ PianoRoll : SCViewHolder {
 		if (startTime >= stopTime,{
 			stopTime = startTime + 1;
 		});
-		prStartLine = View(prBackgroundView,Rect(startTime * prNoteViewScale[\horizontal],0,1,prPianoRollHeight)).background_(prPalette.colour5);
-		prStopLine = View(prBackgroundView,Rect(stopTime * prNoteViewScale[\horizontal],0,1,prPianoRollHeight)).background_(prPalette.colour5);
+		prLoopMarkers.loopBoundsInBeats_(startTime, stopTime);
 	}
 }
