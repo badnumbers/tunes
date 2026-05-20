@@ -1,0 +1,142 @@
+TITLE:: PlayableNote
+SUMMARY:: A timed MIDI note used for sequencer playback.
+RELATED:: Classes/PianoRollNote, Classes/PianoRoll, Classes/SequencePlayer, Classes/Sequencer
+
+DESCRIPTION::
+TELETYPE::PlayableNote:: holds the timing and MIDI data for a single note: when it starts, when it stops, which key to play, and how hard. Times are expressed in beats on the LINK::Classes/TempoClock:: (the same unit used by LINK::Classes/SequencePlayer:: and the piano roll).
+
+A note is STRONG::playable:: only after TELETYPE::stopTime_:: has been set. Until then, TELETYPE::isPlayable:: is false and the slice and playhead query methods all return false. LINK::Classes/PianoRollNote:: creates a TELETYPE::PlayableNote:: internally and keeps its start and stop times in sync when the note is moved or resized on the roll.
+
+Playback scheduling uses half-open intervals: the note is considered active while the playhead satisfies TELETYPE::startTime <= t < stopTime::. The same rule applies when testing whether a start or stop event falls in a scheduling slice.
+
+NOTE::
+You can run the unit tests for TELETYPE::PlayableNote:: by running:
+CODE::
+(
+UnitTest.reportPasses_(false);
+PlayableNoteUnitTests.run;
+)
+::
+::
+
+CLASSMETHODS::
+
+METHOD:: new
+Creates a new TELETYPE::PlayableNote::. The note is not playable until TELETYPE::stopTime_:: is set.
+
+ARGUMENT:: startTime
+The beat at which the note starts (a LINK::Classes/SimpleNumber::).
+
+ARGUMENT:: noteNumber
+The MIDI note number (0–127).
+
+ARGUMENT:: velocity
+The MIDI velocity (0–127).
+
+returns::
+A new instance.
+
+
+INSTANCEMETHODS::
+
+METHOD:: isPlayable
+Whether this note has a stop time and can take part in playback queries.
+
+returns::
+true if TELETYPE::stopTime:: is set, otherwise false.
+
+METHOD:: noteNumber
+The MIDI note number.
+
+returns::
+An LINK::Classes/Integer::.
+
+METHOD:: startTime
+The beat at which the note starts.
+
+returns::
+A LINK::Classes/SimpleNumber::.
+
+METHOD:: stopTime
+The beat at which the note stops.
+
+returns::
+A LINK::Classes/SimpleNumber::, or nil if not yet set.
+
+METHOD:: stopTime_
+Sets the beat at which the note stops, making the note playable.
+
+ARGUMENT:: value
+The stop time in beats.
+
+returns::
+This instance (for chaining).
+
+METHOD:: velocity
+The MIDI velocity.
+
+returns::
+An LINK::Classes/Integer::.
+
+METHOD:: shouldBePlaying
+Whether the note should sound at a given playhead position.
+
+Returns false if the note is not playable. Otherwise returns true when TELETYPE::startTime <= playheadTime < stopTime::.
+
+ARGUMENT:: playheadTime
+The current position of the playhead, in beats.
+
+returns::
+true or false.
+
+METHOD:: startsInSlice
+Whether the note's start time falls within a scheduling slice.
+
+Returns false if the note is not playable. Otherwise returns true when TELETYPE::sliceStartTime <= startTime < sliceStopTime::. LINK::Classes/SequencePlayer:: uses this to decide when to send note-on events for a slice.
+
+ARGUMENT:: sliceStartTime
+The start of the slice, in beats (inclusive).
+
+ARGUMENT:: sliceStopTime
+The end of the slice, in beats (exclusive).
+
+returns::
+true or false.
+
+METHOD:: stopsInSlice
+Whether the note's stop time falls within a scheduling slice.
+
+Returns false if the note is not playable. Otherwise returns true when TELETYPE::sliceStartTime <= stopTime < sliceStopTime::. LINK::Classes/SequencePlayer:: uses this to decide when to send note-off events for a slice.
+
+ARGUMENT:: sliceStartTime
+The start of the slice, in beats (inclusive).
+
+ARGUMENT:: sliceStopTime
+The end of the slice, in beats (exclusive).
+
+returns::
+true or false.
+
+
+EXAMPLES::
+
+CODE::
+// Create a note from beat 4 to beat 8
+var note = PlayableNote(4, 60, 100).stopTime_(8);
+
+note.isPlayable;           // true
+note.shouldBePlaying(5);   // true  — playhead inside [4, 8)
+note.shouldBePlaying(8);   // false — stop time is exclusive
+
+// Slice [4, 4.25) — one sixteenth note at default SequencePlayer delta
+note.startsInSlice(4, 4.25);  // true  — note-on in this slice
+note.stopsInSlice(4, 4.25);   // false — note-off is later
+
+note.stopsInSlice(8, 8.25);   // true  — note-off in this slice
+
+// Build a sequence for SequencePlayer (see LINK::Classes/SequencePlayer::)
+[
+    PlayableNote(0, 60, 100).stopTime_(4),
+    PlayableNote(4, 64, 90).stopTime_(8)
+];
+::

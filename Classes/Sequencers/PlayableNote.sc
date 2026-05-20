@@ -27,8 +27,35 @@ PlayableNote {
 		^prNoteNumber;
 	}
 
+	shouldBePlaying {
+		|playheadTime|
+		if (this.isPlayable,{
+			if ((playheadTime >= prStartTime) && (playheadTime < prStopTime), {^true}, {^false});
+		},{
+			^false
+		});
+	}
+
+	startsInSlice {
+		|sliceStartTime, sliceStopTime|
+		if (this.isPlayable,{
+			if ((prStartTime >= sliceStartTime) && (prStartTime < sliceStopTime), {^true}, {^false});
+		},{
+			^false
+		});
+	}
+
 	startTime {
 		^prStartTime;
+	}
+
+	stopsInSlice {
+		|sliceStartTime, sliceStopTime|
+		if (this.isPlayable,{
+			if ((prStopTime >= sliceStartTime) && (prStopTime < sliceStopTime), {^true}, {^false});
+		},{
+			^false
+		});
 	}
 
 	stopTime {
