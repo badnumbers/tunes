@@ -7,7 +7,7 @@ TELETYPE::PlayableNote:: holds the timing and MIDI data for a single note: when 
 
 A note is STRONG::playable:: only after TELETYPE::stopTime_:: has been set. Until then, TELETYPE::isPlayable:: is false and the slice and playhead query methods all return false. LINK::Classes/PianoRollNote:: creates a TELETYPE::PlayableNote:: internally and keeps its start and stop times in sync when the note is moved or resized on the roll.
 
-Playback scheduling uses half-open intervals: the note is considered active while the playhead satisfies TELETYPE::startTime <= t < stopTime::. The same rule applies when testing whether a start or stop event falls in a scheduling slice.
+Playback scheduling uses half-open intervals: the note is considered active while the playhead satisfies TELETYPE::startTime <= t < stopTime::. TELETYPE::startsInSlice:: uses TELETYPE::sliceStartTime <= startTime < sliceStopTime::; TELETYPE::stopsInSlice:: uses TELETYPE::sliceStartTime < stopTime <= sliceStopTime:: so a note-off at the slice start is excluded but one at the slice end is included.
 
 NOTE::
 You can run the unit tests for TELETYPE::PlayableNote:: by running:
@@ -106,13 +106,13 @@ true or false.
 METHOD:: stopsInSlice
 Whether the note's stop time falls within a scheduling slice.
 
-Returns false if the note is not playable. Otherwise returns true when TELETYPE::sliceStartTime <= stopTime < sliceStopTime::. LINK::Classes/SequencePlayer:: uses this to decide when to send note-off events for a slice.
+Returns false if the note is not playable. Otherwise returns true when TELETYPE::sliceStartTime < stopTime <= sliceStopTime::. A stop time equal to TELETYPE::sliceStartTime:: is excluded; a stop time equal to TELETYPE::sliceStopTime:: is included. LINK::Classes/SequencePlayer:: uses this to decide when to send note-off events for a slice.
 
 ARGUMENT:: sliceStartTime
-The start of the slice, in beats (inclusive).
+The start of the slice, in beats (exclusive for the stop time).
 
 ARGUMENT:: sliceStopTime
-The end of the slice, in beats (exclusive).
+The end of the slice, in beats (inclusive for the stop time).
 
 returns::
 true or false.
@@ -132,7 +132,9 @@ note.shouldBePlaying(8);   // false — stop time is exclusive
 note.startsInSlice(4, 4.25);  // true  — note-on in this slice
 note.stopsInSlice(4, 4.25);   // false — note-off is later
 
-note.stopsInSlice(8, 8.25);   // true  — note-off in this slice
+note.stopsInSlice(8, 8.25);      // false — stop at slice start is excluded
+note.stopsInSlice(7.75, 8.25);   // true  — note-off in this slice
+note.stopsInSlice(7.75, 8);      // true  — stop at slice end is included
 
 // Build a sequence for SequencePlayer (see LINK::Classes/SequencePlayer::)
 [

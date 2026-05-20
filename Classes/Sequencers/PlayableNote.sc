@@ -52,7 +52,7 @@ PlayableNote {
 	stopsInSlice {
 		|sliceStartTime, sliceStopTime|
 		if (this.isPlayable,{
-			if ((prStopTime >= sliceStartTime) && (prStopTime < sliceStopTime), {^true}, {^false});
+			if ((prStopTime > sliceStartTime) && (prStopTime <= sliceStopTime), {^true}, {^false});
 		},{
 			^false
 		});

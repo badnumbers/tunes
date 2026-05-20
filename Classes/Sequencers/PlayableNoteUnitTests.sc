@@ -178,7 +178,7 @@ PlayableNoteUnitTests : UnitTest {
 		this.assertEquals(stopsInSlice,false);
     }
 
-	test_stopsInSlice_stopTimeAtSliceStart_true {
+	test_stopsInSlice_stopTimeAtSliceStart_false {
 		// Arrange
 		var playableNote, stopsInSlice;
 		playableNote = PlayableNote(3,64,64);
@@ -188,7 +188,7 @@ PlayableNoteUnitTests : UnitTest {
 		stopsInSlice = playableNote.stopsInSlice(4, 5);
 
 		// Assert
-		this.assertEquals(stopsInSlice,true);
+		this.assertEquals(stopsInSlice,false);
     }
 
 	test_stopsInSlice_stopTimeInsideSlice_true {
@@ -204,7 +204,7 @@ PlayableNoteUnitTests : UnitTest {
 		this.assertEquals(stopsInSlice,true);
     }
 
-	test_stopsInSlice_stopTimeAtSliceStop_false {
+	test_stopsInSlice_stopTimeAtSliceStop_true {
 		// Arrange
 		var playableNote, stopsInSlice;
 		playableNote = PlayableNote(4,64,64);
@@ -214,7 +214,7 @@ PlayableNoteUnitTests : UnitTest {
 		stopsInSlice = playableNote.stopsInSlice(4, 5);
 
 		// Assert
-		this.assertEquals(stopsInSlice,false);
+		this.assertEquals(stopsInSlice,true);
     }
 
 	test_stopsInSlice_stopTimeAfterSlice_false {
