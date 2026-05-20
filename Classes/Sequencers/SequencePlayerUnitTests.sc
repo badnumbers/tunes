@@ -1,4 +1,4 @@
-SequencePlayerUnitTests : UnitTest {
+SequencePlayerUnitTests : BNUnitTest {
 	test_initialise_loopStartAndLoopEndSetCorrectly {
 		// Arrange, act
 		var mockMidiOut = MockMIDIOut();
@@ -123,7 +123,7 @@ SequencePlayerUnitTests : UnitTest {
 		this.assertEquals(loopLength,2.25);
 	}
 
-	test_something {
+	test_play_loopingNotes_schedulesExpectedMidi {
 		// Arrange
 		var sequence = [
 			PlayableNote(startTime:11,noteNumber:1,velocity:100).stopTime_(12),
@@ -159,16 +159,54 @@ SequencePlayerUnitTests : UnitTest {
 	}
 
 	assertSentMidi {
-		|actualMidiEvents,sentMidiEvents|
-		this.assertEquals(actualMidiEvents.size,sentMidiEvents.size);
-		sentMidiEvents.do({
-			|sentMidiEvent,index|
+		|actualMidiEvents,expectedMidiEvents|
+		if (this.assertWithMessage(
+			expectedMidiEvents.size == actualMidiEvents.size,
+			format(
+				"The expected number of MIDI events was % but the actual number of MIDI events was %.",
+				expectedMidiEvents.size,
+				actualMidiEvents.size
+			)
+		).not) { ^this };
+
+		expectedMidiEvents.do({
+			|expectedMidiEvent,index|
 			var actualMidiEvent = actualMidiEvents[index];
-			this.assertEquals(actualMidiEvent.scheduledTime, sentMidiEvent.scheduledTime);
-			this.assertEquals(actualMidiEvent.type, sentMidiEvent.type);
-			this.assertEquals(actualMidiEvent.midiChannel, sentMidiEvent.midiChannel);
-			this.assertEquals(actualMidiEvent.noteNumber, sentMidiEvent.noteNumber);
-			this.assertEquals(actualMidiEvent.velocity, sentMidiEvent.velocity);
+			this.assertWithMessage(
+				expectedMidiEvent.scheduledTime == actualMidiEvent.scheduledTime,
+				format(
+					"For the MIDI event at index %, the expected scheduled time was % but the actual scheduled time was %.",
+					index, expectedMidiEvent.scheduledTime, actualMidiEvent.scheduledTime
+				)
+			);
+			this.assertWithMessage(
+				expectedMidiEvent.type == actualMidiEvent.type,
+				format(
+					"For the MIDI event at index %, the expected type was % but the actual type was %.",
+					index, expectedMidiEvent.type, actualMidiEvent.type
+				)
+			);
+			this.assertWithMessage(
+				expectedMidiEvent.midiChannel == actualMidiEvent.midiChannel,
+				format(
+					"For the MIDI event at index %, the expected MIDI channel was % but the actual MIDI channel was %.",
+					index, expectedMidiEvent.midiChannel, actualMidiEvent.midiChannel
+				)
+			);
+			this.assertWithMessage(
+				expectedMidiEvent.noteNumber == actualMidiEvent.noteNumber,
+				format(
+					"For the MIDI event at index %, the expected note number was % but the actual note number was %.",
+					index, expectedMidiEvent.noteNumber, actualMidiEvent.noteNumber
+				)
+			);
+			this.assertWithMessage(
+				expectedMidiEvent.velocity == actualMidiEvent.velocity,
+				format(
+					"For the MIDI event at index %, the expected velocity was % but the actual velocity was %.",
+					index, expectedMidiEvent.velocity, actualMidiEvent.velocity
+				)
+			);
 		});
 	}
 }

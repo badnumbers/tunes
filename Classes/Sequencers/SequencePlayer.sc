@@ -112,11 +112,11 @@ SequencePlayer {
 		prUpdateSliceFunc = {
 			|slice,startTime,delta|
 			var stopTime = startTime + delta;
-			var starts = prSequence.select({|note|(note.startTime >= startTime) && (note.startTime < stopTime)}).collect({
+			var starts = prSequence.select({|note|note.startsInSlice(startTime,stopTime)}).collect({
 				|note|
 				Dictionary.with(*[\action->\start,\time->note.startTime,\chan->prMidiChannel,\note->note.noteNumber,\veloc->note.velocity]);
 			});
-			var stops = prSequence.select({|note|(note.stopTime > startTime) && (note.stopTime <= stopTime)}).collect({
+			var stops = prSequence.select({|note|note.stopsInSlice(startTime,stopTime)}).collect({
 				|note|
 				Dictionary.with(*[\action->\stop,\time->note.stopTime,\chan->prMidiChannel,\note->note.noteNumber,\veloc->note.velocity]);
 			});

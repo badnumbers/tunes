@@ -1,4 +1,14 @@
 BNUnitTest : UnitTest {
+	assertWithMessage {
+		|condition, failureMessage, details|
+		if (condition) {
+			this.passed(currentMethod, "", true, nil);
+		} {
+			this.failed(currentMethod, failureMessage, true, details);
+		};
+		^condition // i.e. return true or false
+	}
+
 	getOrdinal {
 		|number, assumeZeroBased = true|
 		var remainderFrom100;
