@@ -123,6 +123,31 @@ SequencePlayerUnitTests : BNUnitTest {
 		this.assertEquals(loopLength,2.25);
 	}
 
+	test_play_deletedPlayingNote_terminatedAtNextSlice {
+		// Arrange
+		var noteInLoop = PlayableNote(startTime:13,noteNumber:3,velocity:100).stopTime_(15);
+		var sequence = [
+			PlayableNote(startTime:11,noteNumber:1,velocity:100).stopTime_(12),
+			noteInLoop
+		];
+		var mockMidiOut = MockMIDIOut();
+		var mockTempoClock = MockTempoClock(mockMidiOut);
+		var sequencePlayer = SequencePlayer(sequence,loopStart:13,loopEnd:15,tempoClock:mockTempoClock,midiOut:mockMidiOut,midiChannel:15);
+
+		// Act
+		mockTempoClock.schedAbs(-0.1,{sequencePlayer.play();"Starting sequence";});
+		mockTempoClock.schedAbs(0.15,{sequence.remove(noteInLoop);"Removing note";});
+		mockTempoClock.schedAbs(1.0,{sequencePlayer.stop();"Stopping sequence"});
+		mockTempoClock.play();
+		mockMidiOut.sentMidiEvents.do({|item|item.postln;});
+
+		// Assert — note-on at slice 13.0; delete during slice 13.25; termination at start of slice 13.5 (mock time 0.5)
+		this.assertSentMidi(mockMidiOut.sentMidiEvents,[
+			SentMidiEvent(scheduledTime: 0.0, type: \noteOn, midiChannel: 15, noteNumber: 3, velocity: 100),
+			SentMidiEvent(scheduledTime: 0.5, type: \noteOff, midiChannel: 15, noteNumber: 3, velocity: 100)
+		]);
+	}
+
 	test_play_loopingNotes_schedulesExpectedMidi {
 		// Arrange
 		var sequence = [
@@ -154,7 +179,7 @@ SequencePlayerUnitTests : BNUnitTest {
 			SentMidiEvent(scheduledTime: 3.0, type: \noteOn, midiChannel: 15, noteNumber: 4, velocity: 100),
 			SentMidiEvent(scheduledTime: 4.0, type: \noteOff, midiChannel: 15, noteNumber: 4, velocity: 100),
 			SentMidiEvent(scheduledTime: 4.0, type: \noteOn, midiChannel: 15, noteNumber: 3, velocity: 100),
-			SentMidiEvent(scheduledTime: 4.65, type: \noteOff, midiChannel: 15, noteNumber: 3, velocity: 0)
+			SentMidiEvent(scheduledTime: 4.65, type: \noteOff, midiChannel: 15, noteNumber: 3, velocity: 100)
 		]);
 	}
 
@@ -251,7 +276,9 @@ MockTempoClock {
 			prBeats = currentScheduledTime;
 			prActions[currentScheduledTime].do({
 				|action|
-				action.value();
+				var result = action.value();
+				var verbose = true;
+				if ((verbose) && (result.isKindOf(String)),{postln(format("CLOCK -> time: %: %", currentScheduledTime, result));});
 			});
 			prSchedule.do({
 				|time,index|
@@ -290,11 +317,13 @@ MockMIDIOut {
 	noteOff {
 		|chan,note,veloc|
 		prSentMidiEvents.add(SentMidiEvent(prScheduledTime,\noteOff,chan,note,veloc));
+		^format("Note off: Channel %, note %, velocity %",chan,note,veloc);
 	}
 
 	noteOn {
 		|chan,note,veloc|
 		prSentMidiEvents.add(SentMidiEvent(prScheduledTime,\noteOn,chan,note,veloc));
+		^format("Note on: Channel %, note %, velocity %",chan,note,veloc);
 	}
 
 	scheduledTime_ {
