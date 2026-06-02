@@ -2,23 +2,17 @@ SequencePlayer {
 	classvar prDelta = 0.25;
 	classvar prPlaySliceFunc;
 	classvar prUpdateSliceFunc;
+
+	var prCurrentlyPlayingNotes;
 	var prIsPlaying = false;
 	var prLoopEnd = 64;
 	var prLoopStart = 0;
 	var prMaximumSequenceLength = 64;
-	var prCurrentlyPlayingNotes;
 	var prMidiChannel;
 	var prMidiOut;
+	var prPlayheadTime = 0;
 	var prSequence;
 	var prTempoClock;
-
-	loopEnd {
-		^prLoopEnd;
-	}
-
-	loopStart {
-		^prLoopStart;
-	}
 
 	init {
 		|sequence,loopStart,loopEnd,midiChannel,tempoClock,midiOut|
@@ -156,6 +150,10 @@ SequencePlayer {
 		prCurrentlyPlayingNotes.clear;
 	}
 
+	loopEnd {
+		^prLoopEnd;
+	}
+
 	loopEnd_ {
 		|newTime|
 		Validator.validateMethodParameterType(newTime,SimpleNumber,"newTime","SequencePlayer","loopEnd_");
@@ -177,6 +175,10 @@ SequencePlayer {
 		prLoopEnd = newTime;
 
 		^(prLoopEnd - prLoopStart);
+	}
+
+	loopStart {
+		^prLoopStart;
 	}
 
 	loopStart_ {
@@ -213,6 +215,15 @@ SequencePlayer {
 		prIsPlaying = true;
 		prUpdateSliceFunc.value(currentSlice,prLoopStart,prDelta);
 		prPlaySliceFunc.value(currentSlice);
+	}
+
+	playheadTime {
+		^prPlayheadTime;
+	}
+
+	playheadTime_ {
+		|newTime|
+		prPlayheadTime = newTime;
 	}
 
 	stop {
