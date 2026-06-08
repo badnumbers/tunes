@@ -5,6 +5,7 @@ SequencePlayer {
 
 	var prCurrentlyPlayingNotes;
 	var prIsPlaying = false;
+	var prLatency = 0.05;
 	var prLoopEnd = 64;
 	var prLoopStart = 0;
 	var prMaximumSequenceLength = 64;
@@ -13,6 +14,10 @@ SequencePlayer {
 	var prPlayheadTime = 0;
 	var prSequence;
 	var prTempoClock;
+
+	delta {
+		^prDelta;
+	}
 
 	init {
 		|sequence,loopStart,loopEnd,midiChannel,tempoClock,midiOut|
@@ -68,14 +73,14 @@ SequencePlayer {
 		prCurrentlyPlayingNotes = IdentityBag.new;
 
 		prPlaySliceFunc = {
-			|slice|
+			var slice = prCutSliceFunc.value();
 			var nextStartTime;
-			var report = format("Called prPlaySliceFunc for slice % -> %. Input slice contained % starts, % stops and % terminations. "
+			var report = format("Called prPlaySliceFunc for slice % -> %. Input slice starts %, stops % and terminates %. "
 				,prPlayheadTime
 				,prPlayheadTime + prDelta
-				,slice[\items].select({|item|item[\action] == \start}).size
-				,slice[\items].select({|item|item[\action] == \stop}).size
-				,slice[\items].select({|item|item[\action] == \termination}).size
+				,slice[\items].select({|item|item[\action] == \start}).collect({|item|item[\playableNote].noteNumber})
+				,slice[\items].select({|item|item[\action] == \stop}).collect({|item|item[\playableNote].noteNumber})
+				,slice[\items].select({|item|item[\action] == \termination}).collect({|item|item[\playableNote].noteNumber})
 			);
 
 			if (prIsPlaying,{
@@ -83,7 +88,7 @@ SequencePlayer {
 				slice[\items].do({
 					|item|
 					var playableNote = item[\playableNote];
-					var schedTime = prTempoClock.nextTimeOnGrid(quant:prDelta) + (item[\time] - prPlayheadTime);
+					var schedTime = prTempoClock.nextTimeOnGrid(quant:prDelta) + (item[\time] - prPlayheadTime + prLatency);
 					if (item[\action] == \start,{
 						prTempoClock.schedAbs(schedTime,{
 							prCurrentlyPlayingNotes.add(playableNote);
@@ -103,15 +108,8 @@ SequencePlayer {
 					nextStartTime = prLoopStart;
 				});
 				prPlayheadTime = nextStartTime;
-				slice = prCutSliceFunc.value();
 
-				report = report + format("Output slice contained % starts, % stops and % terminations. "
-				,slice[\items].select({|item|item[\action] == \start}).size
-				,slice[\items].select({|item|item[\action] == \stop}).size
-				,slice[\items].select({|item|item[\action] == \termination}).size
-			);
-
-				prTempoClock.schedAbs(prTempoClock.nextTimeOnGrid(quant:prDelta) + prDelta - 0.1,{prPlaySliceFunc.value(slice);});
+				prTempoClock.schedAbs(prTempoClock.nextTimeOnGrid(quant:prDelta) + prDelta,{prPlaySliceFunc.value();});
 			},{
 				prCurrentlyPlayingNotes.do({
 					|note|
@@ -149,6 +147,10 @@ SequencePlayer {
 
 	prResetPlayingNotes {
 		prCurrentlyPlayingNotes.clear;
+	}
+
+	latency {
+		^prLatency;
 	}
 
 	loopEnd {
@@ -213,7 +215,7 @@ SequencePlayer {
 	play {
 		this.prResetPlayingNotes();
 		prIsPlaying = true;
-		prPlaySliceFunc.value(prCutSliceFunc.value());
+		^prPlaySliceFunc.value();
 	}
 
 	playheadTime {

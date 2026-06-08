@@ -125,6 +125,7 @@ SequencePlayerUnitTests : BNUnitTest {
 
 	test_play_deletedPlayingNote_terminatedAtNextSlice {
 		// Arrange
+		var latency, delta;
 		var noteInLoop = PlayableNote(startTime:13,noteNumber:3,velocity:100).stopTime_(15);
 		var sequence = [
 			PlayableNote(startTime:11,noteNumber:1,velocity:100).stopTime_(12),
@@ -133,6 +134,9 @@ SequencePlayerUnitTests : BNUnitTest {
 		var mockMidiOut = MockMIDIOut();
 		var mockTempoClock = MockTempoClock(mockMidiOut);
 		var sequencePlayer = SequencePlayer(sequence,loopStart:13,loopEnd:15,tempoClock:mockTempoClock,midiOut:mockMidiOut,midiChannel:15);
+		sequencePlayer.playheadTime_(13);
+		latency = sequencePlayer.latency;
+		delta = sequencePlayer.delta;
 
 		// Act
 		mockTempoClock.schedAbs(-0.1,{sequencePlayer.play();"Starting sequence";});
@@ -143,13 +147,14 @@ SequencePlayerUnitTests : BNUnitTest {
 
 		// Assert — note-on at slice 13.0; delete during slice 13.25; termination at start of slice 13.5 (mock time 0.5)
 		this.assertSentMidi(mockMidiOut.sentMidiEvents,[
-			SentMidiEvent(scheduledTime: 0.0, type: \noteOn, midiChannel: 15, noteNumber: 3, velocity: 100),
-			SentMidiEvent(scheduledTime: 0.5, type: \noteOff, midiChannel: 15, noteNumber: 3, velocity: 100)
+			SentMidiEvent(scheduledTime: 0.0 + latency, type: \noteOn, midiChannel: 15, noteNumber: 3, velocity: 100),
+			SentMidiEvent(scheduledTime: this.nextIterationAfter(0.15,delta) + latency, type: \noteOff, midiChannel: 15, noteNumber: 3, velocity: 100)
 		]);
 	}
 
 	test_play_loopingNotes_schedulesExpectedMidi {
 		// Arrange
+		var latency, delta;
 		var sequence = [
 			PlayableNote(startTime:11,noteNumber:1,velocity:100).stopTime_(12),
 			PlayableNote(startTime:12,noteNumber:2,velocity:100).stopTime_(13),
@@ -161,25 +166,60 @@ SequencePlayerUnitTests : BNUnitTest {
 		var mockMidiOut = MockMIDIOut();
 		var mockTempoClock = MockTempoClock(mockMidiOut);
 		var sequencePlayer = SequencePlayer(sequence,loopStart:13,loopEnd:15,tempoClock:mockTempoClock,midiOut:mockMidiOut,midiChannel:15);
+		sequencePlayer.playheadTime_(13);
+		latency = sequencePlayer.latency;
+		delta = sequencePlayer.delta;
 
 		// Act
-		mockTempoClock.schedAbs(-0.1,{sequencePlayer.play()});
+		mockTempoClock.schedAbs(0,{sequencePlayer.play()});
 		mockTempoClock.schedAbs(4.5,{sequencePlayer.stop()});
 		mockTempoClock.play();
 		//mockMidiOut.sentMidiEvents.do({|item|item.postln;});
 
 		// Assert
 		this.assertSentMidi(mockMidiOut.sentMidiEvents,[
-			SentMidiEvent(scheduledTime: 0.0, type: \noteOn, midiChannel: 15, noteNumber: 3, velocity: 100),
-			SentMidiEvent(scheduledTime: 1.0, type: \noteOff, midiChannel: 15, noteNumber: 3, velocity: 100),
-			SentMidiEvent(scheduledTime: 1.0, type: \noteOn, midiChannel: 15, noteNumber: 4, velocity: 100),
-			SentMidiEvent(scheduledTime: 2.0, type: \noteOff, midiChannel: 15, noteNumber: 4, velocity: 100),
-			SentMidiEvent(scheduledTime: 2.0, type: \noteOn, midiChannel: 15, noteNumber: 3, velocity: 100),
-			SentMidiEvent(scheduledTime: 3.0, type: \noteOff, midiChannel: 15, noteNumber: 3, velocity: 100),
-			SentMidiEvent(scheduledTime: 3.0, type: \noteOn, midiChannel: 15, noteNumber: 4, velocity: 100),
-			SentMidiEvent(scheduledTime: 4.0, type: \noteOff, midiChannel: 15, noteNumber: 4, velocity: 100),
-			SentMidiEvent(scheduledTime: 4.0, type: \noteOn, midiChannel: 15, noteNumber: 3, velocity: 100),
-			SentMidiEvent(scheduledTime: 4.65, type: \noteOff, midiChannel: 15, noteNumber: 3, velocity: 100)
+			SentMidiEvent(scheduledTime: 0.0 + latency, type: \noteOn, midiChannel: 15, noteNumber: 3, velocity: 100),
+			SentMidiEvent(scheduledTime: this.nextIterationAfter(1.0,delta) + latency, type: \noteOff, midiChannel: 15, noteNumber: 3, velocity: 100),
+			SentMidiEvent(scheduledTime: this.nextIterationAfter(1.0,delta) + latency, type: \noteOn, midiChannel: 15, noteNumber: 4, velocity: 100),
+			SentMidiEvent(scheduledTime: this.nextIterationAfter(2.0,delta) + latency, type: \noteOff, midiChannel: 15, noteNumber: 4, velocity: 100),
+			SentMidiEvent(scheduledTime: this.nextIterationAfter(2.0,delta) + latency, type: \noteOn, midiChannel: 15, noteNumber: 3, velocity: 100),
+			SentMidiEvent(scheduledTime: this.nextIterationAfter(3.0,delta) + latency, type: \noteOff, midiChannel: 15, noteNumber: 3, velocity: 100),
+			SentMidiEvent(scheduledTime: this.nextIterationAfter(3.0,delta) + latency, type: \noteOn, midiChannel: 15, noteNumber: 4, velocity: 100),
+			SentMidiEvent(scheduledTime: this.nextIterationAfter(4.0,delta) + latency, type: \noteOff, midiChannel: 15, noteNumber: 4, velocity: 100),
+			SentMidiEvent(scheduledTime: this.nextIterationAfter(4.0,delta) + latency, type: \noteOn, midiChannel: 15, noteNumber: 3, velocity: 100),
+			SentMidiEvent(scheduledTime: this.nextIterationAfter(4.5,delta) + latency, type: \noteOff, midiChannel: 15, noteNumber: 3, velocity: 100)
+		]);
+	}
+
+	test_play_movePlayhead_terminatesCurrentNote {
+		// Arrange
+		var latency, delta;
+		var note1 = PlayableNote(startTime:13,noteNumber:1,velocity:100).stopTime_(14);
+		var note2 = PlayableNote(startTime:14,noteNumber:2,velocity:100).stopTime_(15);
+		var sequence = [
+			note1,
+			note2
+		];
+		var mockMidiOut = MockMIDIOut();
+		var mockTempoClock = MockTempoClock(mockMidiOut);
+		var sequencePlayer = SequencePlayer(sequence,loopStart:13,loopEnd:15,tempoClock:mockTempoClock,midiOut:mockMidiOut,midiChannel:15);
+		sequencePlayer.playheadTime_(13);
+		latency = sequencePlayer.latency;
+		delta = sequencePlayer.delta;
+
+		// Act
+		mockTempoClock.schedAbs(0,{sequencePlayer.play();});
+		mockTempoClock.schedAbs(0.1,{sequencePlayer.playheadTime_(14);"Moving playhead";});
+		mockTempoClock.schedAbs(1.0,{sequencePlayer.stop();"Stopping sequence"});
+		mockTempoClock.play();
+		mockMidiOut.sentMidiEvents.do({|item|item.postln;});
+
+		// Assert — note-on at slice 13.0; delete during slice 13.25; termination at start of slice 13.5 (mock time 0.5)
+		this.assertSentMidi(mockMidiOut.sentMidiEvents,[
+			SentMidiEvent(scheduledTime: 0.0 + latency, type: \noteOn, midiChannel: 15, noteNumber: 1, velocity: 100),
+			SentMidiEvent(scheduledTime: this.nextIterationAfter(0.1,delta) + latency, type: \noteOn, midiChannel: 15, noteNumber: 2, velocity: 100),
+			SentMidiEvent(scheduledTime: this.nextIterationAfter(0.1,delta) + latency, type: \noteOff, midiChannel: 15, noteNumber: 1, velocity: 100),
+			SentMidiEvent(scheduledTime: this.nextIterationAfter(1.0,delta), type: \noteOff, midiChannel: 15, noteNumber: 2, velocity: 100)
 		]);
 	}
 
@@ -232,6 +272,16 @@ SequencePlayerUnitTests : BNUnitTest {
 					index, expectedMidiEvent.velocity, actualMidiEvent.velocity
 				)
 			);
+		});
+	}
+
+	nextIterationAfter {
+		|time,delta|
+		var numberOfDeltas = time / delta;
+		if ((numberOfDeltas == (numberOfDeltas.floor)),{
+			^(numberOfDeltas * delta);
+		},{
+			^((numberOfDeltas.ceil) * delta);
 		});
 	}
 }
