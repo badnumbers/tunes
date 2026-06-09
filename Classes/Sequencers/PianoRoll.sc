@@ -233,28 +233,33 @@ PianoRoll : SCViewHolder {
 		},{
 			[\noteOn,\noteOff].do({
 			|msgType|
-			MIDIdef(format("%_%", \recordMidi, msgType).asSymbol).free;
+				MIDIdef(format("%_%", \recordMidi, msgType).asSymbol).free;
 			});
 			Metronome.stop;
 		});
-		prRecordedNotes.do({
-			|recordedNote|
-			if (recordedNote.startTime.trunc < startTime,{
-				startTime = recordedNote.startTime.trunc;
+		if (prRecordedNotes.size > 0,{
+			prRecordedNotes.do({
+				|recordedNote|
+				if (recordedNote.startTime.trunc < startTime,{
+					startTime = recordedNote.startTime.trunc;
+				});
+				if (recordedNote.stopTime.roundUp > stopTime,{
+					stopTime = recordedNote.stopTime.roundUp;
+				});
 			});
-			if (recordedNote.stopTime.roundUp > stopTime,{
-				stopTime = recordedNote.stopTime.roundUp;
+			if (startTime >= stopTime,{
+				stopTime = startTime + 1;
 			});
+			prLoopMarkers.loopStart_(startTime);
+			prLoopMarkers.playbackBeat_(startTime);
+			prLoopMarkers.loopEnd_(stopTime);
+			prSequencePlayer.loopStart_(startTime);
+			prSequencePlayer.loopEnd_(stopTime);
+			prSequencePlayer.playheadTime_(startTime);
+			prSequencePlayer.sequence = prRecordedNotes.collect({|note|note.playableNote});
+		},{
+			warn("Nothing has been recorded!")
 		});
-		if (startTime >= stopTime,{
-			stopTime = startTime + 1;
-		});
-		prLoopMarkers.loopStart_(startTime);
-		prLoopMarkers.playbackBeat_(startTime);
-		prLoopMarkers.loopEnd_(stopTime);
-		prSequencePlayer.loopStart_(startTime);
-		prSequencePlayer.loopEnd_(stopTime);
-		prSequencePlayer.playheadTime_(startTime);
-		prSequencePlayer.sequence = prRecordedNotes.collect({|note|note.playableNote});
+
 	}
 }

@@ -136,6 +136,9 @@ SequencerGui {
 				pianoRoll.stopRecording;
 			})
 		});
+		playLoopButton.mouseUpAction_({
+			warn("There is no sequence to play yet.");
+		});
 
 		// Set up MIDI indicator
 		[\noteOn,\noteOff].do({
