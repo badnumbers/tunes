@@ -1,0 +1,97 @@
+TITLE:: EnhancedButton
+SUMMARY:: A bordered button with label text and mouse-over / mouse-down colour styling.
+CATEGORIES:: GUI>Views
+RELATED:: Classes/BorderView, Classes/SequencerGui, Classes/Tuner
+
+DESCRIPTION::
+TELETYPE::EnhancedButton:: is a subclass of LINK::Classes/BorderView:: that embeds a centred LINK::Classes/StaticText:: label. It provides default mouse-enter, mouse-leave, mouse-down, and mouse-up behaviour that updates background, border, and string colours, while still allowing custom mouse actions.
+
+Set any of the following instance variables before interaction to customise appearance. Each may be left unset (nil) to leave that aspect unchanged during the corresponding interaction:
+
+- TELETYPE::mouseEnterBackgroundColour::, TELETYPE::mouseEnterBorderColour::, TELETYPE::mouseEnterStringColour:: — applied while the pointer is over the button
+- TELETYPE::mouseDownBackgroundColour::, TELETYPE::mouseDownBorderColour::, TELETYPE::mouseDownStringColour:: — applied while the mouse button is held down (takes precedence over enter colours)
+
+When a colour is about to change, the current value is stored so it can be restored when the pointer leaves or the mouse button is released. TELETYPE::mouseDownAction_::, TELETYPE::mouseEnterAction_::, TELETYPE::mouseLeaveAction_::, and TELETYPE::mouseUpAction_:: each run the built-in styling first, then invoke the function you supply.
+
+CLASSMETHODS::
+
+METHOD:: new
+Creates a new TELETYPE::EnhancedButton::.
+
+ARGUMENT:: parent
+The parent view, or nil to create a top-level view.
+
+ARGUMENT:: bounds
+The initial bounds as a LINK::Classes/Rect::, or nil for default layout sizing.
+
+returns:: A new TELETYPE::EnhancedButton:: instance.
+
+
+INSTANCEMETHODS::
+PRIVATE:: init
+
+METHOD:: align
+The horizontal and vertical alignment of the label text (forwarded to the embedded LINK::Classes/StaticText::). Set with TELETYPE::align_::.
+
+returns:: The current alignment.
+
+METHOD:: font
+The font used for the label text (forwarded to the embedded LINK::Classes/StaticText::). Set with TELETYPE::font_::.
+
+returns:: The current font.
+
+METHOD:: mouseDownAction_
+Sets the function called on mouse-down, after the default down-state colours are applied.
+
+ARGUMENT:: func
+A function of three arguments: view, x, y.
+
+METHOD:: mouseEnterAction_
+Sets the function called when the pointer enters the button, after the default enter-state colours are applied.
+
+ARGUMENT:: func
+A function of three arguments: view, x, y.
+
+METHOD:: mouseLeaveAction_
+Sets the function called when the pointer leaves the button, after the default colours are restored.
+
+ARGUMENT:: func
+A function of three arguments: view, x, y.
+
+METHOD:: mouseUpAction_
+Sets the function called on mouse-up, after the default up-state colours are applied.
+
+ARGUMENT:: func
+A function of three arguments: view, x, y.
+
+METHOD:: string
+The label text (forwarded to the embedded LINK::Classes/StaticText::). Set with TELETYPE::string_::.
+
+returns:: The current string.
+
+METHOD:: stringColor
+The label text colour (forwarded to the embedded LINK::Classes/StaticText::). Set with TELETYPE::stringColor_::.
+
+returns:: The current colour.
+
+
+EXAMPLES::
+
+CODE::
+(
+var palette = GuiPalette.default;
+var button = EnhancedButton()
+	.background_(palette.colour3)
+	.borderRadius_(3)
+	.borderWidth_(2)
+	.minSize_(100@50)
+	.font_(Font(size: 16))
+	.string_("FX bank")
+	.stringColor_(palette.colour5)
+	.align_(\center)
+	.mouseEnterBorderColour_(palette.extreme2)
+	.mouseEnterStringColour_(palette.extreme2)
+	.mouseDownBackgroundColour_(palette.colour2)
+	.mouseUpAction_({ FxBank(); });
+)
+::
