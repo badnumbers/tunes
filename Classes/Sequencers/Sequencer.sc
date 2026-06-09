@@ -1,4 +1,5 @@
 Sequencer {
+	var prDevMode;
 	var prEventStreamPlayer;
 	var prPreKeySets;
 	var prPostKeySets;
@@ -38,6 +39,8 @@ Sequencer {
 	}
 
 	init {
+		|devMode|
+		prDevMode = devMode;
 		prPreKeySets = List();
 		prPostKeySets = List();
 		prSequences = Dictionary();
@@ -130,7 +133,9 @@ Sequencer {
 	}
 
 	*new {
-		^super.new.init();
+		|devMode=false|
+		Validator.validateMethodParameterType(devMode,Boolean,"devMode","Sequencer","new");
+		^super.new.init(devMode);
 	}
 
 	play {
@@ -165,7 +170,7 @@ Sequencer {
 	}
 
 	showGui {
-		SequencerGui.new(this,prTempoClock);
+		SequencerGui.new(this,prTempoClock,prDevMode);
 	}
 
 	stop {

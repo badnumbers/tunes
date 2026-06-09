@@ -2,7 +2,7 @@ PianoRoll : SCViewHolder {
 	var prAbsoluteStartTime;
 	var prActiveModifierKeys=0;
 	var prBackgroundView;
-	var prDevMode = true;
+	var prDevMode;
 	var prDrawNote;
 	var prNoteViewScale;
 	var prPalette;
@@ -15,10 +15,12 @@ PianoRoll : SCViewHolder {
 	var prView;
 
 	init {
-		|parent,bounds,palette,tempoClock|
+		|parent,bounds,palette,tempoClock,devMode|
 		var selectionView;
 		var pianoRollHeight,pianoRollWidth;
 		var snapNotesFunc;
+
+		prDevMode = devMode;
 		prView = ScrollView();
 		this.view = prView;
 		prPalette = palette;
@@ -32,6 +34,7 @@ PianoRoll : SCViewHolder {
 
 		if (prDevMode == false,{
 			Setup.midi;
+			Setup.server;
 		});
 
 		prBackgroundView = UserView(prView, Rect(0, 0, prPianoRollWidth, prPianoRollHeight)).background_(prPalette.extreme1)
@@ -138,10 +141,11 @@ PianoRoll : SCViewHolder {
 	}
 
 	*new {
-		|parent,bounds,palette,tempoClock|
+		|parent,bounds,palette,tempoClock,devMode=false|
 		Validator.validateMethodParameterType(palette, GuiPalette, "palette", "PianoRoll", "new");
 		Validator.validateMethodParameterType(tempoClock, TempoClock, "tempoClock", "PianoRoll", "new");
-		^super.new.init(parent,bounds,palette,tempoClock);
+		Validator.validateMethodParameterType(devMode,Boolean,"devMode","PianoRoll","new");
+		^super.new.init(parent,bounds,palette,tempoClock,devMode);
 	}
 
 	playBackRecording {

@@ -15,13 +15,13 @@ SequencerGui {
 	var prWindow;
 
 	init {
-		|sequencer,tempoClock|
+		|sequencer,tempoClock,devMode|
 		var window, stackLayout, midiIndicator, fxBankButton, settingsButton, arrangeButton, recordButton, startRecordingButton, pianoRoll;
 		var tempoKnob;
 		var totalMidiNoteCount = 0;
 		var renderButtonFunc;
+
 		Validator.validateMethodParameterType(sequencer, Sequencer, "sequencer", "SequencerGui", "init");
-		//Setup.midi;
 		prSequencer = sequencer;
 		prTempoClock = TempoClock.default;
 
@@ -67,7 +67,7 @@ SequencerGui {
 					).margins_(0).spacing_(20)
 				),
 				BorderView().background_(prPalette.colour2).layout_(VLayout(
-					pianoRoll = PianoRoll(palette: prPalette, tempoClock:prTempoClock).minHeight_(100),
+					pianoRoll = PianoRoll(palette: prPalette, tempoClock:prTempoClock, devMode: devMode).minHeight_(100),
 					View().background_(prPalette.colour4).minHeight_(70).maxHeight_(70).layout_(
 						HLayout(
 							startRecordingButton = renderButtonFunc.value("Start recording", width:150),
@@ -172,9 +172,10 @@ SequencerGui {
 	}
 
 	*new {
-		|sequencer,tempoClock|
+		|sequencer,tempoClock,devMode=false|
 		Validator.validateMethodParameterType(sequencer, Sequencer, "sequencer", "SequencerGui", "new");
 		Validator.validateMethodParameterType(tempoClock, TempoClock, "tempoClock", "SequencerGui", "new");
-		^super.new.init(sequencer,tempoClock);
+		Validator.validateMethodParameterType(devMode,Boolean,"devMode","SequencerGui","new");
+		^super.new.init(sequencer,tempoClock,devMode);
 	}
 }
