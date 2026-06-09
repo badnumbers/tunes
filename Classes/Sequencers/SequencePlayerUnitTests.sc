@@ -3,7 +3,10 @@ SequencePlayerUnitTests : BNUnitTest {
 		// Arrange, act
 		var mockMidiOut = MockMIDIOut();
 		var mockTempoClock = MockTempoClock(mockMidiOut);
-		var sequencePlayer = SequencePlayer([],loopStart:10,loopEnd:12,tempoClock:mockTempoClock,midiOut:mockMidiOut,midiChannel:15);
+		var sequencePlayer = SequencePlayer(tempoClock:mockTempoClock,midiOut:mockMidiOut);
+		sequencePlayer.loopStart = 10;
+		sequencePlayer.loopEnd = 12;
+		sequencePlayer.midiChannel = 15;
 		// Assert
 		this.assertEquals(sequencePlayer.loopStart,10);
 		this.assertEquals(sequencePlayer.loopEnd,12);
@@ -13,9 +16,13 @@ SequencePlayerUnitTests : BNUnitTest {
 		// Arrange
 		var mockMidiOut = MockMIDIOut();
 		var mockTempoClock = MockTempoClock(mockMidiOut);
-		var sequencePlayer = SequencePlayer([],loopStart:10,loopEnd:12,tempoClock:mockTempoClock,midiOut:mockMidiOut,midiChannel:15);
+		var sequencePlayer = SequencePlayer(tempoClock:mockTempoClock,midiOut:mockMidiOut);
+		var loopLength;
+		sequencePlayer.loopStart = 10;
+		sequencePlayer.loopEnd = 12;
+		sequencePlayer.midiChannel = 15;
 		// Act
-		var loopLength = sequencePlayer.loopStart = 10;
+		loopLength = sequencePlayer.loopStart = 10;
 		// Assert
 		this.assertEquals(sequencePlayer.loopStart,10);
 		this.assertEquals(sequencePlayer.loopEnd,12);
@@ -26,9 +33,13 @@ SequencePlayerUnitTests : BNUnitTest {
 		// Arrange
 		var mockMidiOut = MockMIDIOut();
 		var mockTempoClock = MockTempoClock(mockMidiOut);
-		var sequencePlayer = SequencePlayer([],loopStart:10,loopEnd:12,tempoClock:mockTempoClock,midiOut:mockMidiOut,midiChannel:15);
+		var sequencePlayer = SequencePlayer(tempoClock:mockTempoClock,midiOut:mockMidiOut);
+		var loopLength;
+		sequencePlayer.loopStart = 10;
+		sequencePlayer.loopEnd = 12;
+		sequencePlayer.midiChannel = 15;
 		// Act
-		var loopLength = sequencePlayer.loopEnd = 12;
+		loopLength = sequencePlayer.loopEnd = 12;
 		// Assert
 		this.assertEquals(sequencePlayer.loopStart,10);
 		this.assertEquals(sequencePlayer.loopEnd,12);
@@ -39,7 +50,10 @@ SequencePlayerUnitTests : BNUnitTest {
 		// Arrange
 		var mockMidiOut = MockMIDIOut();
 		var mockTempoClock = MockTempoClock(mockMidiOut);
-		var sequencePlayer = SequencePlayer([],loopStart:10,loopEnd:12,tempoClock:mockTempoClock,midiOut:mockMidiOut,midiChannel:15);
+		var sequencePlayer = SequencePlayer(tempoClock:mockTempoClock,midiOut:mockMidiOut);
+		sequencePlayer.loopStart = 10;
+		sequencePlayer.loopEnd = 12;
+		sequencePlayer.midiChannel = 15;
 		// Act, Assert
 		this.assertException({sequencePlayer.loopStart = 12;}, Error);
 	}
@@ -48,7 +62,10 @@ SequencePlayerUnitTests : BNUnitTest {
 		// Arrange
 		var mockMidiOut = MockMIDIOut();
 		var mockTempoClock = MockTempoClock(mockMidiOut);
-		var sequencePlayer = SequencePlayer([],loopStart:10,loopEnd:12,tempoClock:mockTempoClock,midiOut:mockMidiOut,midiChannel:15);
+		var sequencePlayer = SequencePlayer(tempoClock:mockTempoClock,midiOut:mockMidiOut);
+		sequencePlayer.loopStart = 10;
+		sequencePlayer.loopEnd = 12;
+		sequencePlayer.midiChannel = 15;
 		// Act, Assert
 		this.assertException({sequencePlayer.loopStart = 13;}, Error);
 	}
@@ -57,7 +74,10 @@ SequencePlayerUnitTests : BNUnitTest {
 		// Arrange
 		var mockMidiOut = MockMIDIOut();
 		var mockTempoClock = MockTempoClock(mockMidiOut);
-		var sequencePlayer = SequencePlayer([],loopStart:10,loopEnd:12,tempoClock:mockTempoClock,midiOut:mockMidiOut,midiChannel:15);
+		var sequencePlayer = SequencePlayer(tempoClock:mockTempoClock,midiOut:mockMidiOut);
+		sequencePlayer.loopStart = 10;
+		sequencePlayer.loopEnd = 12;
+		sequencePlayer.midiChannel = 15;
 		// Act, Assert
 		this.assertException({sequencePlayer.loopEnd = 10;}, Error);
 	}
@@ -66,7 +86,10 @@ SequencePlayerUnitTests : BNUnitTest {
 		// Arrange
 		var mockMidiOut = MockMIDIOut();
 		var mockTempoClock = MockTempoClock(mockMidiOut);
-		var sequencePlayer = SequencePlayer([],loopStart:10,loopEnd:12,tempoClock:mockTempoClock,midiOut:mockMidiOut,midiChannel:15);
+		var sequencePlayer = SequencePlayer(tempoClock:mockTempoClock,midiOut:mockMidiOut);
+		sequencePlayer.loopStart = 10;
+		sequencePlayer.loopEnd = 12;
+		sequencePlayer.midiChannel = 15;
 		// Act, Assert
 		this.assertException({sequencePlayer.loopEnd = 9;}, Error);
 	}
@@ -75,9 +98,13 @@ SequencePlayerUnitTests : BNUnitTest {
 		// Arrange
 		var mockMidiOut = MockMIDIOut();
 		var mockTempoClock = MockTempoClock(mockMidiOut);
-		var sequencePlayer = SequencePlayer([],loopStart:10,loopEnd:12,tempoClock:mockTempoClock,midiOut:mockMidiOut,midiChannel:15);
+		var sequencePlayer = SequencePlayer(tempoClock:mockTempoClock,midiOut:mockMidiOut);
+		var loopLength;
+		sequencePlayer.loopStart = 10;
+		sequencePlayer.loopEnd = 12;
+		sequencePlayer.midiChannel = 15;
 		// Act
-		var loopLength = sequencePlayer.loopStart = 11;
+		loopLength = sequencePlayer.loopStart = 11;
 		// Assert
 		this.assertEquals(sequencePlayer.loopStart,11);
 		this.assertEquals(sequencePlayer.loopEnd,12);
@@ -88,9 +115,13 @@ SequencePlayerUnitTests : BNUnitTest {
 		// Arrange
 		var mockMidiOut = MockMIDIOut();
 		var mockTempoClock = MockTempoClock(mockMidiOut);
-		var sequencePlayer = SequencePlayer([],loopStart:10,loopEnd:12,tempoClock:mockTempoClock,midiOut:mockMidiOut,midiChannel:15);
+		var sequencePlayer = SequencePlayer(tempoClock:mockTempoClock,midiOut:mockMidiOut);
+		var loopLength;
+		sequencePlayer.loopStart = 10;
+		sequencePlayer.loopEnd = 12;
+		sequencePlayer.midiChannel = 15;
 		// Act
-		var loopLength = sequencePlayer.loopEnd = 11;
+		loopLength = sequencePlayer.loopEnd = 11;
 		// Assert
 		this.assertEquals(sequencePlayer.loopStart,10);
 		this.assertEquals(sequencePlayer.loopEnd,11);
@@ -101,9 +132,13 @@ SequencePlayerUnitTests : BNUnitTest {
 		// Arrange
 		var mockMidiOut = MockMIDIOut();
 		var mockTempoClock = MockTempoClock(mockMidiOut);
-		var sequencePlayer = SequencePlayer([],loopStart:10,loopEnd:12,tempoClock:mockTempoClock,midiOut:mockMidiOut,midiChannel:15);
+		var sequencePlayer = SequencePlayer(tempoClock:mockTempoClock,midiOut:mockMidiOut);
+		var loopLength;
+		sequencePlayer.loopStart = 10;
+		sequencePlayer.loopEnd = 12;
+		sequencePlayer.midiChannel = 15;
 		// Act
-		var loopLength = sequencePlayer.loopStart = 9.8;
+		loopLength = sequencePlayer.loopStart = 9.8;
 		// Assert
 		this.assertEquals(sequencePlayer.loopStart,9.75);
 		this.assertEquals(sequencePlayer.loopEnd,12);
@@ -114,9 +149,13 @@ SequencePlayerUnitTests : BNUnitTest {
 		// Arrange
 		var mockMidiOut = MockMIDIOut();
 		var mockTempoClock = MockTempoClock(mockMidiOut);
-		var sequencePlayer = SequencePlayer([],loopStart:10,loopEnd:12,tempoClock:mockTempoClock,midiOut:mockMidiOut,midiChannel:15);
+		var sequencePlayer = SequencePlayer(tempoClock:mockTempoClock,midiOut:mockMidiOut);
+		var loopLength;
+		sequencePlayer.loopStart = 10;
+		sequencePlayer.loopEnd = 12;
+		sequencePlayer.midiChannel = 15;
 		// Act
-		var loopLength = sequencePlayer.loopEnd = 12.2;
+		loopLength = sequencePlayer.loopEnd = 12.2;
 		// Assert
 		this.assertEquals(sequencePlayer.loopStart,10);
 		this.assertEquals(sequencePlayer.loopEnd,12.25);
@@ -133,7 +172,11 @@ SequencePlayerUnitTests : BNUnitTest {
 		];
 		var mockMidiOut = MockMIDIOut();
 		var mockTempoClock = MockTempoClock(mockMidiOut);
-		var sequencePlayer = SequencePlayer(sequence,loopStart:13,loopEnd:15,tempoClock:mockTempoClock,midiOut:mockMidiOut,midiChannel:15);
+		var sequencePlayer = SequencePlayer(tempoClock:mockTempoClock,midiOut:mockMidiOut);
+		sequencePlayer.sequence = sequence;
+		sequencePlayer.loopStart = 13;
+		sequencePlayer.loopEnd = 15;
+		sequencePlayer.midiChannel = 15;
 		sequencePlayer.playheadTime_(13);
 		latency = sequencePlayer.latency;
 		delta = sequencePlayer.delta;
@@ -165,7 +208,11 @@ SequencePlayerUnitTests : BNUnitTest {
 		];
 		var mockMidiOut = MockMIDIOut();
 		var mockTempoClock = MockTempoClock(mockMidiOut);
-		var sequencePlayer = SequencePlayer(sequence,loopStart:13,loopEnd:15,tempoClock:mockTempoClock,midiOut:mockMidiOut,midiChannel:15);
+		var sequencePlayer = SequencePlayer(tempoClock:mockTempoClock,midiOut:mockMidiOut);
+		sequencePlayer.sequence = sequence;
+		sequencePlayer.loopStart = 13;
+		sequencePlayer.loopEnd = 15;
+		sequencePlayer.midiChannel = 15;
 		sequencePlayer.playheadTime_(13);
 		latency = sequencePlayer.latency;
 		delta = sequencePlayer.delta;
@@ -187,7 +234,7 @@ SequencePlayerUnitTests : BNUnitTest {
 			SentMidiEvent(scheduledTime: this.nextIterationAfter(3.0,delta) + latency, type: \noteOn, midiChannel: 15, noteNumber: 4, velocity: 100),
 			SentMidiEvent(scheduledTime: this.nextIterationAfter(4.0,delta) + latency, type: \noteOff, midiChannel: 15, noteNumber: 4, velocity: 100),
 			SentMidiEvent(scheduledTime: this.nextIterationAfter(4.0,delta) + latency, type: \noteOn, midiChannel: 15, noteNumber: 3, velocity: 100),
-			SentMidiEvent(scheduledTime: this.nextIterationAfter(4.5,delta) + latency, type: \noteOff, midiChannel: 15, noteNumber: 3, velocity: 100)
+			SentMidiEvent(scheduledTime: this.nextIterationAfter(4.5,delta), type: \noteOff, midiChannel: 15, noteNumber: 3, velocity: 100)
 		]);
 	}
 
@@ -202,7 +249,11 @@ SequencePlayerUnitTests : BNUnitTest {
 		];
 		var mockMidiOut = MockMIDIOut();
 		var mockTempoClock = MockTempoClock(mockMidiOut);
-		var sequencePlayer = SequencePlayer(sequence,loopStart:13,loopEnd:15,tempoClock:mockTempoClock,midiOut:mockMidiOut,midiChannel:15);
+		var sequencePlayer = SequencePlayer(tempoClock:mockTempoClock,midiOut:mockMidiOut);
+		sequencePlayer.sequence = sequence;
+		sequencePlayer.loopStart = 13;
+		sequencePlayer.loopEnd = 15;
+		sequencePlayer.midiChannel = 15;
 		sequencePlayer.playheadTime_(13);
 		latency = sequencePlayer.latency;
 		delta = sequencePlayer.delta;

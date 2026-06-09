@@ -9,7 +9,7 @@ SequencePlayer {
 	var prLoopEnd = 64;
 	var prLoopStart = 0;
 	var prMaximumSequenceLength = 64;
-	var prMidiChannel;
+	var prMidiChannel = 0;
 	var prMidiOut;
 	var prPlayheadTime = 0;
 	var prSequence;
@@ -20,43 +20,7 @@ SequencePlayer {
 	}
 
 	init {
-		|sequence,loopStart,loopEnd,midiChannel,tempoClock,midiOut|
-		Validator.validateMethodParameterType(sequence,Array,"sequence","SequencePlayer","init");
-		Validator.validateMethodParameterType(loopStart,SimpleNumber,"loopStart","SequencePlayer","init");
-		Validator.validateMethodParameterType(loopEnd,SimpleNumber,"loopEnd","SequencePlayer","init");
-		Validator.validateMethodParameterType(midiChannel,SimpleNumber,"midiChannel","SequencePlayer","init");
-
-		sequence.do({
-			|note,index|
-			if (note.isKindOf(PlayableNote).not,{
-				Error(format("Not all elements of the 'sequence' parameter passed into SequencePlayer.init were instances of PlayableNote. Found an instance of % at index %.", note.class, index)).throw;
-			});
-		});
-
-		if (loopStart < 0, {
-			Error(format("The loopStart parameter provided to SequencePlayer.init must not be less than 0. The value % was provided.", loopStart)).throw;
-		});
-
-		if (loopStart > prMaximumSequenceLength, {
-			Error(format("The loopStart parameter provided to SequencePlayer.init must not be greater than %. The value % was provided.", prMaximumSequenceLength, loopStart)).throw;
-		});
-
-		if (loopEnd < 0, {
-			Error(format("The loopEnd parameter provided to SequencePlayer.init must not be less than 0. The value % was provided.", loopEnd)).throw;
-		});
-
-		if (loopEnd > prMaximumSequenceLength, {
-			Error(format("The loopEnd parameter provided to SequencePlayer.init must not be greater than %. The value % was provided.", prMaximumSequenceLength, loopEnd)).throw;
-		});
-
-		if ((loopEnd - loopStart) < 0.25, {
-			Error(format("The loopEnd parameter provided to SequencePlayer.init must be at least greater than the loopStart parameter. The parameters provided were as follows: loopStart: %, loopEnd: %.", loopStart, loopEnd)).throw;
-		});
-
-		prMidiChannel = midiChannel;
-		prLoopStart = loopStart;
-		prLoopEnd = loopEnd;
-		prSequence = sequence;
+		|tempoClock,midiOut|
 
 		if (tempoClock.isNil,{
 			prTempoClock = TempoClock.default;
@@ -71,6 +35,7 @@ SequencePlayer {
 		});
 
 		prCurrentlyPlayingNotes = IdentityBag.new;
+		prSequence = [];
 
 		prPlaySliceFunc = {
 			var slice = prCutSliceFunc.value();
@@ -153,6 +118,16 @@ SequencePlayer {
 		^prLatency;
 	}
 
+	midiChannel {
+		^prMidiChannel;
+	}
+
+	midiChannel_ {
+		|newChannel|
+		Validator.validateMethodParameterType(newChannel,SimpleNumber,"newChannel","SequencePlayer","midiChannel_");
+		prMidiChannel = newChannel;
+	}
+
 	loopEnd {
 		^prLoopEnd;
 	}
@@ -208,8 +183,26 @@ SequencePlayer {
 	}
 
 	*new {
-		|sequence,loopStart,loopEnd,midiChannel=0,tempoClock=nil,midiOut=nil|
-		^super.new.init(sequence,loopStart,loopEnd,midiChannel,tempoClock,midiOut);
+		|tempoClock=nil,midiOut=nil|
+		^super.new.init(tempoClock,midiOut);
+	}
+
+	sequence {
+		^prSequence;
+	}
+
+	sequence_ {
+		|newSequence|
+		Validator.validateMethodParameterType(newSequence,Array,"newSequence","SequencePlayer","sequence_");
+
+		newSequence.do({
+			|note,index|
+			if (note.isKindOf(PlayableNote).not,{
+				Error(format("Not all elements of the 'sequence' parameter passed into SequencePlayer.sequence_ were instances of PlayableNote. Found an instance of % at index %.", note.class, index)).throw;
+			});
+		});
+
+		prSequence = newSequence;
 	}
 
 	play {

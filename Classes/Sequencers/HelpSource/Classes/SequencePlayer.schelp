@@ -19,61 +19,59 @@ SequencePlayerUnitTests.run;
 CLASSMETHODS::
 
 METHOD:: new
-(describe method here)
+Creates a new TELETYPE::SequencePlayer::.
 
-ARGUMENT:: sequence
-(describe argument here)
+ARGUMENT:: tempoClock
+The clock used to schedule playback. Defaults to TempoClock.default.
 
-ARGUMENT:: loopStart
-(describe argument here)
+ARGUMENT:: midiOut
+The MIDI output device. Defaults to Setup.midi.
 
-ARGUMENT:: loopEnd
-(describe argument here)
-
-returns:: (describe returnvalue here)
+returns:: A new TELETYPE::SequencePlayer:: instance.
 
 
 INSTANCEMETHODS::
 
 METHOD:: loopEnd
-(describe method here)
+The loop end time in beats.
 
-ARGUMENT:: value
-(describe argument here)
-
-returns:: (describe returnvalue here)
+returns:: The current loop end time.
 
 METHOD:: loopStart
-(describe method here)
+The loop start time in beats.
 
-ARGUMENT:: value
-(describe argument here)
+returns:: The current loop start time.
 
-returns:: (describe returnvalue here)
+METHOD:: midiChannel
+The MIDI channel used for note on/off messages.
+
+returns:: The current MIDI channel.
 
 METHOD:: play
-(describe method here)
+Starts playback from the current playhead position.
 
-returns:: (describe returnvalue here)
+returns:: A report string from the first playback slice.
+
+METHOD:: sequence
+The array of LINK::Classes/PlayableNote:: instances to play.
+
+returns:: The current sequence.
 
 METHOD:: stop
-(describe method here)
+Stops playback and sends note-off for any currently playing notes.
 
-returns:: (describe returnvalue here)
+returns:: This instance.
 
 METHOD:: init
-(describe method here)
+Initialises a new TELETYPE::SequencePlayer::.
 
-ARGUMENT:: sequence
-(describe argument here)
+ARGUMENT:: tempoClock
+The clock used to schedule playback. Defaults to TempoClock.default.
 
-ARGUMENT:: loopStart
-(describe argument here)
+ARGUMENT:: midiOut
+The MIDI output device. Defaults to Setup.midi.
 
-ARGUMENT:: loopEnd
-(describe argument here)
-
-returns:: (describe returnvalue here)
+returns:: This instance.
 
 
 EXAMPLES::
