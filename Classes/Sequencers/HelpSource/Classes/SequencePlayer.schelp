@@ -31,6 +31,28 @@ returns:: A new TELETYPE::SequencePlayer:: instance.
 
 
 INSTANCEMETHODS::
+PRIVATE:: prResetPlayingNotes
+
+METHOD:: delta
+The beat length of each playback slice (the scheduling grid quant).
+
+returns:: The slice duration in beats (0.25 by default).
+
+METHOD:: init
+Initialises a new TELETYPE::SequencePlayer::.
+
+ARGUMENT:: tempoClock
+The clock used to schedule playback. Defaults to TempoClock.default.
+
+ARGUMENT:: midiOut
+The MIDI output device. Defaults to Setup.midi.
+
+returns:: This instance.
+
+METHOD:: latency
+The scheduling offset applied to MIDI events, in beats.
+
+returns:: The current latency value in beats (0.05 by default).
 
 METHOD:: loopEnd
 The loop end time in beats.
@@ -52,6 +74,11 @@ Starts playback from the current playhead position.
 
 returns:: A report string from the first playback slice.
 
+METHOD:: playheadTime
+The current playback position in beats. Set with TELETYPE::playheadTime_::.
+
+returns:: The current playhead time in beats.
+
 METHOD:: sequence
 The array of LINK::Classes/PlayableNote:: instances to play.
 
@@ -59,17 +86,6 @@ returns:: The current sequence.
 
 METHOD:: stop
 Stops playback and sends note-off for any currently playing notes.
-
-returns:: This instance.
-
-METHOD:: init
-Initialises a new TELETYPE::SequencePlayer::.
-
-ARGUMENT:: tempoClock
-The clock used to schedule playback. Defaults to TempoClock.default.
-
-ARGUMENT:: midiOut
-The MIDI output device. Defaults to Setup.midi.
 
 returns:: This instance.
 

@@ -1,7 +1,7 @@
 SequencePlayer {
+	classvar prCutSliceFunc;
 	classvar prDelta = 0.25;
 	classvar prPlaySliceFunc;
-	classvar prCutSliceFunc;
 
 	var prCurrentlyPlayingNotes;
 	var prIsPlaying = false;
@@ -110,22 +110,8 @@ SequencePlayer {
 		};
 	}
 
-	prResetPlayingNotes {
-		prCurrentlyPlayingNotes.clear;
-	}
-
 	latency {
 		^prLatency;
-	}
-
-	midiChannel {
-		^prMidiChannel;
-	}
-
-	midiChannel_ {
-		|newChannel|
-		Validator.validateMethodParameterType(newChannel,SimpleNumber,"newChannel","SequencePlayer","midiChannel_");
-		prMidiChannel = newChannel;
 	}
 
 	loopEnd {
@@ -182,9 +168,38 @@ SequencePlayer {
 		^(prLoopEnd - prLoopStart);
 	}
 
+	midiChannel {
+		^prMidiChannel;
+	}
+
+	midiChannel_ {
+		|newChannel|
+		Validator.validateMethodParameterType(newChannel,SimpleNumber,"newChannel","SequencePlayer","midiChannel_");
+		prMidiChannel = newChannel;
+	}
+
 	*new {
 		|tempoClock=nil,midiOut=nil|
 		^super.new.init(tempoClock,midiOut);
+	}
+
+	play {
+		this.prResetPlayingNotes();
+		prIsPlaying = true;
+		^prPlaySliceFunc.value();
+	}
+
+	playheadTime {
+		^prPlayheadTime;
+	}
+
+	playheadTime_ {
+		|newTime|
+		prPlayheadTime = newTime;
+	}
+
+	prResetPlayingNotes {
+		prCurrentlyPlayingNotes.clear;
 	}
 
 	sequence {
@@ -203,21 +218,6 @@ SequencePlayer {
 		});
 
 		prSequence = newSequence;
-	}
-
-	play {
-		this.prResetPlayingNotes();
-		prIsPlaying = true;
-		^prPlaySliceFunc.value();
-	}
-
-	playheadTime {
-		^prPlayheadTime;
-	}
-
-	playheadTime_ {
-		|newTime|
-		prPlayheadTime = newTime;
 	}
 
 	stop {

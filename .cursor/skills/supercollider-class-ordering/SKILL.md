@@ -57,17 +57,13 @@ List every instance `var` declaration together after the classvars, sorted alpha
 
 ### methods
 
-List every method after the vars, sorted alphabetically by method name.
+List every method after the vars in a **single merged list**, sorted alphabetically by method name. Class methods and instance methods are **not** split into separate groups in the `.sc` file.
 
 - Include instance methods, class methods (`*name`), getters, setters (`name_`), and private methods (`prName`).
 - For class methods, sort by the name after `*` (e.g. `*new` is sorted as `new`).
 - Getter/setter pairs are separate entries: `loopEnd` comes before `loopEnd_`.
 
 ```supercollider
-	*new {
-		^super.new.init;
-	}
-
 	delta {
 		^prDelta;
 	}
@@ -83,6 +79,10 @@ List every method after the vars, sorted alphabetically by method name.
 	loopEnd_ {
 		|newTime|
 	}
+
+	*new {
+		^super.new.init;
+	}
 ```
 
 ## Full class skeleton
@@ -95,12 +95,12 @@ ExampleClass {
 	var prFieldA;
 	var prFieldB;
 
-	*new {
-		^super.new.init;
-	}
-
 	init {
 		|arg|
+	}
+
+	*new {
+		^super.new.init;
 	}
 
 	prHelper {
@@ -115,6 +115,29 @@ ExampleClass {
 
 Each class block in a file follows these rules independently. Blank lines between the three groups within a class are optional but encouraged for readability.
 
+## Help file member order
+
+SuperCollider help files group methods into separate `CLASSMETHODS::` and `INSTANCEMETHODS::` sections. That structure differs from the `.sc` file, which uses one merged method list. The two formats cannot share a single global order.
+
+Instead, order each help section to match the **relative order within that method type** in the `.sc` class:
+
+1. Walk through the class's merged method list in alphabetical order.
+2. Collect class methods (`*name`) — those become `CLASSMETHODS::` entries, in the order they appear in that walk.
+3. Collect instance methods — those become `INSTANCEMETHODS::` entries, in the order they appear in that walk.
+
+### Example
+
+Merged `.sc` order: `delta`, `init`, `latency`, `loopEnd`, `loopEnd_`, `midiChannel`, `midiChannel_`, `*new`, `play`, `stop`
+
+Help file order:
+
+- `CLASSMETHODS::` → `new` (the only class method in the walk)
+- `INSTANCEMETHODS::` → `init`, `latency`, `loopEnd`, `midiChannel`, `play`, `stop` (instance methods in walk order, skipping setters and private methods)
+
+Skip private methods in the help file (use `PRIVATE::` instead, per the supercollider-help-files skill). When a getter and setter share one public name, document it once at the getter's position in the walk.
+
+Apply help-file reordering together with class reordering, not during separate functional edits.
+
 ## Checklist
 
 Use this checklist when creating a new class, or when the user has asked you to reorder an existing one:
@@ -123,6 +146,7 @@ Use this checklist when creating a new class, or when the user has asked you to 
 - [ ] All `var` declarations come next, alphabetically sorted
 - [ ] All methods come last, alphabetically sorted
 - [ ] No `var` or `classvar` declarations appear after the first method
+- [ ] The paired `.schelp` file lists `CLASSMETHODS::` and `INSTANCEMETHODS::` entries in per-section order matching the class's merged method list
 
 When finishing functional changes to an existing class without reordering:
 

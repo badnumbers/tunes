@@ -69,6 +69,10 @@ When updating a method on a class, update the matching `METHOD::` entry so that:
 
 If a method becomes private (no longer part of the public API), move it into the `PRIVATE::` line instead of leaving a stale `METHOD::` block.
 
+## Member order
+
+Help files use separate `CLASSMETHODS::` and `INSTANCEMETHODS::` sections. The `.sc` class uses one merged method list. See the supercollider-class-ordering skill for how to order `METHOD::` entries within each help section so they match the relative order of that method type in the class file.
+
 ## Stale or placeholder content
 
 Do not leave `(describe argument here)` / `(describe method here)` placeholder text in a help file you have just touched. Replace it with a real one-line description, or remove the entry if the thing it documents no longer exists.
