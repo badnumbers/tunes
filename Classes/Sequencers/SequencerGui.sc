@@ -134,10 +134,17 @@ SequencerGui {
 			}, {
 				startRecordingButton.string_("Start recording");
 				pianoRoll.stopRecording;
-			})
+			});
 		});
 		playLoopButton.mouseUpAction_({
-			warn("There is no sequence to play yet.");
+			if (playLoopButton.string == "Play loop", {
+				if (pianoRoll.playLoop(),{
+					playLoopButton.string_("Stop loop");
+				});
+			}, {
+				playLoopButton.string_("Play loop");
+				pianoRoll.stopLoop();
+			});
 		});
 
 		// Set up MIDI indicator

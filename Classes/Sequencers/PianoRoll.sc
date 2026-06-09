@@ -151,15 +151,14 @@ PianoRoll : SCViewHolder {
 		^super.new.init(parent,bounds,palette,tempoClock,devMode);
 	}
 
-	playBackRecording {
-		var midinotes = Array();
-		var velocities = Array();
-		var legatoes = Array();
-
-		prRecordedNotes.do({
-
+	playLoop {
+		if (prRecordedNotes.size > 0,{
+			prSequencePlayer.play();
+			^true;
 		});
 
+		warn("There is no sequence to play yet.");
+		^false;
 	}
 
 	startRecording {
@@ -225,6 +224,10 @@ PianoRoll : SCViewHolder {
 				Metronome.play;
 			});
 		});
+	}
+
+	stopLoop {
+		prSequencePlayer.stop();
 	}
 
 	stopRecording {
