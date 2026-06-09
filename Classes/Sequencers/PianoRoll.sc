@@ -10,6 +10,7 @@ PianoRoll : SCViewHolder {
 	var prPianoRollWidth;
 	var prRecordedNotes;
 	var prLoopMarkers;
+	var prSequencePlayer;
 	var prTempoClock;
 	var prTimeline;
 	var prView;
@@ -36,6 +37,8 @@ PianoRoll : SCViewHolder {
 			Setup.midi;
 			Setup.server;
 		});
+
+		prSequencePlayer = SequencePlayer(tempoClock,Setup.midi);
 
 		prBackgroundView = UserView(prView, Rect(0, 0, prPianoRollWidth, prPianoRollHeight)).background_(prPalette.extreme1)
 		.beginDragAction_({|me,x,y|selectionView.visible_(true);x@y;})
@@ -205,6 +208,7 @@ PianoRoll : SCViewHolder {
 							moveFunc:{|view,startTime,stopTime|view.bounds_( Rect(startTime * prNoteViewScale[\horizontal],view.bounds.top,(stopTime - startTime) * prNoteViewScale[\horizontal],view.bounds.height));},
 						);
 						prRecordedNotes = prRecordedNotes.add(pianoRollNote);
+						prSequencePlayer.midiChannel_(chan);
 					},{
 						var activeNotesForThisNoteNumber = prRecordedNotes.select({|note|(note.noteNumber == noteNumber) && (note.stopTime.isNil)});
 						if (activeNotesForThisNoteNumber.size > 1, {
@@ -248,5 +252,9 @@ PianoRoll : SCViewHolder {
 		prLoopMarkers.loopStart_(startTime);
 		prLoopMarkers.playbackBeat_(startTime);
 		prLoopMarkers.loopEnd_(stopTime);
+		prSequencePlayer.loopStart_(startTime);
+		prSequencePlayer.loopEnd_(stopTime);
+		prSequencePlayer.playheadTime_(startTime);
+		prSequencePlayer.sequence = prRecordedNotes.collect({|note|note.playableNote});
 	}
 }

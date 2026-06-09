@@ -73,6 +73,10 @@ PianoRollNote {
 		});
 	}
 
+	playableNote {
+		^prPlayableNote;
+	}
+
 	setPartIfSelected {
 		|partNumber|
 		Validator.validateMethodParameterType(partNumber,Integer,"partNumber","SequencerNote","setPartIfSelected");

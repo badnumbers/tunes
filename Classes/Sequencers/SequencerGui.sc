@@ -16,7 +16,7 @@ SequencerGui {
 
 	init {
 		|sequencer,tempoClock,devMode|
-		var window, stackLayout, midiIndicator, fxBankButton, settingsButton, arrangeButton, recordButton, startRecordingButton, pianoRoll;
+		var window, stackLayout, midiIndicator, fxBankButton, settingsButton, arrangeButton, recordButton, startRecordingButton, playLoopButton, pianoRoll;
 		var tempoKnob;
 		var totalMidiNoteCount = 0;
 		var renderButtonFunc;
@@ -71,6 +71,7 @@ SequencerGui {
 					View().background_(prPalette.colour4).minHeight_(70).maxHeight_(70).layout_(
 						HLayout(
 							startRecordingButton = renderButtonFunc.value("Start recording", width:150),
+							playLoopButton = renderButtonFunc.value("Play loop", width:150),
 							[nil, s: 1]
 						).margins_(10).spacing_(10)
 					)

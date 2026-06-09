@@ -1,7 +1,7 @@
 TITLE:: PianoRoll
 SUMMARY:: Piano-roll view for MIDI recording and note editing.
 CATEGORIES:: Streams-Patterns-Events
-RELATED:: Classes/PianoRollNote, Classes/PianoRollTimeline, Classes/PianoRollLoopMarkers, Classes/SequencerGui
+RELATED:: Classes/PianoRollNote, Classes/PianoRollTimeline, Classes/PianoRollLoopMarkers, Classes/SequencePlayer, Classes/SequencerGui
 
 DESCRIPTION::
 LINK::Classes/PianoRoll:: is a LINK::Classes/SCViewHolder:: that shows recorded notes as a piano roll. It embeds LINK::Classes/PianoRollTimeline:: for the beat strip above the roll (left/right clicks set loop bounds; Shift+left sets playback; see LINK::Classes/PianoRollTimeline::). It listens for MIDI note-on and note-off events (when not in dev mode) and draws LINK::Classes/PianoRollNote:: entries as LINK::Classes/BorderView:: regions. LINK::#-stopRecording:: frees the recording LINK::Classes/MIDIdef::s and updates LINK::Classes/PianoRollLoopMarkers:: from recorded notes.
