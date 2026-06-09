@@ -8,6 +8,7 @@ TELETYPE::PianoRollTimeline:: is a LINK::Classes/SCViewHolder:: whose LINK::Clas
 
 NOTE::
 Pass a width in pixels that matches the scrollable piano-roll document (for example the roll LINK::Classes/UserView:: width), not the LINK::Classes/ScrollView:: viewport width alone.
+::
 
 CLASSMETHODS::
 
