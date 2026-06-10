@@ -25,15 +25,16 @@ PianoRollLoopMarkers {
 		prPlayheadTime = 0;
 	}
 
-	playheadTime_ {
-		|rawBeat,snap=true|
+	loopEnd_ {
+		|rawBeat|
 		var snapped;
-		Validator.validateMethodParameterType(rawBeat, Number, "rawBeat", "PianoRollLoopMarkers", "playheadTime_");
-		if (snap,{
-			prPlayheadTime = this.prSnapBeat(rawBeat);
-		},{
-			prPlayheadTime = rawBeat;
+		Validator.validateMethodParameterType(rawBeat, Number, "rawBeat", "PianoRollLoopMarkers", "loopEnd_");
+		snapped = this.prSnapBeat(rawBeat);
+		if (snapped <= prStartBeat, {
+			"PianoRollLoopMarkers: cannot set loop end to % beats (would be at or before loop start at %); action ignored.".format(snapped, prStartBeat).warn;
+			^this;
 		});
+		prStopBeat = snapped;
 		this.prUpdateLineViews;
 	}
 
@@ -50,16 +51,27 @@ PianoRollLoopMarkers {
 		this.prUpdateLineViews;
 	}
 
-	loopEnd_ {
-		|rawBeat|
-		var snapped;
-		Validator.validateMethodParameterType(rawBeat, Number, "rawBeat", "PianoRollLoopMarkers", "loopEnd_");
-		snapped = this.prSnapBeat(rawBeat);
-		if (snapped <= prStartBeat, {
-			"PianoRollLoopMarkers: cannot set loop end to % beats (would be at or before loop start at %); action ignored.".format(snapped, prStartBeat).warn;
-			^this;
+	*new {
+		|parent, horizontalScale, rollHeight, palette, defaultStopBeat|
+		Validator.validateMethodParameterType(parent, View, "parent", "PianoRollLoopMarkers", "new");
+		Validator.validateMethodParameterType(horizontalScale, Number, "horizontalScale", "PianoRollLoopMarkers", "new");
+		Validator.validateMethodParameterType(rollHeight, Number, "rollHeight", "PianoRollLoopMarkers", "new");
+		Validator.validateMethodParameterType(palette, GuiPalette, "palette", "PianoRollLoopMarkers", "new");
+		if (defaultStopBeat.notNil, {
+			Validator.validateMethodParameterType(defaultStopBeat, Number, "defaultStopBeat", "PianoRollLoopMarkers", "new");
 		});
-		prStopBeat = snapped;
+		^super.new.init(parent, horizontalScale, rollHeight, palette, defaultStopBeat);
+	}
+
+	playheadTime_ {
+		|rawBeat,snap=true|
+		var snapped;
+		Validator.validateMethodParameterType(rawBeat, Number, "rawBeat", "PianoRollLoopMarkers", "playheadTime_");
+		if (snap,{
+			prPlayheadTime = this.prSnapBeat(rawBeat);
+		},{
+			prPlayheadTime = rawBeat;
+		});
 		this.prUpdateLineViews;
 	}
 
@@ -81,17 +93,5 @@ PianoRollLoopMarkers {
 			prStopLine.bounds_(Rect(stopX, 0, 1, prRollHeight));
 			prPlaybackLine.bounds_(Rect(playX, 0, 1, prRollHeight));
 		});
-	}
-
-	*new {
-		|parent, horizontalScale, rollHeight, palette, defaultStopBeat|
-		Validator.validateMethodParameterType(parent, View, "parent", "PianoRollLoopMarkers", "new");
-		Validator.validateMethodParameterType(horizontalScale, Number, "horizontalScale", "PianoRollLoopMarkers", "new");
-		Validator.validateMethodParameterType(rollHeight, Number, "rollHeight", "PianoRollLoopMarkers", "new");
-		Validator.validateMethodParameterType(palette, GuiPalette, "palette", "PianoRollLoopMarkers", "new");
-		if (defaultStopBeat.notNil, {
-			Validator.validateMethodParameterType(defaultStopBeat, Number, "defaultStopBeat", "PianoRollLoopMarkers", "new");
-		});
-		^super.new.init(parent, horizontalScale, rollHeight, palette, defaultStopBeat);
 	}
 }

@@ -23,15 +23,21 @@ A LINK::Classes/GuiPalette:: used for colours.
 ARGUMENT:: tempoClock
 The LINK::Classes/TempoClock:: used for timing when recording.
 
+ARGUMENT:: devMode
+When true, skips MIDI setup and fills fake notes for development.
+
 INSTANCEMETHODS::
+
+METHOD:: playLoop
+Starts playback of the recorded sequence via the embedded LINK::Classes/SequencePlayer::. Returns false and posts a warning if no notes have been recorded.
 
 METHOD:: startRecording
 Arms MIDI recording (or fills fake notes in dev mode), starts the metronome after the server boots when using live MIDI.
 
+METHOD:: stopLoop
+Stops playback via the embedded LINK::Classes/SequencePlayer::.
+
 METHOD:: stopRecording
 Stops recording, frees recording LINK::Classes/MIDIdef::s, stops the metronome, and updates LINK::Classes/PianoRollLoopMarkers:: from recorded notes (loop bounds plus LINK::Classes/PianoRollLoopMarkers#-playheadTime_:: at the loop start beat).
-
-METHOD:: playBackRecording
-Placeholder for future playback of the recorded notes.
 
 PRIVATE:: init

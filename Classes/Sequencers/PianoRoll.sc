@@ -4,12 +4,12 @@ PianoRoll : SCViewHolder {
 	var prBackgroundView;
 	var prDevMode;
 	var prDrawNote;
+	var prLoopMarkers;
 	var prNoteViewScale;
 	var prPalette;
 	var prPianoRollHeight;
 	var prPianoRollWidth;
 	var prRecordedNotes;
-	var prLoopMarkers;
 	var prSequencePlayer;
 	var prTempoClock;
 	var prTimeline;

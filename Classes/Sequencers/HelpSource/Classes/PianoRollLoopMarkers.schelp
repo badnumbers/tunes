@@ -30,11 +30,11 @@ Initial loop end beat before any marker is set (for example the roll length in b
 
 INSTANCEMETHODS::
 
-METHOD:: playheadTime_
-Snaps the given beat the same way as LINK::#-loopStart_:: (using CODE::prSnapResolutionBeats::), stores it as the playback position, and refreshes all three marker LINK::Classes/View::s using the same internal update as LINK::#-loopStart_:: and LINK::#-loopEnd_:: (so the playback line is created even when the loop bounds have not been set yet).
+METHOD:: loopEnd_
+Snaps the given beat using CODE::prSnapResolutionBeats::, then sets the end marker if the snapped beat is strictly after the current start marker. Otherwise posts a warning and does nothing. Also used when LINK::Classes/PianoRoll:: applies the recorded range after LINK::#-stopRecording::.
 
 ARGUMENT:: rawBeat
-Unsnapped playback position in beats.
+Unsnapped beat position (e.g. from a timeline click or from recorded note timing).
 
 METHOD:: loopStart_
 Snaps the given beat using CODE::prSnapResolutionBeats::, then sets the start marker if the snapped beat is strictly before the current end marker. Otherwise posts a warning and does nothing. Also used when LINK::Classes/PianoRoll:: applies the recorded range after LINK::#-stopRecording::.
@@ -42,10 +42,10 @@ Snaps the given beat using CODE::prSnapResolutionBeats::, then sets the start ma
 ARGUMENT:: rawBeat
 Unsnapped beat position (e.g. from a timeline click or from recorded note timing).
 
-METHOD:: loopEnd_
-Snaps the given beat using CODE::prSnapResolutionBeats::, then sets the end marker if the snapped beat is strictly after the current start marker. Otherwise posts a warning and does nothing. Also used when LINK::Classes/PianoRoll:: applies the recorded range after LINK::#-stopRecording::.
+METHOD:: playheadTime_
+Snaps the given beat the same way as LINK::#-loopStart_:: (using CODE::prSnapResolutionBeats::), stores it as the playback position, and refreshes all three marker LINK::Classes/View::s using the same internal update as LINK::#-loopStart_:: and LINK::#-loopEnd_:: (so the playback line is created even when the loop bounds have not been set yet).
 
 ARGUMENT:: rawBeat
-Unsnapped beat position (e.g. from a timeline click or from recorded note timing).
+Unsnapped playback position in beats.
 
 PRIVATE:: init, prSnapBeat, prUpdateLineViews
