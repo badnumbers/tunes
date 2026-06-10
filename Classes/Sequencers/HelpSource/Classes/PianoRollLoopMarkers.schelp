@@ -31,21 +31,36 @@ Initial loop end beat before any marker is set (for example the roll length in b
 INSTANCEMETHODS::
 
 METHOD:: loopEnd_
-Snaps the given beat using CODE::prSnapResolutionBeats::, then sets the end marker if the snapped beat is strictly after the current start marker. Otherwise posts a warning and does nothing. Also used when LINK::Classes/PianoRoll:: applies the recorded range after LINK::#-stopRecording::.
+Snaps the given beat using CODE::prSnapResolutionBeats::, then sets the end marker if the snapped beat is strictly after the current start marker. Otherwise posts a warning and does nothing. Also used when LINK::Classes/PianoRoll:: applies the recorded range after LINK::#-stopRecording::. On success, invokes the function registered with LINK::#-onLoopEndMove_::, if any, passing the snapped beat.
 
 ARGUMENT:: rawBeat
 Unsnapped beat position (e.g. from a timeline click or from recorded note timing).
 
 METHOD:: loopStart_
-Snaps the given beat using CODE::prSnapResolutionBeats::, then sets the start marker if the snapped beat is strictly before the current end marker. Otherwise posts a warning and does nothing. Also used when LINK::Classes/PianoRoll:: applies the recorded range after LINK::#-stopRecording::.
+Snaps the given beat using CODE::prSnapResolutionBeats::, then sets the start marker if the snapped beat is strictly before the current end marker. Otherwise posts a warning and does nothing. Also used when LINK::Classes/PianoRoll:: applies the recorded range after LINK::#-stopRecording::. On success, invokes the function registered with LINK::#-onLoopStartMove_::, if any, passing the snapped beat.
 
 ARGUMENT:: rawBeat
 Unsnapped beat position (e.g. from a timeline click or from recorded note timing).
 
+METHOD:: onLoopEndMove_
+Registers a function called when LINK::#-loopEnd_:: successfully moves the end marker. The function receives the snapped end beat in beats. Returns this instance for chaining.
+
+ARGUMENT:: action
+A LINK::Classes/Function:: invoked after a successful loop-end move.
+
+METHOD:: onLoopStartMove_
+Registers a function called when LINK::#-loopStart_:: successfully moves the start marker. The function receives the snapped start beat in beats. Returns this instance for chaining.
+
+ARGUMENT:: action
+A LINK::Classes/Function:: invoked after a successful loop-start move.
+
 METHOD:: playheadTime_
-Snaps the given beat the same way as LINK::#-loopStart_:: (using CODE::prSnapResolutionBeats::), stores it as the playback position, and refreshes all three marker LINK::Classes/View::s using the same internal update as LINK::#-loopStart_:: and LINK::#-loopEnd_:: (so the playback line is created even when the loop bounds have not been set yet).
+Stores the playback position and refreshes all three marker LINK::Classes/View::s using the same internal update as LINK::#-loopStart_:: and LINK::#-loopEnd_:: (so the playback line is created even when the loop bounds have not been set yet). When CODE::snap:: is true, snaps the given beat the same way as LINK::#-loopStart_:: (using CODE::prSnapResolutionBeats::).
 
 ARGUMENT:: rawBeat
 Unsnapped playback position in beats.
+
+ARGUMENT:: snap
+When true (default), snap CODE::rawBeat:: to the grid defined by CODE::prSnapResolutionBeats::; when false, store CODE::rawBeat:: verbatim.
 
 PRIVATE:: init, prSnapBeat, prUpdateLineViews

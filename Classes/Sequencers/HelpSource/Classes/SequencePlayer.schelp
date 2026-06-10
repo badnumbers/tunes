@@ -69,6 +69,12 @@ The MIDI channel used for note on/off messages.
 
 returns:: The current MIDI channel.
 
+METHOD:: onPlayheadMove_
+Registers a function called each time the playhead advances during playback. The function receives the new playhead time in beats.
+
+ARGUMENT:: action
+A LINK::Classes/Function:: invoked when the playhead moves to the next slice position.
+
 METHOD:: play
 Starts playback from the current playhead position.
 
