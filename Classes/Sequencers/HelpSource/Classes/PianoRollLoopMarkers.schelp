@@ -4,14 +4,14 @@ CATEGORIES:: Streams-Patterns-Events
 RELATED:: Classes/PianoRoll, Classes/PianoRollTimeline
 
 DESCRIPTION::
-TELETYPE::PianoRollLoopMarkers:: holds three one-pixel-wide LINK::Classes/View:: lines on the roll: loop start and loop end (LINK::Classes/GuiPalette#-colour5::) and a playback head (LINK::Classes/GuiPalette#-colour3::). The playback head defaults to beat zero and is moved with LINK::#-playbackBeat_::. LINK::Classes/PianoRoll#-stopRecording:: applies the recorded note range by calling LINK::#-loopStart_::, then LINK::#-playbackBeat_:: with the same unsnapped beat argument as LINK::#-loopStart_::, then LINK::#-loopEnd_:: (snapping and ordering rules as for timeline clicks).
+TELETYPE::PianoRollLoopMarkers:: holds three one-pixel-wide LINK::Classes/View:: lines on the roll: loop start and loop end (LINK::Classes/GuiPalette#-colour5::) and a playback head (LINK::Classes/GuiPalette#-colour3::). The playback head defaults to beat zero and is moved with LINK::#-playheadTime_::. LINK::Classes/PianoRoll#-stopRecording:: applies the recorded note range by calling LINK::#-loopStart_::, then LINK::#-playheadTime_:: with the same unsnapped beat argument as LINK::#-loopStart_::, then LINK::#-loopEnd_:: (snapping and ordering rules as for timeline clicks).
 
-Snap resolution for timeline clicks and for LINK::#-playbackBeat_:: is stored in the instance variable CODE::prSnapResolutionBeats:: (beats between snap grid points; default one sixteenth note). Clicks are snapped with rounding before the start/end ordering rules are applied.
+Snap resolution for timeline clicks and for LINK::#-playheadTime_:: is stored in the instance variable CODE::prSnapResolutionBeats:: (beats between snap grid points; default one sixteenth note). Clicks are snapped with rounding before the start/end ordering rules are applied.
 
 CLASSMETHODS::
 
 METHOD:: new
-Creates a TELETYPE::PianoRollLoopMarkers::. The line LINK::Classes/View::s are created on the first successful call to LINK::#-playbackBeat_::, LINK::#-loopStart_::, or LINK::#-loopEnd_::.
+Creates a TELETYPE::PianoRollLoopMarkers::. The line LINK::Classes/View::s are created on the first successful call to LINK::#-playheadTime_::, LINK::#-loopStart_::, or LINK::#-loopEnd_::.
 
 ARGUMENT:: parent
 The roll surface (typically the piano roll LINK::Classes/UserView::) on which the lines are parented.
@@ -30,7 +30,7 @@ Initial loop end beat before any marker is set (for example the roll length in b
 
 INSTANCEMETHODS::
 
-METHOD:: playbackBeat_
+METHOD:: playheadTime_
 Snaps the given beat the same way as LINK::#-loopStart_:: (using CODE::prSnapResolutionBeats::), stores it as the playback position, and refreshes all three marker LINK::Classes/View::s using the same internal update as LINK::#-loopStart_:: and LINK::#-loopEnd_:: (so the playback line is created even when the loop bounds have not been set yet).
 
 ARGUMENT:: rawBeat

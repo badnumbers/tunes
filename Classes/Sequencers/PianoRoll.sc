@@ -41,7 +41,7 @@ PianoRoll : SCViewHolder {
 		prSequencePlayer = SequencePlayer(tempoClock,Setup.midi).onPlayheadMove_({
 			|newPosition|
 			warn(format("Playhead moved to %.", newPosition));
-			AppClock.sched(0.0, { prLoopMarkers.playbackBeat_(newPosition,snap:false); });
+			AppClock.sched(0.0, { prLoopMarkers.playheadTime_(newPosition,snap:false); });
 		});
 
 		prBackgroundView = UserView(prView, Rect(0, 0, prPianoRollWidth, prPianoRollHeight)).background_(prPalette.extreme1)
@@ -137,7 +137,7 @@ PianoRoll : SCViewHolder {
 		prTimeline = PianoRollTimeline(prView, prPianoRollWidth - 4, prPalette, prNoteViewScale[\horizontal], { |beat, buttonNumber, modifiers|
 			if (buttonNumber == 0, {
 				if (modifiers.isShift, {
-					prLoopMarkers.playbackBeat_(beat);
+					prLoopMarkers.playheadTime_(beat);
 				}, {
 					prLoopMarkers.loopStart_(beat);
 				});
@@ -258,7 +258,7 @@ PianoRoll : SCViewHolder {
 				stopTime = startTime + 1;
 			});
 			prLoopMarkers.loopStart_(startTime);
-			prLoopMarkers.playbackBeat_(startTime);
+			prLoopMarkers.playheadTime_(startTime);
 			prLoopMarkers.loopEnd_(stopTime);
 			prSequencePlayer.loopStart_(startTime);
 			prSequencePlayer.loopEnd_(stopTime);

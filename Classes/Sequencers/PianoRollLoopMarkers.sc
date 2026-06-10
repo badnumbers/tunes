@@ -2,7 +2,7 @@ PianoRollLoopMarkers {
 	var prHorizontalScale;
 	var prLoopLineColour;
 	var prParent;
-	var prPlaybackBeat;
+	var prPlayheadTime;
 	var prPlaybackLine;
 	var prPlaybackLineColour;
 	var prRollHeight;
@@ -22,17 +22,17 @@ PianoRollLoopMarkers {
 		prSnapResolutionBeats = 0.25;
 		prStartBeat = 0;
 		prStopBeat = if (defaultStopBeat.notNil, { defaultStopBeat }, { 128 });
-		prPlaybackBeat = 0;
+		prPlayheadTime = 0;
 	}
 
-	playbackBeat_ {
+	playheadTime_ {
 		|rawBeat,snap=true|
 		var snapped;
-		Validator.validateMethodParameterType(rawBeat, Number, "rawBeat", "PianoRollLoopMarkers", "playbackBeat_");
+		Validator.validateMethodParameterType(rawBeat, Number, "rawBeat", "PianoRollLoopMarkers", "playheadTime_");
 		if (snap,{
-			prPlaybackBeat = this.prSnapBeat(rawBeat);
+			prPlayheadTime = this.prSnapBeat(rawBeat);
 		},{
-			prPlaybackBeat = rawBeat;
+			prPlayheadTime = rawBeat;
 		});
 		this.prUpdateLineViews;
 	}
@@ -69,7 +69,7 @@ PianoRollLoopMarkers {
 	}
 
 	prUpdateLineViews {
-		var playX = prPlaybackBeat * prHorizontalScale;
+		var playX = prPlayheadTime * prHorizontalScale;
 		var startX = prStartBeat * prHorizontalScale;
 		var stopX = prStopBeat * prHorizontalScale;
 		if (prStartLine.isNil, {
