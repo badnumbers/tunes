@@ -26,11 +26,14 @@ PianoRollLoopMarkers {
 	}
 
 	playbackBeat_ {
-		|rawBeat|
+		|rawBeat,snap=true|
 		var snapped;
 		Validator.validateMethodParameterType(rawBeat, Number, "rawBeat", "PianoRollLoopMarkers", "playbackBeat_");
-		snapped = this.prSnapBeat(rawBeat);
-		prPlaybackBeat = snapped;
+		if (snap,{
+			prPlaybackBeat = this.prSnapBeat(rawBeat);
+		},{
+			prPlaybackBeat = rawBeat;
+		});
 		this.prUpdateLineViews;
 	}
 

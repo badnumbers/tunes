@@ -38,7 +38,11 @@ PianoRoll : SCViewHolder {
 			Setup.server;
 		});
 
-		prSequencePlayer = SequencePlayer(tempoClock,Setup.midi);
+		prSequencePlayer = SequencePlayer(tempoClock,Setup.midi).onPlayheadMove_({
+			|newPosition|
+			warn(format("Playhead moved to %.", newPosition));
+			AppClock.sched(0.0, { prLoopMarkers.playbackBeat_(newPosition,snap:false); });
+		});
 
 		prBackgroundView = UserView(prView, Rect(0, 0, prPianoRollWidth, prPianoRollHeight)).background_(prPalette.extreme1)
 		.beginDragAction_({|me,x,y|selectionView.visible_(true);x@y;})

@@ -11,6 +11,7 @@ SequencePlayer {
 	var prMaximumSequenceLength = 64;
 	var prMidiChannel = 0;
 	var prMidiOut;
+	var prOnPlayheadMove;
 	var prPlayheadTime = 0;
 	var prSequence;
 	var prTempoClock;
@@ -73,6 +74,9 @@ SequencePlayer {
 					nextStartTime = prLoopStart;
 				});
 				prPlayheadTime = nextStartTime;
+				if (prOnPlayheadMove.isNil.not,{
+					prOnPlayheadMove.value(nextStartTime);
+				});
 
 				prTempoClock.schedAbs(prTempoClock.nextTimeOnGrid(quant:prDelta) + prDelta,{prPlaySliceFunc.value();});
 			},{
@@ -176,6 +180,12 @@ SequencePlayer {
 		|newChannel|
 		Validator.validateMethodParameterType(newChannel,SimpleNumber,"newChannel","SequencePlayer","midiChannel_");
 		prMidiChannel = newChannel;
+	}
+
+	onPlayheadMove_ {
+		|action|
+		Validator.validateMethodParameterType(action,Function,"action","SequencePlayer","onPlayheadMove_");
+		prOnPlayheadMove = action;
 	}
 
 	*new {
