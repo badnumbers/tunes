@@ -1,6 +1,8 @@
 PianoRollLoopMarkers {
 	var prHorizontalScale;
 	var prLoopLineColour;
+	var prOnLoopEndMove;
+	var prOnLoopStartMove;
 	var prParent;
 	var prPlayheadTime;
 	var prPlaybackLine;
@@ -36,6 +38,9 @@ PianoRollLoopMarkers {
 		});
 		prStopBeat = snapped;
 		this.prUpdateLineViews;
+		if (prOnLoopEndMove.isNil.not,{
+			prOnLoopEndMove.value(snapped);
+		});
 	}
 
 	loopStart_ {
@@ -49,6 +54,9 @@ PianoRollLoopMarkers {
 		});
 		prStartBeat = snapped;
 		this.prUpdateLineViews;
+		if (prOnLoopStartMove.isNil.not,{
+			prOnLoopStartMove.value(snapped);
+		});
 	}
 
 	*new {
@@ -61,6 +69,20 @@ PianoRollLoopMarkers {
 			Validator.validateMethodParameterType(defaultStopBeat, Number, "defaultStopBeat", "PianoRollLoopMarkers", "new");
 		});
 		^super.new.init(parent, horizontalScale, rollHeight, palette, defaultStopBeat);
+	}
+
+	onLoopEndMove_ {
+		|action|
+		Validator.validateMethodParameterType(action, Function, "action", "PianoRollLoopMarkers", "onLoopEndMove_");
+		prOnLoopEndMove = action;
+		^this;
+	}
+
+	onLoopStartMove_ {
+		|action|
+		Validator.validateMethodParameterType(action, Function, "action", "PianoRollLoopMarkers", "onLoopStartMove_");
+		prOnLoopStartMove = action;
+		^this;
 	}
 
 	playheadTime_ {
