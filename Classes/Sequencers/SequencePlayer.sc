@@ -41,6 +41,7 @@ SequencePlayer {
 		prPlaySliceFunc = {
 			var slice = prCutSliceFunc.value();
 			var nextStartTime;
+			var sliceStartTime = prPlayheadTime;
 			var report = format("Called prPlaySliceFunc for slice % -> %. Input slice starts %, stops % and terminates %. "
 				,prPlayheadTime
 				,prPlayheadTime + prDelta
@@ -75,7 +76,10 @@ SequencePlayer {
 				});
 				prPlayheadTime = nextStartTime;
 				if (prOnPlayheadMove.isNil.not,{
-					prOnPlayheadMove.value(nextStartTime);
+					var playheadSchedTime = prTempoClock.nextTimeOnGrid(quant:prDelta) + (prMidiOut.latency * prTempoClock.tempo);
+					prTempoClock.schedAbs(playheadSchedTime,{
+						prOnPlayheadMove.value(sliceStartTime);
+					});
 				});
 
 				prTempoClock.schedAbs(prTempoClock.nextTimeOnGrid(quant:prDelta) + prDelta,{prPlaySliceFunc.value();});

@@ -40,7 +40,6 @@ PianoRoll : SCViewHolder {
 
 		prSequencePlayer = SequencePlayer(tempoClock,Setup.midi).onPlayheadMove_({
 			|newPosition|
-			warn(format("Playhead moved to %.", newPosition));
 			AppClock.sched(0.0, { prLoopMarkers.playheadTime_(newPosition,snap:false); });
 		});
 
