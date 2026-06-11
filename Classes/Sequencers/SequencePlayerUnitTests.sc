@@ -182,13 +182,13 @@ SequencePlayerUnitTests : BNUnitTest {
 		delta = sequencePlayer.delta;
 
 		// Act
-		mockTempoClock.schedAbs(-0.1,{sequencePlayer.play();"Starting sequence";});
+		mockTempoClock.schedAbs(0,{sequencePlayer.play();"Starting sequence";});
 		mockTempoClock.schedAbs(0.15,{sequence.remove(noteInLoop);"Removing note";});
 		mockTempoClock.schedAbs(1.0,{sequencePlayer.stop();"Stopping sequence"});
 		mockTempoClock.play();
 		mockMidiOut.sentMidiEvents.do({|item|item.postln;});
 
-		// Assert — note-on at slice 13.0; delete during slice 13.25; termination at start of slice 13.5 (mock time 0.5)
+		// Assert — note-on at slice 13.0; note removed at mock time 0.15; termination at next slice boundary after that
 		this.assertSentMidi(mockMidiOut.sentMidiEvents,[
 			SentMidiEvent(scheduledTime: 0.0 + latency, type: \noteOn, midiChannel: 15, noteNumber: 3, velocity: 100),
 			SentMidiEvent(scheduledTime: this.nextIterationAfter(0.15,delta) + latency, type: \noteOff, midiChannel: 15, noteNumber: 3, velocity: 100)
