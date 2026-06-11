@@ -8,7 +8,7 @@ A set of utility methods for setting SuperCollider up.
 CLASSMETHODS::
 
 METHOD:: midi
-The first time this is called, it runs LINK::Classes/MIDIClient#*init:: and returns a LINK::Classes/MIDIOut:: corresponding to the device name and port name returned by LINK::Classes/Config#*midi::.
+The first time this is called, it runs LINK::Classes/MIDIClient#*init:: and returns a LINK::Classes/MIDIOut:: corresponding to the device name and port name returned by LINK::Classes/Config#*midi::. The MIDI output latency is set to match CODE::Server.default.latency::.
 
 For subsequent calls the CODE::MidiOut:: created the first time is returned.
 
