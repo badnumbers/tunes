@@ -1,11 +1,11 @@
 SequencePlayer {
 	classvar prCutSliceFunc;
-	classvar prDelta = 0.25;
+	classvar prDelta = 0.0625;
 	classvar prPlaySliceFunc;
 
 	var prCurrentlyPlayingNotes;
 	var prIsPlaying = false;
-	var prLatency = 0.05;
+	var prLatency = 0.01;
 	var prLoopEnd = 64;
 	var prLoopStart = 0;
 	var prMaximumSequenceLength = 64;

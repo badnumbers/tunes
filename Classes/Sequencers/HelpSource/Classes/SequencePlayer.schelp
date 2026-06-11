@@ -36,7 +36,7 @@ PRIVATE:: prResetPlayingNotes
 METHOD:: delta
 The beat length of each playback slice (the scheduling grid quant).
 
-returns:: The slice duration in beats (0.25 by default).
+returns:: The slice duration in beats (0.0625 by default).
 
 METHOD:: init
 Initialises a new TELETYPE::SequencePlayer::.
@@ -52,7 +52,7 @@ returns:: This instance.
 METHOD:: latency
 The scheduling offset applied to MIDI events, in beats.
 
-returns:: The current latency value in beats (0.05 by default).
+returns:: The current latency value in beats (0.01 by default).
 
 METHOD:: loopEnd
 The loop end time in beats.
