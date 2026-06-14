@@ -4,13 +4,21 @@ PianoRoll : SCViewHolder {
 	var prBackgroundView;
 	var prDevMode;
 	var prDrawNote;
+	var prGridDenominator = 8;
+	var prGridEntryActive = false;
+	var prGridEntryDigits = "";
+	var prGridResolution = 0.125;
 	var prLoopMarkers;
+	var prNoteDeselectFunc;
+	var prNoteSelectFunc;
 	var prNoteViewScale;
 	var prPalette;
 	var prPianoRollHeight;
 	var prPianoRollWidth;
 	var prRecordedNotes;
+	var prScrollView;
 	var prSequencePlayer;
+	var prSidebar;
 	var prTempoClock;
 	var prTimeline;
 	var prView;
@@ -19,13 +27,16 @@ PianoRoll : SCViewHolder {
 		|parent,bounds,palette,tempoClock,devMode|
 		var selectionView;
 		var pianoRollHeight,pianoRollWidth;
-		var snapNotesFunc;
 
 		prDevMode = devMode;
-		prView = ScrollView();
-		this.view = prView;
 		prPalette = palette;
-		prView.background_(prPalette.extreme2);
+		prSidebar = PianoRollSidebar(prPalette);
+		prView = View().layout_(HLayout(
+			[prScrollView = ScrollView(), s: 1],
+			prSidebar.view
+		));
+		this.view = prView;
+		prScrollView.background_(prPalette.extreme2);
 		prTempoClock = tempoClock;
 		prRecordedNotes = Array.newClear;
 
@@ -43,36 +54,96 @@ PianoRoll : SCViewHolder {
 			AppClock.sched(0.0, { prLoopMarkers.playheadTime_(newPosition,snap:false); });
 		});
 
-		prBackgroundView = UserView(prView, Rect(0, 0, prPianoRollWidth, prPianoRollHeight)).background_(prPalette.extreme1)
+		prNoteSelectFunc = {
+			|view|
+			view.borderWidth_(1);
+			this.prRefreshSidebar;
+		};
+		prNoteDeselectFunc = {
+			|view|
+			view.borderWidth_(0);
+			this.prRefreshSidebar;
+		};
+
+		prBackgroundView = UserView(prScrollView, Rect(0, 0, prPianoRollWidth, prPianoRollHeight)).background_(prPalette.extreme1)
 		.beginDragAction_({|me,x,y|selectionView.visible_(true);x@y;})
 		.keyDownAction_({
 			|view, char, modifiers, unicode, keycode, key|
-			var partNumberToSet;
+			var partNumberToSet, selectedNotes, keyHandled;
 			prActiveModifierKeys = modifiers;
-			if (char.notNil,{
+			if (char == $g, {
+				prGridEntryActive = true;
+				prGridEntryDigits = "";
+				this.prRefreshSidebar;
+			});
+			if (prGridEntryActive && char.notNil, {
+				if ((char.ascii >= 48) && (char.ascii <= 57), {
+					prGridEntryDigits = prGridEntryDigits ++ char.asString;
+					this.prRefreshSidebar;
+				});
+			});
+			if (prGridEntryActive.not && char.notNil, {
 				switch (char,
 					$1, { partNumberToSet = 1; },
 					$2, { partNumberToSet = 2; },
 					$3, { partNumberToSet = 3; },
 					$4, { partNumberToSet = 4; },
-					$w, { snapNotesFunc.value(1); },
-					$h, { snapNotesFunc.value(0.5); },
-					$q, { snapNotesFunc.value(0.25); },
-					$e, { snapNotesFunc.value(0.125); },
-					$s, { snapNotesFunc.value(0.0625); }
-			)});
+					$s, {
+						selectedNotes = this.prSelectedNotes;
+						if (selectedNotes.size == 0, {
+							"No notes selected.".warn;
+						}, {
+							selectedNotes.do({|recordedNote| recordedNote.snapToGrid(prGridResolution); });
+							this.prApplyNoteEdits;
+						});
+					}
+				);
+			});
+			if ([65361, 65363].includes(keycode), {
+				if (modifiers.isCtrl, {
+					selectedNotes = this.prSelectedNotes;
+					if (selectedNotes.size == 0, {
+						"No notes selected.".warn;
+					}, {
+						if (keycode == 65361, {
+							selectedNotes.do({|recordedNote| recordedNote.nudgeLeft(prGridResolution); });
+						}, {
+							selectedNotes.do({|recordedNote| recordedNote.nudgeRight(prGridResolution); });
+						});
+						this.prApplyNoteEdits;
+					});
+					keyHandled = true;
+				}, {
+					keyHandled = false;
+				});
+			});
 			if (partNumberToSet.notNil,{
 				prRecordedNotes.do({|recordedNote|recordedNote.setPartIfSelected(partNumberToSet);});
 			});
+			keyHandled;
 		})
 		.keyUpAction_({
 			|view, char, modifiers, unicode, keycode, key|
+			var denominator;
 			prActiveModifierKeys = modifiers;
+			if (char == $g && prGridEntryActive, {
+				prGridEntryActive = false;
+				if (prGridEntryDigits.size > 0, {
+					denominator = prGridEntryDigits.asInteger;
+					if (denominator > 0, {
+						prGridDenominator = denominator;
+						prGridResolution = 1 / denominator;
+					});
+				});
+				prGridEntryDigits = "";
+				this.prRefreshSidebar;
+			});
 		})
 		.receiveDragHandler_({
 			|me,x,y|
 			selectionView.visible_(false);
 			prRecordedNotes.do({|recordedNote|recordedNote.selectIfEnclosed(selectionView,prActiveModifierKeys.isShift);});
+			this.prRefreshSidebar;
 		})
 		.canReceiveDragHandler_({
 			|me,x,y|
@@ -98,6 +169,7 @@ PianoRoll : SCViewHolder {
 			|view,x,y,modifiers,buttonNumber,clickCount|
 			if (clickCount == 1,{
 				prRecordedNotes.do({|recordedNote|recordedNote.deselect;});
+				this.prRefreshSidebar;
 			});
 		});
 
@@ -127,13 +199,8 @@ PianoRoll : SCViewHolder {
 			})
 		};
 
-		snapNotesFunc = {
-			|resolution|
-			prRecordedNotes.do({|recordedNote|recordedNote.snap(resolution);});
-		};
-
 		prLoopMarkers = PianoRollLoopMarkers(prBackgroundView, prNoteViewScale[\horizontal], prPianoRollHeight, prPalette, prPianoRollWidth / prNoteViewScale[\horizontal]).onLoopStartMove_({|newPosition|prSequencePlayer.loopStart_(newPosition)}).onLoopEndMove_({|newPosition|prSequencePlayer.loopEnd_(newPosition)});
-		prTimeline = PianoRollTimeline(prView, prPianoRollWidth - 4, prPalette, prNoteViewScale[\horizontal], { |beat, buttonNumber, modifiers|
+		prTimeline = PianoRollTimeline(prScrollView, prPianoRollWidth - 4, prPalette, prNoteViewScale[\horizontal], { |beat, buttonNumber, modifiers|
 			if (buttonNumber == 0, {
 				if (modifiers.isShift, {
 					prLoopMarkers.playheadTime_(beat);
@@ -144,6 +211,25 @@ PianoRoll : SCViewHolder {
 				prLoopMarkers.loopEnd_(beat);
 			});
 		});
+		this.prRefreshSidebar;
+	}
+
+	prApplyNoteEdits {
+		prSequencePlayer.sequence_(prRecordedNotes.collect({|note| note.playableNote}));
+		this.prRefreshSidebar;
+	}
+
+	prRefreshSidebar {
+		var pendingDenominator, selectionCount;
+		if (prSidebar.notNil, {
+			pendingDenominator = if (prGridEntryActive, { prGridEntryDigits }, { nil });
+			selectionCount = this.prSelectedNotes.size;
+			prSidebar.refresh(prGridDenominator, selectionCount, pendingDenominator);
+		});
+	}
+
+	prSelectedNotes {
+		^prRecordedNotes.select({|note| note.isSelected});
 	}
 
 	*new {
@@ -181,8 +267,8 @@ PianoRoll : SCViewHolder {
 				});
 				var pianoRollNote = PianoRollNote(start,noteNumber,127.rand,
 					viewFunc:prDrawNote,
-					selectFunc:{|view|view.borderWidth_(1);},
-					deselectFunc:{|view|view.borderWidth_(0);},
+					selectFunc:prNoteSelectFunc,
+					deselectFunc:prNoteDeselectFunc,
 					setPart1Func:{|view|view.background_(prPalette.colour1);},
 					setPart2Func:{|view|view.background_(prPalette.colour2);},
 					setPart3Func:{|view|view.background_(prPalette.colour3);},
@@ -197,12 +283,11 @@ PianoRoll : SCViewHolder {
 				|msgType|
 				MIDIdef(format("%_%", \recordMidi, msgType).asSymbol,{
 					|velocity,noteNumber,chan,src|
-					postln("Note pressed");
 					if (msgType == \noteOn, {
 						var pianoRollNote = PianoRollNote(nowFunc.value(),noteNumber,velocity,
 							viewFunc:prDrawNote,
-							selectFunc:{|view|view.borderWidth_(2);},
-							deselectFunc:{|view|view.borderWidth_(0);},
+							selectFunc:{|view| view.borderWidth_(2); this.prRefreshSidebar; },
+							deselectFunc:prNoteDeselectFunc,
 							setPart1Func:{|view|view.background_(prPalette.colour1);},
 							setPart2Func:{|view|view.background_(prPalette.colour2);},
 							setPart3Func:{|view|view.background_(prPalette.colour3);},

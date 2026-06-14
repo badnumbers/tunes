@@ -1,0 +1,122 @@
+TITLE:: PianoRollNote
+SUMMARY:: One recorded note in the piano roll with selection, part assignment, and grid editing.
+CATEGORIES:: Streams-Patterns-Events
+RELATED:: Classes/PianoRoll, Classes/PlayableNote
+
+DESCRIPTION::
+TELETYPE::PianoRollNote:: wraps a LINK::Classes/PlayableNote:: with piano-roll UI callbacks (view creation, selection highlighting, part colours, and view repositioning after timing edits). LINK::Classes/PianoRoll:: creates instances when recording MIDI or dev-mode fake notes.
+
+NOTE::
+You can run the unit tests for TELETYPE::Sequencer:: by running:
+CODE::
+(
+UnitTest.reportPasses_(false);
+PianoRollNoteUnitTests.run;
+)
+::
+::
+
+CLASSMETHODS::
+
+METHOD:: new
+Creates a TELETYPE::PianoRollNote::.
+
+ARGUMENT:: startTime
+Note-on time in beats.
+
+ARGUMENT:: noteNumber
+MIDI note number.
+
+ARGUMENT:: velocity
+MIDI velocity.
+
+ARGUMENT:: viewFunc
+LINK::Classes/Function:: called from LINK::#-stop:: to create the note's LINK::Classes/View::.
+
+ARGUMENT:: selectFunc
+LINK::Classes/Function:: called when the note becomes selected.
+
+ARGUMENT:: deselectFunc
+LINK::Classes/Function:: called when the note is deselected.
+
+ARGUMENT:: setPart1Func
+LINK::Classes/Function:: called when part 1 is assigned to a selected note.
+
+ARGUMENT:: setPart2Func
+LINK::Classes/Function:: called when part 2 is assigned to a selected note.
+
+ARGUMENT:: setPart3Func
+LINK::Classes/Function:: called when part 3 is assigned to a selected note.
+
+ARGUMENT:: setPart4Func
+LINK::Classes/Function:: called when part 4 is assigned to a selected note.
+
+ARGUMENT:: moveFunc
+LINK::Classes/Function:: called after timing edits with CODE::func.value(view, startTime, stopTime)::.
+
+INSTANCEMETHODS::
+
+METHOD:: deselect
+Clears selection and invokes the deselect callback.
+
+METHOD:: isSelected
+Returns whether this note is currently selected.
+
+METHOD:: noteNumber
+Returns the wrapped note's MIDI note number.
+
+METHOD:: nudgeLeft
+Moves the note one grid step left at CODE::resolution:: beats. If the start time is already on the grid, subtracts one step; if off-grid, moves to the adjacent grid line to the left. Preserves duration; start time is clamped at beat zero.
+
+ARGUMENT:: resolution
+Grid spacing in beats (for example CODE::0.125:: for sixteenth notes in a quarter-note grid).
+
+METHOD:: nudgeRight
+Moves the note one grid step right at CODE::resolution:: beats. If the start time is already on the grid, adds one step; if off-grid, moves to the adjacent grid line to the right. Preserves duration; start time is clamped at beat zero.
+
+ARGUMENT:: resolution
+Grid spacing in beats.
+
+METHOD:: playableNote
+Returns the wrapped LINK::Classes/PlayableNote::.
+
+METHOD:: selectIfEnclosed
+Selects or deselects based on whether this note's view lies inside CODE::possiblyEnclosingView::.
+
+ARGUMENT:: possiblyEnclosingView
+A LINK::Classes/View:: whose bounds define the selection rectangle.
+
+ARGUMENT:: addToExistingSelection
+When true, notes outside the rectangle are left unchanged; when false, they are deselected.
+
+METHOD:: setPartIfSelected
+If selected, assigns part CODE::partNumber:: (1–4) and runs the matching part callback.
+
+ARGUMENT:: partNumber
+Part index from 1 to 4.
+
+METHOD:: snapToGrid
+Snaps the start time to the nearest grid line at CODE::resolution:: beats and shifts the stop time by the same delta so duration is preserved. Start time is clamped at beat zero.
+
+ARGUMENT:: resolution
+Grid spacing in beats.
+
+METHOD:: startTime
+Returns the note-on time in beats.
+
+METHOD:: stop
+Sets the note-off time and schedules creation of the note view.
+
+ARGUMENT:: stopTime
+Note-off time in beats.
+
+METHOD:: stopTime
+Returns the note-off time in beats.
+
+METHOD:: toggleSelect
+Toggles selection and runs the select or deselect callback.
+
+METHOD:: velocity
+Returns the wrapped note's velocity.
+
+PRIVATE:: init, prApplyTimeDelta, prIsOnGrid

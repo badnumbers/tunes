@@ -1,0 +1,31 @@
+TITLE:: PianoRollSidebar
+SUMMARY:: Right-docked sidebar showing grid resolution and selection count for the piano roll.
+CATEGORIES:: Streams-Patterns-Events
+RELATED:: Classes/PianoRoll
+
+DESCRIPTION::
+TELETYPE::PianoRollSidebar:: is a LINK::Classes/SCViewHolder:: fixed to the right edge of LINK::Classes/PianoRoll:: (sibling of the roll LINK::Classes/ScrollView::, not inside the scroll canvas). It displays the current snap grid as a readable fraction (for example CODE::1/8 beat::), the number of selected notes, and compact keyboard hints for grid editing.
+
+CLASSMETHODS::
+
+METHOD:: new
+Creates a TELETYPE::PianoRollSidebar::.
+
+ARGUMENT:: palette
+A LINK::Classes/GuiPalette:: used for label colours.
+
+INSTANCEMETHODS::
+
+METHOD:: refresh
+Updates the grid and selection labels. When CODE::pendingDenominator:: is non-nil, the grid label shows an in-progress entry (for example CODE::1/16?:: while the user holds G and types digits).
+
+ARGUMENT:: gridDenominator
+Integer denominator N for the active grid (resolution CODE::1/N:: beats).
+
+ARGUMENT:: selectionCount
+Number of currently selected LINK::Classes/PianoRollNote:: instances.
+
+ARGUMENT:: pendingDenominator
+Optional string of digits being entered during G-hold grid resolution entry; pass nil when not entering a new resolution.
+
+PRIVATE:: init

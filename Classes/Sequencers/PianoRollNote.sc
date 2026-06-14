@@ -73,6 +73,36 @@ PianoRollNote {
 		});
 	}
 
+	isSelected {
+		^prSelected;
+	}
+
+	nudgeLeft {
+		|resolution|
+		var currentStart, newStart, delta;
+		currentStart = this.startTime;
+		if (this.prIsOnGrid(resolution), {
+			newStart = currentStart - resolution;
+		}, {
+			newStart = (currentStart / resolution).floor * resolution;
+		});
+		delta = newStart - currentStart;
+		this.prApplyTimeDelta(delta);
+	}
+
+	nudgeRight {
+		|resolution|
+		var currentStart, newStart, delta;
+		currentStart = this.startTime;
+		if (this.prIsOnGrid(resolution), {
+			newStart = currentStart + resolution;
+		}, {
+			newStart = (currentStart / resolution).ceil * resolution;
+		});
+		delta = newStart - currentStart;
+		this.prApplyTimeDelta(delta);
+	}
+
 	playableNote {
 		^prPlayableNote;
 	}
@@ -94,13 +124,13 @@ PianoRollNote {
 		});
 	}
 
-	snap {
+	snapToGrid {
 		|resolution|
-		prAdjustedStartTime = prOriginalStartTime.round(resolution);
-		prAdjustedStopTime = prOriginalStopTime - (prOriginalStartTime - prAdjustedStartTime);
-		prPlayableNote.startTime = prAdjustedStartTime;
-		prPlayableNote.stopTime = prAdjustedStopTime;
-		prMoveFunc.value(prView,prAdjustedStartTime,prAdjustedStopTime);
+		var currentStart, snappedStart, delta;
+		currentStart = this.startTime;
+		snappedStart = (currentStart / resolution).round * resolution;
+		delta = snappedStart - currentStart;
+		this.prApplyTimeDelta(delta);
 	}
 
 	startTime {
@@ -134,5 +164,31 @@ PianoRollNote {
 
 	velocity {
 		^prPlayableNote.velocity;
+	}
+
+	prApplyTimeDelta {
+		|delta|
+		var newStart, newStop, duration;
+		newStart = this.startTime + delta;
+		duration = this.stopTime - this.startTime;
+		if (newStart < 0, {
+			delta = delta - newStart;
+			newStart = 0;
+		});
+		newStop = this.startTime + delta + duration;
+		prOriginalStartTime = newStart;
+		prOriginalStopTime = newStop;
+		prPlayableNote.startTime = newStart;
+		prPlayableNote.stopTime = newStop;
+		if (prView.notNil, {
+			prMoveFunc.value(prView, newStart, newStop);
+		});
+	}
+
+	prIsOnGrid {
+		|resolution|
+		var gridIndex;
+		gridIndex = this.startTime / resolution;
+		^ (gridIndex - gridIndex.round).abs < 1e-9;
 	}
 }

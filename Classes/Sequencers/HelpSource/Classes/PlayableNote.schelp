@@ -57,6 +57,15 @@ The beat at which the note starts.
 returns::
 A LINK::Classes/SimpleNumber::.
 
+METHOD:: startTime_
+Sets the beat at which the note starts.
+
+ARGUMENT:: value
+The start time in beats.
+
+returns::
+This instance (for chaining).
+
 METHOD:: stopTime
 The beat at which the note stops.
 

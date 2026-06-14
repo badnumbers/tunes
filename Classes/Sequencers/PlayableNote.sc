@@ -49,6 +49,11 @@ PlayableNote {
 		^prStartTime;
 	}
 
+	startTime_ {
+		|value|
+		prStartTime = value;
+	}
+
 	stopsInSlice {
 		|sliceStartTime, sliceStopTime|
 		if (this.isPlayable,{

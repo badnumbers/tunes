@@ -1,10 +1,22 @@
 TITLE:: PianoRoll
 SUMMARY:: Piano-roll view for MIDI recording and note editing.
 CATEGORIES:: Streams-Patterns-Events
-RELATED:: Classes/PianoRollNote, Classes/PianoRollTimeline, Classes/PianoRollLoopMarkers, Classes/SequencePlayer, Classes/SequencerGui
+RELATED:: Classes/PianoRollNote, Classes/PianoRollSidebar, Classes/PianoRollTimeline, Classes/PianoRollLoopMarkers, Classes/SequencePlayer, Classes/SequencerGui
 
 DESCRIPTION::
-LINK::Classes/PianoRoll:: is a LINK::Classes/SCViewHolder:: that shows recorded notes as a piano roll. It embeds LINK::Classes/PianoRollTimeline:: for the beat strip above the roll (left/right clicks set loop bounds; Shift+left sets playback; see LINK::Classes/PianoRollTimeline::). It listens for MIDI note-on and note-off events (when not in dev mode) and draws LINK::Classes/PianoRollNote:: entries as LINK::Classes/BorderView:: regions. LINK::#-stopRecording:: frees the recording LINK::Classes/MIDIdef::s and updates LINK::Classes/PianoRollLoopMarkers:: from recorded notes.
+LINK::Classes/PianoRoll:: is a LINK::Classes/SCViewHolder:: that shows recorded notes as a piano roll. Its root LINK::Classes/View:: uses a horizontal layout: a LINK::Classes/ScrollView:: (timeline plus note canvas) and a fixed LINK::Classes/PianoRollSidebar:: on the right. It embeds LINK::Classes/PianoRollTimeline:: for the beat strip above the roll (left/right clicks set loop bounds; Shift+left sets playback; see LINK::Classes/PianoRollTimeline::). It listens for MIDI note-on and note-off events (when not in dev mode) and draws LINK::Classes/PianoRollNote:: entries as LINK::Classes/BorderView:: regions. LINK::#-stopRecording:: frees the recording LINK::Classes/MIDIdef::s and updates LINK::Classes/PianoRollLoopMarkers:: from recorded notes.
+
+DISCUSSION::
+Keyboard editing (focus the note area after clicking it):
+
+TABLE::
+G + digits + release    Set grid resolution to 1/N beats (N = typed integer; default 1/8)
+S                       Snap selected notes to the current grid
+Ctrl + Left / Right arrow      Nudge selected notes one grid step (see LINK::Classes/PianoRollNote::)
+1–4                     Assign part on selected notes
+::
+
+Hold G, type a denominator (for example 1 then 6 for sixteenth notes), then release G to confirm. Digits during G-hold do not assign parts. Snap and nudge apply to selected notes only; if none are selected, a brief warning is posted. Edits update the embedded LINK::Classes/SequencePlayer:: sequence and are allowed during playback.
 
 CLASSMETHODS::
 
@@ -40,4 +52,4 @@ Stops playback via the embedded LINK::Classes/SequencePlayer::.
 METHOD:: stopRecording
 Stops recording, frees recording LINK::Classes/MIDIdef::s, stops the metronome, and updates LINK::Classes/PianoRollLoopMarkers:: from recorded notes (loop bounds plus LINK::Classes/PianoRollLoopMarkers#-playheadTime_:: at the loop start beat).
 
-PRIVATE:: init
+PRIVATE:: init, prApplyNoteEdits, prRefreshSidebar, prSelectedNotes
