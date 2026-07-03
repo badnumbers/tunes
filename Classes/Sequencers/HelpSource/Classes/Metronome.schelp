@@ -1,7 +1,7 @@
 TITLE:: Metronome
 SUMMARY:: A simple metronome
 CATEGORIES:: Streams-Patterns-Events
-RELATED:: Classes/Sequencer
+RELATED:: Classes/Sequencer, Classes/PianoRoll
 
 DESCRIPTION::
 This class plays short bursts of noise on the beat of LINK::Classes/TempoClock#*default::, and quieter bursts on the offbeats.
@@ -12,8 +12,14 @@ The metronome depends on the server running.
 
 CLASSMETHODS::
 
+METHOD:: isPlaying
+Whether the metronome LINK::Classes/Pdef:: is currently playing.
+
+returns::
+true or false.
+
 METHOD:: play
-Starts playing the metronome.
+Starts playing the metronome. If the server is not running, boots it via LINK::Classes/Setup:: and starts playback when boot completes.
 
 NOTE::
 As this method will add the LINK::Classes/SynthDef:: TELETYPE::\metronome:: if it hasn't already, there could conceivably be a delay or some warnings to the post window while this is happening.
@@ -21,6 +27,9 @@ As this method will add the LINK::Classes/SynthDef:: TELETYPE::\metronome:: if i
 
 METHOD:: stop
 Stops the metronome.
+
+METHOD:: toggle
+Starts the metronome if it is not playing; otherwise stops it. See LINK::#-play:: and LINK::#-stop::.
 
 METHOD:: volume
 Sets the playback volume of the metronome, clipping to between 0 and 1. The default volume is 0.5.

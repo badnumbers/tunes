@@ -1,0 +1,23 @@
+TITLE:: ViewKeycode
+SUMMARY:: Platform scan codes for the keycode argument of LINK::Classes/View:: keyboard actions.
+CATEGORIES:: GUI
+RELATED:: Classes/ViewKeyModifier, Classes/ViewQtKey, Classes/ViewUnicode, Classes/SequencerKeyRouter
+
+DESCRIPTION::
+The fourth argument to LINK::Classes/View:: CODE::keyDownAction:: / CODE::keyUpAction:: is a platform-specific scan code. On Linux with Qt/X11, SuperCollider derives it from the X11 keycode (see QtCollider CODE::QWidgetProxy:: key handling).
+
+Constants in this class are verified on Linux (X11). Values may differ on macOS or Windows; prefer CODE::char:: or CODE::ViewQtKey:: for portable bindings.
+
+CLASSMETHODS::
+
+METHOD:: control
+Scan code for the Control key on Linux (X11).
+
+METHOD:: leftArrow
+Scan code for the Left Arrow key on Linux (X11).
+
+METHOD:: none
+Zero; used when no meaningful scan code applies (for example Ctrl+letter chords matched only via CODE::ViewQtKey::).
+
+METHOD:: rightArrow
+Scan code for the Right Arrow key on Linux (X11).

@@ -1,5 +1,6 @@
 SequencerGui {
 	var prDocument;
+	var prKeyRouter;
 	var prMainHeader;
 	var prLeftPanelBody;
 	var prLeftPanelHeader;
@@ -29,6 +30,8 @@ SequencerGui {
 		prDocument = Document.current;
 
 		prPalette = GuiPalette.default;
+		prKeyRouter = SequencerKeyRouter.new;
+		prKeyRouter.activeContext_(\record);
 
 		renderButtonFunc = {
 			|text,width=100|
@@ -67,7 +70,7 @@ SequencerGui {
 					).margins_(0).spacing_(20)
 				),
 				BorderView().background_(prPalette.colour2).layout_(VLayout(
-					pianoRoll = PianoRoll(palette: prPalette, tempoClock:prTempoClock, devMode: devMode).minHeight_(100),
+					pianoRoll = PianoRoll(palette: prPalette, tempoClock:prTempoClock, devMode: devMode, keyRouter: prKeyRouter).minHeight_(100),
 					View().background_(prPalette.colour4).minHeight_(70).maxHeight_(70).layout_(
 						HLayout(
 							startRecordingButton = renderButtonFunc.value("Start recording", width:150),
@@ -120,12 +123,15 @@ SequencerGui {
 		});
 		settingsButton.mouseUpAction_({
 			stackLayout.index_(2);
+			prKeyRouter.activeContext_(\settings);
 		});
 		arrangeButton.mouseUpAction_({
 			stackLayout.index_(0);
+			prKeyRouter.activeContext_(\arrange);
 		});
 		recordButton.mouseUpAction_({
 			stackLayout.index_(1);
+			prKeyRouter.activeContext_(\record);
 		});
 		startRecordingButton.mouseUpAction_({
 			if (startRecordingButton.string == "Start recording", {

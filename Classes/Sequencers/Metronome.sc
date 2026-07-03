@@ -2,9 +2,17 @@ Metronome {
 	classvar prVolume = 0.5;
 	classvar synthDefSent = false;
 
+	*isPlaying {
+		^Pdef(\metronome).isPlaying;
+	}
+
 	*play {
-		if (Server.default.serverRunning, {
-			if (synthDefSent == false, {
+		if (Server.default.serverRunning.not, {
+			Setup.server;
+			Server.default.doWhenBooted({ this.play });
+			^this;
+		});
+		if (synthDefSent == false, {
 			SynthDef(\metronome, { |out,gate = 0.5,amp=0.5|
 				var audio;
 				audio = WhiteNoise.ar;
@@ -24,13 +32,18 @@ Metronome {
 				\trig, 1
 			)
 		).play;
-		},{
-			warn("The server is not running so the Metronome won't play.");
-		});
 	}
 
 	*stop {
 		Pdef(\metronome).stop;
+	}
+
+	*toggle {
+		if (this.isPlaying, {
+			this.stop;
+		}, {
+			this.play;
+		});
 	}
 
 	*volume_ { | newValue |

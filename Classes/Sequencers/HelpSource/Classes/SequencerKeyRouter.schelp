@@ -1,0 +1,101 @@
+TITLE:: SequencerKeyRouter
+SUMMARY:: Context-aware keyboard router for the sequencer GUI.
+CATEGORIES:: Streams-Patterns-Events
+RELATED:: Classes/SequencerGui, Classes/PianoRoll, Classes/ViewKeyModifier, Classes/ViewQtKey, Classes/ViewKeycode, Classes/ViewUnicode
+
+DESCRIPTION::
+TELETYPE::SequencerKeyRouter:: matches key chords against a configurable binding table and invokes subscriber functions registered per UI context (for example CODE::\record::, CODE::\arrange::, CODE::\settings::). LINK::Classes/SequencerGui:: owns one instance, updates CODE::activeContext_:: when the user switches tabs, and passes the router to child views such as LINK::Classes/PianoRoll::.
+
+Focused views install a thin CODE::keyDownAction:: / CODE::keyUpAction:: delegate that calls CODE::#-keyDownReturnValue:: and CODE::#-keyUpReturnValue:: so propagation (for example preventing LINK::Classes/ScrollView:: arrow scrolling when a chord is consumed) is applied on the view that has keyboard focus.
+
+Bindings are defined in CODE::#*defaultBindings:: (action symbol to chord spec). Subscribers register with CODE::#-on::. Changing a chord (for example metronome toggle) edits the binding table only; subscribers stay unchanged.
+
+Stateful grid-resolution entry (hold G, type digits, release G) is handled inside the router and reported via CODE::\gridResolutionEntryBegan::, CODE::\gridResolutionDigitsChanged::, and CODE::\gridResolutionCommitted:: actions on the CODE::\record:: context.
+
+LINK::Classes/ViewKeyModifier::, LINK::Classes/ViewQtKey::, LINK::Classes/ViewKeycode::, and LINK::Classes/ViewUnicode:: name the numeric fields passed through from LINK::Classes/View:: key actions. See link::Classes/ViewKeyModifier#Key event parameters:: for how CODE::char::, CODE::modifiers::, CODE::unicode::, CODE::keycode::, and CODE::key:: relate to each other.
+
+NOTE::
+You can run the unit tests for TELETYPE::SequencerKeyRouter:: by running:
+CODE::
+(
+UnitTest.reportPasses_(false);
+SequencerKeyRouterUnitTests.run;
+)
+::
+::
+
+CLASSMETHODS::
+
+METHOD:: defaultBindings
+Returns the default action-to-chord binding table used by new instances.
+
+METHOD:: new
+Creates a TELETYPE::SequencerKeyRouter:: with CODE::#*defaultBindings::.
+
+INSTANCEMETHODS::
+
+METHOD:: activeContext
+The current UI context symbol (for example CODE::\record::).
+
+METHOD:: activeContext_
+Sets the current UI context symbol.
+
+ARGUMENT:: context
+A CODE::Symbol:: such as CODE::\record::, CODE::\arrange::, or CODE::\settings::.
+
+METHOD:: gridEntryActive
+Whether G-hold grid resolution entry is in progress.
+
+METHOD:: gridEntryDigits
+Digit characters typed so far during G-hold entry.
+
+METHOD:: handleKeyDown
+Evaluates a key-down event.
+
+ARGUMENT:: char
+Key character from the LINK::Classes/View:: key action (LINK::Classes/Character::). CODE::nil:: when the platform provides no typed character (for example Ctrl+letter chords and arrow keys).
+
+ARGUMENT:: modifiers
+Modifier bitmask from the LINK::Classes/View:: key action. Named constants: LINK::Classes/ViewKeyModifier::.
+
+ARGUMENT:: unicode
+Unicode code point from the LINK::Classes/View:: key action. Named constants: LINK::Classes/ViewUnicode::; printable keys usually match CODE::char.ascii::.
+
+ARGUMENT:: keycode
+Platform scan code from the LINK::Classes/View:: key action. Named constants: LINK::Classes/ViewKeycode:: (Linux/X11 values).
+
+ARGUMENT:: key
+Qt key enum from the LINK::Classes/View:: key action. Named constants: LINK::Classes/ViewQtKey::.
+
+RETURNS::
+A LINK::Classes/Event:: with CODE::\isHandled:: and CODE::\consume::.
+
+CODE::\isHandled:: is CODE::true:: when the router matched a binding or is in G-hold grid entry; CODE::false:: when the key was not recognised.
+
+CODE::\consume:: says whether the focused view should swallow the key so parent views (for example LINK::Classes/ScrollView::) do not also react. CODE::#-keyDownReturnValue:: maps it to the LINK::Classes/View:: CODE::keyDownAction:: return value: CODE::true:: stops propagation, CODE::false:: allows it (plain arrow keys for scrolling), CODE::nil:: leaves default handling.
+
+METHOD:: handleKeyUp
+Evaluates a key-up event. Arguments are the same as LINK::#-handleKeyDown::.
+
+RETURNS::
+A LINK::Classes/Event:: with CODE::\isHandled:: and CODE::\consume:: (same meaning as LINK::#-handleKeyDown::). Usually CODE::\isHandled:: is CODE::false:: and CODE::\consume:: is CODE::nil::; releasing G after grid entry sets both to CODE::true:: with CODE::\consume:: CODE::true::.
+
+METHOD:: keyDownReturnValue
+Calls LINK::#-handleKeyDown:: and maps the result to the LINK::Classes/View:: CODE::keyDownAction:: return value (CODE::true:: to stop propagation, CODE::false:: to propagate, CODE::nil:: for default handling).
+
+METHOD:: keyUpReturnValue
+Calls LINK::#-handleKeyUp:: and maps the result to the LINK::Classes/View:: CODE::keyUpAction:: return value.
+
+METHOD:: on
+Registers a handler for an action in a context.
+
+ARGUMENT:: context
+Context symbol (for example CODE::\record::).
+
+ARGUMENT:: action
+Action symbol (for example CODE::\snapNotes::; must exist in the binding table for key-down dispatch).
+
+ARGUMENT:: handler
+LINK::Classes/Function:: invoked when the binding matches. Grid-resolution handlers may receive one argument (digit string or committed denominator).
+
+PRIVATE:: init, prBindingMatches, prInvokeHandler, prMatchingAction, prModifiersMatch, prReturnValueFromResult, prUnmatchedKeyDown

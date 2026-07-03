@@ -5,9 +5,8 @@ PianoRoll : SCViewHolder {
 	var prDevMode;
 	var prDrawNote;
 	var prGridDenominator = 8;
-	var prGridEntryActive = false;
-	var prGridEntryDigits = "";
 	var prGridResolution = 0.125;
+	var prKeyRouter;
 	var prLoopMarkers;
 	var prNoteDeselectFunc;
 	var prNoteSelectFunc;
@@ -24,11 +23,12 @@ PianoRoll : SCViewHolder {
 	var prView;
 
 	init {
-		|parent,bounds,palette,tempoClock,devMode|
+		|parent,bounds,palette,tempoClock,devMode,keyRouter|
 		var selectionView;
 		var pianoRollHeight,pianoRollWidth;
 
 		prDevMode = devMode;
+		prKeyRouter = keyRouter;
 		prPalette = palette;
 		prSidebar = PianoRollSidebar(prPalette);
 		prView = View().layout_(HLayout(
@@ -65,79 +65,19 @@ PianoRoll : SCViewHolder {
 			this.prRefreshSidebar;
 		};
 
+		this.prRegisterKeyHandlers;
+
 		prBackgroundView = UserView(prScrollView, Rect(0, 0, prPianoRollWidth, prPianoRollHeight)).background_(prPalette.extreme1)
 		.beginDragAction_({|me,x,y|selectionView.visible_(true);x@y;})
 		.keyDownAction_({
 			|view, char, modifiers, unicode, keycode, key|
-			var partNumberToSet, selectedNotes, keyHandled;
 			prActiveModifierKeys = modifiers;
-			if (char == $g, {
-				prGridEntryActive = true;
-				prGridEntryDigits = "";
-				this.prRefreshSidebar;
-			});
-			if (prGridEntryActive && char.notNil, {
-				if ((char.ascii >= 48) && (char.ascii <= 57), {
-					prGridEntryDigits = prGridEntryDigits ++ char.asString;
-					this.prRefreshSidebar;
-				});
-			});
-			if (prGridEntryActive.not && char.notNil, {
-				switch (char,
-					$1, { partNumberToSet = 1; },
-					$2, { partNumberToSet = 2; },
-					$3, { partNumberToSet = 3; },
-					$4, { partNumberToSet = 4; },
-					$s, {
-						selectedNotes = this.prSelectedNotes;
-						if (selectedNotes.size == 0, {
-							"No notes selected.".warn;
-						}, {
-							selectedNotes.do({|recordedNote| recordedNote.snapToGrid(prGridResolution); });
-							this.prApplyNoteEdits;
-						});
-					}
-				);
-			});
-			if ([65361, 65363].includes(keycode), {
-				if (modifiers.isCtrl, {
-					selectedNotes = this.prSelectedNotes;
-					if (selectedNotes.size == 0, {
-						"No notes selected.".warn;
-					}, {
-						if (keycode == 65361, {
-							selectedNotes.do({|recordedNote| recordedNote.nudgeLeft(prGridResolution); });
-						}, {
-							selectedNotes.do({|recordedNote| recordedNote.nudgeRight(prGridResolution); });
-						});
-						this.prApplyNoteEdits;
-					});
-					keyHandled = true;
-				}, {
-					keyHandled = false;
-				});
-			});
-			if (partNumberToSet.notNil,{
-				prRecordedNotes.do({|recordedNote|recordedNote.setPartIfSelected(partNumberToSet);});
-			});
-			keyHandled;
+			prKeyRouter.keyDownReturnValue(char, modifiers, unicode, keycode, key);
 		})
 		.keyUpAction_({
 			|view, char, modifiers, unicode, keycode, key|
-			var denominator;
 			prActiveModifierKeys = modifiers;
-			if (char == $g && prGridEntryActive, {
-				prGridEntryActive = false;
-				if (prGridEntryDigits.size > 0, {
-					denominator = prGridEntryDigits.asInteger;
-					if (denominator > 0, {
-						prGridDenominator = denominator;
-						prGridResolution = 1 / denominator;
-					});
-				});
-				prGridEntryDigits = "";
-				this.prRefreshSidebar;
-			});
+			prKeyRouter.keyUpReturnValue(char, modifiers, unicode, keycode, key);
 		})
 		.receiveDragHandler_({
 			|me,x,y|
@@ -222,9 +162,64 @@ PianoRoll : SCViewHolder {
 	prRefreshSidebar {
 		var pendingDenominator, selectionCount;
 		if (prSidebar.notNil, {
-			pendingDenominator = if (prGridEntryActive, { prGridEntryDigits }, { nil });
+			pendingDenominator = if (prKeyRouter.gridEntryActive, { prKeyRouter.gridEntryDigits }, { nil });
 			selectionCount = this.prSelectedNotes.size;
 			prSidebar.refresh(prGridDenominator, selectionCount, pendingDenominator);
+		});
+	}
+
+	prRegisterKeyHandlers {
+		prKeyRouter.on(\record, \metronomeToggle, { Metronome.toggle; });
+		prKeyRouter.on(\record, \snapNotes, { this.prSnapSelectedNotes; });
+		prKeyRouter.on(\record, \nudgeLeft, { this.prNudgeSelectedNotes(-1); });
+		prKeyRouter.on(\record, \nudgeRight, { this.prNudgeSelectedNotes(1); });
+		prKeyRouter.on(\record, \assignPart1, { this.prAssignPartIfSelected(1); });
+		prKeyRouter.on(\record, \assignPart2, { this.prAssignPartIfSelected(2); });
+		prKeyRouter.on(\record, \assignPart3, { this.prAssignPartIfSelected(3); });
+		prKeyRouter.on(\record, \assignPart4, { this.prAssignPartIfSelected(4); });
+		prKeyRouter.on(\record, \gridResolutionEntryBegan, { this.prRefreshSidebar; });
+		prKeyRouter.on(\record, \gridResolutionDigitsChanged, { this.prRefreshSidebar; });
+		prKeyRouter.on(\record, \gridResolutionCommitted, { |denominator| this.prSetGridDenominator(denominator); });
+	}
+
+	prAssignPartIfSelected {
+		|partNumber|
+		prRecordedNotes.do({|recordedNote| recordedNote.setPartIfSelected(partNumber); });
+	}
+
+	prNudgeSelectedNotes {
+		|direction|
+		var selectedNotes;
+		selectedNotes = this.prSelectedNotes;
+		if (selectedNotes.size == 0, {
+			"No notes selected.".warn;
+		}, {
+			if (direction < 0, {
+				selectedNotes.do({|recordedNote| recordedNote.nudgeLeft(prGridResolution); });
+			}, {
+				selectedNotes.do({|recordedNote| recordedNote.nudgeRight(prGridResolution); });
+			});
+			this.prApplyNoteEdits;
+		});
+	}
+
+	prSetGridDenominator {
+		|denominator|
+		if (denominator.notNil && (denominator > 0), {
+			prGridDenominator = denominator;
+			prGridResolution = 1 / denominator;
+		});
+		this.prRefreshSidebar;
+	}
+
+	prSnapSelectedNotes {
+		var selectedNotes;
+		selectedNotes = this.prSelectedNotes;
+		if (selectedNotes.size == 0, {
+			"No notes selected.".warn;
+		}, {
+			selectedNotes.do({|recordedNote| recordedNote.snapToGrid(prGridResolution); });
+			this.prApplyNoteEdits;
 		});
 	}
 
@@ -233,11 +228,12 @@ PianoRoll : SCViewHolder {
 	}
 
 	*new {
-		|parent,bounds,palette,tempoClock,devMode=false|
+		|parent,bounds,palette,tempoClock,devMode=false,keyRouter|
 		Validator.validateMethodParameterType(palette, GuiPalette, "palette", "PianoRoll", "new");
 		Validator.validateMethodParameterType(tempoClock, TempoClock, "tempoClock", "PianoRoll", "new");
 		Validator.validateMethodParameterType(devMode,Boolean,"devMode","PianoRoll","new");
-		^super.new.init(parent,bounds,palette,tempoClock,devMode);
+		Validator.validateMethodParameterType(keyRouter, SequencerKeyRouter, "keyRouter", "PianoRoll", "new");
+		^super.new.init(parent,bounds,palette,tempoClock,devMode,keyRouter);
 	}
 
 	playLoop {
@@ -308,9 +304,6 @@ PianoRoll : SCViewHolder {
 				},msgType:msgType);
 			});
 			Setup.server;
-			Server.default.doWhenBooted({
-				Metronome.play;
-			});
 		});
 	}
 
@@ -326,7 +319,6 @@ PianoRoll : SCViewHolder {
 			|msgType|
 				MIDIdef(format("%_%", \recordMidi, msgType).asSymbol).free;
 			});
-			Metronome.stop;
 		});
 		if (prRecordedNotes.size > 0,{
 			prRecordedNotes.do({

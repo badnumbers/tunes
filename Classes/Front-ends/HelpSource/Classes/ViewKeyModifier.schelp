@@ -1,0 +1,37 @@
+TITLE:: ViewKeyModifier
+SUMMARY:: Modifier bitmask values for LINK::Classes/View:: keyboard actions.
+CATEGORIES:: GUI
+RELATED:: Classes/ViewQtKey, Classes/ViewKeycode, Classes/ViewUnicode, Classes/SequencerKeyRouter
+
+DESCRIPTION::
+LINK::Classes/View:: CODE::keyDownAction:: and CODE::keyUpAction:: pass a CODE::modifiers:: CODE::Integer:: as their second argument (after CODE::char::). SuperCollider converts Qt modifier flags to this bitmask via LINK::Classes/QKeyModifiers:: CODE::#*toCocoa:: before your action runs.
+
+Use LINK::Classes/Integer#-isCtrl::, LINK::Classes/Integer#-isShift::, and LINK::Classes/Integer#-isAlt:: to test the combined flags. Combine constants with bitwise OR when synthesizing events in tests (for example CODE::ViewKeyModifier.ctrl::).
+
+SUBSECTION:: Key event parameters
+Each LINK::Classes/View:: key callback receives five numeric identifiers plus a character:
+
+TABLE::
+Definitions | Parameter | Enum class | Meaning
+char | 1st | (LINK::Classes/Character::) | Typed character when the platform provides one; CODE::nil:: for many special keys.
+modifiers | 2nd | LINK::Classes/ViewKeyModifier:: | Modifier bitmask after Qt-to-SC conversion (this class).
+unicode | 3rd | LINK::Classes/ViewUnicode:: | Unicode code point from the event text; often CODE::0:: when CODE::char:: is null.
+keycode | 4th | LINK::Classes/ViewKeycode:: | Platform scan code (Linux/X11 values in that class).
+key | 5th | LINK::Classes/ViewQtKey:: | Qt CODE::Key_:: enum integer from Qt.
+::
+
+Prefer matching on CODE::char:: or CODE::ViewQtKey:: when possible. Use CODE::ViewKeycode:: for keys (such as arrows) where chord detection relies on platform scan codes.
+
+CLASSMETHODS::
+
+METHOD:: alt
+Alt (Meta on some platforms) modifier bit.
+
+METHOD:: ctrl
+Control modifier bit on Linux and Windows; on macOS, Control from the physical key maps here after conversion.
+
+METHOD:: keypad
+Keypad modifier bit.
+
+METHOD:: shift
+Shift modifier bit.

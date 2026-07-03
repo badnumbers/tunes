@@ -1,0 +1,29 @@
+TITLE:: ViewQtKey
+SUMMARY:: Qt Key enum values for the key argument of LINK::Classes/View:: keyboard actions.
+CATEGORIES:: GUI
+RELATED:: Classes/ViewKeyModifier, Classes/ViewKeycode, Classes/ViewUnicode, Classes/SequencerKeyRouter
+
+DESCRIPTION::
+The fifth argument to LINK::Classes/View:: CODE::keyDownAction:: / CODE::keyUpAction:: is the Qt CODE::Key_:: enum integer (the same namespace as LINK::Classes/QKey:: arrow constants, but letter keys use ASCII code points).
+
+Use these named constants instead of raw integers when matching or synthesizing key events.
+
+CLASSMETHODS::
+
+METHOD:: control
+The Control modifier key itself (key-up/key-down for the modifier, not “Ctrl held”).
+
+METHOD:: enter
+Qt Enter (typically keypad).
+
+METHOD:: left
+Left arrow.
+
+METHOD:: m
+Letter M (ASCII CODE::77::).
+
+METHOD:: return
+Qt Return / main Enter key.
+
+METHOD:: right
+Right arrow.

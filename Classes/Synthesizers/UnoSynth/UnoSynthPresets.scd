@@ -76,3 +76,24 @@ Pdef(\bass,
 	],inf)
 ).play(TempoClock(1));
 )
+
+(
+var patch = UnoSynthPatch();
+patch.name = "Pure filth";
+patch.kvps[81]=0;patch.kvps[72]=0;patch.kvps[21]=40;patch.kvps[70]=0;patch.kvps[17]=65;patch.kvps[66]=0;patch.kvps[73]=95;patch.kvps[46]=0;patch.kvps[76]=55;patch.kvps[51]=127;patch.kvps[44]=0;patch.kvps[69]=31;patch.kvps[20]=45;patch.kvps[77]=0;patch.kvps[71]=0;patch.kvps[22]=76;patch.kvps[19]=0;patch.kvps[18]=63;patch.kvps[50]=64;patch.kvps[47]=0;patch.kvps[80]=0;patch.kvps[102]=110;patch.kvps[106]=54;patch.kvps[49]=64;patch.kvps[103]=0;patch.kvps[89]=30;patch.kvps[25]=64;patch.kvps[15]=108;patch.kvps[45]=65;patch.kvps[48]=64;patch.kvps[5]=0;patch.kvps[16]=31;patch.kvps[105]=64;patch.kvps[12]=127;patch.kvps[24]=0;patch.kvps[91]=30;patch.kvps[26]=127;patch.kvps[67]=15;patch.kvps[68]=0;patch.kvps[75]=0;patch.kvps[92]=0;patch.kvps[104]=48;patch.kvps[7]=127;patch.kvps[13]=127;patch.kvps[14]=0;patch.kvps[23]=83;patch.kvps[78]=0;patch.kvps[27]=0;patch.kvps[74]=0;patch.kvps[90]=127;patch.kvps[79]=0;
+Synths(\unosynth).setWorkingPatch(patch);
+)
+
+(
+var patch = UnoSynthPatch();
+patch.name = "Drum and bees";
+patch.kvps[81]=0;patch.kvps[72]=0;patch.kvps[21]=52;patch.kvps[70]=107;patch.kvps[17]=64;patch.kvps[66]=100;patch.kvps[73]=0;patch.kvps[46]=0;patch.kvps[76]=0;patch.kvps[51]=115;patch.kvps[44]=74;patch.kvps[69]=26;patch.kvps[20]=47;patch.kvps[77]=0;patch.kvps[71]=0;patch.kvps[22]=28;patch.kvps[19]=0;patch.kvps[18]=65;patch.kvps[50]=65;patch.kvps[47]=0;patch.kvps[80]=0;patch.kvps[102]=127;patch.kvps[106]=85;patch.kvps[49]=64;patch.kvps[103]=0;patch.kvps[89]=0;patch.kvps[25]=64;patch.kvps[15]=66;patch.kvps[45]=73;patch.kvps[48]=0;patch.kvps[5]=26;patch.kvps[16]=19;patch.kvps[105]=64;patch.kvps[12]=127;patch.kvps[24]=0;patch.kvps[91]=30;patch.kvps[26]=127;patch.kvps[67]=58;patch.kvps[68]=0;patch.kvps[75]=0;patch.kvps[92]=127;patch.kvps[104]=12;patch.kvps[7]=113;patch.kvps[13]=127;patch.kvps[14]=0;patch.kvps[23]=64;patch.kvps[78]=0;patch.kvps[27]=0;patch.kvps[74]=0;patch.kvps[90]=0;patch.kvps[79]=30;
+Synths(\unosynth).setWorkingPatch(patch);
+)
+
+(
+var patch = UnoSynthPatch();
+patch.name = "Wobbly 70s";
+patch.kvps[103]=0;patch.kvps[22]=0;patch.kvps[79]=30;patch.kvps[17]=64;patch.kvps[5]=0;patch.kvps[67]=8;patch.kvps[45]=35;patch.kvps[48]=64;patch.kvps[105]=64;patch.kvps[18]=64;patch.kvps[13]=0;patch.kvps[68]=0;patch.kvps[23]=64;patch.kvps[71]=2;patch.kvps[21]=63;patch.kvps[15]=98;patch.kvps[102]=0;patch.kvps[51]=64;patch.kvps[90]=18;patch.kvps[16]=40;patch.kvps[73]=0;patch.kvps[104]=87;patch.kvps[12]=127;patch.kvps[27]=0;patch.kvps[26]=127;patch.kvps[66]=0;patch.kvps[69]=10;patch.kvps[44]=0;patch.kvps[24]=0;patch.kvps[50]=64;patch.kvps[81]=104;patch.kvps[25]=64;patch.kvps[77]=30;patch.kvps[80]=88;patch.kvps[75]=0;patch.kvps[49]=64;patch.kvps[74]=0;patch.kvps[47]=0;patch.kvps[46]=0;patch.kvps[78]=30;patch.kvps[92]=0;patch.kvps[19]=0;patch.kvps[70]=0;patch.kvps[20]=44;patch.kvps[76]=0;patch.kvps[14]=0;patch.kvps[72]=0;patch.kvps[89]=0;patch.kvps[91]=0;patch.kvps[7]=52;
+Synths(\unosynth).setWorkingPatch(patch);
+)

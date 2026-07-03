@@ -1,0 +1,15 @@
+TITLE:: ViewUnicode
+SUMMARY:: Common unicode code points for the unicode argument of LINK::Classes/View:: keyboard actions.
+CATEGORIES:: GUI
+RELATED:: Classes/ViewKeyModifier, Classes/ViewQtKey, Classes/ViewKeycode, Classes/SequencerKeyRouter
+
+DESCRIPTION::
+The third argument to LINK::Classes/View:: CODE::keyDownAction:: / CODE::keyUpAction:: is the Unicode code point of the event text. For printable keys it usually equals CODE::char.ascii::. Special keys often use CODE::0::.
+
+CLASSMETHODS::
+
+METHOD:: carriageReturn
+Unicode code point 13 (carriage return); used by some Enter/Return chords alongside CODE::ViewQtKey.return::.
+
+METHOD:: none
+Zero; no text character (typical for arrow keys and Ctrl+letter when CODE::char:: is null).

@@ -7,7 +7,7 @@ DESCRIPTION::
 TELETYPE::PianoRollNote:: wraps a LINK::Classes/PlayableNote:: with piano-roll UI callbacks (view creation, selection highlighting, part colours, and view repositioning after timing edits). LINK::Classes/PianoRoll:: creates instances when recording MIDI or dev-mode fake notes.
 
 NOTE::
-You can run the unit tests for TELETYPE::Sequencer:: by running:
+You can run the unit tests for TELETYPE::PianoRollNote:: by running:
 CODE::
 (
 UnitTest.reportPasses_(false);
