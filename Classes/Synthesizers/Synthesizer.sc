@@ -168,12 +168,12 @@ Synthesizer {
 
 		if (value.class == Array, {
 			if (value.size != 2, {
-				Error(format("The 'value' parameter passed to Synthesizer.nrpn was an Array of size 2. The value of the parmaeter was %.", value)).throw;
+				Error(format("The 'value' parameter passed to Synthesizer.nrpn was an Array of size 2. The value of the parameter was %.", value)).throw;
 			});
 			value.do({
 				|element|
 				if (element.class != Integer, {
-					Error(format("The 'value' parameter passed to Synthesizer.nrpn should be an Array of 2 Integers. The value of the parmaeter was %.", value)).throw;
+					Error(format("The 'value' parameter passed to Synthesizer.nrpn should be an Array of 2 Integers. The value of the parameter was %.", value)).throw;
 				});
 			});
 		});
@@ -187,6 +187,13 @@ Synthesizer {
 			midiout.control(this.midiChannel, 6, (value / 128).asInteger);
 			midiout.control(this.midiChannel, 38, value % 128);
 		});
+	}
+
+	pitchbend {
+		|value=8192|
+		Validator.validateMethodParameterType(value, Integer, "value", "Synthesizer", "pitchbend");
+		value = value.clip(0,16383);
+		midiout.bend(this.midiChannel, value);
 	}
 
 	programChange {

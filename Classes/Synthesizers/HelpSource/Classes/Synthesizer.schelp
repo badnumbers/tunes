@@ -157,9 +157,14 @@ This can be either an LINK::Classes/Integer::, in which case its value is used, 
 DISCUSSION::
 This code will set Filter 1 Cutoff to 0 on a Hydrasynth, assuming that the Hydrasynth's TELETYPE::Param RX:: setting is set to STRONG::NRPN:: in the System Setup:
 CODE::
-// ~hydrasynth = ~hydrasynth ?? Hydrasynth(Setup.midi); (if necessary)
-~hydrasynth.nrpn(64,40,0);
+Synths(\hydrasynth).nrpn(64,40,0);
 ::
+
+METHOD:: pitchbend
+Sends a pitch bend message to the hardware synth.
+
+ARGUMENT:: value
+An LINK::Classes/Integer:: representing the value to send. 0 is the minimum and 16383 is the maximum. Input values are clipped to this range. 8192 should be interpreted by the hardware synth as the centre position.
 
 METHOD:: programChange
 Sends bank and program change messages to the hardware synth in order to change the current preset.
