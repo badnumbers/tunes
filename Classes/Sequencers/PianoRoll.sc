@@ -50,28 +50,7 @@ PianoRoll : SCViewHolder {
 			parent: nil,
 			bounds: nil,
 			commands: [
-				Command("snap", [
-					Parameter("selectedNotes", Array),
-					Parameter("grid", SimpleNumber, constraint: { |v| v > 0 })
-				], {
-					|args|
-					("PianoRoll: snap called with " ++ (args[\selectedNotes] ? []).size ++ " selected notes, grid: " ++ args[\grid]).postln;
-				}),
-				Command("nudge", [
-					Parameter("selectedNotes", Array),
-					Parameter("direction", Symbol, constraint: [\left, \right])
-				], {
-					|args|
-					("PianoRoll: nudge called with " ++ (args[\selectedNotes] ? []).size ++ " selected notes, direction: " ++ args[\direction]).postln;
-				}),
-				Command("set", [
-					Parameter("selectedNotes", Array),
-					Parameter("property", Symbol, constraint: [\amp, \degree, \dur, \legato, \midinote, \pan]),
-					Parameter("values", Integer, isArray: true, constraint: { |v| v.inclusivelyBetween(0, 127) })
-				], {
-					|args|
-					("PianoRoll: set called with " ++ (args[\selectedNotes] ? []).size ++ " selected notes, property: " ++ args[\property] ++ ", values: " ++ args[\values]).postln;
-				})
+				SnapCommand({ this.prApplyNoteEdits; })
 			],
 			palette: prPalette,
 			ambientParameters: (selectedNotes: { this.selectedNotes }),

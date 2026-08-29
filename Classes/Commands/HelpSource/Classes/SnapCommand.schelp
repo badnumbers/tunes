@@ -1,0 +1,60 @@
+TITLE:: SnapCommand
+SUMMARY:: Command that snaps notes to the nearest grid line defined by a musical resolution.
+CATEGORIES:: Commands
+RELATED:: Classes/Command, Classes/Parameter, Classes/CommandPrompt, Classes/PianoRoll, Classes/PianoRollNote
+
+DESCRIPTION::
+TELETYPE::SnapCommand:: is a LINK::Classes/Command:: that snaps an LINK::Classes/Array:: of notes (e.g. from LINK::Classes/PianoRoll#*selectedNotes::) to the nearest beat subdivision.
+
+It accepts a positive integer CODE::resolution:: between 1 and 16, representing the fraction of a beat (1/N beats):
+LIST::
+## CODE::1::: Whole beat (every 1.0 beat, matching the vertical beat lines)
+## CODE::2::: Half beat (every 0.5 beats)
+## CODE::4::: Quarter beat (every 0.25 beats)
+## CODE::8::: Eighth beat (every 0.125 beats)
+## CODE::16::: Sixteenth beat (every 0.0625 beats)
+::
+
+Each note's start time is shifted in the closest direction to the nearest multiple of CODE::1.0 / resolution:: beats while preserving duration.
+
+CLASSMETHODS::
+
+METHOD:: new
+Creates a new TELETYPE::SnapCommand::.
+
+ARGUMENT:: action
+An optional callback LINK::Classes/Function:: evaluated after note snapping completes. Receives the arguments LINK::Classes/Dictionary:: containing CODE::\selectedNotes:: and CODE::\resolution::.
+
+RETURNS::
+A new TELETYPE::SnapCommand:: instance.
+
+INSTANCEMETHODS::
+
+EXAMPLES::
+
+CODE::
+(
+var note = PianoRollNote(1.2, 60, 100,
+	viewFunc: { View() },
+	selectFunc: {},
+	deselectFunc: {},
+	setPart1Func: {},
+	setPart2Func: {},
+	setPart3Func: {},
+	setPart4Func: {},
+	moveFunc: { |view, start, stop| ("Moved to " ++ start ++ ".." ++ stop).postln; }
+);
+note.stop(2.2);
+
+var snapCmd = SnapCommand({
+	|args|
+	("Snapped note to start: " ++ note.startTime).postln;
+});
+
+// Snap to nearest quarter note (resolution = 4)
+snapCmd.execute((
+	selectedNotes: [note],
+	resolution: 4
+));
+)
+::
