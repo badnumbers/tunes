@@ -1,0 +1,81 @@
+TITLE:: CommandPrompt
+SUMMARY:: Text field with live command, parameter, and argument completion for an interactive command prompt.
+CATEGORIES:: GUI>Views
+RELATED:: Classes/Command, Classes/Parameter, Classes/GuiPalette, Classes/SCViewHolder, Classes/View
+
+DESCRIPTION::
+TELETYPE::CommandPrompt:: is a LINK::Classes/SCViewHolder:: providing an interactive command line with structured token chips for commands, parameters, and arguments.
+
+As the user types:
+LIST::
+## In the initial state, matching LINK::Classes/Command:: names are suggested. Pressing Tab commits the command chip.
+## Once a command is selected, remaining unassigned LINK::Classes/Parameter:: names are suggested. Pressing Tab commits the parameter chip.
+## When expecting an argument, the input is validated against the parameter's type and constraints (with discrete suggestions if defined). Pressing Tab commits the argument chip.
+## A live validity indicator on the right indicates whether the command is incomplete (CODE::…::) or fully satisfied (CODE::✓::). Pressing Return executes the command.
+## Pressing Backspace on an empty text field removes the last committed token chip and unwinds the parser state.
+::
+
+CLASSMETHODS::
+
+METHOD:: new
+Creates a TELETYPE::CommandPrompt::.
+
+ARGUMENT:: parent
+Optional parent LINK::Classes/View:: or LINK::Classes/Window::. Pass CODE::nil:: when the control will be placed in a layout.
+
+ARGUMENT:: bounds
+Optional LINK::Classes/Rect:: for fixed positioning. Pass CODE::nil:: when the control will be placed in a layout. When given, its height is used for the text field and its width fixes the overall control width.
+
+ARGUMENT:: commands
+An LINK::Classes/Array:: of LINK::Classes/Command:: instances to match against.
+
+ARGUMENT:: palette
+An optional LINK::Classes/GuiPalette:: used for styling token chips. Defaults to LINK::Classes/GuiPalette#*default::.
+
+RETURNS::
+A new TELETYPE::CommandPrompt:: instance.
+
+INSTANCEMETHODS::
+
+METHOD:: commands
+The command list used for suggestion matching.
+
+RETURNS::
+An LINK::Classes/Array:: of LINK::Classes/Command:: instances.
+
+METHOD:: palette
+The palette used for styling token chips.
+
+RETURNS::
+A LINK::Classes/GuiPalette::.
+
+METHOD:: string
+The current text in the input field (not including committed chips).
+
+RETURNS::
+A LINK::Classes/String::.
+
+PRIVATE:: init, prApplySelection, prClearSuggestions, prCommitHighlightedToken, prCurrentState, prCurrentWord, prExecuteCommand, prInstallTextFieldKeyHandlers, prLayoutInputRow, prMakeTokenChip, prMoveSelection, prPositionSuggestionsView, prRemoveLastCommittedToken, prResetPrompt, prSetHeight, prUpdateStatusIndicator, prUpdateSuggestions
+
+EXAMPLES::
+
+CODE::
+(
+var snapCmd = Command("snap", [
+	Parameter("grid", SimpleNumber, constraint: { |v| v > 0 }),
+	Parameter("direction", Symbol, constraint: [\both, \left, \right])
+], { |args|
+	("Executing snap with grid: " ++ args[\grid] ++ ", direction: " ++ args[\direction]).postln;
+});
+
+var setCmd = Command("set", [
+	Parameter("property", Symbol),
+	Parameter("values", Integer, isArray: true, constraint: { |v| v.inclusivelyBetween(0, 127) })
+], { |args|
+	("Executing set with property: " ++ args[\property] ++ ", values: " ++ args[\values]).postln;
+});
+
+var window = Window("Command prompt", Rect(100, 100, 450, 300)).front;
+CommandPrompt(window, Rect(20, 20, 400, 30), [snapCmd, setCmd]);
+)
+::

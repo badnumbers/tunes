@@ -1,0 +1,82 @@
+TITLE:: Parameter
+SUMMARY:: Defines a named parameter, type expectation, and validation constraints for a Command.
+CATEGORIES:: Control
+RELATED:: Classes/Command, Classes/CommandPrompt
+
+DESCRIPTION::
+TELETYPE::Parameter:: defines a parameter that a LINK::Classes/Command:: accepts, specifying its expected type (e.g. LINK::Classes/Integer::, LINK::Classes/Float::, LINK::Classes/SimpleNumber::, LINK::Classes/Symbol::, LINK::Classes/String::), whether it accepts a scalar or array of values, and optional value constraints (such as a validation LINK::Classes/Function:: or collection of allowed values).
+
+CLASSMETHODS::
+
+METHOD:: new
+Creates a new TELETYPE::Parameter::.
+
+ARGUMENT:: name
+A LINK::Classes/String:: or LINK::Classes/Symbol:: naming the parameter.
+
+ARGUMENT:: type
+A LINK::Classes/Class:: specifying the expected argument type.
+
+ARGUMENT:: isArray
+A LINK::Classes/Boolean:: indicating whether the parameter accepts a space-separated array of values (defaults to CODE::false::).
+
+ARGUMENT:: constraint
+An optional validation LINK::Classes/Function:: returning a boolean, or a LINK::Classes/Collection:: of allowed values.
+
+RETURNS::
+A new TELETYPE::Parameter:: instance.
+
+INSTANCEMETHODS::
+
+METHOD:: constraint
+Returns the constraint function or collection, if specified.
+
+RETURNS::
+A LINK::Classes/Function::, LINK::Classes/Collection::, or CODE::nil::.
+
+METHOD:: isArray
+Returns whether this parameter expects an array of values.
+
+RETURNS::
+A LINK::Classes/Boolean::.
+
+METHOD:: isValid
+Parses and validates a raw input string.
+
+ARGUMENT:: string
+The raw string to parse and validate.
+
+RETURNS::
+A LINK::Classes/Boolean::.
+
+METHOD:: name
+The name of the parameter.
+
+RETURNS::
+A LINK::Classes/String::.
+
+METHOD:: parse
+Parses a raw input string into the expected type (or array of values).
+
+ARGUMENT:: string
+The raw string to parse.
+
+RETURNS::
+The parsed value, or CODE::nil:: if parsing fails.
+
+METHOD:: type
+The expected LINK::Classes/Class:: for this parameter.
+
+RETURNS::
+A LINK::Classes/Class::.
+
+METHOD:: validate
+Validates a previously parsed value against type and constraint rules.
+
+ARGUMENT:: parsedValue
+The parsed value to validate.
+
+RETURNS::
+A LINK::Classes/Boolean::.
+
+PRIVATE:: init, prParseSingle, prStringIsFloat

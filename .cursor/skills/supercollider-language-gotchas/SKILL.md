@@ -40,6 +40,72 @@ result = this.handleKeyDown(char, modifiers, unicode, keycode, key);
 
 Same rule for `prUnmatchedKeyDown`, `prReturnValueFromResult`, and other methods on `this`.
 
+## View keyDown/keyUp return values
+
+When a `keyDownAction` or `keyUpAction` is set, the handler's return value controls whether the widget's native C++ behaviour runs:
+
+| Return | Effect |
+|--------|--------|
+| `nil` | Native widget behaviour runs (e.g. `TextField` inserts characters) |
+| `true` | Event handled; native behaviour **skipped**; propagation stopped |
+| `false` | Native behaviour **skipped**; event propagates to parent |
+
+Returning `false` thinking it means "not handled" is a common bug — it still bypasses native behaviour. On a `TextField`, that blocks typing entirely.
+
+```supercollider
+// WRONG — false still bypasses TextField text entry
+.keyDownAction_({ |view, char, modifiers, unicode, keycode, key|
+    var keyHandled = false;
+    if (keycode == ViewKeycode.downArrow, { this.prMoveSelection(1); keyHandled = true });
+    keyHandled;
+});
+
+// RIGHT — nil for unhandled keys, true only to consume specific keys
+.keyDownAction_({ |view, char, modifiers, unicode, keycode, key|
+    var keyHandled = nil;
+    if (keycode == ViewKeycode.downArrow, {
+        this.prMoveSelection(1);
+        keyHandled = true;
+    });
+    keyHandled;
+});
+```
+
+See `View.schelp` ("Key and mouse event processing") for the full propagation rules.
+
+## Adding views to a `LineLayout` (`HLayout` / `VLayout`) via `add` vs array syntax
+
+`LineLayout.new` parses items wrapped in arrays (e.g. `[view, s: 1]`) to extract stretch and alignment. However, `LineLayout#-add` and `LineLayout#-insert` take stretch and alignment as **explicit method arguments**:
+
+```supercollider
+// WRONG — layout.add treats the Array itself as the item
+layout.add([textField, s: 1]);
+
+// RIGHT — pass arguments directly
+layout.add(textField, stretch: 1);
+// or simply
+layout.add(textField);
+```
+
+Passing `[view, s: 1]` to `layout.add(...)` converts the array to a layout element via `asLayoutElement`, which fails to render the widget properly.
+
+## Absolute `bounds` on a layout-managed parent are ignored
+
+If a parent `View` has a `Layout` installed, constructing a child with `View(parent, Rect(...))` inserts that child into the layout. The layout then owns placement: setting `bounds.left` / `bounds.top` has no lasting effect (often the child appears as if `left` were `0`).
+
+```supercollider
+// WRONG — parent layout adopts the overlay; Rect left is ignored
+root.layout = VLayout(inputRow, nil);
+overlay = View(root, Rect(50, 30, 100, 60));
+
+// RIGHT — root has no layout; absolute children keep their Rect
+root = View(parent, bounds); // no layout_
+inputRow = View(root, Rect(0, 0, w, h)).layout_(HLayout(...));
+overlay = View(root, Rect(50, 30, 100, 60));
+```
+
+Use a layout only on inner containers that should be layout-managed. Keep the overlay's parent layout-free when you need absolute positioning (for example suggestion lists under a text field).
+
 ## `^` inside closures defined in `init` returns from `init`
 
 A `^true` / `^false` / `^nil` inside a `Function` assigned in `init` (for example `keyDownAction_({ ... })`) returns from **`init`**, not from the closure.
@@ -51,9 +117,9 @@ A `^true` / `^false` / `^nil` inside a `Function` assigned in `init` (for exampl
     ^false;
 });
 
-// RIGHT — last expression is the closure's return value
+// RIGHT — last expression is the closure's return value; use nil, not false, when unhandled
 .keyDownAction_({ |view, char, ...|
-    var keyHandled = false;
+    var keyHandled = nil;
     if (handled, { keyHandled = true });
     keyHandled;
 });
@@ -107,13 +173,18 @@ A binding match may occur with **no subscriber** registered; invoking a handler 
 
 ## Logic and collections
 
-- **`||` does not short-circuit** in SuperCollider. Do not write `x.isNil || x.isEmpty` expecting `isEmpty` to be skipped when `x` is nil. Use separate branches or `if`.
+- **`&&` and `||` evaluate their arguments eagerly** unless wrapped in a `Function` `{ ... }`. Writing `x.notNil && x.isValid` evaluates `x.isValid` before calling `&&`, messaging `nil` if `x` is `nil`. Writing `x.isNil || x.isEmpty` evaluates `x.isEmpty` even when `x` is `nil`.
 
 ```supercollider
-// WRONG — may message nil
+// WRONG — evaluates the right operand eagerly, messaging nil
+if (activeCommand.notNil && activeCommand.isValid(args), { ... });
 if (requiredModifiers.isNil || requiredModifiers.isEmpty, { ^true });
 
-// RIGHT
+// RIGHT — wrap right-hand operand in a function { ... } for short-circuiting
+if (activeCommand.notNil && { activeCommand.isValid(args) }, { ... });
+if (requiredModifiers.isNil || { requiredModifiers.size == 0 }, { ^true });
+
+// ALSO RIGHT — separate if statements
 if (requiredModifiers.isNil, { ^true });
 if (requiredModifiers.size == 0, { ^true });
 ```

@@ -1,0 +1,73 @@
+TITLE:: Command
+SUMMARY:: Base representation of a command with named parameters and an execution action.
+CATEGORIES:: Control
+RELATED:: Classes/CommandPrompt, Classes/Parameter
+
+DESCRIPTION::
+TELETYPE::Command:: represents an executable command. It defines a name, a list of accepted LINK::Classes/Parameter:: instances, and an optional execution action LINK::Classes/Function::. Subclasses can override LINK::#-execute:: or provide custom behaviour.
+
+CLASSMETHODS::
+
+METHOD:: new
+Creates a new TELETYPE::Command::.
+
+ARGUMENT:: name
+A LINK::Classes/String:: or LINK::Classes/Symbol:: naming the command.
+
+ARGUMENT:: parameters
+An optional LINK::Classes/Array:: of LINK::Classes/Parameter:: instances that this command accepts (defaults to empty).
+
+ARGUMENT:: action
+An optional LINK::Classes/Function:: called on execution, receiving an arguments LINK::Classes/Dictionary:: or LINK::Classes/Event::.
+
+RETURNS::
+A new TELETYPE::Command:: instance.
+
+INSTANCEMETHODS::
+
+METHOD:: action
+Returns the execution function for this command, if specified.
+
+RETURNS::
+A LINK::Classes/Function:: or CODE::nil::.
+
+METHOD:: execute
+Executes the command with the provided arguments dictionary.
+
+ARGUMENT:: argsDict
+A LINK::Classes/Dictionary:: or LINK::Classes/Event:: mapping parameter names to parsed argument values.
+
+RETURNS::
+The result of the action function, or CODE::nil::.
+
+METHOD:: getParameter
+Retrieves a parameter definition by name.
+
+ARGUMENT:: paramName
+A LINK::Classes/String:: or LINK::Classes/Symbol:: matching the parameter name.
+
+RETURNS::
+A LINK::Classes/Parameter:: instance, or CODE::nil:: if not found.
+
+METHOD:: isValid
+Returns whether all defined parameters have valid argument values in the given dictionary.
+
+ARGUMENT:: argsDict
+A LINK::Classes/Dictionary:: or LINK::Classes/Event:: containing argument values.
+
+RETURNS::
+A LINK::Classes/Boolean::.
+
+METHOD:: name
+The name of the command.
+
+RETURNS::
+A LINK::Classes/String::.
+
+METHOD:: parameters
+The list of parameter definitions accepted by this command.
+
+RETURNS::
+An LINK::Classes/Array:: of LINK::Classes/Parameter:: instances.
+
+PRIVATE:: init

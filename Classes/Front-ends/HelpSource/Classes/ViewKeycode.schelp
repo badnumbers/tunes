@@ -10,8 +10,14 @@ Constants in this class are verified on Linux (X11). Values may differ on macOS 
 
 CLASSMETHODS::
 
+METHOD:: backspace
+Scan code for the Backspace key on Linux (X11).
+
 METHOD:: control
 Scan code for the Control key on Linux (X11).
+
+METHOD:: downArrow
+Scan code for the Down Arrow key on Linux (X11).
 
 METHOD:: leftArrow
 Scan code for the Left Arrow key on Linux (X11).
@@ -21,3 +27,9 @@ Zero; used when no meaningful scan code applies (for example Ctrl+letter chords 
 
 METHOD:: rightArrow
 Scan code for the Right Arrow key on Linux (X11).
+
+METHOD:: tab
+Scan code for the Tab key on Linux (X11).
+
+METHOD:: upArrow
+Scan code for the Up Arrow key on Linux (X11).
