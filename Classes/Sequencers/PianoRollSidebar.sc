@@ -14,7 +14,7 @@ PianoRollSidebar : SCViewHolder {
 			StaticText().string_("Selection").stringColor_(prPalette.extreme2).font_(Font(size: 12, name: "Helvetica Bold")),
 			prSelectionLabel = StaticText().string_("0 notes").stringColor_(prPalette.colour5).font_(Font(size: 14)),
 			prHintsLabel = StaticText()
-				.string_("G+digits: grid\nS: snap\nCtrl+←→: nudge\nCtrl+M: metronome")
+				.string_("G+digits: grid\nCtrl+M: metronome")
 				.stringColor_(prPalette.colour4)
 				.font_(Font(size: 11)),
 			[nil, s: 1]

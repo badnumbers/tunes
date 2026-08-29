@@ -110,23 +110,6 @@ SequencerKeyRouter {
 				charAscii: [ViewUnicode.carriageReturn],
 				consume: true
 			),
-			\snapNotes: (
-				contexts: [\record],
-				char: $s,
-				consume: true
-			),
-			\nudgeLeft: (
-				contexts: [\record],
-				modifiers: [\ctrl],
-				keycodes: [ViewKeycode.leftArrow],
-				consume: true
-			),
-			\nudgeRight: (
-				contexts: [\record],
-				modifiers: [\ctrl],
-				keycodes: [ViewKeycode.rightArrow],
-				consume: true
-			),
 			\assignPart1: (
 				contexts: [\record],
 				char: $1,

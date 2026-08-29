@@ -2,6 +2,7 @@ PianoRoll : SCViewHolder {
 	var prAbsoluteStartTime;
 	var prActiveModifierKeys=0;
 	var prBackgroundView;
+	var prCommandPrompt;
 	var prDevMode;
 	var prDrawNote;
 	var prGridDenominator = 8;
@@ -22,8 +23,13 @@ PianoRoll : SCViewHolder {
 	var prTimeline;
 	var prView;
 
+	commandPrompt {
+		^prCommandPrompt;
+	}
+
 	init {
 		|parent,bounds,palette,tempoClock,devMode,keyRouter|
+		var contentLayoutView;
 		var selectionView;
 		var pianoRollHeight,pianoRollWidth;
 
@@ -31,11 +37,55 @@ PianoRoll : SCViewHolder {
 		prKeyRouter = keyRouter;
 		prPalette = palette;
 		prSidebar = PianoRollSidebar(prPalette);
-		prView = View().layout_(HLayout(
-			[prScrollView = ScrollView(), s: 1],
-			prSidebar.view
-		));
+
+		prView = View(parent, bounds);
 		this.view = prView;
+
+		contentLayoutView = View(prView, if (bounds.notNil, { bounds.moveTo(0, 0) }, { prView.bounds.moveTo(0, 0) }));
+		prView.onResize_({
+			contentLayoutView.bounds = prView.bounds.moveTo(0, 0);
+		});
+
+		prCommandPrompt = CommandPrompt(
+			parent: nil,
+			bounds: nil,
+			commands: [
+				Command("snap", [
+					Parameter("selectedNotes", Array),
+					Parameter("grid", SimpleNumber, constraint: { |v| v > 0 })
+				], {
+					|args|
+					("PianoRoll: snap called with " ++ (args[\selectedNotes] ? []).size ++ " selected notes, grid: " ++ args[\grid]).postln;
+				}),
+				Command("nudge", [
+					Parameter("selectedNotes", Array),
+					Parameter("direction", Symbol, constraint: [\left, \right])
+				], {
+					|args|
+					("PianoRoll: nudge called with " ++ (args[\selectedNotes] ? []).size ++ " selected notes, direction: " ++ args[\direction]).postln;
+				}),
+				Command("set", [
+					Parameter("selectedNotes", Array),
+					Parameter("property", Symbol, constraint: [\amp, \degree, \dur, \legato, \midinote, \pan]),
+					Parameter("values", Integer, isArray: true, constraint: { |v| v.inclusivelyBetween(0, 127) })
+				], {
+					|args|
+					("PianoRoll: set called with " ++ (args[\selectedNotes] ? []).size ++ " selected notes, property: " ++ args[\property] ++ ", values: " ++ args[\values]).postln;
+				})
+			],
+			palette: prPalette,
+			ambientParameters: (selectedNotes: { this.selectedNotes }),
+			overlayParent: prView
+		);
+
+		contentLayoutView.layout = VLayout(
+			prCommandPrompt.view,
+			HLayout(
+				[prScrollView = ScrollView(), s: 1],
+				prSidebar.view
+			)
+		).margins_(0).spacing_(4);
+
 		prScrollView.background_(prPalette.extreme2);
 		prTempoClock = tempoClock;
 		prRecordedNotes = Array.newClear;
@@ -170,9 +220,6 @@ PianoRoll : SCViewHolder {
 
 	prRegisterKeyHandlers {
 		prKeyRouter.on(\record, \metronomeToggle, { Metronome.toggle; });
-		prKeyRouter.on(\record, \snapNotes, { this.prSnapSelectedNotes; });
-		prKeyRouter.on(\record, \nudgeLeft, { this.prNudgeSelectedNotes(-1); });
-		prKeyRouter.on(\record, \nudgeRight, { this.prNudgeSelectedNotes(1); });
 		prKeyRouter.on(\record, \assignPart1, { this.prAssignPartIfSelected(1); });
 		prKeyRouter.on(\record, \assignPart2, { this.prAssignPartIfSelected(2); });
 		prKeyRouter.on(\record, \assignPart3, { this.prAssignPartIfSelected(3); });
@@ -187,22 +234,6 @@ PianoRoll : SCViewHolder {
 		prRecordedNotes.do({|recordedNote| recordedNote.setPartIfSelected(partNumber); });
 	}
 
-	prNudgeSelectedNotes {
-		|direction|
-		var selectedNotes;
-		selectedNotes = this.prSelectedNotes;
-		if (selectedNotes.size == 0, {
-			"No notes selected.".warn;
-		}, {
-			if (direction < 0, {
-				selectedNotes.do({|recordedNote| recordedNote.nudgeLeft(prGridResolution); });
-			}, {
-				selectedNotes.do({|recordedNote| recordedNote.nudgeRight(prGridResolution); });
-			});
-			this.prApplyNoteEdits;
-		});
-	}
-
 	prSetGridDenominator {
 		|denominator|
 		if (denominator.notNil && (denominator > 0), {
@@ -210,17 +241,6 @@ PianoRoll : SCViewHolder {
 			prGridResolution = 1 / denominator;
 		});
 		this.prRefreshSidebar;
-	}
-
-	prSnapSelectedNotes {
-		var selectedNotes;
-		selectedNotes = this.prSelectedNotes;
-		if (selectedNotes.size == 0, {
-			"No notes selected.".warn;
-		}, {
-			selectedNotes.do({|recordedNote| recordedNote.snapToGrid(prGridResolution); });
-			this.prApplyNoteEdits;
-		});
 	}
 
 	prSelectedNotes {
@@ -244,6 +264,10 @@ PianoRoll : SCViewHolder {
 
 		warn("There is no sequence to play yet.");
 		^false;
+	}
+
+	selectedNotes {
+		^this.prSelectedNotes;
 	}
 
 	startRecording {

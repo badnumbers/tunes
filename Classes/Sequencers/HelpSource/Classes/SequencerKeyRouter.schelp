@@ -93,7 +93,7 @@ ARGUMENT:: context
 Context symbol (for example CODE::\record::).
 
 ARGUMENT:: action
-Action symbol (for example CODE::\snapNotes::; must exist in the binding table for key-down dispatch).
+Action symbol (for example CODE::\metronomeToggle::; must exist in the binding table for key-down dispatch).
 
 ARGUMENT:: handler
 LINK::Classes/Function:: invoked when the binding matches. Grid-resolution handlers may receive one argument (digit string or committed denominator).

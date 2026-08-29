@@ -1,16 +1,17 @@
 CommandPrompt : SCViewHolder {
 	var prActiveCommand;
 	var prActiveParameter;
+	var prAmbientParameters;
 	var prCommands;
 	var prCommittedArgs;
 	var prCommittedTokens;
 	var prHighlightSuggestionColour;
-	var prInputRow;
 	var prInputRowLayout;
 	var prInputRowSpacing;
 	var prKeyDownString;
 	var prMatchingItems;
 	var prNormalSuggestionColour;
+	var prOverlayParent;
 	var prPalette;
 	var prSelectedIndex;
 	var prStatusIndicator;
@@ -19,6 +20,16 @@ CommandPrompt : SCViewHolder {
 	var prTextField;
 	var prTextFieldHeight;
 	var prViewWidth;
+
+	ambientParameters {
+		^prAmbientParameters;
+	}
+
+	ambientParameters_ {
+		|newAmbientParameters|
+		Validator.validateMethodParameterType(newAmbientParameters, Dictionary, "newAmbientParameters", "CommandPrompt", "ambientParameters_", allowNil: true);
+		prAmbientParameters = newAmbientParameters ?? { IdentityDictionary.new };
+	}
 
 	commands {
 		^prCommands;
@@ -31,13 +42,13 @@ CommandPrompt : SCViewHolder {
 	}
 
 	init {
-		|parent, bounds, commands, palette|
-		var initialWidth;
+		|parent, bounds, commands, palette, ambientParameters, overlayParent|
+		var effectiveOverlayParent;
 		prCommands = commands;
 		prPalette = palette;
+		prAmbientParameters = ambientParameters ?? { IdentityDictionary.new };
 		prTextFieldHeight = if (bounds.notNil, { bounds.height }, { 28 });
 		prViewWidth = if (bounds.notNil, { bounds.width }, { nil });
-		initialWidth = if (bounds.notNil, { bounds.width }, { 0 });
 		prInputRowSpacing = 2;
 		prNormalSuggestionColour = Color.gray(0.25);
 		prHighlightSuggestionColour = Color.gray(0.45);
@@ -50,40 +61,41 @@ CommandPrompt : SCViewHolder {
 		prActiveCommand = nil;
 		prActiveParameter = nil;
 
-		// Root has no layout so prSuggestionsView can be absolutely positioned.
-		this.view = View(parent, bounds).fixedHeight_(prTextFieldHeight);
-		prInputRow = View(this.view, Rect(0, 0, initialWidth, prTextFieldHeight))
+		// Root uses HLayout so input row and text field span full width in any layout.
+		this.view = View(parent, bounds).fixedHeight_(prTextFieldHeight)
 			.layout_(prInputRowLayout = HLayout().margins_(0).spacing_(prInputRowSpacing));
 		prTextField = TextField().fixedHeight_(prTextFieldHeight).minWidth_(0);
 		prStatusIndicator = StaticText().fixedWidth_(24).fixedHeight_(prTextFieldHeight)
 			.align_(\center).font_(Font.default);
 		prInputRowLayout.add(prTextField);
 		prInputRowLayout.add(prStatusIndicator);
-		prSuggestionsView = View(this.view, Rect(0, prTextFieldHeight, 0, 0))
-			.layout_(VLayout().margins_(0).spacing_(prInputRowSpacing));
+
+		// Overlay view created on overlayParent (or this.view if not provided)
+		prOverlayParent = overlayParent ?? { this.view };
+		prSuggestionsView = View(prOverlayParent, Rect(0, 0, 0, 0))
+			.background_(Color.clear)
+			.layout_(VLayout().margins_(0).spacing_(prInputRowSpacing))
+			.visible_(false);
 
 		if (prViewWidth.notNil, {
 			this.view.minWidth_(prViewWidth).maxWidth_(prViewWidth);
 		});
 
-		this.view.onResize_({
-			this.prLayoutInputRow;
-		});
-
-		this.prLayoutInputRow;
 		this.prInstallTextFieldKeyHandlers;
 		this.prUpdateStatusIndicator;
 	}
 
 	*new {
-		|parent, bounds, commands, palette|
+		|parent, bounds, commands, palette, ambientParameters, overlayParent|
 		Validator.validateMethodParameterType(commands, Array, "commands", "CommandPrompt", "new");
 		commands.do({
 			|command|
 			Validator.validateMethodParameterType(command, Command, "commands", "CommandPrompt", "new");
 		});
 		Validator.validateMethodParameterType(palette, GuiPalette, "palette", "CommandPrompt", "new", allowNil: true);
-		^super.new.init(parent, bounds, commands, palette ?? { GuiPalette.default });
+		Validator.validateMethodParameterType(ambientParameters, Dictionary, "ambientParameters", "CommandPrompt", "new", allowNil: true);
+		Validator.validateMethodParameterType(overlayParent, View, "overlayParent", "CommandPrompt", "new", allowNil: true);
+		^super.new.init(parent, bounds, commands, palette ?? { GuiPalette.default }, ambientParameters ?? { IdentityDictionary.new }, overlayParent);
 	}
 
 	palette {
@@ -109,6 +121,7 @@ CommandPrompt : SCViewHolder {
 		prSuggestionRows = [];
 		prMatchingItems = [];
 		prSelectedIndex = nil;
+		prSuggestionsView.visible = false;
 	}
 
 	prCommitHighlightedToken {
@@ -122,9 +135,21 @@ CommandPrompt : SCViewHolder {
 				prInputRowLayout.insert(chip, prCommittedTokens.size);
 				prCommittedTokens = prCommittedTokens.add((type: \command, name: cmd.name, view: chip, command: cmd));
 				prActiveCommand = cmd;
+				if (prAmbientParameters.notNil, {
+					cmd.parameters.do({
+						|paramItem|
+						var supplier = prAmbientParameters[paramItem.name.asSymbol];
+						if (supplier.isNil, {
+							supplier = prAmbientParameters[paramItem.name.asString];
+						});
+						if (supplier.notNil, {
+							var val = if (supplier.isKindOf(Function), { supplier.value }, { supplier });
+							prCommittedArgs[paramItem.name.asSymbol] = val;
+						});
+					});
+				});
 				prTextField.string_("");
 				this.prClearSuggestions;
-				this.prSetHeight(prTextFieldHeight);
 				this.prUpdateStatusIndicator;
 				this.prUpdateSuggestions;
 				prTextField.focus;
@@ -140,7 +165,6 @@ CommandPrompt : SCViewHolder {
 				prActiveParameter = param;
 				prTextField.string_("");
 				this.prClearSuggestions;
-				this.prSetHeight(prTextFieldHeight);
 				this.prUpdateStatusIndicator;
 				this.prUpdateSuggestions;
 				prTextField.focus;
@@ -161,7 +185,6 @@ CommandPrompt : SCViewHolder {
 				prActiveParameter = nil;
 				prTextField.string_("");
 				this.prClearSuggestions;
-				this.prSetHeight(prTextFieldHeight);
 				this.prUpdateStatusIndicator;
 				this.prUpdateSuggestions;
 				prTextField.focus;
@@ -257,13 +280,16 @@ CommandPrompt : SCViewHolder {
 		});
 	}
 
-	prLayoutInputRow {
-		var containerWidth = this.view.bounds.width;
-		prInputRow.bounds = Rect(0, 0, containerWidth, prTextFieldHeight);
-		if (prSuggestionRows.size > 0, {
-			var b = prSuggestionsView.bounds;
-			this.prPositionSuggestionsView(b.width, b.height);
+	prMoveSelection {
+		|direction|
+		var size = prSuggestionRows.size;
+		if (size == 0, { ^this });
+		if (prSelectedIndex.isNil, {
+			prSelectedIndex = if (direction > 0, { 0 }, { size - 1 });
+		}, {
+			prSelectedIndex = (prSelectedIndex + direction).wrap(0, size - 1);
 		});
+		this.prApplySelection;
 	}
 
 	prMakeTokenChip {
@@ -279,23 +305,21 @@ CommandPrompt : SCViewHolder {
 		).background_(colour);
 	}
 
-	prMoveSelection {
-		|direction|
-		var size = prSuggestionRows.size;
-		if (size == 0, { ^this });
-		if (prSelectedIndex.isNil, {
-			prSelectedIndex = if (direction > 0, { 0 }, { size - 1 });
-		}, {
-			prSelectedIndex = (prSelectedIndex + direction).wrap(0, size - 1);
-		});
-		this.prApplySelection;
-	}
-
 	prPositionSuggestionsView {
 		|width, height|
-		var left = prInputRow.bounds.left + prTextField.bounds.left;
-		var top = prTextFieldHeight + prInputRowSpacing;
-		prSuggestionsView.bounds = Rect(left, top, width, height);
+		var tfWindowPos, overlayParentWindowPos, tfPosInOverlayParent;
+		if (prSuggestionsView.notNil && { prOverlayParent.notNil } && { prTextField.notNil }, {
+			tfWindowPos = prTextField.mapToGlobal(0 @ 0);
+			overlayParentWindowPos = prOverlayParent.mapToGlobal(0 @ 0);
+			tfPosInOverlayParent = tfWindowPos - overlayParentWindowPos;
+
+			prSuggestionsView.bounds = Rect(
+				tfPosInOverlayParent.x,
+				tfPosInOverlayParent.y + prTextFieldHeight + prInputRowSpacing,
+				width,
+				height
+			);
+		});
 	}
 
 	prRemoveLastCommittedToken {
@@ -322,7 +346,6 @@ CommandPrompt : SCViewHolder {
 		});
 
 		this.prClearSuggestions;
-		this.prLayoutInputRow;
 		this.prUpdateStatusIndicator;
 		this.prUpdateSuggestions;
 		prTextField.focus;
@@ -336,18 +359,9 @@ CommandPrompt : SCViewHolder {
 		prActiveParameter = nil;
 		prTextField.string_("");
 		this.prClearSuggestions;
-		this.prSetHeight(prTextFieldHeight);
 		this.prUpdateStatusIndicator;
 		this.prUpdateSuggestions;
 		prTextField.focus;
-	}
-
-	prSetHeight {
-		|height|
-		var b = this.view.bounds;
-		this.view.fixedHeight_(height);
-		this.view.bounds = Rect(b.left, b.top, b.width, height);
-		this.prLayoutInputRow;
 	}
 
 	prUpdateStatusIndicator {
@@ -427,10 +441,9 @@ CommandPrompt : SCViewHolder {
 			});
 			prSelectedIndex = 0;
 			this.prApplySelection;
-			this.prSetHeight(prTextFieldHeight + prInputRowSpacing + suggestionsHeight);
+			prSuggestionsView.visible = true;
 		}, {
-			this.prPositionSuggestionsView(0, 0);
-			this.prSetHeight(prTextFieldHeight);
+			prSuggestionsView.visible = false;
 		});
 
 		this.prUpdateStatusIndicator;

@@ -9,10 +9,19 @@ TELETYPE::CommandPrompt:: is a LINK::Classes/SCViewHolder:: providing an interac
 As the user types:
 LIST::
 ## In the initial state, matching LINK::Classes/Command:: names are suggested. Pressing Tab commits the command chip.
-## Once a command is selected, remaining unassigned LINK::Classes/Parameter:: names are suggested. Pressing Tab commits the parameter chip.
+## Once a command is selected, any parameters configured in LINK::#-ambientParameters:: that match the command are automatically evaluated and bound without requiring user input or displaying a chip.
+## Remaining unassigned LINK::Classes/Parameter:: names are suggested. Pressing Tab commits the parameter chip.
 ## When expecting an argument, the input is validated against the parameter's type and constraints (with discrete suggestions if defined). Pressing Tab commits the argument chip.
 ## A live validity indicator on the right indicates whether the command is incomplete (CODE::…::) or fully satisfied (CODE::✓::). Pressing Return executes the command.
 ## Pressing Backspace on an empty text field removes the last committed token chip and unwinds the parser state.
+::
+
+SUBSECTION:: Layout and overlay parent requirements
+Because Qt clips child views to their parent bounds, suggestions cannot render outside a view's bounding box without an unmanaged overlay container. When embedding TELETYPE::CommandPrompt:: within a layout:
+LIST::
+## The hosting container (e.g. LINK::Classes/Window:: or root LINK::Classes/View::) must serve as the CODE::overlayParent:: without a layout assigned directly to it.
+## The actual UI layout must be placed inside an inner child LINK::Classes/View:: that resizes with the container via CODE::onResize_::.
+## Pass the outer unmanaged container as the CODE::overlayParent:: argument when constructing TELETYPE::CommandPrompt::. This allows the suggestions overlay to float in front of all sibling views in the Z-order without pushing or shifting sibling layout contents.
 ::
 
 CLASSMETHODS::
@@ -32,10 +41,22 @@ An LINK::Classes/Array:: of LINK::Classes/Command:: instances to match against.
 ARGUMENT:: palette
 An optional LINK::Classes/GuiPalette:: used for styling token chips. Defaults to LINK::Classes/GuiPalette#*default::.
 
+ARGUMENT:: ambientParameters
+An optional LINK::Classes/Dictionary:: or LINK::Classes/Event:: mapping parameter names to static values or getter LINK::Classes/Function::s to inject automatically when commands are committed.
+
+ARGUMENT:: overlayParent
+An optional LINK::Classes/View:: or LINK::Classes/Window:: where the suggestions overlay view will be created. Pass the root container view if the command prompt is embedded within nested layouts, or CODE::nil:: to create it on the command prompt view.
+
 RETURNS::
 A new TELETYPE::CommandPrompt:: instance.
 
 INSTANCEMETHODS::
+
+METHOD:: ambientParameters
+The ambient parameters dictionary or getter functions automatically injected into matching command parameters.
+
+RETURNS::
+A LINK::Classes/Dictionary:: or LINK::Classes/Event::.
 
 METHOD:: commands
 The command list used for suggestion matching.
@@ -55,9 +76,13 @@ The current text in the input field (not including committed chips).
 RETURNS::
 A LINK::Classes/String::.
 
-PRIVATE:: init, prApplySelection, prClearSuggestions, prCommitHighlightedToken, prCurrentState, prCurrentWord, prExecuteCommand, prInstallTextFieldKeyHandlers, prLayoutInputRow, prMakeTokenChip, prMoveSelection, prPositionSuggestionsView, prRemoveLastCommittedToken, prResetPrompt, prSetHeight, prUpdateStatusIndicator, prUpdateSuggestions
+PRIVATE:: init, prApplySelection, prClearSuggestions, prCommitHighlightedToken, prCurrentState, prCurrentWord, prExecuteCommand, prInstallTextFieldKeyHandlers, prMakeTokenChip, prMoveSelection, prPositionSuggestionsView, prRemoveLastCommittedToken, prResetPrompt, prUpdateStatusIndicator, prUpdateSuggestions
 
 EXAMPLES::
+
+SUBSECTION:: Embedding CommandPrompt in a layout with an overlay parent
+
+The example below demonstrates the simplest compliant layout setup. The outer window has no layout directly assigned, allowing the suggestions view to float above the content view.
 
 CODE::
 (
@@ -69,13 +94,40 @@ var snapCmd = Command("snap", [
 });
 
 var setCmd = Command("set", [
-	Parameter("property", Symbol),
+	Parameter("property", Symbol, constraint: [\amp, \degree, \dur, \midinote]),
 	Parameter("values", Integer, isArray: true, constraint: { |v| v.inclusivelyBetween(0, 127) })
 ], { |args|
 	("Executing set with property: " ++ args[\property] ++ ", values: " ++ args[\values]).postln;
 });
 
-var window = Window("Command prompt", Rect(100, 100, 450, 300)).front;
-CommandPrompt(window, Rect(20, 20, 400, 30), [snapCmd, setCmd]);
+var window, contentLayoutView, commandPrompt;
+
+// 1. The root window/container serves as the overlay parent and has NO layout directly assigned.
+window = Window("Command prompt layout example", Rect(100, 100, 500, 400)).front;
+
+// 2. An inner child View hosts the UI layout and is resized to follow the window.
+contentLayoutView = View(window, window.view.bounds);
+window.view.onResize_({
+	contentLayoutView.bounds = window.view.bounds;
+});
+
+// 3. CommandPrompt is created with overlayParent pointing to the unmanaged root window.
+commandPrompt = CommandPrompt(
+	parent: nil,
+	bounds: nil,
+	commands: [snapCmd, setCmd],
+	overlayParent: window.view
+);
+
+// 4. Place CommandPrompt and other controls inside the inner content layout.
+contentLayoutView.layout = VLayout(
+	commandPrompt.view,
+	View().background_(Color.gray(0.2)).layout_(
+		VLayout(
+			StaticText().string_("Main content area below").stringColor_(Color.white).align_(\center),
+			StaticText().string_("Suggestions float in front without shifting this view.").stringColor_(Color.gray(0.7)).align_(\center)
+		)
+	)
+).margins_(4).spacing_(4);
 )
 ::
