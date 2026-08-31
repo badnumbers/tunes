@@ -1,24 +1,30 @@
 TITLE:: FxBank
 SUMMARY:: A user interface for adding effects to hardware synthesizers
 CATEGORIES:: External Control
-RELATED:: Classes/Config, Classes/FxBankSynth, Classes/FxBankChorus, Classes/Tuner
+RELATED:: Classes/Config, Classes/FxBankSynth, Classes/FxBankChorus, Classes/SequencerGui, Classes/SCViewHolder
 
 DESCRIPTION::
-LINK::Classes/FxBank:: provides a quick user interface which can be used to selectively route the output of hardware synths defined in LINK::Classes/Config:: to SuperCollider so that effects can be added to them.
+TELETYPE::FxBank:: is a LINK::Classes/SCViewHolder:: that routes hardware synths defined in LINK::Classes/Config:: into SuperCollider so effects can be added to them. It does not create a window. LINK::Classes/SequencerGui:: embeds an instance as a page in its stack; the header FX bank button (between Record and the MIDI indicator) shows that page. To show the bank on its own, place it in a LINK::Classes/Window:: layout.
+
+Constructing TELETYPE::FxBank:: calls LINK::Classes/Setup#*server:: so the LINK::Classes/Server:: is started.
 
 CLASSMETHODS::
 
 METHOD:: new
-Creates an instance of LINK::Classes/FxBank::. This also calls LINK::Classes/Setup#*server:: in order to ensure the LINK::Classes/Server:: is started.
+Creates an instance of TELETYPE::FxBank::.
+
+RETURNS::
+A new TELETYPE::FxBank:: instance.
 
 INSTANCEMETHODS::
 
-PRIVATE:: prCreateMapping, prCreateNdef, prRemoveNdef, prRenderDelayUi, prRenderReverbUi, prRenderSynthDetails, prRenderUi, prUpdateEffectsForHardwareSynth
+PRIVATE:: init, prBuildDesk, prSetupHardwareSynth
 
 EXAMPLES::
 
 CODE::
-// Show the FX Bank
-FxBank();
-// That's it!
+// Embed in a window
+Window("FX Bank").layout_(VLayout(FxBank())).front;
+
+// Or open SequencerGui and click FX bank in the header
 ::

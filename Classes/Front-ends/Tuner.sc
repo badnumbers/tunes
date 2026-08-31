@@ -3,7 +3,7 @@ Tuner {
 
 	init {
 		var window, palette, topView, midiIndicator, midiToScAdapter,
-			fxBankButton, totalMidiNoteCount = 0, serverQuitFunc;
+			totalMidiNoteCount = 0, serverQuitFunc;
 
 		Setup.midi;
 		Setup.server;
@@ -40,12 +40,6 @@ Tuner {
 							.minSize_(100@50)
 							.maxSize_(100@50),
 						[nil, s: 1],
-						fxBankButton = EnhancedButton()
-							.minSize_(100@50)
-							.maxSize_(100@50),
-						View()
-							.minSize_(25@50)
-							.maxSize_(25@50),
 						midiIndicator = BorderView()
 							.background_(palette.colour2)
 							.borderColour_(palette.colour3)
@@ -56,10 +50,6 @@ Tuner {
 					).margins_(25).spacing_(0)
 				)
 		).margins_(25).spacing_(0);
-
-		fxBankButton.background_(palette.colour3).borderRadius_(3).borderWidth_(2).font_(Font(size:16)).string_("FX bank").stringColor_(palette.colour5).align_(\center).mouseEnterBorderColour_(palette.extreme2).mouseEnterStringColour_(palette.extreme2).mouseDownBackgroundColour_(palette.colour2).mouseUpAction_({
-			FxBank();
-		});
 
 		// Set up MIDI indicator
 		[\noteOn, \noteOff].do({

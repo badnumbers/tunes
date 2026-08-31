@@ -1,12 +1,9 @@
 TITLE:: Tuner
 SUMMARY:: A user interface to help tune a hardware synth.
 CATEGORIES:: Frontends
-RELATED:: Classes/FxBank
 
 DESCRIPTION::
 TELETYPE::Tuner:: provides a user interface to play an SC synth alongside a hardware synth, so that the hardware synth can be tuned.
-
-The Tuner screen has a button to open the LINK::Classes/FxBank::, which may be necessary to connect synths to SC when the server starts.
 
 CLASSMETHODS::
 

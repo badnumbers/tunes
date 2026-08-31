@@ -86,12 +86,12 @@ var button = EnhancedButton()
 	.borderWidth_(2)
 	.minSize_(100@50)
 	.font_(Font(size: 16))
-	.string_("FX bank")
+	.string_("OK")
 	.stringColor_(palette.colour5)
 	.align_(\center)
 	.mouseEnterBorderColour_(palette.extreme2)
 	.mouseEnterStringColour_(palette.extreme2)
 	.mouseDownBackgroundColour_(palette.colour2)
-	.mouseUpAction_({ FxBank(); });
+	.mouseUpAction_({ "clicked".postln; });
 )
 ::

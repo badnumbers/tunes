@@ -1,10 +1,10 @@
 TITLE:: SequencerGui
 SUMMARY:: Provides a GUI to visually represent sequences created using a Sequencer.
 CATEGORIES:: Streams-Patterns-Events
-RELATED:: Classes/Sequencer, Classes/PianoRoll, Classes/SequencerKeyRouter, Classes/SequencerDocument, Classes/Metronome
+RELATED:: Classes/Sequencer, Classes/PianoRoll, Classes/SequencerKeyRouter, Classes/SequencerDocument, Classes/Metronome, Classes/FxBank
 
 DESCRIPTION::
-LINK::Classes/SequencerGui:: provides a visualisation of a graph of LINK::Classes/Pattern::s created using a LINK::Classes/Sequencer::. This is created when calling LINK::Classes/Sequencer#-showGui::. It owns a LINK::Classes/SequencerDocument:: wrapping LINK::Classes/Document#*current::, and a LINK::Classes/SequencerKeyRouter:: whose active context is set when the user switches between Arrange, Record, and Settings views. The Settings view includes knobs for tempo and LINK::Classes/Metronome:: volume.
+LINK::Classes/SequencerGui:: provides a visualisation of a graph of LINK::Classes/Pattern::s created using a LINK::Classes/Sequencer::. This is created when calling LINK::Classes/Sequencer#-showGui::. It owns a LINK::Classes/SequencerDocument:: wrapping LINK::Classes/Document#*current::, and a LINK::Classes/SequencerKeyRouter:: whose active context is set when the user switches between Arrange, Record, and Settings views. The header bar includes Settings, Arrange, Record, and FX bank buttons (FX bank sits between Record and the MIDI indicator). The Settings view includes knobs for tempo and LINK::Classes/Metronome:: volume. The FX bank button shows an embedded LINK::Classes/FxBank:: (the fourth page of the stack, after Arrange, Record, and Settings).
 
 CLASSMETHODS::
 

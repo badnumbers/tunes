@@ -49,7 +49,7 @@ LIST::
 ## the LINK::Classes/Server:: is running
 ## you run a SynthDef to capture its input.
 ::
-You may wish to open the LINK::Classes/FxBank:: to help with this.
+You may wish to use the FX bank in LINK::Classes/SequencerGui:: to help with this.
 ::
 
 ARGUMENT:: synthesizer
@@ -64,5 +64,5 @@ LIST::
 ## the LINK::Classes/Server:: is running
 ## you run some SynthDefs to capture their input.
 ::
-You may wish to open the LINK::Classes/FxBank:: to help with this.
+You may wish to use the FX bank in LINK::Classes/SequencerGui:: to help with this.
 ::

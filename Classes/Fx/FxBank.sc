@@ -1,5 +1,4 @@
-FxBank {
-	classvar isOpen = false;
+FxBank : SCViewHolder {
 	var prTempoClock;
 	var prBuildDesk;
 	var prSetupHardwareSynth;
@@ -9,10 +8,8 @@ FxBank {
 		prTempoClock = TempoClock.default;
 
 		prBuildDesk = {
-			var window, carousel, synthsStackContainer, carouselviews;
-			var serverQuitFunc;
+			var carousel, synthsStackContainer, carouselviews;
 			var palette = GuiPalette.default;
-			window = Window("FX Bank",Rect(10,10,600,400)).front.background_(palette.colour1);
 			synthsStackContainer = StackLayout().mode_(0);
 
 			// We have to create the carousel views first before adding them to the carousel
@@ -25,7 +22,7 @@ FxBank {
 				prSetupHardwareSynth.value(synthConfig,index,synthsStackContainer);
 			});
 
-			window.layout = HLayout(
+			this.view = View().background_(palette.colour1).layout_(HLayout(
 				View().layout_(synthsStackContainer),
 				ScrollView()
 				.minWidth_(205)
@@ -33,22 +30,9 @@ FxBank {
 				.hasHorizontalScroller_(false)
 				.background_(palette.colour2)
 				.canvas_(View().background_(palette.colour2).layout_(carousel = VLayout(*carouselviews)))
-			);
-
-			serverQuitFunc = {
-				window.close();
-			};
-
-			ServerQuit.add(serverQuitFunc);
-
-			window.onClose_({
-				isOpen = false;
-				ServerQuit.remove(serverQuitFunc);
-			});
+			));
 
 			carousel.add(nil,1);
-
-			isOpen = true;
 		};
 
 		prSetupHardwareSynth = {
@@ -82,10 +66,6 @@ FxBank {
 	}
 
 	*new {
-		if (isOpen,{
-			postln("The FX Bank is already open.");
-		},{
-			^super.new.init;
-		});
+		^super.new.init;
 	}
 }

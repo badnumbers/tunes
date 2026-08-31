@@ -39,8 +39,6 @@ SequencerGui {
 			EnhancedButton().background_(prPalette.colour3).borderRadius_(3).borderWidth_(2).minSize_(size).maxSize_(size).font_(Font(size:16)).string_(text).stringColor_(prPalette.colour5).align_(\center).mouseEnterBorderColour_(prPalette.extreme2).mouseEnterStringColour_(prPalette.extreme2).mouseDownBackgroundColour_(prPalette.colour2);
 		};
 
-		fxBankButton = renderButtonFunc.value("FX bank");
-
 		prWindow = Window("Sequencer").background_(prPalette.colour1).front;
 		prWindow.layout = VLayout(
 			prMainHeader = BorderView().background_(prPalette.colour2).minHeight_(100).maxHeight_(100).borderWidth_(0).layout_(HLayout(
@@ -49,6 +47,7 @@ SequencerGui {
 				settingsButton = renderButtonFunc.value("Settings"),
 				arrangeButton = renderButtonFunc.value("Arrange"),
 				recordButton = renderButtonFunc.value("Record"),
+				fxBankButton = renderButtonFunc.value("FX bank"),
 				midiIndicator = BorderView().background_(prPalette.colour2).borderColour_(prPalette.colour3).borderRadius_(3).borderWidth_(2).minSize_(50@50).maxSize_(50@50);
 			).margins_(25).spacing_(25)),
 			stackLayout = StackLayout(
@@ -81,7 +80,6 @@ SequencerGui {
 				)),
 				prSettingsView = View().background_(prPalette.colour2).layout_(
 					VLayout(
-						fxBankButton,
 						HLayout(
 							VLayout(
 								tempoKnob = Knob()
@@ -113,7 +111,8 @@ SequencerGui {
 						),
 						[nil, s: 1]
 					).margins_(25).spacing_(25)
-				)
+				),
+				FxBank()
 		)).margins_(20).spacing_(20);
 
 		StaticText(prLeftPanelHeader, Rect(30, 30, 200, 40)).string_("Sections").stringColor_(prPalette.extreme2).font_(Font(size:24));
@@ -122,7 +121,7 @@ SequencerGui {
 
 		// Draw buttons in main header
 		fxBankButton.mouseUpAction_({
-			FxBank();
+			stackLayout.index_(3);
 		});
 		{
 			var initialTempo = prTempoClock.tryPerform(\tempo) ? 1.0;
