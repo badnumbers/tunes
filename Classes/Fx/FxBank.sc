@@ -30,7 +30,7 @@ FxBank : SCViewHolder {
 				.hasHorizontalScroller_(false)
 				.background_(palette.colour2)
 				.canvas_(View().background_(palette.colour2).layout_(carousel = VLayout(*carouselviews)))
-			));
+			).margins_(0));
 
 			carousel.add(nil,1);
 		};
