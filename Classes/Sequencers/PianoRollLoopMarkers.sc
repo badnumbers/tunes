@@ -13,6 +13,8 @@ PianoRollLoopMarkers {
 	var prStartLine;
 	var prStopBeat;
 	var prStopLine;
+	var prLoopEndSet = false;
+	var prLoopStartSet = false;
 
 	init {
 		|parent, horizontalScale, rollHeight, palette, defaultStopBeat|
@@ -25,6 +27,8 @@ PianoRollLoopMarkers {
 		prStartBeat = 0;
 		prStopBeat = if (defaultStopBeat.notNil, { defaultStopBeat }, { 128 });
 		prPlayheadTime = 0;
+		prLoopStartSet = false;
+		prLoopEndSet = false;
 	}
 
 	loopEnd {
@@ -41,6 +45,7 @@ PianoRollLoopMarkers {
 			^this;
 		});
 		prStopBeat = snapped;
+		prLoopEndSet = true;
 		this.prUpdateLineViews;
 		if (prOnLoopEndMove.isNil.not,{
 			prOnLoopEndMove.value(snapped);
@@ -61,6 +66,7 @@ PianoRollLoopMarkers {
 			^this;
 		});
 		prStartBeat = snapped;
+		prLoopStartSet = true;
 		this.prUpdateLineViews;
 		if (prOnLoopStartMove.isNil.not,{
 			prOnLoopStartMove.value(snapped);
@@ -123,5 +129,14 @@ PianoRollLoopMarkers {
 			prStopLine.bounds_(Rect(stopX, 0, 1, prRollHeight));
 			prPlaybackLine.bounds_(Rect(playX, 0, 1, prRollHeight));
 		});
+	}
+
+	isLoopDefined {
+		^(prLoopStartSet && prLoopEndSet);
+	}
+
+	loopLength {
+		if (this.isLoopDefined.not, { ^nil });
+		^(prStopBeat - prStartBeat);
 	}
 }

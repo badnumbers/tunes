@@ -1,32 +1,4 @@
 SequencerKeyRouterUnitTests : BNUnitTest {
-	test_metronomeToggle_matchesCtrlMQtKey {
-		var router, result;
-		router = SequencerKeyRouter.new;
-		router.activeContext_(\record);
-		result = router.handleKeyDown(
-			nil,
-			ViewKeyModifier.ctrl,
-			ViewUnicode.none,
-			ViewKeycode.none,
-			ViewQtKey.m
-		);
-		this.assertEquals(result.isHandled, true);
-	}
-
-	test_metronomeToggle_matchesCtrlMCarriageReturnChar {
-		var router, result;
-		router = SequencerKeyRouter.new;
-		router.activeContext_(\record);
-		result = router.handleKeyDown(
-			Char.ret,
-			ViewKeyModifier.ctrl,
-			ViewUnicode.carriageReturn,
-			ViewKeycode.none,
-			ViewQtKey.m
-		);
-		this.assertEquals(result.isHandled, true);
-	}
-
 	test_recordBindings_ignoredInArrangeContext {
 		var router, invoked;
 		invoked = false;

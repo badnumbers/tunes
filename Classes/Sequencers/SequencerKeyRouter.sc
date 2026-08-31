@@ -1,8 +1,6 @@
 SequencerKeyRouter {
 	var prActiveContext = \record;
 	var prBindings;
-	var prGridEntryActive = false;
-	var prGridEntryDigits = "";
 	var prHandlers;
 
 	activeContext {
@@ -15,36 +13,12 @@ SequencerKeyRouter {
 		prActiveContext = context;
 	}
 
-	gridEntryActive {
-		^prGridEntryActive;
-	}
-
-	gridEntryDigits {
-		^prGridEntryDigits;
-	}
-
 	handleKeyDown {
 		|char, modifiers, unicode, keycode, key|
 		var action;
 
 		if (prActiveContext != \record, {
 			^(this.prUnmatchedKeyDown(char, modifiers, keycode));
-		});
-
-		if (char == $g, {
-			prGridEntryActive = true;
-			prGridEntryDigits = "";
-			this.prInvokeHandler(\gridResolutionEntryBegan);
-			^(isHandled: true, consume: true);
-		});
-
-		if (prGridEntryActive, {
-			if (char.notNil && { char.ascii.inclusivelyBetween(48, 57) }, {
-				prGridEntryDigits = prGridEntryDigits ++ char.asString;
-				this.prInvokeHandler(\gridResolutionDigitsChanged, prGridEntryDigits);
-				^(isHandled: true, consume: true);
-			});
-			^(isHandled: true, consume: true);
 		});
 
 		action = this.prMatchingAction(char, modifiers, keycode, key);
@@ -58,16 +32,6 @@ SequencerKeyRouter {
 
 	handleKeyUp {
 		|char, modifiers, unicode, keycode, key|
-		var denominator;
-
-		if ((prActiveContext == \record) && (char == $g) && prGridEntryActive, {
-			prGridEntryActive = false;
-			denominator = if (prGridEntryDigits.size > 0, { prGridEntryDigits.asInteger }, { nil });
-			prGridEntryDigits = "";
-			this.prInvokeHandler(\gridResolutionCommitted, denominator);
-			^(isHandled: true, consume: true);
-		});
-
 		^(isHandled: false, consume: nil);
 	}
 
@@ -103,13 +67,6 @@ SequencerKeyRouter {
 
 	*defaultBindings {
 		^(
-			\metronomeToggle: (
-				contexts: [\record],
-				modifiers: [\ctrl],
-				qtKeys: [ViewQtKey.m, ViewQtKey.return],
-				charAscii: [ViewUnicode.carriageReturn],
-				consume: true
-			),
 			\assignPart1: (
 				contexts: [\record],
 				char: $1,

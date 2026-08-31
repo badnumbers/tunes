@@ -69,4 +69,16 @@ Unsnapped playback position in beats.
 ARGUMENT:: snap
 When true (default), snap CODE::rawBeat:: to the grid defined by CODE::prSnapResolutionBeats::; when false, store CODE::rawBeat:: verbatim.
 
+METHOD:: isLoopDefined
+Whether both loop start and loop end have been set via LINK::#-loopStart_:: and LINK::#-loopEnd_::. Construction defaults and LINK::#-playheadTime_:: alone do not count as a defined loop.
+
+RETURNS::
+CODE::true:: once both markers have been set successfully; otherwise CODE::false::.
+
+METHOD:: loopLength
+The loop duration in beats (CODE::loopEnd - loopStart::), or CODE::nil:: when LINK::#-isLoopDefined:: is CODE::false::.
+
+RETURNS::
+A LINK::Classes/Number:: of beats, or CODE::nil::.
+
 PRIVATE:: init, prSnapBeat, prUpdateLineViews

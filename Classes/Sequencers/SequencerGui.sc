@@ -18,7 +18,7 @@ SequencerGui {
 	init {
 		|sequencer,tempoClock,devMode|
 		var window, stackLayout, midiIndicator, fxBankButton, settingsButton, arrangeButton, recordButton, startRecordingButton, playLoopButton, pianoRoll;
-		var tempoKnob;
+		var tempoKnob, metronomeKnob;
 		var totalMidiNoteCount = 0;
 		var renderButtonFunc;
 
@@ -96,6 +96,19 @@ SequencerGui {
 									.maxSize_(80@20)
 									.background_(prPalette.colour3)
 							),
+							VLayout(
+								metronomeKnob = Knob()
+									.mode_(\vert)
+									.minSize_(80@80)
+									.maxSize_(80@80),
+								StaticText()
+									.string_("METRONOME")
+									.align_(\center)
+									.stringColor_(prPalette.extreme2)
+									.minSize_(80@20)
+									.maxSize_(80@20)
+									.background_(prPalette.colour3)
+							),
 							[nil, s: 1]
 						),
 						[nil, s: 1]
@@ -120,6 +133,10 @@ SequencerGui {
 		}.value;
 		tempoKnob.action_({ |knob|
 			prTempoClock.tempo_(knob.value.linexp(0, 1, 1, 4));
+		});
+		metronomeKnob.value_(Metronome.volume);
+		metronomeKnob.action_({ |knob|
+			Metronome.volume_(knob.value);
 		});
 		settingsButton.mouseUpAction_({
 			stackLayout.index_(2);

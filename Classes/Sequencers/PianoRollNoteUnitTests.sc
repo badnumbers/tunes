@@ -79,14 +79,6 @@ PianoRollNoteUnitTests : BNUnitTest {
 		this.assertWithMessage((duration - 0.4375).abs < 1e-9, "Duration should be preserved after clamp");
 	}
 
-	test_gridResolution_sixteenthBeat {
-		this.assertEquals(1 / 16, 0.0625);
-	}
-
-	test_gridResolution_defaultEighthBeat {
-		this.assertEquals(1 / 8, 0.125);
-	}
-
 	test_isSelected_reflectsSelectionState {
 		var notePair, note;
 		notePair = this.prMockNote(1, stopTime: 2.0);

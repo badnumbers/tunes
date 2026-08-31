@@ -1,6 +1,6 @@
 PianoRollSidebar : SCViewHolder {
-	var prGridLabel;
-	var prHintsLabel;
+	var prLoopHeading;
+	var prLoopLabel;
 	var prPalette;
 	var prSelectionLabel;
 
@@ -9,16 +9,14 @@ PianoRollSidebar : SCViewHolder {
 		prPalette = palette;
 		this.view = View().background_(prPalette.colour2).minWidth_(140).maxWidth_(140);
 		this.view.layout = VLayout(
-			StaticText().string_("Grid").stringColor_(prPalette.extreme2).font_(Font(size: 12, name: "Helvetica Bold")),
-			prGridLabel = StaticText().string_("1/8 beat").stringColor_(prPalette.colour5).font_(Font(size: 14)),
+			prLoopHeading = StaticText().string_("Loop").stringColor_(prPalette.extreme2).font_(Font(size: 12, name: "Helvetica Bold")),
+			prLoopLabel = StaticText().string_("").stringColor_(prPalette.colour5).font_(Font(size: 14)),
 			StaticText().string_("Selection").stringColor_(prPalette.extreme2).font_(Font(size: 12, name: "Helvetica Bold")),
 			prSelectionLabel = StaticText().string_("0 notes").stringColor_(prPalette.colour5).font_(Font(size: 14)),
-			prHintsLabel = StaticText()
-				.string_("G+digits: grid\nCtrl+M: metronome")
-				.stringColor_(prPalette.colour4)
-				.font_(Font(size: 11)),
 			[nil, s: 1]
 		).margins_(10).spacing_(6);
+		prLoopHeading.visible_(false);
+		prLoopLabel.visible_(false);
 	}
 
 	*new {
@@ -27,20 +25,33 @@ PianoRollSidebar : SCViewHolder {
 		^super.new.init(palette);
 	}
 
-	refresh {
-		|gridDenominator, selectionCount, pendingDenominator|
-		var gridText, selectionText;
-		if (pendingDenominator.notNil && (pendingDenominator.asString.size > 0), {
-			gridText = format("1/%?", pendingDenominator) ++ "?";
-		}, {
-			gridText = format("1/% beat", gridDenominator);
+	prFormatLoopLength {
+		|loopLength|
+		var isWhole;
+		isWhole = (loopLength - loopLength.round).abs < 1e-9;
+		if (isWhole, {
+			if (loopLength.round == 1, { ^"1 beat" });
+			^format("% beats", loopLength.round.asInteger);
 		});
+		^format("% beats", loopLength);
+	}
+
+	refresh {
+		|selectionCount, loopLength|
+		var selectionText;
 		selectionText = if (selectionCount == 1, {
 			"1 note";
 		}, {
 			format("% notes", selectionCount);
 		});
-		prGridLabel.string_(gridText);
 		prSelectionLabel.string_(selectionText);
+		if (loopLength.isNil, {
+			prLoopHeading.visible_(false);
+			prLoopLabel.visible_(false);
+		}, {
+			prLoopHeading.visible_(true);
+			prLoopLabel.visible_(true);
+			prLoopLabel.string_(this.prFormatLoopLength(loopLength));
+		});
 	}
 }

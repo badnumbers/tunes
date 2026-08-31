@@ -1,7 +1,7 @@
 TITLE:: Metronome
 SUMMARY:: A simple metronome
 CATEGORIES:: Streams-Patterns-Events
-RELATED:: Classes/Sequencer, Classes/PianoRoll
+RELATED:: Classes/Sequencer, Classes/PianoRoll, Classes/SequencerGui
 
 DESCRIPTION::
 This class plays short bursts of noise on the beat of LINK::Classes/TempoClock#*default::, and quieter bursts on the offbeats.
@@ -32,10 +32,13 @@ METHOD:: toggle
 Starts the metronome if it is not playing; otherwise stops it. See LINK::#-play:: and LINK::#-stop::.
 
 METHOD:: volume
-Sets the playback volume of the metronome, clipping to between 0 and 1. The default volume is 0.5.
+The metronome playback volume, between 0 and 1. The default is 0.5. Setting clips the new value to that range.
 
 ARGUMENT:: newValue
-The new volume.
+The new volume when setting.
+
+RETURNS::
+The current volume.
 
 EXAMPLES::
 

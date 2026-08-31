@@ -46,6 +46,10 @@ Metronome {
 		});
 	}
 
+	*volume {
+		^prVolume;
+	}
+
 	*volume_ { | newValue |
 		postln(format("newValue is %.", newValue));
 		prVolume = newValue.clip(0,1);
