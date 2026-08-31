@@ -12,6 +12,7 @@ This repo treats every public-facing SuperCollider class as having a paired help
 Apply whenever you:
 
 - create, rename, or delete an `.sc` class
+- add or remove a subclass of a documented class (update the base class `RELATED::` list)
 - add, rename, remove, or change the signature of a public method on an `.sc` class
 - change the meaning of a class method argument
 - otherwise change behaviour that the help file describes
@@ -141,6 +142,8 @@ LINK::Classes/SequencerGui::.
 ```
 
 Note: `RELATED::` values are class paths only (`Classes/Foo`), not wrapped in `LINK::...::`.
+
+Help files for a base class should always link all their subclasses. List every direct subclass in `RELATED::`. When you add, rename, or delete a subclass, update the base class help file in the same change.
 
 Never use a bare class name (`Dictionary`, `Function`) or a made-up tag (`EVENT::`) where `LINK::Classes/...::` is required.
 
