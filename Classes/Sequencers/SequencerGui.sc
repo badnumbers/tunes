@@ -1,9 +1,9 @@
 SequencerGui {
 	var prDocument;
 	var prKeyRouter;
-	var prMainHeader;
 	var prLeftPanelBody;
 	var prLeftPanelHeader;
+	var prMainHeader;
 	var prMiddlePanelBody;
 	var prMiddlePanelHeader;
 	var prPalette;

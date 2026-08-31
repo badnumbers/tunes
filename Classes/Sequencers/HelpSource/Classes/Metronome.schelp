@@ -15,8 +15,8 @@ CLASSMETHODS::
 METHOD:: isPlaying
 Whether the metronome LINK::Classes/Pdef:: is currently playing.
 
-returns::
-true or false.
+RETURNS::
+CODE::true:: or CODE::false::.
 
 METHOD:: play
 Starts playing the metronome. If the server is not running, boots it via LINK::Classes/Setup:: and starts playback when boot completes.

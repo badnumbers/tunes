@@ -16,11 +16,11 @@ PianoRoll : SCViewHolder {
 	var prRecordedNotes;
 	var prScrollView;
 	var prSequencePlayer;
+	var prSequencerDocument;
 	var prSidebar;
 	var prTempoClock;
 	var prTimeline;
 	var prView;
-	var prSequencerDocument;
 
 	commandPrompt {
 		^prCommandPrompt;
@@ -191,36 +191,6 @@ PianoRoll : SCViewHolder {
 		this.prRefreshSidebar;
 	}
 
-	prApplyNoteEdits {
-		prSequencePlayer.sequence_(prRecordedNotes.collect({|note| note.playableNote}));
-		this.prRefreshSidebar;
-	}
-
-	prRefreshSidebar {
-		var selectionCount, loopLength;
-		if (prSidebar.notNil, {
-			selectionCount = this.prSelectedNotes.size;
-			loopLength = if (prLoopMarkers.notNil, { prLoopMarkers.loopLength }, { nil });
-			prSidebar.refresh(selectionCount, loopLength);
-		});
-	}
-
-	prRegisterKeyHandlers {
-		prKeyRouter.on(\record, \assignPart1, { this.prAssignPartIfSelected(1); });
-		prKeyRouter.on(\record, \assignPart2, { this.prAssignPartIfSelected(2); });
-		prKeyRouter.on(\record, \assignPart3, { this.prAssignPartIfSelected(3); });
-		prKeyRouter.on(\record, \assignPart4, { this.prAssignPartIfSelected(4); });
-	}
-
-	prAssignPartIfSelected {
-		|partNumber|
-		prRecordedNotes.do({|recordedNote| recordedNote.setPartIfSelected(partNumber); });
-	}
-
-	prSelectedNotes {
-		^prRecordedNotes.select({|note| note.isSelected});
-	}
-
 	*new {
 		|parent,bounds,palette,tempoClock,devMode=false,keyRouter,sequencerDocument|
 		Validator.validateMethodParameterType(palette, GuiPalette, "palette", "PianoRoll", "new");
@@ -239,6 +209,36 @@ PianoRoll : SCViewHolder {
 
 		warn("There is no sequence to play yet.");
 		^false;
+	}
+
+	prApplyNoteEdits {
+		prSequencePlayer.sequence_(prRecordedNotes.collect({|note| note.playableNote}));
+		this.prRefreshSidebar;
+	}
+
+	prAssignPartIfSelected {
+		|partNumber|
+		prRecordedNotes.do({|recordedNote| recordedNote.setPartIfSelected(partNumber); });
+	}
+
+	prRefreshSidebar {
+		var selectionCount, loopLength;
+		if (prSidebar.notNil, {
+			selectionCount = this.prSelectedNotes.size;
+			loopLength = if (prLoopMarkers.notNil, { prLoopMarkers.loopLength }, { nil });
+			prSidebar.refresh(selectionCount, loopLength);
+		});
+	}
+
+	prRegisterKeyHandlers {
+		prKeyRouter.on(\record, \assignPart1, { this.prAssignPartIfSelected(1); });
+		prKeyRouter.on(\record, \assignPart2, { this.prAssignPartIfSelected(2); });
+		prKeyRouter.on(\record, \assignPart3, { this.prAssignPartIfSelected(3); });
+		prKeyRouter.on(\record, \assignPart4, { this.prAssignPartIfSelected(4); });
+	}
+
+	prSelectedNotes {
+		^prRecordedNotes.select({|note| note.isSelected});
 	}
 
 	selectedNotes {

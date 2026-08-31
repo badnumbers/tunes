@@ -33,13 +33,13 @@ Creates a TELETYPE::SequencerKeyRouter:: with CODE::#*defaultBindings::.
 INSTANCEMETHODS::
 
 METHOD:: activeContext
-The current UI context symbol (for example CODE::\record::).
-
-METHOD:: activeContext_
-Sets the current UI context symbol.
+The current UI context symbol (for example CODE::\record::). Setting replaces the current context.
 
 ARGUMENT:: context
 A CODE::Symbol:: such as CODE::\record::, CODE::\arrange::, or CODE::\settings::.
+
+RETURNS::
+A CODE::Symbol::.
 
 METHOD:: handleKeyDown
 Evaluates a key-down event.

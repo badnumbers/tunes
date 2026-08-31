@@ -2,25 +2,38 @@ PianoRollNote {
 	var prAdjustedStartTime;
 	var prAdjustedStopTime;
 	var prDeselectFunc;
-	var prOriginalBounds;
-	var prPartNumber = 1;
+	var prEvent;
 	var prMoveFunc;
-	var prPlayableNote;
+	var prOriginalBounds;
 	var prOriginalStartTime;
 	var prOriginalStopTime;
-	var prSelectFunc;
+	var prPartNumber = 1;
+	var prPlayableNote;
 	var prSelected = false;
+	var prSelectFunc;
 	var prSetPart1Func;
 	var prSetPart2Func;
 	var prSetPart3Func;
 	var prSetPart4Func;
 	var prView;
 	var prViewFunc;
-	var prEvent;
+
+	amp_ {
+		|value|
+		var clipped;
+		Validator.validateMethodParameterType(value, SimpleNumber, "value", "PianoRollNote", "amp_");
+		clipped = value.clip(0, 1);
+		prEvent[\amp] = clipped;
+		prPlayableNote.velocity_(clipped.linlin(0, 1, 0, 127).round.asInteger);
+	}
 
 	deselect {
 		prSelected = false;
 		prDeselectFunc.value(prView);
+	}
+
+	event {
+		^prEvent;
 	}
 
 	init {
@@ -36,6 +49,10 @@ PianoRollNote {
 		prOriginalStartTime = startTime;
 		prPlayableNote = PlayableNote(startTime,noteNumber,velocity);
 		prEvent = Event.new.parent_(nil);
+	}
+
+	isSelected {
+		^prSelected;
 	}
 
 	*new {
@@ -56,27 +73,6 @@ PianoRollNote {
 
 	noteNumber {
 		^prPlayableNote.noteNumber;
-	}
-
-	selectIfEnclosed {
-		|possiblyEnclosingView,addToExistingSelection = false|
-		if (
-			(prView.bounds.top >= possiblyEnclosingView.bounds.top)
-			&& (prView.bounds.left >= possiblyEnclosingView.bounds.left)
-			&& ((prView.bounds.left + prView.bounds.width) <= (possiblyEnclosingView.bounds.left + possiblyEnclosingView.bounds.width))
-			&& ((prView.bounds.top + prView.bounds.height) <= (possiblyEnclosingView.bounds.top + possiblyEnclosingView.bounds.height)),{
-				prSelected = true;
-				prSelectFunc.value(prView);
-			},{
-				if (addToExistingSelection.not, {
-					prSelected = false;
-					prDeselectFunc.value(prView);
-				});
-		});
-	}
-
-	isSelected {
-		^prSelected;
 	}
 
 	nudgeLeft {
@@ -107,6 +103,49 @@ PianoRollNote {
 
 	playableNote {
 		^prPlayableNote;
+	}
+
+	prApplyTimeDelta {
+		|delta|
+		var newStart, newStop, duration;
+		newStart = this.startTime + delta;
+		duration = this.stopTime - this.startTime;
+		if (newStart < 0, {
+			delta = delta - newStart;
+			newStart = 0;
+		});
+		newStop = this.startTime + delta + duration;
+		prOriginalStartTime = newStart;
+		prOriginalStopTime = newStop;
+		prPlayableNote.startTime = newStart;
+		prPlayableNote.stopTime = newStop;
+		if (prView.notNil, {
+			prMoveFunc.value(prView, newStart, newStop);
+		});
+	}
+
+	prIsOnGrid {
+		|resolution|
+		var gridIndex;
+		gridIndex = this.startTime / resolution;
+		^ (gridIndex - gridIndex.round).abs < 1e-9;
+	}
+
+	selectIfEnclosed {
+		|possiblyEnclosingView,addToExistingSelection = false|
+		if (
+			(prView.bounds.top >= possiblyEnclosingView.bounds.top)
+			&& (prView.bounds.left >= possiblyEnclosingView.bounds.left)
+			&& ((prView.bounds.left + prView.bounds.width) <= (possiblyEnclosingView.bounds.left + possiblyEnclosingView.bounds.width))
+			&& ((prView.bounds.top + prView.bounds.height) <= (possiblyEnclosingView.bounds.top + possiblyEnclosingView.bounds.height)),{
+				prSelected = true;
+				prSelectFunc.value(prView);
+			},{
+				if (addToExistingSelection.not, {
+					prSelected = false;
+					prDeselectFunc.value(prView);
+				});
+		});
 	}
 
 	setPartIfSelected {
@@ -166,44 +205,5 @@ PianoRollNote {
 
 	velocity {
 		^prPlayableNote.velocity;
-	}
-
-	amp_ {
-		|value|
-		var clipped;
-		Validator.validateMethodParameterType(value, SimpleNumber, "value", "PianoRollNote", "amp_");
-		clipped = value.clip(0, 1);
-		prEvent[\amp] = clipped;
-		prPlayableNote.velocity_(clipped.linlin(0, 1, 0, 127).round.asInteger);
-	}
-
-	event {
-		^prEvent;
-	}
-
-	prApplyTimeDelta {
-		|delta|
-		var newStart, newStop, duration;
-		newStart = this.startTime + delta;
-		duration = this.stopTime - this.startTime;
-		if (newStart < 0, {
-			delta = delta - newStart;
-			newStart = 0;
-		});
-		newStop = this.startTime + delta + duration;
-		prOriginalStartTime = newStart;
-		prOriginalStopTime = newStop;
-		prPlayableNote.startTime = newStart;
-		prPlayableNote.stopTime = newStop;
-		if (prView.notNil, {
-			prMoveFunc.value(prView, newStart, newStop);
-		});
-	}
-
-	prIsOnGrid {
-		|resolution|
-		var gridIndex;
-		gridIndex = this.startTime / resolution;
-		^ (gridIndex - gridIndex.round).abs < 1e-9;
 	}
 }

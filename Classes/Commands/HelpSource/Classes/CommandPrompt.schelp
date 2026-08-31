@@ -53,13 +53,19 @@ A new TELETYPE::CommandPrompt:: instance.
 INSTANCEMETHODS::
 
 METHOD:: ambientParameters
-The ambient parameters dictionary or getter functions automatically injected into matching command parameters.
+The ambient parameters dictionary or getter functions automatically injected into matching command parameters. Setting replaces the dictionary.
+
+ARGUMENT:: newAmbientParameters
+When setting, a LINK::Classes/Dictionary:: or CODE::nil::.
 
 RETURNS::
 A LINK::Classes/Dictionary:: or LINK::Classes/Event::.
 
 METHOD:: commands
-The command list used for suggestion matching.
+The command list used for suggestion matching. Setting replaces the list and refreshes suggestions.
+
+ARGUMENT:: newCommands
+When setting, an LINK::Classes/Array:: of LINK::Classes/Command:: instances.
 
 RETURNS::
 An LINK::Classes/Array:: of LINK::Classes/Command:: instances.
@@ -71,7 +77,10 @@ RETURNS::
 A LINK::Classes/GuiPalette::.
 
 METHOD:: string
-The current text in the input field (not including committed chips).
+The current text in the input field (not including committed chips). Setting replaces that text and refreshes suggestions.
+
+ARGUMENT:: newString
+When setting, the new input-field string.
 
 RETURNS::
 A LINK::Classes/String::.

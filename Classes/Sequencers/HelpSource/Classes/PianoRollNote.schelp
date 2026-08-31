@@ -56,8 +56,20 @@ LINK::Classes/Function:: called after timing edits with CODE::func.value(view, s
 
 INSTANCEMETHODS::
 
+METHOD:: amp_
+Clips CODE::value:: to CODE::0::–CODE::1::, stores it as CODE::\amp:: on the composed LINK::Classes/Event::, and sets MIDI velocity to CODE::value.linlin(0, 1, 0, 127):: rounded to an LINK::Classes/Integer::.
+
+ARGUMENT:: value
+A LINK::Classes/SimpleNumber:: amplitude. Values outside CODE::0:: to CODE::1:: are clipped silently.
+
 METHOD:: deselect
 Clears selection and invokes the deselect callback.
+
+METHOD:: event
+The composed LINK::Classes/Event::, created with no parent so default pattern keys such as CODE::\amp:: are unset until a command writes them.
+
+RETURNS::
+An LINK::Classes/Event::.
 
 METHOD:: isSelected
 Returns whether this note is currently selected.
@@ -118,17 +130,5 @@ Toggles selection and runs the select or deselect callback.
 
 METHOD:: velocity
 Returns the wrapped note's velocity.
-
-METHOD:: amp_
-Clips CODE::value:: to CODE::0::–CODE::1::, stores it as CODE::\amp:: on the composed LINK::Classes/Event::, and sets MIDI velocity to CODE::value.linlin(0, 1, 0, 127):: rounded to an LINK::Classes/Integer::.
-
-ARGUMENT:: value
-A LINK::Classes/SimpleNumber:: amplitude. Values outside CODE::0:: to CODE::1:: are clipped silently.
-
-METHOD:: event
-The composed LINK::Classes/Event::, created with no parent so default pattern keys such as CODE::\amp:: are unset until a command writes them.
-
-RETURNS::
-An LINK::Classes/Event::.
 
 PRIVATE:: init, prApplyTimeDelta, prIsOnGrid

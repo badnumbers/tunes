@@ -280,18 +280,6 @@ CommandPrompt : SCViewHolder {
 		});
 	}
 
-	prMoveSelection {
-		|direction|
-		var size = prSuggestionRows.size;
-		if (size == 0, { ^this });
-		if (prSelectedIndex.isNil, {
-			prSelectedIndex = if (direction > 0, { 0 }, { size - 1 });
-		}, {
-			prSelectedIndex = (prSelectedIndex + direction).wrap(0, size - 1);
-		});
-		this.prApplySelection;
-	}
-
 	prMakeTokenChip {
 		|text, colour|
 		var width;
@@ -303,6 +291,18 @@ CommandPrompt : SCViewHolder {
 					.stringColor_(Color.white).align_(\center)
 			).margins_(4@0)
 		).background_(colour);
+	}
+
+	prMoveSelection {
+		|direction|
+		var size = prSuggestionRows.size;
+		if (size == 0, { ^this });
+		if (prSelectedIndex.isNil, {
+			prSelectedIndex = if (direction > 0, { 0 }, { size - 1 });
+		}, {
+			prSelectedIndex = (prSelectedIndex + direction).wrap(0, size - 1);
+		});
+		this.prApplySelection;
 	}
 
 	prPositionSuggestionsView {

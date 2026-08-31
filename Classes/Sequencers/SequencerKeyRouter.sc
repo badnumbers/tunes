@@ -13,6 +13,31 @@ SequencerKeyRouter {
 		prActiveContext = context;
 	}
 
+	*defaultBindings {
+		^(
+			\assignPart1: (
+				contexts: [\record],
+				char: $1,
+				consume: true
+			),
+			\assignPart2: (
+				contexts: [\record],
+				char: $2,
+				consume: true
+			),
+			\assignPart3: (
+				contexts: [\record],
+				char: $3,
+				consume: true
+			),
+			\assignPart4: (
+				contexts: [\record],
+				char: $4,
+				consume: true
+			)
+		);
+	}
+
 	handleKeyDown {
 		|char, modifiers, unicode, keycode, key|
 		var action;
@@ -54,6 +79,10 @@ SequencerKeyRouter {
 		^(this.prReturnValueFromResult(result));
 	}
 
+	*new {
+		^super.new.init;
+	}
+
 	on {
 		|context, action, handler|
 		Validator.validateMethodParameterType(context, Symbol, "context", "SequencerKeyRouter", "on");
@@ -63,35 +92,6 @@ SequencerKeyRouter {
 			prHandlers[context] = IdentityDictionary.new;
 		});
 		prHandlers[context][action] = handler;
-	}
-
-	*defaultBindings {
-		^(
-			\assignPart1: (
-				contexts: [\record],
-				char: $1,
-				consume: true
-			),
-			\assignPart2: (
-				contexts: [\record],
-				char: $2,
-				consume: true
-			),
-			\assignPart3: (
-				contexts: [\record],
-				char: $3,
-				consume: true
-			),
-			\assignPart4: (
-				contexts: [\record],
-				char: $4,
-				consume: true
-			)
-		);
-	}
-
-	*new {
-		^super.new.init;
 	}
 
 	prBindingMatches {

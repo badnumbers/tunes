@@ -1,5 +1,6 @@
 TITLE:: PlayableNote
 SUMMARY:: A timed MIDI note used for sequencer playback.
+CATEGORIES:: Streams-Patterns-Events
 RELATED:: Classes/PianoRollNote, Classes/PianoRoll, Classes/SequencePlayer, Classes/Sequencer
 
 DESCRIPTION::
@@ -33,59 +34,19 @@ The MIDI note number (0–127).
 ARGUMENT:: velocity
 The MIDI velocity (0–127).
 
-returns::
+RETURNS::
 A new instance.
-
 
 INSTANCEMETHODS::
 
 METHOD:: isPlayable
 Whether this note has a stop time and can take part in playback queries.
 
-returns::
-true if TELETYPE::stopTime:: is set, otherwise false.
+RETURNS::
+CODE::true:: if TELETYPE::stopTime:: is set, otherwise CODE::false::.
 
 METHOD:: noteNumber
 The MIDI note number.
-
-returns::
-An LINK::Classes/Integer::.
-
-METHOD:: startTime
-The beat at which the note starts.
-
-returns::
-A LINK::Classes/SimpleNumber::.
-
-METHOD:: startTime_
-Sets the beat at which the note starts.
-
-ARGUMENT:: value
-The start time in beats.
-
-returns::
-This instance (for chaining).
-
-METHOD:: stopTime
-The beat at which the note stops.
-
-returns::
-A LINK::Classes/SimpleNumber::, or nil if not yet set.
-
-METHOD:: stopTime_
-Sets the beat at which the note stops, making the note playable.
-
-ARGUMENT:: value
-The stop time in beats.
-
-returns::
-This instance (for chaining).
-
-METHOD:: velocity
-The MIDI velocity. Setting replaces the stored velocity.
-
-ARGUMENT:: value
-When setting, an LINK::Classes/Integer:: MIDI velocity.
 
 RETURNS::
 An LINK::Classes/Integer::.
@@ -98,8 +59,8 @@ Returns false if the note is not playable. Otherwise returns true when TELETYPE:
 ARGUMENT:: playheadTime
 The current position of the playhead, in beats.
 
-returns::
-true or false.
+RETURNS::
+CODE::true:: or CODE::false::.
 
 METHOD:: startsInSlice
 Whether the note's start time falls within a scheduling slice.
@@ -112,8 +73,17 @@ The start of the slice, in beats (inclusive).
 ARGUMENT:: sliceStopTime
 The end of the slice, in beats (exclusive).
 
-returns::
-true or false.
+RETURNS::
+CODE::true:: or CODE::false::.
+
+METHOD:: startTime
+The beat at which the note starts. Setting replaces the stored start time.
+
+ARGUMENT:: value
+When setting, the start time in beats.
+
+RETURNS::
+A LINK::Classes/SimpleNumber::.
 
 METHOD:: stopsInSlice
 Whether the note's stop time falls within a scheduling slice.
@@ -126,9 +96,28 @@ The start of the slice, in beats (exclusive for the stop time).
 ARGUMENT:: sliceStopTime
 The end of the slice, in beats (inclusive for the stop time).
 
-returns::
-true or false.
+RETURNS::
+CODE::true:: or CODE::false::.
 
+METHOD:: stopTime
+The beat at which the note stops. Setting replaces the stored stop time and makes the note playable.
+
+ARGUMENT:: value
+When setting, the stop time in beats.
+
+RETURNS::
+A LINK::Classes/SimpleNumber::, or CODE::nil:: if not yet set.
+
+METHOD:: velocity
+The MIDI velocity. Setting replaces the stored velocity.
+
+ARGUMENT:: value
+When setting, an LINK::Classes/Integer:: MIDI velocity.
+
+RETURNS::
+An LINK::Classes/Integer::.
+
+PRIVATE:: init
 
 EXAMPLES::
 

@@ -30,6 +30,12 @@ Initial loop end beat before any marker is set (for example the roll length in b
 
 INSTANCEMETHODS::
 
+METHOD:: isLoopDefined
+Whether both loop start and loop end have been set via LINK::#-loopStart_:: and LINK::#-loopEnd_::. Construction defaults and LINK::#-playheadTime_:: alone do not count as a defined loop.
+
+RETURNS::
+CODE::true:: once both markers have been set successfully; otherwise CODE::false::.
+
 METHOD:: loopEnd
 The loop end beat. Reading returns the current end marker. Setting snaps the given beat using CODE::prSnapResolutionBeats::, then sets the end marker if the snapped beat is strictly after the current start marker. Otherwise posts a warning and does nothing. Also used when LINK::Classes/PianoRoll:: applies the recorded range after LINK::#-stopRecording::. On success, invokes the function registered with LINK::#-onLoopEndMove_::, if any, passing the snapped beat.
 
@@ -38,6 +44,12 @@ Unsnapped beat position when setting (e.g. from a timeline click or from recorde
 
 RETURNS::
 The current loop end beat.
+
+METHOD:: loopLength
+The loop duration in beats (CODE::loopEnd - loopStart::), or CODE::nil:: when LINK::#-isLoopDefined:: is CODE::false::.
+
+RETURNS::
+A LINK::Classes/Number:: of beats, or CODE::nil::.
 
 METHOD:: loopStart
 The loop start beat. Reading returns the current start marker. Setting snaps the given beat using CODE::prSnapResolutionBeats::, then sets the start marker if the snapped beat is strictly before the current end marker. Otherwise posts a warning and does nothing. Also used when LINK::Classes/PianoRoll:: applies the recorded range after LINK::#-stopRecording::. On success, invokes the function registered with LINK::#-onLoopStartMove_::, if any, passing the snapped beat.
@@ -68,17 +80,5 @@ Unsnapped playback position in beats.
 
 ARGUMENT:: snap
 When true (default), snap CODE::rawBeat:: to the grid defined by CODE::prSnapResolutionBeats::; when false, store CODE::rawBeat:: verbatim.
-
-METHOD:: isLoopDefined
-Whether both loop start and loop end have been set via LINK::#-loopStart_:: and LINK::#-loopEnd_::. Construction defaults and LINK::#-playheadTime_:: alone do not count as a defined loop.
-
-RETURNS::
-CODE::true:: once both markers have been set successfully; otherwise CODE::false::.
-
-METHOD:: loopLength
-The loop duration in beats (CODE::loopEnd - loopStart::), or CODE::nil:: when LINK::#-isLoopDefined:: is CODE::false::.
-
-RETURNS::
-A LINK::Classes/Number:: of beats, or CODE::nil::.
 
 PRIVATE:: init, prSnapBeat, prUpdateLineViews
