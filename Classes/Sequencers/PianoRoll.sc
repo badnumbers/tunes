@@ -50,11 +50,15 @@ PianoRoll : SCViewHolder {
 			parent: nil,
 			bounds: nil,
 			commands: [
-				SnapCommand({ this.prApplyNoteEdits; }),
-				WriteCommand({ this.prWritePatternToDocument; })
+				SnapCommand.new,
+				WriteCommand(prSequencerDocument)
 			],
 			palette: prPalette,
-			ambientParameters: (selectedNotes: { this.selectedNotes }),
+			ambientParameters: (
+				selectedNotes: { this.selectedNotes },
+				loopStart: { prLoopMarkers.loopStart },
+				loopEnd: { prLoopMarkers.loopEnd }
+			),
 			overlayParent: prView
 		);
 
@@ -210,18 +214,6 @@ PianoRoll : SCViewHolder {
 	prAssignPartIfSelected {
 		|partNumber|
 		prRecordedNotes.do({|recordedNote| recordedNote.setPartIfSelected(partNumber); });
-	}
-
-	prWritePatternToDocument {
-		var loopStart, loopEnd, dummy;
-		if (prSequencerDocument.isNil, {
-			warn("PianoRoll: no SequencerDocument; cannot write pattern.");
-			^this;
-		});
-		loopStart = prLoopMarkers.loopStart;
-		loopEnd = prLoopMarkers.loopEnd;
-		dummy = format("// PianoRoll write (dummy); loopStart=%, loopEnd=%, length=%", loopStart, loopEnd, loopEnd - loopStart);
-		prSequencerDocument.insertPattern(dummy);
 	}
 
 	prSelectedNotes {

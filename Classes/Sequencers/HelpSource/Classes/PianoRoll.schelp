@@ -1,7 +1,7 @@
 TITLE:: PianoRoll
 SUMMARY:: Piano-roll view for MIDI recording and note editing.
 CATEGORIES:: Streams-Patterns-Events
-RELATED:: Classes/PianoRollNote, Classes/PianoRollSidebar, Classes/PianoRollTimeline, Classes/PianoRollLoopMarkers, Classes/SequencePlayer, Classes/SequencerGui, Classes/SequencerDocument, Classes/Metronome, Classes/SequencerKeyRouter, Classes/WriteCommand
+RELATED:: Classes/PianoRollNote, Classes/PianoRollSidebar, Classes/PianoRollTimeline, Classes/PianoRollLoopMarkers, Classes/SequencePlayer, Classes/SequencerGui, Classes/SequencerDocument, Classes/Metronome, Classes/SequencerKeyRouter, Classes/SnapCommand, Classes/WriteCommand
 
 DESCRIPTION::
 LINK::Classes/PianoRoll:: is a LINK::Classes/SCViewHolder:: that shows recorded notes as a piano roll. Its root LINK::Classes/View:: uses a vertical layout: an embedded LINK::Classes/CommandPrompt:: at the top, and a horizontal layout below containing a LINK::Classes/ScrollView:: (timeline plus note canvas) and a fixed LINK::Classes/PianoRollSidebar:: on the right. The sidebar shows the loop length from LINK::Classes/PianoRollLoopMarkers:: once both loop markers have been set, and the current selection count. It embeds LINK::Classes/PianoRollTimeline:: for the beat strip above the roll (left/right clicks set loop bounds; Shift+left sets playback; see LINK::Classes/PianoRollTimeline::). It listens for MIDI note-on and note-off events (when not in dev mode) and draws LINK::Classes/PianoRollNote:: entries as LINK::Classes/BorderView:: regions. LINK::#-stopRecording:: frees the recording LINK::Classes/MIDIdef::s and updates LINK::Classes/PianoRollLoopMarkers:: from recorded notes. Keyboard shortcuts are dispatched via a LINK::Classes/SequencerKeyRouter:: passed in at construction.
@@ -13,7 +13,7 @@ TABLE::
 1–4                     Assign part on selected notes
 ::
 
-Edits update the embedded LINK::Classes/SequencePlayer:: sequence and are allowed during playback. LINK::#-startRecording:: starts the LINK::Classes/Metronome::; LINK::#-stopRecording:: stops it. Note operations such as snap, nudge, set, and write are invoked through the embedded LINK::Classes/CommandPrompt::. The CODE::write:: command inserts dummy pattern text via LINK::Classes/SequencerDocument#-insertPattern::.
+Edits update the embedded LINK::Classes/SequencePlayer:: sequence and are allowed during playback. LINK::#-startRecording:: starts the LINK::Classes/Metronome::; LINK::#-stopRecording:: stops it. Note operations such as snap, nudge, set, and write are invoked through the embedded LINK::Classes/CommandPrompt::. The prompt is constructed with LINK::Classes/SnapCommand#*new:: and LINK::Classes/WriteCommand#*new:: (passing the optional LINK::Classes/SequencerDocument::). Ambient parameters supply CODE::selectedNotes::, CODE::loopStart::, and CODE::loopEnd::. The CODE::write:: command inserts dummy pattern text via LINK::Classes/SequencerDocument#-insertPattern::.
 
 CLASSMETHODS::
 
@@ -67,4 +67,4 @@ Stops playback via the embedded LINK::Classes/SequencePlayer::.
 METHOD:: stopRecording
 Stops recording, stops the LINK::Classes/Metronome::, frees recording LINK::Classes/MIDIdef::s, and updates LINK::Classes/PianoRollLoopMarkers:: from recorded notes (loop bounds plus LINK::Classes/PianoRollLoopMarkers#-playheadTime_:: at the loop start beat).
 
-PRIVATE:: init, prApplyNoteEdits, prAssignPartIfSelected, prRefreshSidebar, prRegisterKeyHandlers, prSelectedNotes, prWritePatternToDocument
+PRIVATE:: init, prApplyNoteEdits, prAssignPartIfSelected, prRefreshSidebar, prRegisterKeyHandlers, prSelectedNotes

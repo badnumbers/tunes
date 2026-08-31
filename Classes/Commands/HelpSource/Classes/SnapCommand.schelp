@@ -4,7 +4,7 @@ CATEGORIES:: Commands
 RELATED:: Classes/Command, Classes/Parameter, Classes/CommandPrompt, Classes/PianoRoll, Classes/PianoRollNote
 
 DESCRIPTION::
-TELETYPE::SnapCommand:: is a LINK::Classes/Command:: that snaps an LINK::Classes/Array:: of notes (e.g. from LINK::Classes/PianoRoll#*selectedNotes::) to the nearest beat subdivision.
+TELETYPE::SnapCommand:: is a LINK::Classes/Command:: that snaps an LINK::Classes/Array:: of notes (e.g. from LINK::Classes/PianoRoll#*selectedNotes::) to the nearest beat subdivision. LINK::Classes/PianoRoll:: supplies the notes through LINK::Classes/CommandPrompt#-ambientParameters:: as CODE::selectedNotes::.
 
 It accepts a positive integer CODE::resolution:: between 1 and 16, representing the fraction of a beat (1/N beats):
 LIST::
@@ -15,20 +15,23 @@ LIST::
 ## CODE::16::: Sixteenth beat (every 0.0625 beats)
 ::
 
-Each note's start time is shifted in the closest direction to the nearest multiple of CODE::1.0 / resolution:: beats while preserving duration.
+Each note's start time is shifted in the closest direction to the nearest multiple of CODE::1.0 / resolution:: beats while preserving duration. Timing edits on LINK::Classes/PianoRollNote:: reposition the note view automatically.
 
 CLASSMETHODS::
 
 METHOD:: new
-Creates a new TELETYPE::SnapCommand::.
-
-ARGUMENT:: action
-An optional callback LINK::Classes/Function:: evaluated after note snapping completes. Receives the arguments LINK::Classes/Dictionary:: containing CODE::\selectedNotes:: and CODE::\resolution::.
+Creates a new TELETYPE::SnapCommand::. Takes no arguments; snapping is implemented by LINK::#-execute::.
 
 RETURNS::
 A new TELETYPE::SnapCommand:: instance.
 
 INSTANCEMETHODS::
+
+METHOD:: execute
+Snaps each note in CODE::\selectedNotes:: to the grid implied by CODE::\resolution::.
+
+ARGUMENT:: args
+A LINK::Classes/Dictionary:: or LINK::Classes/Event:: with CODE::\selectedNotes:: (an LINK::Classes/Array:: of notes that respond to CODE::snapToGrid::) and CODE::\resolution:: (an LINK::Classes/Integer:: from 1 to 16).
 
 EXAMPLES::
 
@@ -46,10 +49,7 @@ var note = PianoRollNote(1.2, 60, 100,
 );
 note.stop(2.2);
 
-var snapCmd = SnapCommand({
-	|args|
-	("Snapped note to start: " ++ note.startTime).postln;
-});
+var snapCmd = SnapCommand.new;
 
 // Snap to nearest quarter note (resolution = 4)
 snapCmd.execute((

@@ -4,7 +4,7 @@ CATEGORIES:: Control
 RELATED:: Classes/CommandPrompt, Classes/Parameter, Classes/SnapCommand, Classes/WriteCommand
 
 DESCRIPTION::
-TELETYPE::Command:: represents an executable command. It defines a name, a list of accepted LINK::Classes/Parameter:: instances, and an optional execution action LINK::Classes/Function::. Subclasses can override LINK::#-execute:: or provide custom behaviour.
+TELETYPE::Command:: represents an executable command. It defines a name, a list of accepted LINK::Classes/Parameter:: instances, and an optional execution action LINK::Classes/Function::. Ad-hoc instances pass an action to LINK::#*new::. Subclasses such as LINK::Classes/SnapCommand:: and LINK::Classes/WriteCommand:: override LINK::#-execute:: instead of passing an action.
 
 CLASSMETHODS::
 

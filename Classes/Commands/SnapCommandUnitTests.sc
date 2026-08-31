@@ -19,14 +19,6 @@ SnapCommandUnitTests : BNUnitTest {
 		^note;
 	}
 
-	test_actionCallback_isInvoked {
-		var cmd, note, invoked = false;
-		note = this.prMockNote(1.2, 2.2);
-		cmd = SnapCommand({ |args| invoked = true; });
-		cmd.execute((selectedNotes: [note], resolution: 4));
-		this.assertEquals(invoked, true);
-	}
-
 	test_name_isSnap {
 		var cmd = SnapCommand.new;
 		this.assertEquals(cmd.name, "snap");

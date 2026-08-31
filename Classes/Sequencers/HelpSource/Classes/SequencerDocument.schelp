@@ -1,12 +1,12 @@
 TITLE:: SequencerDocument
 SUMMARY:: Encapsulates reading and writing sequencer source in a Document.
 CATEGORIES:: Streams-Patterns-Events
-RELATED:: Classes/Document, Classes/PianoRoll, Classes/SequencerGui, Classes/PatternText
+RELATED:: Classes/Document, Classes/PianoRoll, Classes/SequencerGui, Classes/WriteCommand, Classes/PatternText
 
 DESCRIPTION::
 TELETYPE::SequencerDocument:: composes a LINK::Classes/Document:: and is the place that knows how sequencer source is laid out: how to find MIDI parts, where to write new pattern text, and (later) how to parse or replace existing sequences.
 
-LINK::Classes/PianoRoll:: and LINK::Classes/SequencerGui:: talk to this class rather than to LINK::Classes/Document:: directly. Callers of LINK::#-insertPattern:: do not choose the insertion point; TELETYPE::SequencerDocument:: owns that policy.
+LINK::Classes/PianoRoll::, LINK::Classes/SequencerGui::, and LINK::Classes/WriteCommand:: talk to this class rather than to LINK::Classes/Document:: directly. Callers of LINK::#-insertPattern:: do not choose the insertion point; TELETYPE::SequencerDocument:: owns that policy.
 
 CLASSMETHODS::
 
