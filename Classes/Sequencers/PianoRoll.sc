@@ -50,6 +50,7 @@ PianoRoll : SCViewHolder {
 			parent: nil,
 			bounds: nil,
 			commands: [
+				AmpCommand.new,
 				SnapCommand.new,
 				WriteCommand(prSequencerDocument)
 			],

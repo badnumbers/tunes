@@ -229,4 +229,11 @@ PlayableNoteUnitTests : UnitTest {
 		// Assert
 		this.assertEquals(stopsInSlice,false);
     }
+
+	test_velocity_storesInteger {
+		var playableNote;
+		playableNote = PlayableNote(4, 64, 64);
+		playableNote.velocity_(100);
+		this.assertEquals(playableNote.velocity, 100);
+	}
 }

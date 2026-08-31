@@ -38,8 +38,8 @@ WriteCommandUnitTests : BNUnitTest {
 		var cmd = WriteCommand.new;
 		var loopStart = cmd.getParameter("loopStart");
 		var loopEnd = cmd.getParameter("loopEnd");
-		this.assertNotNil(loopStart);
-		this.assertNotNil(loopEnd);
+		this.assert(loopStart.notNil, "loopStart parameter should exist", true);
+		this.assert(loopEnd.notNil, "loopEnd parameter should exist", true);
 		this.assertEquals(loopStart.type, Number);
 		this.assertEquals(loopEnd.type, Number);
 	}

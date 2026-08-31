@@ -16,6 +16,7 @@ PianoRollNote {
 	var prSetPart4Func;
 	var prView;
 	var prViewFunc;
+	var prEvent;
 
 	deselect {
 		prSelected = false;
@@ -34,6 +35,7 @@ PianoRollNote {
 		prMoveFunc = moveFunc;
 		prOriginalStartTime = startTime;
 		prPlayableNote = PlayableNote(startTime,noteNumber,velocity);
+		prEvent = Event.new.parent_(nil);
 	}
 
 	*new {
@@ -164,6 +166,19 @@ PianoRollNote {
 
 	velocity {
 		^prPlayableNote.velocity;
+	}
+
+	amp_ {
+		|value|
+		var clipped;
+		Validator.validateMethodParameterType(value, SimpleNumber, "value", "PianoRollNote", "amp_");
+		clipped = value.clip(0, 1);
+		prEvent[\amp] = clipped;
+		prPlayableNote.velocity_(clipped.linlin(0, 1, 0, 127).round.asInteger);
+	}
+
+	event {
+		^prEvent;
 	}
 
 	prApplyTimeDelta {

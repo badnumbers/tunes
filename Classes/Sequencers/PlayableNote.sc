@@ -75,4 +75,10 @@ PlayableNote {
 	velocity {
 		^prVelocity;
 	}
+
+	velocity_ {
+		|value|
+		Validator.validateMethodParameterType(value, Integer, "value", "PlayableNote", "velocity_");
+		prVelocity = value;
+	}
 }

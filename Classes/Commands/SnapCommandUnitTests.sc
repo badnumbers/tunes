@@ -27,7 +27,7 @@ SnapCommandUnitTests : BNUnitTest {
 	test_resolutionParameter_validation {
 		var cmd = SnapCommand.new;
 		var param = cmd.getParameter("resolution");
-		this.assertNotNil(param);
+		this.assert(param.notNil, "resolution parameter should exist", true);
 		this.assertEquals(param.type, Integer);
 		this.assertEquals(param.isValid("4"), true);
 		this.assertEquals(param.isValid("1"), true);

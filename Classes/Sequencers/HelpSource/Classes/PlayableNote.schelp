@@ -82,9 +82,12 @@ returns::
 This instance (for chaining).
 
 METHOD:: velocity
-The MIDI velocity.
+The MIDI velocity. Setting replaces the stored velocity.
 
-returns::
+ARGUMENT:: value
+When setting, an LINK::Classes/Integer:: MIDI velocity.
+
+RETURNS::
 An LINK::Classes/Integer::.
 
 METHOD:: shouldBePlaying

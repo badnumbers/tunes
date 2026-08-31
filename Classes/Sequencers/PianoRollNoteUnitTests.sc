@@ -87,4 +87,24 @@ PianoRollNoteUnitTests : BNUnitTest {
 		note.toggleSelect;
 		this.assertEquals(note.isSelected, true);
 	}
+
+	test_event_isComposedEvent {
+		var notePair, note;
+		notePair = this.prMockNote(1, stopTime: 2.0);
+		note = notePair[0];
+		this.assertEquals(note.event.isKindOf(Event), true);
+		this.assertEquals(note.event[\amp], nil);
+	}
+
+	test_amp__writesEventAmpAndMappedVelocity {
+		var notePair, note;
+		notePair = this.prMockNote(1, stopTime: 2.0);
+		note = notePair[0];
+		note.amp_(1);
+		this.assertEquals(note.event[\amp], 1);
+		this.assertEquals(note.velocity, 127);
+		note.amp_(0.5);
+		this.assertEquals(note.event[\amp], 0.5);
+		this.assertEquals(note.velocity, 64);
+	}
 }
