@@ -27,6 +27,10 @@ PianoRollLoopMarkers {
 		prPlayheadTime = 0;
 	}
 
+	loopEnd {
+		^prStopBeat;
+	}
+
 	loopEnd_ {
 		|rawBeat|
 		var snapped;
@@ -41,6 +45,10 @@ PianoRollLoopMarkers {
 		if (prOnLoopEndMove.isNil.not,{
 			prOnLoopEndMove.value(snapped);
 		});
+	}
+
+	loopStart {
+		^prStartBeat;
 	}
 
 	loopStart_ {

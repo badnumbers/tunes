@@ -22,13 +22,14 @@ PianoRoll : SCViewHolder {
 	var prTempoClock;
 	var prTimeline;
 	var prView;
+	var prSequencerDocument;
 
 	commandPrompt {
 		^prCommandPrompt;
 	}
 
 	init {
-		|parent,bounds,palette,tempoClock,devMode,keyRouter|
+		|parent,bounds,palette,tempoClock,devMode,keyRouter,sequencerDocument|
 		var contentLayoutView;
 		var selectionView;
 		var pianoRollHeight,pianoRollWidth;
@@ -36,6 +37,7 @@ PianoRoll : SCViewHolder {
 		prDevMode = devMode;
 		prKeyRouter = keyRouter;
 		prPalette = palette;
+		prSequencerDocument = sequencerDocument;
 		prSidebar = PianoRollSidebar(prPalette);
 
 		prView = View(parent, bounds);
@@ -50,7 +52,8 @@ PianoRoll : SCViewHolder {
 			parent: nil,
 			bounds: nil,
 			commands: [
-				SnapCommand({ this.prApplyNoteEdits; })
+				SnapCommand({ this.prApplyNoteEdits; }),
+				WriteCommand({ this.prWritePatternToDocument; })
 			],
 			palette: prPalette,
 			ambientParameters: (selectedNotes: { this.selectedNotes }),
@@ -222,17 +225,30 @@ PianoRoll : SCViewHolder {
 		this.prRefreshSidebar;
 	}
 
+	prWritePatternToDocument {
+		var loopStart, loopEnd, dummy;
+		if (prSequencerDocument.isNil, {
+			warn("PianoRoll: no SequencerDocument; cannot write pattern.");
+			^this;
+		});
+		loopStart = prLoopMarkers.loopStart;
+		loopEnd = prLoopMarkers.loopEnd;
+		dummy = format("// PianoRoll write (dummy); loopStart=%, loopEnd=%, length=%", loopStart, loopEnd, loopEnd - loopStart);
+		prSequencerDocument.insertPattern(dummy);
+	}
+
 	prSelectedNotes {
 		^prRecordedNotes.select({|note| note.isSelected});
 	}
 
 	*new {
-		|parent,bounds,palette,tempoClock,devMode=false,keyRouter|
+		|parent,bounds,palette,tempoClock,devMode=false,keyRouter,sequencerDocument|
 		Validator.validateMethodParameterType(palette, GuiPalette, "palette", "PianoRoll", "new");
 		Validator.validateMethodParameterType(tempoClock, TempoClock, "tempoClock", "PianoRoll", "new");
 		Validator.validateMethodParameterType(devMode,Boolean,"devMode","PianoRoll","new");
 		Validator.validateMethodParameterType(keyRouter, SequencerKeyRouter, "keyRouter", "PianoRoll", "new");
-		^super.new.init(parent,bounds,palette,tempoClock,devMode,keyRouter);
+		Validator.validateMethodParameterType(sequencerDocument, SequencerDocument, "sequencerDocument", "PianoRoll", "new", allowNil: true);
+		^super.new.init(parent,bounds,palette,tempoClock,devMode,keyRouter,sequencerDocument);
 	}
 
 	playLoop {

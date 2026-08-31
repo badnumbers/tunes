@@ -1,0 +1,20 @@
+TITLE:: WriteCommand
+SUMMARY:: Command that writes the piano-roll pattern to the sequencer document.
+CATEGORIES:: Commands
+RELATED:: Classes/Command, Classes/CommandPrompt, Classes/PianoRoll, Classes/SequencerDocument
+
+DESCRIPTION::
+TELETYPE::WriteCommand:: is a LINK::Classes/Command:: with no extra parameters. When executed, it invokes an optional action callback, which LINK::Classes/PianoRoll:: uses to write pattern source through LINK::Classes/SequencerDocument#-insertPattern::.
+
+Because the command has no parameters, LINK::Classes/CommandPrompt:: treats it as satisfied as soon as the command chip is committed. Press Return to execute.
+
+CLASSMETHODS::
+
+METHOD:: new
+Creates a new TELETYPE::WriteCommand::.
+
+ARGUMENT:: action
+An optional callback LINK::Classes/Function:: evaluated on execution. Receives the arguments LINK::Classes/Dictionary:: (empty for this command).
+
+RETURNS::
+A new TELETYPE::WriteCommand:: instance.

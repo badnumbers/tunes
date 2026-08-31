@@ -1,10 +1,10 @@
 TITLE:: SequencerGui
 SUMMARY:: Provides a GUI to visually represent sequences created using a Sequencer.
 CATEGORIES:: Streams-Patterns-Events
-RELATED:: Classes/Sequencer, Classes/PianoRoll, Classes/SequencerKeyRouter
+RELATED:: Classes/Sequencer, Classes/PianoRoll, Classes/SequencerKeyRouter, Classes/SequencerDocument
 
 DESCRIPTION::
-LINK::Classes/SequencerGui:: provides a visualisation of a graph of LINK::Classes/Pattern::s created using a LINK::Classes/Sequencer::. This is created when calling LINK::Classes/Sequencer#-showGui::. It owns a LINK::Classes/SequencerKeyRouter:: and sets its active context when the user switches between Arrange, Record, and Settings views.
+LINK::Classes/SequencerGui:: provides a visualisation of a graph of LINK::Classes/Pattern::s created using a LINK::Classes/Sequencer::. This is created when calling LINK::Classes/Sequencer#-showGui::. It owns a LINK::Classes/SequencerDocument:: wrapping LINK::Classes/Document#*current::, and a LINK::Classes/SequencerKeyRouter:: whose active context is set when the user switches between Arrange, Record, and Settings views.
 
 CLASSMETHODS::
 

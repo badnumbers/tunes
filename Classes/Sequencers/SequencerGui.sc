@@ -27,7 +27,7 @@ SequencerGui {
 		prTempoClock = TempoClock.default;
 
 		//prDocument = Document.open(thisProcess.nowExecutingPath);
-		prDocument = Document.current;
+		prDocument = SequencerDocument(Document.current);
 
 		prPalette = GuiPalette.default;
 		prKeyRouter = SequencerKeyRouter.new;
@@ -70,7 +70,7 @@ SequencerGui {
 					).margins_(0).spacing_(20)
 				),
 				BorderView().background_(prPalette.colour2).layout_(VLayout(
-					pianoRoll = PianoRoll(palette: prPalette, tempoClock:prTempoClock, devMode: devMode, keyRouter: prKeyRouter).minHeight_(100),
+					pianoRoll = PianoRoll(palette: prPalette, tempoClock:prTempoClock, devMode: devMode, keyRouter: prKeyRouter, sequencerDocument: prDocument).minHeight_(100),
 					View().background_(prPalette.colour4).minHeight_(70).maxHeight_(70).layout_(
 						HLayout(
 							startRecordingButton = renderButtonFunc.value("Start recording", width:150),
