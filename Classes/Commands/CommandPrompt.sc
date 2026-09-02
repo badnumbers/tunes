@@ -125,7 +125,7 @@ CommandPrompt : SCViewHolder {
 	}
 
 	prCommitHighlightedToken {
-		var candidateString, chip, cmd, param, parsedVal, state;
+		var candidateString, chip, cmd, parsedVal, state;
 		state = this.prCurrentState;
 
 		if (state == \expectingCommand, {
@@ -148,6 +148,7 @@ CommandPrompt : SCViewHolder {
 						});
 					});
 				});
+				this.prAutoCommitSoleRemainingParameter;
 				prTextField.string_("");
 				this.prClearSuggestions;
 				this.prUpdateStatusIndicator;
@@ -158,11 +159,7 @@ CommandPrompt : SCViewHolder {
 
 		if (state == \expectingParameter, {
 			if (prSelectedIndex.notNil && { prMatchingItems.size > 0 }, {
-				param = prMatchingItems[prSelectedIndex];
-				chip = this.prMakeTokenChip(param.name, prPalette.colour2);
-				prInputRowLayout.insert(chip, prCommittedTokens.size);
-				prCommittedTokens = prCommittedTokens.add((type: \parameter, name: param.name, view: chip, parameter: param));
-				prActiveParameter = param;
+				this.prCommitParameter(prMatchingItems[prSelectedIndex]);
 				prTextField.string_("");
 				this.prClearSuggestions;
 				this.prUpdateStatusIndicator;
@@ -457,5 +454,26 @@ CommandPrompt : SCViewHolder {
 		|newString|
 		prTextField.string_(newString);
 		this.prUpdateSuggestions;
+	}
+
+	prAutoCommitSoleRemainingParameter {
+		var unassigned;
+		if (prActiveCommand.isNil, { ^this });
+		unassigned = prActiveCommand.parameters.reject({
+			|param|
+			prCommittedArgs[param.name.asSymbol].notNil;
+		});
+		if (unassigned.size == 1, {
+			this.prCommitParameter(unassigned[0]);
+		});
+	}
+
+	prCommitParameter {
+		|param|
+		var chip;
+		chip = this.prMakeTokenChip(param.name, prPalette.colour2);
+		prInputRowLayout.insert(chip, prCommittedTokens.size);
+		prCommittedTokens = prCommittedTokens.add((type: \parameter, name: param.name, view: chip, parameter: param));
+		prActiveParameter = param;
 	}
 }

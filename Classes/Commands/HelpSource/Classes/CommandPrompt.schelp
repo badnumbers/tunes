@@ -10,7 +10,7 @@ As the user types:
 LIST::
 ## In the initial state, matching LINK::Classes/Command:: names are suggested. Pressing Tab commits the command chip.
 ## Once a command is selected, any parameters configured in LINK::#-ambientParameters:: that match the command are automatically evaluated and bound without requiring user input or displaying a chip.
-## Remaining unassigned LINK::Classes/Parameter:: names are suggested. Pressing Tab commits the parameter chip.
+## If exactly one LINK::Classes/Parameter:: remains unassigned after that, its name is committed automatically so the user only types the argument. Otherwise remaining unassigned parameter names are suggested; pressing Tab commits the parameter chip.
 ## When expecting an argument, the input is validated against the parameter's type and constraints (with discrete suggestions if defined). Pressing Tab commits the argument chip.
 ## A live validity indicator on the right indicates whether the command is incomplete (CODE::…::) or fully satisfied (CODE::✓::). Pressing Return executes the command.
 ## Pressing Backspace on an empty text field removes the last committed token chip and unwinds the parser state.
@@ -85,7 +85,7 @@ When setting, the new input-field string.
 RETURNS::
 A LINK::Classes/String::.
 
-PRIVATE:: init, prApplySelection, prClearSuggestions, prCommitHighlightedToken, prCurrentState, prCurrentWord, prExecuteCommand, prInstallTextFieldKeyHandlers, prMakeTokenChip, prMoveSelection, prPositionSuggestionsView, prRemoveLastCommittedToken, prResetPrompt, prUpdateStatusIndicator, prUpdateSuggestions
+PRIVATE:: init, prApplySelection, prAutoCommitSoleRemainingParameter, prClearSuggestions, prCommitHighlightedToken, prCommitParameter, prCurrentState, prCurrentWord, prExecuteCommand, prInstallTextFieldKeyHandlers, prMakeTokenChip, prMoveSelection, prPositionSuggestionsView, prRemoveLastCommittedToken, prResetPrompt, prUpdateStatusIndicator, prUpdateSuggestions
 
 EXAMPLES::
 
