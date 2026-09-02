@@ -1,10 +1,10 @@
 TITLE:: Command
 SUMMARY:: Base representation of a command with named parameters and an execution action.
 CATEGORIES:: Control
-RELATED:: Classes/AmpCommand, Classes/CommandPrompt, Classes/Parameter, Classes/SnapCommand, Classes/WriteCommand
+RELATED:: Classes/AmpCommand, Classes/CommandPrompt, Classes/LegatoCommand, Classes/Parameter, Classes/SnapCommand, Classes/WriteCommand
 
 DESCRIPTION::
-TELETYPE::Command:: represents an executable command. It defines a name, a list of accepted LINK::Classes/Parameter:: instances, and an optional execution action LINK::Classes/Function::. Ad-hoc instances pass an action to LINK::#*new::. Subclasses such as LINK::Classes/AmpCommand::, LINK::Classes/SnapCommand::, and LINK::Classes/WriteCommand:: override LINK::#-execute:: instead of passing an action.
+TELETYPE::Command:: represents an executable command. It defines a name, a list of accepted LINK::Classes/Parameter:: instances, and an optional execution action LINK::Classes/Function::. Ad-hoc instances pass an action to LINK::#*new::. Subclasses such as LINK::Classes/AmpCommand::, LINK::Classes/LegatoCommand::, LINK::Classes/SnapCommand::, and LINK::Classes/WriteCommand:: override LINK::#-execute:: instead of passing an action.
 
 CLASSMETHODS::
 

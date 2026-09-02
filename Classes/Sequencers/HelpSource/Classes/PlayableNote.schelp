@@ -1,7 +1,7 @@
 TITLE:: PlayableNote
 SUMMARY:: A timed MIDI note used for sequencer playback.
 CATEGORIES:: Streams-Patterns-Events
-RELATED:: Classes/PianoRollNote, Classes/PianoRoll, Classes/SequencePlayer, Classes/Sequencer
+RELATED:: Classes/PianoRollNote, Classes/PianoRoll, Classes/SequencePlayer, Classes/Sequencer, Classes/LegatoCommand
 
 DESCRIPTION::
 TELETYPE::PlayableNote:: holds the timing and MIDI data for a single note: when it starts, when it stops, which key to play, and how hard. Times are expressed in beats on the LINK::Classes/TempoClock:: (the same unit used by LINK::Classes/SequencePlayer:: and the piano roll).
@@ -116,6 +116,15 @@ When setting, an LINK::Classes/Integer:: MIDI velocity.
 
 RETURNS::
 An LINK::Classes/Integer::.
+
+METHOD:: applyLegato
+Sets CODE::stopTime:: to CODE::startTime + (nextOnsetTime - startTime) * legato::. CODE::legato:: must be greater than CODE::0::; values greater than CODE::1:: are allowed and make the note overlap the next onset. CODE::nextOnsetTime:: must be later than CODE::startTime::.
+
+ARGUMENT:: legato
+A LINK::Classes/SimpleNumber:: proportion of the interval from this note's start to CODE::nextOnsetTime::.
+
+ARGUMENT:: nextOnsetTime
+The beat of the next distinct onset, or the loop end when this is the last note group.
 
 PRIVATE:: init
 

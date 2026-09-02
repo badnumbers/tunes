@@ -236,4 +236,34 @@ PlayableNoteUnitTests : UnitTest {
 		playableNote.velocity_(100);
 		this.assertEquals(playableNote.velocity, 100);
 	}
+
+	test_applyLegato_setsStopTimeFromIntervalTimesLegato {
+		var playableNote;
+		playableNote = PlayableNote(0, 64, 64);
+		playableNote.applyLegato(0.5, 2);
+		this.assertEquals(playableNote.stopTime, 1);
+	}
+
+	test_applyLegato_greaterThanOne_overlapsNextOnset {
+		var playableNote;
+		playableNote = PlayableNote(1, 64, 64);
+		playableNote.applyLegato(1.5, 3);
+		this.assertEquals(playableNote.stopTime, 4);
+	}
+
+	test_applyLegato_rejectsNonPositiveLegato {
+		var playableNote;
+		playableNote = PlayableNote(0, 64, 64);
+		this.assertException({
+			playableNote.applyLegato(0, 1);
+		}, Error);
+	}
+
+	test_applyLegato_rejectsNextOnsetNotAfterStart {
+		var playableNote;
+		playableNote = PlayableNote(4, 64, 64);
+		this.assertException({
+			playableNote.applyLegato(0.5, 4);
+		}, Error);
+	}
 }

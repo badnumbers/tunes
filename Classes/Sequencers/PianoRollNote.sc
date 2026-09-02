@@ -206,4 +206,19 @@ PianoRollNote {
 	velocity {
 		^prPlayableNote.velocity;
 	}
+
+	legato_ {
+		|value, nextOnsetTime|
+		Validator.validateMethodParameterType(value, SimpleNumber, "value", "PianoRollNote", "legato_");
+		Validator.validateMethodParameterType(nextOnsetTime, SimpleNumber, "nextOnsetTime", "PianoRollNote", "legato_");
+		if (value <= 0, {
+			Error(format("The value parameter provided to PianoRollNote.legato_ must be greater than 0. The value % was provided.", value)).throw;
+		});
+		prEvent[\legato] = value;
+		prPlayableNote.applyLegato(value, nextOnsetTime);
+		prOriginalStopTime = prPlayableNote.stopTime;
+		if (prView.notNil, {
+			prMoveFunc.value(prView, this.startTime, this.stopTime);
+		});
+	}
 }

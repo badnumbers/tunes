@@ -1,10 +1,10 @@
 TITLE:: PianoRollNote
 SUMMARY:: One recorded note in the piano roll with selection, part assignment, and grid editing.
 CATEGORIES:: Streams-Patterns-Events
-RELATED:: Classes/PianoRoll, Classes/PlayableNote, Classes/Event
+RELATED:: Classes/PianoRoll, Classes/PlayableNote, Classes/Event, Classes/AmpCommand, Classes/LegatoCommand
 
 DESCRIPTION::
-TELETYPE::PianoRollNote:: wraps a LINK::Classes/PlayableNote:: and a LINK::Classes/Event:: with piano-roll UI callbacks (view creation, selection highlighting, part colours, and view repositioning after timing edits). Commands such as LINK::Classes/AmpCommand:: write keys onto the composed LINK::Classes/Event:: (for example CODE::\amp::) and keep the LINK::Classes/PlayableNote:: in sync. LINK::Classes/PianoRoll:: creates instances when recording MIDI or dev-mode fake notes.
+TELETYPE::PianoRollNote:: wraps a LINK::Classes/PlayableNote:: and a LINK::Classes/Event:: with piano-roll UI callbacks (view creation, selection highlighting, part colours, and view repositioning after timing edits). Commands such as LINK::Classes/AmpCommand:: and LINK::Classes/LegatoCommand:: write keys onto the composed LINK::Classes/Event:: (for example CODE::\amp::, CODE::\legato::) and keep the LINK::Classes/PlayableNote:: in sync. LINK::Classes/PianoRoll:: creates instances when recording MIDI or dev-mode fake notes.
 
 NOTE::
 You can run the unit tests for TELETYPE::PianoRollNote:: by running:
@@ -130,5 +130,14 @@ Toggles selection and runs the select or deselect callback.
 
 METHOD:: velocity
 Returns the wrapped note's velocity.
+
+METHOD:: legato_
+Stores CODE::value:: as CODE::\legato:: on the composed LINK::Classes/Event:: with no clipping or mapping, then sets the wrapped LINK::Classes/PlayableNote:: stop time via LINK::Classes/PlayableNote#-applyLegato::. Repositions the note view when it exists.
+
+ARGUMENT:: value
+A LINK::Classes/SimpleNumber:: legato greater than CODE::0::. Values greater than CODE::1:: are allowed.
+
+ARGUMENT:: nextOnsetTime
+The beat of the next distinct onset, or the loop end for the last note group.
 
 PRIVATE:: init, prApplyTimeDelta, prIsOnGrid

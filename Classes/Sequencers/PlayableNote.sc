@@ -81,4 +81,17 @@ PlayableNote {
 		Validator.validateMethodParameterType(value, Integer, "value", "PlayableNote", "velocity_");
 		prVelocity = value;
 	}
+
+	applyLegato {
+		|legato, nextOnsetTime|
+		Validator.validateMethodParameterType(legato, SimpleNumber, "legato", "PlayableNote", "applyLegato");
+		Validator.validateMethodParameterType(nextOnsetTime, SimpleNumber, "nextOnsetTime", "PlayableNote", "applyLegato");
+		if (legato <= 0, {
+			Error(format("The legato parameter provided to PlayableNote.applyLegato must be greater than 0. The value % was provided.", legato)).throw;
+		});
+		if (nextOnsetTime <= prStartTime, {
+			Error(format("The nextOnsetTime parameter provided to PlayableNote.applyLegato must be later than startTime (%). The value % was provided.", prStartTime, nextOnsetTime)).throw;
+		});
+		prStopTime = prStartTime + ((nextOnsetTime - prStartTime) * legato);
+	}
 }

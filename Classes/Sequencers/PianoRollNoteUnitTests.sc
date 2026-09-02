@@ -107,4 +107,31 @@ PianoRollNoteUnitTests : BNUnitTest {
 		this.assertEquals(note.event[\amp], 0.5);
 		this.assertEquals(note.velocity, 64);
 	}
+
+	test_legato__writesEventLegatoAndUpdatesStopTime {
+		var notePair, note;
+		notePair = this.prMockNote(0, stopTime: 1.0);
+		note = notePair[0];
+		note.legato_(0.5, 4);
+		this.assertEquals(note.event[\legato], 0.5);
+		this.assertEquals(note.stopTime, 2);
+	}
+
+	test_legato__writesValueAsIsWithoutClipping {
+		var notePair, note;
+		notePair = this.prMockNote(0, stopTime: 1.0);
+		note = notePair[0];
+		note.legato_(1.5, 2);
+		this.assertEquals(note.event[\legato], 1.5);
+		this.assertEquals(note.stopTime, 3);
+	}
+
+	test_legato__rejectsNonPositiveValue {
+		var notePair, note;
+		notePair = this.prMockNote(0, stopTime: 1.0);
+		note = notePair[0];
+		this.assertException({
+			note.legato_(0, 1);
+		}, Error);
+	}
 }
