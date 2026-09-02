@@ -6,9 +6,9 @@ RELATED:: Classes/Command, Classes/Parameter, Classes/CommandPrompt, Classes/Pia
 DESCRIPTION::
 TELETYPE::AmpCommand:: is a LINK::Classes/Command:: named CODE::amp:: that writes amplitude onto selected LINK::Classes/PianoRollNote:: instances. LINK::Classes/PianoRoll:: supplies the notes through LINK::Classes/CommandPrompt#-ambientParameters:: as CODE::selectedNotes::.
 
-CODE::value:: is a space-separated list of LINK::Classes/SimpleNumber::s. Notes are ordered by CODE::startTime:: only. Notes that share a start time take the same array value; the list wraps and advances only when start time changes. Values outside CODE::0:: to CODE::1:: are clipped silently. Each note stores the clipped value in its composed LINK::Classes/Event:: as CODE::\amp:: and maps it to MIDI velocity with CODE::linlin(0, 1, 0, 127)::.
+CODE::values:: is a space-separated list of LINK::Classes/SimpleNumber::s. Notes are ordered by CODE::startTime:: only. Notes that share a start time take the same array value; the list wraps and advances only when start time changes. Values outside CODE::0:: to CODE::1:: are clipped silently. Each note stores the clipped value in its composed LINK::Classes/Event:: as CODE::\amp:: and maps it to MIDI velocity with CODE::linlin(0, 1, 0, 127)::.
 
-Example: five notes at beats CODE::0, 1, 1, 2, 3:: with CODE::amp value 1 0.5:: become amps CODE::1, 0.5, 0.5, 1, 0.5::.
+Example: five notes at beats CODE::0, 1, 1, 2, 3:: with CODE::amp values 1 0.5:: become amps CODE::1, 0.5, 0.5, 1, 0.5::.
 
 CLASSMETHODS::
 
@@ -24,7 +24,7 @@ METHOD:: execute
 Applies wrapped, clipped amplitude values to CODE::\selectedNotes:: grouped by start time.
 
 ARGUMENT:: args
-A LINK::Classes/Dictionary:: or LINK::Classes/Event:: with CODE::\selectedNotes:: (an LINK::Classes/Array:: of notes that respond to CODE::amp_::) and CODE::\value:: (a non-empty LINK::Classes/Array:: of LINK::Classes/SimpleNumber::s).
+A LINK::Classes/Dictionary:: or LINK::Classes/Event:: with CODE::\selectedNotes:: (an LINK::Classes/Array:: of notes that respond to CODE::amp_::) and CODE::\values:: (a non-empty LINK::Classes/Array:: of LINK::Classes/SimpleNumber::s).
 
 EXAMPLES::
 
@@ -47,7 +47,7 @@ var notes = 5.collect({
 });
 AmpCommand.new.execute((
 	selectedNotes: notes,
-	value: [1, 0.5]
+	values: [1, 0.5]
 ));
 )
 ::

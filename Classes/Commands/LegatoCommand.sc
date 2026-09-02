@@ -1,7 +1,7 @@
 LegatoCommand : Command {
 	execute {
 		|args|
-		var values = args[\value];
+		var values = args[\values];
 		var selectedNotes = args[\selectedNotes] ? [];
 		var loopEnd = args[\loopEnd];
 		var sorted, valueIndex, lastStart;
@@ -36,7 +36,7 @@ LegatoCommand : Command {
 		^super.new("legato", [
 			Parameter("selectedNotes", Array),
 			Parameter("loopEnd", Number),
-			Parameter("value", SimpleNumber, isArray: true, constraint: { |v| v > 0 })
+			Parameter("values", SimpleNumber, isArray: true, constraint: { |v| v > 0 })
 		]);
 	}
 }

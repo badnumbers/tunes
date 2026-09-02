@@ -24,10 +24,10 @@ LegatoCommandUnitTests : BNUnitTest {
 		this.assertEquals(cmd.name, "legato");
 	}
 
-	test_valueParameter_parsesPositiveNumbersAndRejectsZero {
+	test_valuesParameter_parsesPositiveNumbersAndRejectsZero {
 		var cmd = LegatoCommand.new;
-		var param = cmd.getParameter("value");
-		this.assert(param.notNil, "value parameter should exist", true);
+		var param = cmd.getParameter("values");
+		this.assert(param.notNil, "values parameter should exist", true);
 		this.assertEquals(param.type, SimpleNumber);
 		this.assertEquals(param.isArray, true);
 		this.assertEquals(param.isValid("1 0.5"), true);
@@ -50,7 +50,7 @@ LegatoCommandUnitTests : BNUnitTest {
 			this.prMockNote(2, stopTime: 3.5),
 			this.prMockNote(4, stopTime: 5.0)
 		];
-		cmd.execute((selectedNotes: notes, loopEnd: 8, value: [0.5, 1]));
+		cmd.execute((selectedNotes: notes, loopEnd: 8, values: [0.5, 1]));
 		this.assertEquals(notes[0].event[\legato], 0.5);
 		this.assertEquals(notes[0].stopTime, 0.5);
 		this.assertEquals(notes[1].event[\legato], 1);
@@ -70,7 +70,7 @@ LegatoCommandUnitTests : BNUnitTest {
 			this.prMockNote(1, 67, stopTime: 1.9),
 			this.prMockNote(2, 60, stopTime: 2.5)
 		];
-		cmd.execute((selectedNotes: notes, loopEnd: 4, value: [0.5]));
+		cmd.execute((selectedNotes: notes, loopEnd: 4, values: [0.5]));
 		this.assertEquals(notes[0].event[\legato], 0.5);
 		this.assertEquals(notes[0].stopTime, 0.5);
 		this.assertEquals(notes[1].event[\legato], 0.5);
@@ -88,7 +88,7 @@ LegatoCommandUnitTests : BNUnitTest {
 			this.prMockNote(0, stopTime: 0.9),
 			this.prMockNote(2, stopTime: 2.5)
 		];
-		cmd.execute((selectedNotes: notes, loopEnd: 4, value: [0.5]));
+		cmd.execute((selectedNotes: notes, loopEnd: 4, values: [0.5]));
 		this.assertEquals(notes[0].event[\legato], 0.5);
 		this.assertEquals(notes[0].stopTime, 1);
 		this.assertEquals(notes[1].event[\legato], 0.5);
@@ -102,7 +102,7 @@ LegatoCommandUnitTests : BNUnitTest {
 			this.prMockNote(0, stopTime: 0.9),
 			this.prMockNote(1, stopTime: 1.5)
 		];
-		cmd.execute((selectedNotes: notes, loopEnd: 4, value: [1.5]));
+		cmd.execute((selectedNotes: notes, loopEnd: 4, values: [1.5]));
 		this.assertEquals(notes[0].event[\legato], 1.5);
 		this.assertEquals(notes[0].stopTime, 1.5);
 		this.assertEquals(notes[1].event[\legato], 1.5);

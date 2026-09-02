@@ -1,7 +1,7 @@
 AmpCommand : Command {
 	execute {
 		|args|
-		var values = args[\value];
+		var values = args[\values];
 		var selectedNotes = args[\selectedNotes] ? [];
 		var sorted, valueIndex, lastStart;
 		if (values.isNil || { values.size == 0 }, {
@@ -25,7 +25,7 @@ AmpCommand : Command {
 	*new {
 		^super.new("amp", [
 			Parameter("selectedNotes", Array),
-			Parameter("value", SimpleNumber, isArray: true)
+			Parameter("values", SimpleNumber, isArray: true)
 		]);
 	}
 }

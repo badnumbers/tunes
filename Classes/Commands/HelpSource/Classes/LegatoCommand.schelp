@@ -6,11 +6,11 @@ RELATED:: Classes/Command, Classes/Parameter, Classes/CommandPrompt, Classes/Pia
 DESCRIPTION::
 TELETYPE::LegatoCommand:: is a LINK::Classes/Command:: named CODE::legato:: that writes CODE::\legato:: onto selected LINK::Classes/PianoRollNote:: instances and updates each wrapped LINK::Classes/PlayableNote:: stop time. LINK::Classes/PianoRoll:: supplies the notes and loop bound through LINK::Classes/CommandPrompt#-ambientParameters:: as CODE::selectedNotes:: and CODE::loopEnd::.
 
-CODE::value:: is a space-separated list of LINK::Classes/SimpleNumber::s greater than CODE::0::. Values greater than CODE::1:: are allowed. The Event key is stored as given, with no clipping or mapping. Notes are ordered by CODE::startTime:: only. Notes that share a start time take the same array value; the list wraps and advances only when start time changes.
+CODE::values:: is a space-separated list of LINK::Classes/SimpleNumber::s greater than CODE::0::. Values greater than CODE::1:: are allowed. The Event key is stored as given, with no clipping or mapping. Notes are ordered by CODE::startTime:: only. Notes that share a start time take the same array value; the list wraps and advances only when start time changes.
 
 Sounding duration is a proportion of the inter-onset interval: CODE::stopTime = startTime + (nextOnset - startTime) * legato::. CODE::nextOnset:: is the next distinct start time in the selection. For the last group, CODE::nextOnset:: is CODE::loopEnd::.
 
-Example: four notes at beats CODE::0, 1, 1, 2:: with CODE::loopEnd:: CODE::4:: and CODE::legato value 0.5:: become stop times CODE::0.5, 1.5, 1.5, 3::.
+Example: four notes at beats CODE::0, 1, 1, 2:: with CODE::loopEnd:: CODE::4:: and CODE::legato values 0.5:: become stop times CODE::0.5, 1.5, 1.5, 3::.
 
 CLASSMETHODS::
 
@@ -26,7 +26,7 @@ METHOD:: execute
 Applies wrapped legato values to CODE::\selectedNotes:: grouped by start time, writing CODE::\legato:: and updating stop times from each group's next onset (or CODE::\loopEnd::).
 
 ARGUMENT:: args
-A LINK::Classes/Dictionary:: or LINK::Classes/Event:: with CODE::\selectedNotes:: (an LINK::Classes/Array:: of notes that respond to CODE::legato_::), CODE::\loopEnd:: (a LINK::Classes/Number::), and CODE::\value:: (a non-empty LINK::Classes/Array:: of LINK::Classes/SimpleNumber::s greater than CODE::0::).
+A LINK::Classes/Dictionary:: or LINK::Classes/Event:: with CODE::\selectedNotes:: (an LINK::Classes/Array:: of notes that respond to CODE::legato_::), CODE::\loopEnd:: (a LINK::Classes/Number::), and CODE::\values:: (a non-empty LINK::Classes/Array:: of LINK::Classes/SimpleNumber::s greater than CODE::0::).
 
 EXAMPLES::
 
@@ -50,7 +50,7 @@ var notes = [0, 1, 1, 2].collect({
 LegatoCommand.new.execute((
 	selectedNotes: notes,
 	loopEnd: 4,
-	value: [0.5]
+	values: [0.5]
 ));
 )
 ::

@@ -24,10 +24,10 @@ AmpCommandUnitTests : BNUnitTest {
 		this.assertEquals(cmd.name, "amp");
 	}
 
-	test_valueParameter_parsesSpaceSeparatedNumbers {
+	test_valuesParameter_parsesSpaceSeparatedNumbers {
 		var cmd = AmpCommand.new;
-		var param = cmd.getParameter("value");
-		this.assert(param.notNil, "value parameter should exist", true);
+		var param = cmd.getParameter("values");
+		this.assert(param.notNil, "values parameter should exist", true);
 		this.assertEquals(param.type, SimpleNumber);
 		this.assertEquals(param.isArray, true);
 		this.assertEquals(param.isValid("1 0.5"), true);
@@ -46,7 +46,7 @@ AmpCommandUnitTests : BNUnitTest {
 			this.prMockNote(3, stopTime: 4.0),
 			this.prMockNote(4, stopTime: 5.0)
 		];
-		cmd.execute((selectedNotes: notes, value: [1, 0.5]));
+		cmd.execute((selectedNotes: notes, values: [1, 0.5]));
 		this.assertEquals(notes[0].event[\amp], 1);
 		this.assertEquals(notes[1].event[\amp], 0.5);
 		this.assertEquals(notes[2].event[\amp], 1);
@@ -64,7 +64,7 @@ AmpCommandUnitTests : BNUnitTest {
 			this.prMockNote(2, 60, stopTime: 3.0),
 			this.prMockNote(3, 60, stopTime: 4.0)
 		];
-		cmd.execute((selectedNotes: notes, value: [1, 0.5]));
+		cmd.execute((selectedNotes: notes, values: [1, 0.5]));
 		this.assertEquals(notes[0].event[\amp], 1);
 		this.assertEquals(notes[1].event[\amp], 0.5);
 		this.assertEquals(notes[2].event[\amp], 0.5);
@@ -79,7 +79,7 @@ AmpCommandUnitTests : BNUnitTest {
 			this.prMockNote(0, stopTime: 1.0),
 			this.prMockNote(1, stopTime: 2.0)
 		];
-		cmd.execute((selectedNotes: notes, value: [-0.2, 1.5]));
+		cmd.execute((selectedNotes: notes, values: [-0.2, 1.5]));
 		this.assertEquals(notes[0].event[\amp], 0);
 		this.assertEquals(notes[0].velocity, 0);
 		this.assertEquals(notes[1].event[\amp], 1);
