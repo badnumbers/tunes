@@ -1,0 +1,54 @@
+TITLE:: BNUnitTest
+SUMMARY:: Project UnitTest subclass with helpers and a runner for all of its test suites.
+CATEGORIES:: Testing
+RELATED:: Classes/UnitTest
+
+DESCRIPTION::
+TELETYPE::BNUnitTest:: is the base class for this project's unit tests. It adds assertion and ordinal helpers used by several suites. LINK::#*runAll:: sets CODE::UnitTest.reportPasses_(false):: and runs every direct or nested subclass of TELETYPE::BNUnitTest::. LINK::Classes/UnitTest#*runAll:: cannot be used for this: it only runs when called on LINK::Classes/UnitTest:: itself.
+
+Suites that subclass LINK::Classes/UnitTest:: directly (for example CODE::PlayableNoteUnitTests:: and CODE::ArrayedCollectionUnitTests::) are not included.
+
+CLASSMETHODS::
+
+METHOD:: runAll
+Sets CODE::UnitTest.reportPasses_(false)::, resets pass/fail state, runs each TELETYPE::BNUnitTest:: subclass sequentially, then prints the combined report. Leaves pass reporting off afterwards.
+
+RETURNS::
+The routine started by CODE::forkIfNeeded::, or the result of the last expression if already inside a routine.
+
+INSTANCEMETHODS::
+
+METHOD:: assertWithMessage
+Records a pass or fail from a boolean condition. On failure, CODE::failureMessage:: is reported; on pass, the recorded message is empty. Returns the condition so callers can stop further checks after a failure.
+
+ARGUMENT:: condition
+A LINK::Classes/Boolean::; true records a pass, false a fail.
+
+ARGUMENT:: failureMessage
+The message posted when the condition is false.
+
+ARGUMENT:: details
+Optional extra failure detail passed through to LINK::Classes/UnitTest#-failed::.
+
+RETURNS::
+CODE::true:: or CODE::false::, matching CODE::condition::.
+
+METHOD:: getOrdinal
+Formats an integer as an English ordinal string (CODE::1st::, CODE::2nd::, CODE::3rd::, CODE::4th::, and so on), including the CODE::12th:: / CODE::13th:: special cases.
+
+ARGUMENT:: number
+An LINK::Classes/Integer:: index or count.
+
+ARGUMENT:: assumeZeroBased
+When CODE::true:: (the default), CODE::number:: is treated as a zero-based index and incremented before formatting, so CODE::0:: becomes CODE::1st::. When CODE::false::, CODE::number:: is formatted as given.
+
+RETURNS::
+A LINK::Classes/String::.
+
+EXAMPLES::
+
+CODE::
+(
+BNUnitTest.runAll;
+)
+::

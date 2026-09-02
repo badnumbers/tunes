@@ -6,7 +6,7 @@ RELATED:: Classes/Command, Classes/CommandPrompt, Classes/PianoRoll, Classes/Seq
 DESCRIPTION::
 TELETYPE::WriteCommand:: is a LINK::Classes/Command:: that inserts dummy pattern text through LINK::Classes/SequencerDocument#-insertPattern::. It is constructed with an optional LINK::Classes/SequencerDocument:: (CODE::nil:: is allowed for scratchpad use). Loop bounds are LINK::Classes/Parameter::s named CODE::loopStart:: and CODE::loopEnd::; LINK::Classes/PianoRoll:: supplies them through LINK::Classes/CommandPrompt#-ambientParameters::, so the user does not type them. After the CODE::write:: chip is committed, LINK::Classes/CommandPrompt:: treats the command as satisfied. Press Return to execute.
 
-If the document is CODE::nil::, LINK::#-execute:: posts a warning and does nothing.
+If the document is CODE::nil::, LINK::#-execute:: returns without writing.
 
 CLASSMETHODS::
 
@@ -22,7 +22,7 @@ A new TELETYPE::WriteCommand:: instance.
 INSTANCEMETHODS::
 
 METHOD:: execute
-Inserts dummy pattern text including the given loop start, end, and length. Warns and returns if no document was provided at construction.
+Inserts dummy pattern text including the given loop start, end, and length. Returns without writing if no document was provided at construction.
 
 ARGUMENT:: args
 A LINK::Classes/Dictionary:: or LINK::Classes/Event:: with CODE::\loopStart:: and CODE::\loopEnd:: as LINK::Classes/Number::s.

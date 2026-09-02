@@ -25,4 +25,15 @@ BNUnitTest : UnitTest {
 		if (remainderFrom10 == 3, { ^format("%rd", number) });
 		^format("%th", number);
 	}
+
+	*runAll {
+		UnitTest.reportPasses_(false);
+		^this.forkIfNeeded {
+			this.reset;
+			this.allSubclasses.do { |testClass|
+				testClass.run(false, false);
+			};
+			this.report
+		}
+	}
 }

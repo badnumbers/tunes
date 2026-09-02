@@ -5,7 +5,6 @@ WriteCommand : Command {
 		|args|
 		var loopStart, loopEnd, dummy;
 		if (prSequencerDocument.isNil, {
-			warn("WriteCommand: no SequencerDocument; cannot write pattern.");
 			^this;
 		});
 		loopStart = args[\loopStart];

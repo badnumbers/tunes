@@ -15,7 +15,9 @@ WriteCommandTestDocument : SequencerDocument {
 WriteCommandUnitTests : BNUnitTest {
 	test_execute_nilDocument_doesNotError {
 		var cmd = WriteCommand.new;
-		cmd.execute((loopStart: 0, loopEnd: 8));
+		this.assertNoException({
+			cmd.execute((loopStart: 0, loopEnd: 8));
+		});
 		this.assertEquals(cmd.name, "write");
 	}
 
