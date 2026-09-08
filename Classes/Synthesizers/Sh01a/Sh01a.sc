@@ -30,6 +30,10 @@ Sh01a : Synthesizer {
 	classvar <vcoSubLevelCcNo = 21;
 	classvar <vcoSubTypeCcNo = 22;
 
+	*hasGui {
+		^true;
+	}
+
 	init {
 		|id|
 		Validator.validateMethodParameterType(id, Symbol, "id", "Sh01a", "init");

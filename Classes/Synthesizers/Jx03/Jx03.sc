@@ -39,6 +39,10 @@ Jx03 : Synthesizer {
 		^[controlNumber,controlValue];
 	}
 
+	*hasGui {
+		^true;
+	}
+
 	init {
 		|id|
 		Validator.validateMethodParameterType(id, Symbol, "id", "Jx03", "init");

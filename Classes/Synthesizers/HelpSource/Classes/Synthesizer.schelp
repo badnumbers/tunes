@@ -18,6 +18,12 @@ This class depends on the hardware synthesizer having been described in the STRO
 
 CLASSMETHODS::
 
+METHOD:: hasGui
+Reports whether this synthesizer class has an associated LINK::Classes/ScGuiControlSurface::.
+
+RETURNS::
+CODE::false:: in TELETYPE::Synthesizer::. Subclasses that define a GUI override this to return CODE::true::.
+
 METHOD:: new
 Creates an instance of LINK::Classes/Synthesizer::.
 

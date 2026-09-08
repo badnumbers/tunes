@@ -37,6 +37,10 @@ PerformVe : Synthesizer {
 	classvar <looperSnareTriggerCcNo = 82;
 	classvar <looperHiHatTriggerCcNo = 83;
 
+	*hasGui {
+		^true;
+	}
+
 	init {
 		|id|
 		Validator.validateMethodParameterType(id, Symbol, "id", "PerformVe", "init");

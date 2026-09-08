@@ -154,6 +154,10 @@ Synthesizer {
 		});
 	}
 
+	*hasGui {
+		^false;
+	}
+
 	*new {
 		|id|
 		Validator.validateMethodParameterType(id, Symbol, "id", "Synthesizer", "new");

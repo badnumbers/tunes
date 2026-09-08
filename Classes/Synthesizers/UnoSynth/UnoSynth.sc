@@ -56,6 +56,10 @@ UnoSynth : Synthesizer {
 	classvar <volumeCcNo = 7;
 	classvar <wahOnOffCcNo = 78;
 
+	*hasGui {
+		^true;
+	}
+
 	init {
 		|id|
 		Validator.validateMethodParameterType(id, Symbol, "id", "UnoSynth", "init");

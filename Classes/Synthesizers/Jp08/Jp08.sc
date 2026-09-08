@@ -44,6 +44,10 @@ Jp08 : Synthesizer {
 	classvar <vcoLfoModParameterNumber = 0x0100;
 	classvar <vcoModDestinationParameterNumber = 0x0104;
 
+	*hasGui {
+		^true;
+	}
+
 	init {
 		|id|
 		Validator.validateMethodParameterType(id, Symbol, "id", "Jp08", "init");

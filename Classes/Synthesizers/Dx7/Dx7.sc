@@ -28,6 +28,10 @@ Dx7 : Synthesizer {
 		this.modifyWorkingPatch(Dx7Sysex.operatorsOnOff,prWorkingPatch.kvps[Dx7Sysex.operatorsOnOff],source);
 	}
 
+	*hasGui {
+		^true;
+	}
+
 	init {
 		|id|
 		Validator.validateMethodParameterType(id, Symbol, "id", "Dx7", "init");
