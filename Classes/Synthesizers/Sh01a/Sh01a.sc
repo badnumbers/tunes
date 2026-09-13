@@ -1,18 +1,18 @@
 Sh01a : Synthesizer {
-	classvar <bendDepthCcNo = 18;
+	classvar <assignModeCcNo = 80;
 	classvar <envelopeAttack = 73;
 	classvar <envelopeDecay = 75;
 	classvar <envelopeRelease = 72;
 	classvar <envelopeSustain = 30;
 	classvar <expressionPedalCcNo = 11;
-	classvar <vcoNoiseModeCcNo = 78;
 	classvar <lfoModeCcNo = 79;
 	classvar <lfoRateCcNo = 3;
 	classvar <lfoWaveformCcNo = 12;
 	classvar <modCcNo = 1;
-	classvar <polyphonyModeCcNo = 80;
-	classvar <portamentoCcNo = 5;
+	classvar <portamentoModeCcNo = 31;
+	classvar <portamentoTimeCcNo = 5;
 	classvar <pwmSourceCcNo = 16;
+	classvar <vcfBendDepthCcNo = 27;
 	classvar <vcaEnvSw = 28;
 	classvar <vcaEnvMode = 29;
 	classvar <vcfEnvDepthCcNo = 24;
@@ -21,9 +21,11 @@ Sh01a : Synthesizer {
 	classvar <vcfModDepthCcNo = 25;
 	classvar <vcoRangeCcNo = 14;
 	classvar <vcfResCcNo = 71;
+	classvar <vcoBendDepthCcNo = 18;
 	classvar <vcoModDepthCcNo = 13;
 	classvar <vcoModSensitivityCcNo = 17;
 	classvar <vcoNoiseLevelCcNo = 23;
+	classvar <vcoNoiseModeCcNo = 78;
 	classvar <vcoPulseWidthCcNo = 15;
 	classvar <vcoPwmLevelCcNo = 19;
 	classvar <vcoSawLevelCcNo = 20;
@@ -114,7 +116,7 @@ Sh01a : Synthesizer {
 		patch.set(Sh01a.envelopeRelease, this.generateRandomValue(0,127,0,5,127));
 
 		// SUNDRIES
-		patch.set(Sh01a.portamentoCcNo,this.generateRandomValue(-10,60,3,0,60));
+		patch.set(Sh01a.portamentoTimeCcNo,this.generateRandomValue(-10,60,3,0,60));
 
 		this.sendPatch(midiout,patch);
 		this.setWorkingPatch(patch);

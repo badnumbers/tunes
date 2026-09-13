@@ -42,9 +42,12 @@ Sh01aPatch : Patch {
 		kvps.add(Sh01a.envelopeRelease -> 0); // Min
 
 		// Sundries
-		kvps.add(Sh01a.portamentoCcNo -> 0); // Min
-		kvps.add(Sh01a.polyphonyModeCcNo -> 0); // Monophonic
+		kvps.add(Sh01a.portamentoModeCcNo -> 2); // Auto
+		kvps.add(Sh01a.portamentoTimeCcNo -> 0); // Min
+		kvps.add(Sh01a.assignModeCcNo -> 0); // Monophonic
 		kvps.add(Sh01a.vcoModSensitivityCcNo -> 10); // Oscillator pitch is somewhat sensitive to mod wheel
+		kvps.add(Sh01a.vcoBendDepthCcNo -> 60); // One octave up and down
+		kvps.add(Sh01a.vcfBendDepthCcNo -> 60);
     }
 
 	describe {
@@ -85,9 +88,12 @@ Sh01aPatch : Patch {
 		postln(format("  R: %", kvps[Sh01a.envelopeRelease]));
 
 		postln("Sundries:");
-		postln(format("  Portamento: %", kvps[Sh01a.portamentoCcNo]));
-		postln(format("  Polyphony Mode: %", this.prGetPolyphonyModeDescription(kvps[Sh01a.polyphonyModeCcNo])));
+		postln(format("  Portamento mode: %", this.prGetPortamentoModeDescription(kvps[Sh01a.portamentoModeCcNo])));
+		postln(format("  Portamento time: %", kvps[Sh01a.portamentoTimeCcNo]));
+		postln(format("  Assign Mode: %", this.prGetAssignModeDescription(kvps[Sh01a.assignModeCcNo])));
 		postln(format("  VCO mod sensitivity: %", kvps[Sh01a.vcoModSensitivityCcNo]));
+		postln(format("  VCO bend depth: %, (% semitones each way)", kvps[Sh01a.vcoBendDepthCcNo], kvps[Sh01a.vcoBendDepthCcNo]/5));
+		postln(format("  VCF bend depth: %", kvps[Sh01a.vcfBendDepthCcNo]));
 	}
 
 	prGetEnvTriggerModeDescription {
@@ -127,13 +133,22 @@ Sh01aPatch : Patch {
 		);
 	}
 
-	prGetPolyphonyModeDescription {
+	prGetAssignModeDescription {
 		|range|
 		^switch (range,
 			0, { "Monophonic" },
 			1, { "Unison" },
 			2, { "Polyphonic" },
 			3, { "Chord" }
+		);
+	}
+
+	prGetPortamentoModeDescription {
+		|range|
+		^switch (range,
+			0, { "Off" },
+			1, { "On" },
+			2, { "Auto" }
 		);
 	}
 
