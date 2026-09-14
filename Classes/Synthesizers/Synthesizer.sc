@@ -296,7 +296,6 @@ Synthesizer {
 		|key,newvalue|
 		Validator.validateMethodParameterType(key, Integer, "key", "Synthesizer", "updateParameterInHardwareSynth");
 		Validator.validateMethodParameterType(newvalue, Integer, "newvalue", "Synthesizer", "updateParameterInHardwareSynth");
-		postln(format("In updateParameterInHardwareSynth, newvalue is %.",newvalue.asInteger));
 		midiout.control(this.midiChannel,key,newvalue.asInteger);
 	}
 

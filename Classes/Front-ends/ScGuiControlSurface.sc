@@ -94,7 +94,7 @@ ScGuiControlSurface {
 	}
 
 	addSlider {
-		|parent,rect,parameterNumber,orientation=\vertical,controlSpec|
+		|parent,rect,parameterNumber,orientation=\vertical,controlSpec,knobStripeColour,backgroundColour|
 		var effectiveControlSpec, slider;
 		if (controlSpec.isNil,{
 			effectiveControlSpec = defaultControlSpec;
@@ -110,6 +110,13 @@ ScGuiControlSurface {
 			|slider|
 			prSynthesizer.modifyWorkingPatch(parameterNumber,effectiveControlSpec.map(slider.value).round.asInteger,this.class.name);
 		});
+		if (knobStripeColour.notNil,{
+			slider.knobColor = knobStripeColour;
+		});
+		if (backgroundColour.notNil,{
+			slider.background = backgroundColour;
+		});
+
 		prSynthesizer.addUpdateAction(this.class.name, parameterNumber, {
 			|newvalue|
 			slider.value = effectiveControlSpec.unmap(newvalue);

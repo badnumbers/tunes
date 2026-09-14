@@ -42,7 +42,7 @@ Sh01a : Synthesizer {
 		super.init(id,Sh01aPatch,Sh01aScGuiControlSurface,\control);
 	}
 
-	*randomisePatch {
+	randomisePatch {
         |midiout,patchType,writeToPostWindow=false|
 		var patch = Sh01aPatch();
 		var lfoMode, lfoRate, lfoSpeed;
@@ -118,9 +118,7 @@ Sh01a : Synthesizer {
 		// SUNDRIES
 		patch.set(Sh01a.portamentoTimeCcNo,this.generateRandomValue(-10,60,3,0,60));
 
-		this.sendPatch(midiout,patch);
 		this.setWorkingPatch(patch);
-		patch.describe();
     }
 
 	*sendPatch { // Probably no longer needed - experiment with removing

@@ -29,7 +29,7 @@ Jp08ScGuiControlSurface : ScGuiControlSurface {
 		|parent,left,top,parameterNumber,labelText,controlSpec|
 		var container = View(parent, Rect(left, top, 100, 375)).background_(Color.black);
 		this.addControlLabel(container, Rect(0,0,100,25), labelText, \center, Color.white);
-		this.addSlider(container, Rect(35,50,30,300),parameterNumber,controlSpec:controlSpec);
+		this.addSlider(container, Rect(35,50,30,300),parameterNumber,controlSpec:controlSpec,knobStripeColour:orange,backgroundColour:Color.black);
 	}
 
 	addEnvelopeKeyfollowToggleButton {
