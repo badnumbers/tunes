@@ -73,7 +73,7 @@ Sh01a : Synthesizer {
 		// SOURCE MIXER
 		subLevel = 1.0.rand.lincurve(0,1,-10,127,9).clip(0,127).round;
 		pwmLevel = 1.0.rand.lincurve(0,1,-10,127,6).clip(0,127).round;
-		oscLevelScaleFunction = { |input| if (input> 0, { input = input * (127 / oscLevelTotal); input.lincurve(0,127,0,127,-1).round; }, { 0 } ); };
+		oscLevelScaleFunction = { |input| if (input> 0, { input = input * (127 / oscLevelTotal); input.lincurve(0,127,0,127,-1).round.asInteger; }, { 0 } ); };
 		if (pwmLevel <= 0,{
 			sawLevel = 127;
 		},{

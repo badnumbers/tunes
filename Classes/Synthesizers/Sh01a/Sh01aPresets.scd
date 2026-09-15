@@ -2,52 +2,52 @@
 var patch = Sh01aPatch();
 patch.name = "Goofy / Happy";
 patch.kvps[14]=5;patch.kvps[15]=38;patch.kvps[75]=22;patch.kvps[79]=0;patch.kvps[24]=30;patch.kvps[5]=10;patch.kvps[73]=44;patch.kvps[19]=33;patch.kvps[13]=23;patch.kvps[16]=1;patch.kvps[26]=103;patch.kvps[28]=0;patch.kvps[21]=112;patch.kvps[25]=8;patch.kvps[29]=1;patch.kvps[74]=78;patch.kvps[72]=83;patch.kvps[78]=0;patch.kvps[80]=0;patch.kvps[30]=98;patch.kvps[3]=122;patch.kvps[23]=0;patch.kvps[71]=94;patch.kvps[20]=0;patch.kvps[12]=4;patch.kvps[22]=2;
-~sh01a.setWorkingPatch(patch);
+Synths(\sh01a).setWorkingPatch(patch);
 )
 
 (
 var patch = Sh01aPatch();
 patch.name = "Raspberry High";
 patch.kvps[14]=5;patch.kvps[15]=27;patch.kvps[75]=58;patch.kvps[79]=1;patch.kvps[24]=68;patch.kvps[5]=24;patch.kvps[73]=104;patch.kvps[19]=4;patch.kvps[13]=10;patch.kvps[16]=2;patch.kvps[26]=66;patch.kvps[28]=1;patch.kvps[21]=126;patch.kvps[25]=14;patch.kvps[29]=1;patch.kvps[74]=83;patch.kvps[72]=120;patch.kvps[78]=0;patch.kvps[80]=0;patch.kvps[30]=88;patch.kvps[3]=98;patch.kvps[23]=22;patch.kvps[71]=90;patch.kvps[20]=0;patch.kvps[12]=2;patch.kvps[22]=2;
-~sh01a.setWorkingPatch(patch);
+Synths(\sh01a).setWorkingPatch(patch);
 )
 
 (
 var patch = Sh01aPatch();
 patch.name = "Dodgy raver";
 patch.kvps[14]=4;patch.kvps[15]=31;patch.kvps[75]=91;patch.kvps[79]=1;patch.kvps[24]=47;patch.kvps[5]=55;patch.kvps[73]=31;patch.kvps[19]=127;patch.kvps[13]=29;patch.kvps[16]=2;patch.kvps[26]=79;patch.kvps[28]=0;patch.kvps[21]=0;patch.kvps[25]=0;patch.kvps[29]=1;patch.kvps[74]=100;patch.kvps[72]=32;patch.kvps[78]=0;patch.kvps[80]=0;patch.kvps[30]=90;patch.kvps[3]=62;patch.kvps[23]=22;patch.kvps[71]=21;patch.kvps[20]=0;patch.kvps[12]=2;patch.kvps[22]=0;
-~sh01a.setWorkingPatch(patch);
+Synths(\sh01a).setWorkingPatch(patch);
 )
 
 (
 var patch = Sh01aPatch();
 patch.name = "Farty raver";
 patch.kvps[14]=4;patch.kvps[15]=115;patch.kvps[75]=108;patch.kvps[79]=0;patch.kvps[24]=80;patch.kvps[5]=0;patch.kvps[73]=9;patch.kvps[19]=0;patch.kvps[13]=2;patch.kvps[16]=2;patch.kvps[26]=36;patch.kvps[28]=1;patch.kvps[21]=0;patch.kvps[25]=15;patch.kvps[29]=1;patch.kvps[74]=65;patch.kvps[72]=34;patch.kvps[78]=0;patch.kvps[80]=0;patch.kvps[30]=14;patch.kvps[3]=103;patch.kvps[23]=2;patch.kvps[71]=18;patch.kvps[20]=127;patch.kvps[12]=4;patch.kvps[22]=1;
-~sh01a.setWorkingPatch(patch);
+Synths(\sh01a).setWorkingPatch(patch);
 )
 
 (
 var patch = Sh01aPatch();
 patch.name = "Noisy acid";
 patch.kvps[14]=4;patch.kvps[15]=22;patch.kvps[75]=101;patch.kvps[79]=0;patch.kvps[24]=110;patch.kvps[5]=0;patch.kvps[73]=11;patch.kvps[19]=0;patch.kvps[13]=0;patch.kvps[16]=1;patch.kvps[26]=108;patch.kvps[28]=0;patch.kvps[21]=0;patch.kvps[25]=0;patch.kvps[29]=1;patch.kvps[74]=19;patch.kvps[72]=41;patch.kvps[78]=0;patch.kvps[80]=0;patch.kvps[30]=98;patch.kvps[3]=78;patch.kvps[23]=7;patch.kvps[71]=124;patch.kvps[20]=127;patch.kvps[12]=5;patch.kvps[22]=2;
-~sh01a.setWorkingPatch(patch);
+Synths(\sh01a).setWorkingPatch(patch);
 )
 
 (
 var patch = Sh01aPatch();
 patch.name = "Beautiful lead";
 patch.kvps[14]=4;patch.kvps[15]=127;patch.kvps[75]=69;patch.kvps[79]=0;patch.kvps[24]=24;patch.kvps[5]=0;patch.kvps[73]=33;patch.kvps[19]=127;patch.kvps[13]=6;patch.kvps[16]=1;patch.kvps[26]=23;patch.kvps[28]=0;patch.kvps[21]=98;patch.kvps[25]=0;patch.kvps[29]=2;patch.kvps[74]=75;patch.kvps[72]=127;patch.kvps[78]=0;patch.kvps[80]=0;patch.kvps[30]=123;patch.kvps[3]=0;patch.kvps[23]=0;patch.kvps[71]=33;patch.kvps[20]=127;patch.kvps[12]=2;patch.kvps[22]=2;
-~sh01a.setWorkingPatch(patch);
+Synths(\sh01a).setWorkingPatch(patch);
 )
 
 (
 var patch = Sh01aPatch();
 patch.name = "Dirty ol' funk";
 patch.kvps[12]=2;patch.kvps[29]=1;patch.kvps[15]=124;patch.kvps[1]=4;patch.kvps[5]=0;patch.kvps[30]=86;patch.kvps[25]=0;patch.kvps[22]=0;patch.kvps[73]=23;patch.kvps[23]=2;patch.kvps[14]=3;patch.kvps[21]=0;patch.kvps[72]=51;patch.kvps[71]=93;patch.kvps[24]=111;patch.kvps[3]=64;patch.kvps[79]=0;patch.kvps[16]=1;patch.kvps[78]=0;patch.kvps[74]=12;patch.kvps[19]=67;patch.kvps[80]=0;patch.kvps[13]=9;patch.kvps[20]=103;patch.kvps[75]=127;patch.kvps[26]=83;patch.kvps[28]=0;patch.kvps[17]=20;
-~sh01a.setWorkingPatch(patch);
+Synths(\sh01a).setWorkingPatch(patch);
 )
 (
-var ev = (type: \midi, chan: ~sh01a.midiChannel, midiout: d);
+var ev = (type: \midi, chan: Synths(\sh01a).midiChannel, midiout: Setup.midi);
 Pdef(\dirty,
 	Pseq([
 		Ppar([
@@ -102,7 +102,21 @@ Pdef(\dirty,
 ).play(TempoClock(1.5), protoEvent: ev);
 )
 Pdef(\dirty).stop;
-d.control(~sh01a.midiChannel, Sh01a.vcfResCcNo, 85);
-d.control(~sh01a.midiChannel, Sh01a.vcfEnvDepthCcNo, 110);
-d.control(~sh01a.midiChannel, Sh01a.vcfFreqCcNo, 85);
-d.control(~sh01a.midiChannel, Sh01a.envelopeSustain, 60);
+Synths(\sh01a).updateParameterInHardwareSynth(Sh01a.vcfResCcNo, 14);
+Synths(\sh01a).updateParameterInHardwareSynth(Sh01a.vcfEnvDepthCcNo, 45);
+Synths(\sh01a).updateParameterInHardwareSynth(Sh01a.vcfFreqCcNo, 80);
+Synths(\sh01a).updateParameterInHardwareSynth(Sh01a.envelopeSustain, 60);
+
+(
+var patch = Sh01aPatch();
+patch.name = "Mournful flute lead"; // Lots of reverb please
+patch.kvps[22]=2;patch.kvps[72]=49;patch.kvps[71]=73;patch.kvps[79]=0;patch.kvps[28]=0;patch.kvps[27]=60;patch.kvps[75]=76;patch.kvps[29]=1;patch.kvps[17]=10;patch.kvps[74]=73;patch.kvps[13]=11;patch.kvps[24]=32;patch.kvps[80]=0;patch.kvps[12]=2;patch.kvps[25]=0;patch.kvps[14]=4;patch.kvps[20]=97;patch.kvps[5]=6;patch.kvps[18]=60;patch.kvps[78]=1;patch.kvps[19]=58;patch.kvps[73]=71;patch.kvps[30]=87;patch.kvps[23]=0;patch.kvps[21]=0;patch.kvps[26]=47;patch.kvps[31]=2;patch.kvps[15]=113;patch.kvps[3]=69;patch.kvps[16]=1;
+Synths(\sh01a).setWorkingPatch(patch);
+)
+
+(
+var patch = Sh01aPatch();
+patch.name = "Confident SH lead";
+patch.kvps[22]=2;patch.kvps[72]=109;patch.kvps[71]=70;patch.kvps[79]=0;patch.kvps[28]=1;patch.kvps[27]=60;patch.kvps[75]=120;patch.kvps[29]=1;patch.kvps[17]=10;patch.kvps[74]=70;patch.kvps[13]=2;patch.kvps[24]=64;patch.kvps[80]=0;patch.kvps[12]=2;patch.kvps[25]=0;patch.kvps[14]=4;patch.kvps[20]=127;patch.kvps[5]=4;patch.kvps[18]=60;patch.kvps[78]=0;patch.kvps[19]=127;patch.kvps[73]=93;patch.kvps[30]=106;patch.kvps[23]=5;patch.kvps[21]=0;patch.kvps[26]=63;patch.kvps[31]=2;patch.kvps[15]=68;patch.kvps[3]=42;patch.kvps[16]=2;
+Synths(\sh01a).setWorkingPatch(patch);
+)
