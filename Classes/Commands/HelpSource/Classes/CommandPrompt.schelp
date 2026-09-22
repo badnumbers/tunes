@@ -1,14 +1,14 @@
 TITLE:: CommandPrompt
 SUMMARY:: Text field with live command, parameter, and argument completion for an interactive command prompt.
 CATEGORIES:: GUI>Views
-RELATED:: Classes/Command, Classes/CommandChip, Classes/Parameter, Classes/GuiPalette, Classes/SCViewHolder, Classes/View
+RELATED:: Classes/Command, Classes/CommandChip, Classes/CommandSuggestion, Classes/Parameter, Classes/GuiPalette, Classes/SCViewHolder, Classes/View
 
 DESCRIPTION::
 TELETYPE::CommandPrompt:: is a LINK::Classes/SCViewHolder:: providing an interactive command line with structured token chips for commands, parameters, and arguments.
 
 As the user types:
 LIST::
-## In the initial state, matching LINK::Classes/Command:: names are suggested. Pressing Tab commits the command name as a LINK::Classes/CommandChip::.
+## In the initial state, matching LINK::Classes/Command:: names are suggested as LINK::Classes/CommandSuggestion:: rows. Pressing Tab commits the command name as a LINK::Classes/CommandChip::.
 ## Once a command is selected, any parameters configured in LINK::#-ambientParameters:: that match the command are automatically evaluated and bound without requiring user input or displaying a chip.
 ## If exactly one LINK::Classes/Parameter:: remains unassigned after that, its name is committed automatically so the user only types the argument. Otherwise remaining unassigned parameter names are suggested; pressing Tab commits the parameter name as a LINK::Classes/CommandChip::.
 ## When expecting an argument, the input is validated against the parameter's type and constraints (with discrete suggestions if defined). Pressing Tab commits the value as a LINK::Classes/CommandChip::.

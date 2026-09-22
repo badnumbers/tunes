@@ -1,7 +1,7 @@
 TITLE:: BorderView
 SUMMARY:: A View with an optional border.
 CATEGORIES:: GUI>Views
-RELATED:: Classes/View, Classes/UserView, Classes/CommandChip, Classes/EnhancedButton
+RELATED:: Classes/View, Classes/UserView, Classes/CommandChip, Classes/CommandSuggestion, Classes/EnhancedButton
 
 DESCRIPTION::
 This is a subclass of LINK::Classes/UserView:: that optionally draws a border around the edge.

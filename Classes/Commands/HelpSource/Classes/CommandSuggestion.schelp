@@ -1,0 +1,39 @@
+TITLE:: CommandSuggestion
+SUMMARY:: One row in the command prompt's suggestion list.
+CATEGORIES:: GUI>Views
+RELATED:: Classes/BorderView, Classes/CommandPrompt, Classes/CommandChip, Classes/Pen
+
+DESCRIPTION::
+TELETYPE::CommandSuggestion:: is a LINK::Classes/BorderView:: for one suggested command, parameter, or value under a LINK::Classes/CommandPrompt::. The highlighted row is the same class with a different background colour.
+
+The label is drawn with LINK::Classes/Pen#-stringLeftJustIn:: in the row's own bounds, in white, left aligned, and centred vertically. LINK::Classes/CommandPrompt:: gives every visible row the same width and the text field's height.
+
+CLASSMETHODS::
+
+METHOD:: new
+Creates a TELETYPE::CommandSuggestion::.
+
+ARGUMENT:: text
+The label shown on the row, as a LINK::Classes/String::.
+
+ARGUMENT:: colour
+The background LINK::Classes/Color::. LINK::Classes/CommandPrompt:: passes the normal or highlighted suggestion colour.
+
+ARGUMENT:: width
+The fixed width in pixels, as a LINK::Classes/SimpleNumber::. All rows in one suggestion list share the width of the longest label.
+
+ARGUMENT:: height
+The fixed height in pixels, as a LINK::Classes/SimpleNumber::.
+
+RETURNS::
+A new TELETYPE::CommandSuggestion:: instance.
+
+INSTANCEMETHODS::
+
+METHOD:: string
+The label text shown on the row.
+
+RETURNS::
+A LINK::Classes/String::.
+
+PRIVATE:: prInit

@@ -414,12 +414,7 @@ CommandPrompt : SCViewHolder {
 			matchingItems.do({
 				|item|
 				var label = if (item.respondsTo(\name), { item.name }, { item.asString });
-				var row = View().fixedSize_(suggestionWidth @ suggestionHeight).layout_(
-					HLayout(
-						StaticText().font_(Font.default).string_(label)
-							.stringColor_(Color.white).align_(\left)
-					).margins_(4@0)
-				).background_(prNormalSuggestionColour);
+				var row = CommandSuggestion(label, prNormalSuggestionColour, suggestionWidth, suggestionHeight);
 				prSuggestionsView.layout.add(row);
 				prSuggestionRows = prSuggestionRows.add(row);
 			});
