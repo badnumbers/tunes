@@ -1,0 +1,58 @@
+TITLE:: DeleteCommand
+SUMMARY:: Command that deletes selected piano-roll notes.
+CATEGORIES:: Commands
+RELATED:: Classes/Command, Classes/Parameter, Classes/CommandPrompt, Classes/PianoRoll, Classes/PianoRollNote
+
+DESCRIPTION::
+TELETYPE::DeleteCommand:: is a LINK::Classes/Command:: named CODE::delete:: that deletes every note in CODE::selectedNotes::. LINK::Classes/PianoRoll:: supplies the notes through LINK::Classes/CommandPrompt#-ambientParameters:: as CODE::selectedNotes::, so the user does not type an argument. After the CODE::delete:: chip is committed, LINK::Classes/CommandPrompt:: treats the command as satisfied. Press Return to execute.
+
+Each note that responds to CODE::delete:: is deleted. LINK::Classes/PianoRollNote#-delete:: removes the note view and runs the note's delete callback, which drops the note from the roll and updates the embedded LINK::Classes/SequencePlayer:: sequence. An empty selection is a no-op.
+
+CLASSMETHODS::
+
+METHOD:: new
+Creates a new TELETYPE::DeleteCommand::. Takes no arguments; deletion is applied by LINK::#-execute::.
+
+RETURNS::
+A new TELETYPE::DeleteCommand:: instance.
+
+INSTANCEMETHODS::
+
+METHOD:: execute
+Deletes each note in CODE::\selectedNotes:: that responds to CODE::delete::.
+
+ARGUMENT:: args
+A LINK::Classes/Dictionary:: or LINK::Classes/Event:: with CODE::\selectedNotes:: (an LINK::Classes/Array:: of notes that respond to CODE::delete::). A missing or empty array deletes nothing.
+
+EXAMPLES::
+
+CODE::
+(
+var notes = [
+	PianoRollNote(0, 60, 100,
+		viewFunc: { View() },
+		selectFunc: {},
+		deselectFunc: {},
+		setPart1Func: {},
+		setPart2Func: {},
+		setPart3Func: {},
+		setPart4Func: {},
+		moveFunc: {},
+		deleteFunc: { |note| ("deleted " ++ note.noteNumber).postln }
+	),
+	PianoRollNote(1, 64, 100,
+		viewFunc: { View() },
+		selectFunc: {},
+		deselectFunc: {},
+		setPart1Func: {},
+		setPart2Func: {},
+		setPart3Func: {},
+		setPart4Func: {},
+		moveFunc: {},
+		deleteFunc: { |note| ("deleted " ++ note.noteNumber).postln }
+	)
+];
+notes.do({ |note| note.stop(note.startTime + 1.0) });
+DeleteCommand.new.execute((selectedNotes: notes));
+)
+::

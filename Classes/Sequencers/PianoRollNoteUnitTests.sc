@@ -1,6 +1,6 @@
 PianoRollNoteUnitTests : BNUnitTest {
 	prMockNote {
-		|startTime = 0, noteNumber = 60, velocity = 100, stopTime|
+		|startTime = 0, noteNumber = 60, velocity = 100, stopTime, deleteFunc|
 		var note, movedTimes;
 		movedTimes = nil;
 		note = PianoRollNote(
@@ -14,7 +14,8 @@ PianoRollNoteUnitTests : BNUnitTest {
 			setPart2Func: { },
 			setPart3Func: { },
 			setPart4Func: { },
-			moveFunc: { |view, newStart, newStop| postln("moveFunc is being called"); movedTimes = [newStart, newStop]; }
+			moveFunc: { |view, newStart, newStop| postln("moveFunc is being called"); movedTimes = [newStart, newStop]; },
+			deleteFunc: deleteFunc
 		);
 		if (stopTime.notNil, { note.stop(stopTime); });
 		^[note, { movedTimes }];
@@ -133,5 +134,25 @@ PianoRollNoteUnitTests : BNUnitTest {
 		this.assertException({
 			note.legato_(0, 1);
 		}, Error);
+	}
+
+	test_delete_invokesDeleteFuncOnce {
+		var notePair, note, deleted;
+		deleted = [];
+		notePair = this.prMockNote(0, stopTime: 1.0, deleteFunc: { |deletedNote| deleted = deleted.add(deletedNote) });
+		note = notePair[0];
+		note.toggleSelect;
+		note.delete;
+		note.delete;
+		this.assertEquals(deleted, [note]);
+		this.assertEquals(note.isSelected, false);
+	}
+
+	test_delete_nilDeleteFunc_doesNotError {
+		var notePair, note;
+		notePair = this.prMockNote(0, stopTime: 1.0);
+		note = notePair[0];
+		note.delete;
+		this.assertEquals(note.isSelected, false);
 	}
 }

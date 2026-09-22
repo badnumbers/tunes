@@ -7,6 +7,7 @@ PianoRoll : SCViewHolder {
 	var prDrawNote;
 	var prKeyRouter;
 	var prLoopMarkers;
+	var prNoteDeleteFunc;
 	var prNoteDeselectFunc;
 	var prNoteSelectFunc;
 	var prNoteViewScale;
@@ -51,6 +52,7 @@ PianoRoll : SCViewHolder {
 			bounds: nil,
 			commands: [
 				AmpCommand.new,
+				DeleteCommand.new,
 				LegatoCommand.new,
 				SnapCommand.new,
 				WriteCommand(prSequencerDocument)
@@ -94,6 +96,10 @@ PianoRoll : SCViewHolder {
 			|view|
 			view.borderWidth_(1);
 			this.prRefreshSidebar;
+		};
+		prNoteDeleteFunc = {
+			|note|
+			this.prDeleteNote(note);
 		};
 		prNoteDeselectFunc = {
 			|view|
@@ -222,6 +228,14 @@ PianoRoll : SCViewHolder {
 		prRecordedNotes.do({|recordedNote| recordedNote.setPartIfSelected(partNumber); });
 	}
 
+	prDeleteNote {
+		|note|
+		if (prRecordedNotes.includes(note), {
+			prRecordedNotes.remove(note);
+			this.prApplyNoteEdits;
+		});
+	}
+
 	prRefreshSidebar {
 		var selectionCount, loopLength;
 		if (prSidebar.notNil, {
@@ -270,6 +284,7 @@ PianoRoll : SCViewHolder {
 					setPart3Func:{|view|view.background_(prPalette.colour3);},
 					setPart4Func:{|view|view.background_(prPalette.colour4);},
 					moveFunc:{|view,startTime,stopTime|view.bounds_( Rect(startTime * prNoteViewScale[\horizontal],view.bounds.top,(stopTime - startTime) * prNoteViewScale[\horizontal],view.bounds.height));},
+					deleteFunc:prNoteDeleteFunc,
 				);
 				pianoRollNote.stop(stop);
 				prRecordedNotes = prRecordedNotes.add(pianoRollNote);
@@ -289,6 +304,7 @@ PianoRoll : SCViewHolder {
 							setPart3Func:{|view|view.background_(prPalette.colour3);},
 							setPart4Func:{|view|view.background_(prPalette.colour4);},
 							moveFunc:{|view,startTime,stopTime|view.bounds_( Rect(startTime * prNoteViewScale[\horizontal],view.bounds.top,(stopTime - startTime) * prNoteViewScale[\horizontal],view.bounds.height));},
+							deleteFunc:prNoteDeleteFunc,
 						);
 						prRecordedNotes = prRecordedNotes.add(pianoRollNote);
 						prSequencePlayer.midiChannel_(chan);

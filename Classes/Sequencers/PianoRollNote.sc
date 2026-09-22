@@ -1,6 +1,8 @@
 PianoRollNote {
 	var prAdjustedStartTime;
 	var prAdjustedStopTime;
+	var prDeleteFunc;
+	var prDeleted = false;
 	var prDeselectFunc;
 	var prEvent;
 	var prMoveFunc;
@@ -27,6 +29,21 @@ PianoRollNote {
 		prPlayableNote.velocity_(clipped.linlin(0, 1, 0, 127).round.asInteger);
 	}
 
+	delete {
+		var deleteFunc;
+		prDeleted = true;
+		prSelected = false;
+		if (prView.notNil, {
+			prView.remove;
+			prView = nil;
+		});
+		deleteFunc = prDeleteFunc;
+		prDeleteFunc = nil;
+		if (deleteFunc.notNil, {
+			deleteFunc.value(this);
+		});
+	}
+
 	deselect {
 		prSelected = false;
 		prDeselectFunc.value(prView);
@@ -37,7 +54,7 @@ PianoRollNote {
 	}
 
 	init {
-		|startTime,noteNumber,velocity,viewFunc,selectFunc,deselectFunc,setPart1Func,setPart2Func,setPart3Func,setPart4Func,moveFunc|
+		|startTime,noteNumber,velocity,viewFunc,selectFunc,deselectFunc,setPart1Func,setPart2Func,setPart3Func,setPart4Func,moveFunc,deleteFunc|
 		prViewFunc = viewFunc;
 		prSelectFunc = selectFunc;
 		prDeselectFunc = deselectFunc;
@@ -46,6 +63,7 @@ PianoRollNote {
 		prSetPart3Func = setPart3Func;
 		prSetPart4Func = setPart4Func;
 		prMoveFunc = moveFunc;
+		prDeleteFunc = deleteFunc;
 		prOriginalStartTime = startTime;
 		prPlayableNote = PlayableNote(startTime,noteNumber,velocity);
 		prEvent = Event.new.parent_(nil);
@@ -56,7 +74,7 @@ PianoRollNote {
 	}
 
 	*new {
-		|startTime,noteNumber,velocity,viewFunc,selectFunc,deselectFunc,setPart1Func,setPart2Func,setPart3Func,setPart4Func,moveFunc|
+		|startTime,noteNumber,velocity,viewFunc,selectFunc,deselectFunc,setPart1Func,setPart2Func,setPart3Func,setPart4Func,moveFunc,deleteFunc|
 		Validator.validateMethodParameterType(startTime,SimpleNumber,"startTime","SequencerNote","new");
 		Validator.validateMethodParameterType(noteNumber,Integer,"noteNumber","SequencerNote","new");
 		Validator.validateMethodParameterType(velocity,Integer,"velocity","SequencerNote","new");
@@ -68,7 +86,8 @@ PianoRollNote {
 		Validator.validateMethodParameterType(setPart3Func,Function,"setPart3Func","SequencerNote","new");
 		Validator.validateMethodParameterType(setPart4Func,Function,"setPart4Func","SequencerNote","new");
 		Validator.validateMethodParameterType(moveFunc,Function,"moveFunc","SequencerNote","new");
-		^super.new.init(startTime,noteNumber,velocity,viewFunc,selectFunc,deselectFunc,setPart1Func,setPart2Func,setPart3Func,setPart4Func,moveFunc);
+		Validator.validateMethodParameterType(deleteFunc,Function,"deleteFunc","PianoRollNote","new", allowNil: true);
+		^super.new.init(startTime,noteNumber,velocity,viewFunc,selectFunc,deselectFunc,setPart1Func,setPart2Func,setPart3Func,setPart4Func,moveFunc,deleteFunc);
 	}
 
 	noteNumber {
@@ -184,8 +203,10 @@ PianoRollNote {
 		prOriginalStopTime = stopTime;
 		prPlayableNote.stopTime = stopTime;
 		AppClock.sched(0.0,{
-			prView = prViewFunc.value(this);
-			prOriginalBounds = prView.bounds;
+			if (prDeleted.not, {
+				prView = prViewFunc.value(this);
+				prOriginalBounds = prView.bounds;
+			});
 		});
 	}
 
