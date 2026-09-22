@@ -1,7 +1,7 @@
 TITLE:: SnapCommand
 SUMMARY:: Command that snaps notes to the nearest grid line defined by a musical resolution.
 CATEGORIES:: Commands
-RELATED:: Classes/Command, Classes/Parameter, Classes/CommandPrompt, Classes/PianoRoll, Classes/PianoRollNote
+RELATED:: Classes/Command, Classes/Parameter, Classes/CommandPrompt, Classes/PianoRoll, Classes/PianoRollNote, Classes/LeftCommand, Classes/RightCommand
 
 DESCRIPTION::
 TELETYPE::SnapCommand:: is a LINK::Classes/Command:: that snaps an LINK::Classes/Array:: of notes (e.g. from LINK::Classes/PianoRoll#*selectedNotes::) to the nearest beat subdivision. LINK::Classes/PianoRoll:: supplies the notes through LINK::Classes/CommandPrompt#-ambientParameters:: as CODE::selectedNotes::.

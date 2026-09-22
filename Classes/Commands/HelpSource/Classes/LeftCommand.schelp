@@ -1,0 +1,58 @@
+TITLE:: LeftCommand
+SUMMARY:: Command that moves selected notes left by a beat subdivision.
+CATEGORIES:: Commands
+RELATED:: Classes/Command, Classes/Parameter, Classes/CommandPrompt, Classes/PianoRoll, Classes/PianoRollNote, Classes/RightCommand, Classes/SnapCommand
+
+DESCRIPTION::
+TELETYPE::LeftCommand:: is a LINK::Classes/Command:: named CODE::left:: that moves each selected note left by a beat subdivision. LINK::Classes/PianoRoll:: supplies the notes through LINK::Classes/CommandPrompt#-ambientParameters:: as CODE::selectedNotes::.
+
+CODE::resolution:: is a positive integer from 1 to 16, the same fractions of a beat as LINK::Classes/SnapCommand::. The step size is CODE::1.0 / resolution:: beats:
+LIST::
+## CODE::1::: Whole beat (1.0 beat)
+## CODE::2::: Half beat (0.5 beats)
+## CODE::4::: Quarter beat (0.25 beats)
+## CODE::8::: Eighth beat (0.125 beats)
+## CODE::16::: Sixteenth beat (0.0625 beats)
+::
+
+A note already on that grid moves one step left. A note off the grid moves to the adjacent grid line to the left. Duration is preserved. Start time is clamped at beat zero. LINK::Classes/PianoRollNote#-nudgeLeft:: repositions the note view.
+
+CLASSMETHODS::
+
+METHOD:: new
+Creates a new TELETYPE::LeftCommand::. Takes no arguments; movement is applied by LINK::#-execute::.
+
+RETURNS::
+A new TELETYPE::LeftCommand:: instance.
+
+INSTANCEMETHODS::
+
+METHOD:: execute
+Moves each note in CODE::\selectedNotes:: left by the grid implied by CODE::\resolution::.
+
+ARGUMENT:: args
+A LINK::Classes/Dictionary:: or LINK::Classes/Event:: with CODE::\selectedNotes:: (an LINK::Classes/Array:: of notes that respond to CODE::nudgeLeft::) and CODE::\resolution:: (an LINK::Classes/Integer:: from 1 to 16).
+
+EXAMPLES::
+
+CODE::
+(
+var note = PianoRollNote(1.0, 60, 100,
+	viewFunc: { View() },
+	selectFunc: {},
+	deselectFunc: {},
+	setPart1Func: {},
+	setPart2Func: {},
+	setPart3Func: {},
+	setPart4Func: {},
+	moveFunc: { |view, start, stop| ("Moved to " ++ start ++ ".." ++ stop).postln; }
+);
+note.stop(2.0);
+
+// Move left by a quarter beat (resolution = 4)
+LeftCommand.new.execute((
+	selectedNotes: [note],
+	resolution: 4
+));
+)
+::
