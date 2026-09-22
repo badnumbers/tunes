@@ -109,8 +109,8 @@ Synths(\sh01a).updateParameterInHardwareSynth(Sh01a.envelopeSustain, 60);
 
 (
 var patch = Sh01aPatch();
-patch.name = "Mournful flute lead"; // Lots of reverb please
-patch.kvps[22]=2;patch.kvps[72]=49;patch.kvps[71]=73;patch.kvps[79]=0;patch.kvps[28]=0;patch.kvps[27]=60;patch.kvps[75]=76;patch.kvps[29]=1;patch.kvps[17]=10;patch.kvps[74]=73;patch.kvps[13]=11;patch.kvps[24]=32;patch.kvps[80]=0;patch.kvps[12]=2;patch.kvps[25]=0;patch.kvps[14]=4;patch.kvps[20]=97;patch.kvps[5]=6;patch.kvps[18]=60;patch.kvps[78]=1;patch.kvps[19]=58;patch.kvps[73]=71;patch.kvps[30]=87;patch.kvps[23]=0;patch.kvps[21]=0;patch.kvps[26]=47;patch.kvps[31]=2;patch.kvps[15]=113;patch.kvps[3]=69;patch.kvps[16]=1;
+patch.name = "Mournful flute lead";
+patch.kvps[22]=2;patch.kvps[72]=49;patch.kvps[71]=73;patch.kvps[79]=0;patch.kvps[28]=0;patch.kvps[27]=60;patch.kvps[75]=76;patch.kvps[29]=1;patch.kvps[17]=10;patch.kvps[74]=73;patch.kvps[13]=6;patch.kvps[24]=32;patch.kvps[80]=2;patch.kvps[12]=2;patch.kvps[25]=0;patch.kvps[14]=4;patch.kvps[20]=127;patch.kvps[5]=3;patch.kvps[18]=60;patch.kvps[78]=1;patch.kvps[19]=74;patch.kvps[73]=71;patch.kvps[30]=87;patch.kvps[23]=0;patch.kvps[21]=0;patch.kvps[26]=47;patch.kvps[31]=2;patch.kvps[15]=113;patch.kvps[3]=65;patch.kvps[16]=1;
 Synths(\sh01a).setWorkingPatch(patch);
 )
 
