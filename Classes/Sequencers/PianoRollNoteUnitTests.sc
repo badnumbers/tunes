@@ -21,82 +21,6 @@ PianoRollNoteUnitTests : BNUnitTest {
 		^[note, { movedTimes }];
 	}
 
-	test_snapToGrid_roundsToNearestGridLine {
-		var notePair, note;
-		notePair = this.prMockNote(0.07, stopTime: 0.5);
-		note = notePair[0];
-		note.snapToGrid(0.125);
-		this.assertEquals(note.startTime, 0.125);
-	}
-
-	test_snapToGrid_preservesDuration {
-		var notePair, note, duration;
-		notePair = this.prMockNote(0.07, stopTime: 0.5);
-		note = notePair[0];
-		note.snapToGrid(0.125);
-		duration = note.stopTime - note.startTime;
-		this.assertWithMessage((duration - 0.43).abs < 1e-9, "Duration should be preserved after snap");
-	}
-
-	test_nudgeRight_onGrid_movesOneStep {
-		var notePair, note;
-		notePair = this.prMockNote(0.125, stopTime: 0.5);
-		note = notePair[0];
-		note.nudgeRight(0.125);
-		this.assertEquals(note.startTime, 0.25);
-	}
-
-	test_nudgeLeft_onGrid_movesOneStep {
-		var notePair, note;
-		notePair = this.prMockNote(0.25, stopTime: 0.5);
-		note = notePair[0];
-		note.nudgeLeft(0.125);
-		this.assertEquals(note.startTime, 0.125);
-	}
-
-	test_nudgeRight_offGrid_alignsToNextGridLine {
-		var notePair, note;
-		notePair = this.prMockNote(0.07, stopTime: 0.5);
-		note = notePair[0];
-		note.nudgeRight(0.125);
-		this.assertEquals(note.startTime, 0.125);
-	}
-
-	test_nudgeLeft_offGrid_alignsToPreviousGridLine {
-		var notePair, note;
-		notePair = this.prMockNote(0.07, stopTime: 0.5);
-		note = notePair[0];
-		note.nudgeLeft(0.125);
-		this.assertEquals(note.startTime, 0);
-	}
-
-	test_nudgeLeft_clampsStartAtZero {
-		var notePair, note, duration;
-		notePair = this.prMockNote(0.0625, stopTime: 0.5);
-		note = notePair[0];
-		note.nudgeLeft(0.125);
-		duration = note.stopTime - note.startTime;
-		this.assertEquals(note.startTime, 0);
-		this.assertWithMessage((duration - 0.4375).abs < 1e-9, "Duration should be preserved after clamp");
-	}
-
-	test_isSelected_reflectsSelectionState {
-		var notePair, note;
-		notePair = this.prMockNote(1, stopTime: 2.0);
-		note = notePair[0];
-		this.assertEquals(note.isSelected, false);
-		note.toggleSelect;
-		this.assertEquals(note.isSelected, true);
-	}
-
-	test_event_isComposedEvent {
-		var notePair, note;
-		notePair = this.prMockNote(1, stopTime: 2.0);
-		note = notePair[0];
-		this.assertEquals(note.event.isKindOf(Event), true);
-		this.assertEquals(note.event[\amp], nil);
-	}
-
 	test_amp__writesEventAmpAndMappedVelocity {
 		var notePair, note;
 		notePair = this.prMockNote(1, stopTime: 2.0);
@@ -107,33 +31,6 @@ PianoRollNoteUnitTests : BNUnitTest {
 		note.amp_(0.5);
 		this.assertEquals(note.event[\amp], 0.5);
 		this.assertEquals(note.velocity, 64);
-	}
-
-	test_legato__writesEventLegatoAndUpdatesStopTime {
-		var notePair, note;
-		notePair = this.prMockNote(0, stopTime: 1.0);
-		note = notePair[0];
-		note.legato_(0.5, 4);
-		this.assertEquals(note.event[\legato], 0.5);
-		this.assertEquals(note.stopTime, 2);
-	}
-
-	test_legato__writesValueAsIsWithoutClipping {
-		var notePair, note;
-		notePair = this.prMockNote(0, stopTime: 1.0);
-		note = notePair[0];
-		note.legato_(1.5, 2);
-		this.assertEquals(note.event[\legato], 1.5);
-		this.assertEquals(note.stopTime, 3);
-	}
-
-	test_legato__rejectsNonPositiveValue {
-		var notePair, note;
-		notePair = this.prMockNote(0, stopTime: 1.0);
-		note = notePair[0];
-		this.assertException({
-			note.legato_(0, 1);
-		}, Error);
 	}
 
 	test_delete_invokesDeleteFuncOnce {
@@ -154,5 +51,108 @@ PianoRollNoteUnitTests : BNUnitTest {
 		note = notePair[0];
 		note.delete;
 		this.assertEquals(note.isSelected, false);
+	}
+
+	test_event_isComposedEvent {
+		var notePair, note;
+		notePair = this.prMockNote(1, stopTime: 2.0);
+		note = notePair[0];
+		this.assertEquals(note.event.isKindOf(Event), true);
+		this.assertEquals(note.event[\amp], nil);
+	}
+
+	test_isSelected_reflectsSelectionState {
+		var notePair, note;
+		notePair = this.prMockNote(1, stopTime: 2.0);
+		note = notePair[0];
+		this.assertEquals(note.isSelected, false);
+		note.toggleSelect;
+		this.assertEquals(note.isSelected, true);
+	}
+
+	test_legato__rejectsNonPositiveValue {
+		var notePair, note;
+		notePair = this.prMockNote(0, stopTime: 1.0);
+		note = notePair[0];
+		this.assertException({
+			note.legato_(0, 1);
+		}, Error);
+	}
+
+	test_legato__writesEventLegatoAndUpdatesStopTime {
+		var notePair, note;
+		notePair = this.prMockNote(0, stopTime: 1.0);
+		note = notePair[0];
+		note.legato_(0.5, 4);
+		this.assertEquals(note.event[\legato], 0.5);
+		this.assertEquals(note.stopTime, 2);
+	}
+
+	test_legato__writesValueAsIsWithoutClipping {
+		var notePair, note;
+		notePair = this.prMockNote(0, stopTime: 1.0);
+		note = notePair[0];
+		note.legato_(1.5, 2);
+		this.assertEquals(note.event[\legato], 1.5);
+		this.assertEquals(note.stopTime, 3);
+	}
+
+	test_nudgeLeft_clampsStartAtZero {
+		var notePair, note, duration;
+		notePair = this.prMockNote(0.0625, stopTime: 0.5);
+		note = notePair[0];
+		note.nudgeLeft(0.125);
+		duration = note.stopTime - note.startTime;
+		this.assertEquals(note.startTime, 0);
+		this.assertWithMessage((duration - 0.4375).abs < 1e-9, "Duration should be preserved after clamp");
+	}
+
+	test_nudgeLeft_offGrid_alignsToPreviousGridLine {
+		var notePair, note;
+		notePair = this.prMockNote(0.07, stopTime: 0.5);
+		note = notePair[0];
+		note.nudgeLeft(0.125);
+		this.assertEquals(note.startTime, 0);
+	}
+
+	test_nudgeLeft_onGrid_movesOneStep {
+		var notePair, note;
+		notePair = this.prMockNote(0.25, stopTime: 0.5);
+		note = notePair[0];
+		note.nudgeLeft(0.125);
+		this.assertEquals(note.startTime, 0.125);
+	}
+
+	test_nudgeRight_offGrid_alignsToNextGridLine {
+		var notePair, note;
+		notePair = this.prMockNote(0.07, stopTime: 0.5);
+		note = notePair[0];
+		note.nudgeRight(0.125);
+		this.assertEquals(note.startTime, 0.125);
+	}
+
+	test_nudgeRight_onGrid_movesOneStep {
+		var notePair, note;
+		notePair = this.prMockNote(0.125, stopTime: 0.5);
+		note = notePair[0];
+		note.nudgeRight(0.125);
+		this.assertEquals(note.startTime, 0.25);
+	}
+
+	test_snapToGrid_preservesDuration {
+		var notePair, note, duration;
+		notePair = this.prMockNote(0.07, stopTime: 0.5);
+		note = notePair[0];
+		note.snapToGrid(0.125);
+		duration = note.stopTime - note.startTime;
+		this.assertWithMessage((duration - 0.43).abs < 1e-9, "Duration should be preserved after snap");
+	}
+
+	test_snapToGrid_roundsToNearestGridLine {
+		var notePair, note;
+		notePair = this.prMockNote(0.07, stopTime: 0.5);
+		note = notePair[0];
+		note.snapToGrid(0.125);
+		this.assertEquals(note.startTime, 0.125);
 	}
 }

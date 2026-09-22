@@ -80,6 +80,15 @@ An LINK::Classes/Event::.
 METHOD:: isSelected
 Returns whether this note is currently selected.
 
+METHOD:: legato_
+Stores CODE::value:: as CODE::\legato:: on the composed LINK::Classes/Event:: with no clipping or mapping, then sets the wrapped LINK::Classes/PlayableNote:: stop time via LINK::Classes/PlayableNote#-applyLegato::. Repositions the note view when it exists.
+
+ARGUMENT:: value
+A LINK::Classes/SimpleNumber:: legato greater than CODE::0::. Values greater than CODE::1:: are allowed.
+
+ARGUMENT:: nextOnsetTime
+The beat of the next distinct onset, or the loop end for the last note group.
+
 METHOD:: noteNumber
 Returns the wrapped note's MIDI note number.
 
@@ -136,14 +145,5 @@ Toggles selection and runs the select or deselect callback.
 
 METHOD:: velocity
 Returns the wrapped note's velocity.
-
-METHOD:: legato_
-Stores CODE::value:: as CODE::\legato:: on the composed LINK::Classes/Event:: with no clipping or mapping, then sets the wrapped LINK::Classes/PlayableNote:: stop time via LINK::Classes/PlayableNote#-applyLegato::. Repositions the note view when it exists.
-
-ARGUMENT:: value
-A LINK::Classes/SimpleNumber:: legato greater than CODE::0::. Values greater than CODE::1:: are allowed.
-
-ARGUMENT:: nextOnsetTime
-The beat of the next distinct onset, or the loop end for the last note group.
 
 PRIVATE:: init, prApplyTimeDelta, prIsOnGrid

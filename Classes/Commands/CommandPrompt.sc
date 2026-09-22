@@ -113,6 +113,18 @@ CommandPrompt : SCViewHolder {
 		});
 	}
 
+	prAutoCommitSoleRemainingParameter {
+		var unassigned;
+		if (prActiveCommand.isNil, { ^this });
+		unassigned = prActiveCommand.parameters.reject({
+			|param|
+			prCommittedArgs[param.name.asSymbol].notNil;
+		});
+		if (unassigned.size == 1, {
+			this.prCommitParameter(unassigned[0]);
+		});
+	}
+
 	prClearSuggestions {
 		prSuggestionsView.children.copy.do({
 			|child|
@@ -187,6 +199,15 @@ CommandPrompt : SCViewHolder {
 				prTextField.focus;
 			});
 		});
+	}
+
+	prCommitParameter {
+		|param|
+		var chip;
+		chip = CommandChip(param.name, prPalette.colour2, prTextFieldHeight);
+		prInputRowLayout.insert(chip, prCommittedTokens.size);
+		prCommittedTokens = prCommittedTokens.add((type: \parameter, name: param.name, view: chip, parameter: param));
+		prActiveParameter = param;
 	}
 
 	prCurrentState {
@@ -436,26 +457,5 @@ CommandPrompt : SCViewHolder {
 		|newString|
 		prTextField.string_(newString);
 		this.prUpdateSuggestions;
-	}
-
-	prAutoCommitSoleRemainingParameter {
-		var unassigned;
-		if (prActiveCommand.isNil, { ^this });
-		unassigned = prActiveCommand.parameters.reject({
-			|param|
-			prCommittedArgs[param.name.asSymbol].notNil;
-		});
-		if (unassigned.size == 1, {
-			this.prCommitParameter(unassigned[0]);
-		});
-	}
-
-	prCommitParameter {
-		|param|
-		var chip;
-		chip = CommandChip(param.name, prPalette.colour2, prTextFieldHeight);
-		prInputRowLayout.insert(chip, prCommittedTokens.size);
-		prCommittedTokens = prCommittedTokens.add((type: \parameter, name: param.name, view: chip, parameter: param));
-		prActiveParameter = param;
 	}
 }

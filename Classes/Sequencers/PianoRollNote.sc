@@ -11,8 +11,8 @@ PianoRollNote {
 	var prOriginalStopTime;
 	var prPartNumber = 1;
 	var prPlayableNote;
-	var prSelected = false;
 	var prSelectFunc;
+	var prSelected = false;
 	var prSetPart1Func;
 	var prSetPart2Func;
 	var prSetPart3Func;
@@ -71,6 +71,21 @@ PianoRollNote {
 
 	isSelected {
 		^prSelected;
+	}
+
+	legato_ {
+		|value, nextOnsetTime|
+		Validator.validateMethodParameterType(value, SimpleNumber, "value", "PianoRollNote", "legato_");
+		Validator.validateMethodParameterType(nextOnsetTime, SimpleNumber, "nextOnsetTime", "PianoRollNote", "legato_");
+		if (value <= 0, {
+			Error(format("The value parameter provided to PianoRollNote.legato_ must be greater than 0. The value % was provided.", value)).throw;
+		});
+		prEvent[\legato] = value;
+		prPlayableNote.applyLegato(value, nextOnsetTime);
+		prOriginalStopTime = prPlayableNote.stopTime;
+		if (prView.notNil, {
+			prMoveFunc.value(prView, this.startTime, this.stopTime);
+		});
 	}
 
 	*new {
@@ -226,20 +241,5 @@ PianoRollNote {
 
 	velocity {
 		^prPlayableNote.velocity;
-	}
-
-	legato_ {
-		|value, nextOnsetTime|
-		Validator.validateMethodParameterType(value, SimpleNumber, "value", "PianoRollNote", "legato_");
-		Validator.validateMethodParameterType(nextOnsetTime, SimpleNumber, "nextOnsetTime", "PianoRollNote", "legato_");
-		if (value <= 0, {
-			Error(format("The value parameter provided to PianoRollNote.legato_ must be greater than 0. The value % was provided.", value)).throw;
-		});
-		prEvent[\legato] = value;
-		prPlayableNote.applyLegato(value, nextOnsetTime);
-		prOriginalStopTime = prPlayableNote.stopTime;
-		if (prView.notNil, {
-			prMoveFunc.value(prView, this.startTime, this.stopTime);
-		});
 	}
 }
