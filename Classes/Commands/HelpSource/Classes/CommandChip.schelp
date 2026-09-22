@@ -1,0 +1,36 @@
+TITLE:: CommandChip
+SUMMARY:: Bordered label for a committed command, parameter, or value chip.
+CATEGORIES:: GUI>Views
+RELATED:: Classes/BorderView, Classes/CommandPrompt, Classes/Command, Classes/StaticText
+
+DESCRIPTION::
+TELETYPE::CommandChip:: is a LINK::Classes/BorderView:: for every committed chip in a LINK::Classes/CommandPrompt::: the command name, a parameter name, and a typed value. Appearance such as border radius is set here so all three chips share it.
+
+The label is white, centred LINK::Classes/StaticText:: on the given background colour. Width follows the text. Height is fixed to match the prompt's text field.
+
+CLASSMETHODS::
+
+METHOD:: new
+Creates a TELETYPE::CommandChip::.
+
+ARGUMENT:: text
+The label shown on the chip, as a LINK::Classes/String::. For a command or parameter this is its name; for a value it is the text that was committed.
+
+ARGUMENT:: colour
+The background LINK::Classes/Color::.
+
+ARGUMENT:: height
+The fixed height in pixels, as a LINK::Classes/SimpleNumber::.
+
+RETURNS::
+A new TELETYPE::CommandChip:: instance.
+
+INSTANCEMETHODS::
+
+METHOD:: string
+The label text shown on the chip.
+
+RETURNS::
+A LINK::Classes/String::.
+
+PRIVATE:: prInit

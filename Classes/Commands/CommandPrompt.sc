@@ -131,7 +131,7 @@ CommandPrompt : SCViewHolder {
 		if (state == \expectingCommand, {
 			if (prSelectedIndex.notNil && { prMatchingItems.size > 0 }, {
 				cmd = prMatchingItems[prSelectedIndex];
-				chip = this.prMakeTokenChip(cmd.name, prPalette.colour1);
+				chip = CommandChip(cmd.name, prPalette.colour1, prTextFieldHeight);
 				prInputRowLayout.insert(chip, prCommittedTokens.size);
 				prCommittedTokens = prCommittedTokens.add((type: \command, name: cmd.name, view: chip, command: cmd));
 				prActiveCommand = cmd;
@@ -175,7 +175,7 @@ CommandPrompt : SCViewHolder {
 			});
 			if (candidateString.notEmpty && { prActiveParameter.isValid(candidateString) }, {
 				parsedVal = prActiveParameter.parse(candidateString);
-				chip = this.prMakeTokenChip(candidateString, prPalette.colour3);
+				chip = CommandChip(candidateString, prPalette.colour3, prTextFieldHeight);
 				prInputRowLayout.insert(chip, prCommittedTokens.size);
 				prCommittedTokens = prCommittedTokens.add((type: \argument, name: candidateString, view: chip, parameter: prActiveParameter, value: parsedVal));
 				prCommittedArgs[prActiveParameter.name.asSymbol] = parsedVal;
@@ -275,19 +275,6 @@ CommandPrompt : SCViewHolder {
 			});
 			nil;
 		});
-	}
-
-	prMakeTokenChip {
-		|text, colour|
-		var width;
-		width = text.asString.bounds(Font.default).width + 8;
-		^View().fixedWidth_(width).maxWidth_(width).minWidth_(width)
-			.fixedHeight_(prTextFieldHeight).layout_(
-			HLayout(
-				StaticText().font_(Font.default).string_(text.asString)
-					.stringColor_(Color.white).align_(\center)
-			).margins_(4@0)
-		).background_(colour);
 	}
 
 	prMoveSelection {
@@ -471,7 +458,7 @@ CommandPrompt : SCViewHolder {
 	prCommitParameter {
 		|param|
 		var chip;
-		chip = this.prMakeTokenChip(param.name, prPalette.colour2);
+		chip = CommandChip(param.name, prPalette.colour2, prTextFieldHeight);
 		prInputRowLayout.insert(chip, prCommittedTokens.size);
 		prCommittedTokens = prCommittedTokens.add((type: \parameter, name: param.name, view: chip, parameter: param));
 		prActiveParameter = param;
