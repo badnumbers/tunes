@@ -72,6 +72,12 @@ Registers a function called when LINK::#-loopStart_:: successfully moves the sta
 ARGUMENT:: action
 A LINK::Classes/Function:: invoked after a successful loop-start move.
 
+METHOD:: playheadTime
+The stored playback position in beats. This is 0 until LINK::#-playheadTime_:: is called, and afterwards it is the value stored by that call.
+
+RETURNS::
+The current playback position in beats.
+
 METHOD:: playheadTime_
 Stores the playback position and refreshes all three marker LINK::Classes/View::s using the same internal update as LINK::#-loopStart_:: and LINK::#-loopEnd_:: (so the playback line is created even when the loop bounds have not been set yet). When CODE::snap:: is true, snaps the given beat the same way as LINK::#-loopStart_:: (using CODE::prSnapResolutionBeats::).
 

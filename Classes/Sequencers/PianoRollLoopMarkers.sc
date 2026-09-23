@@ -23,6 +23,7 @@ PianoRollLoopMarkers {
 		prRollHeight = rollHeight;
 		prLoopLineColour = palette.colour5;
 		prPlaybackLineColour = palette.colour3;
+		prPlayheadTime = 0;
 		prSnapResolutionBeats = 0.25;
 		prStartBeat = 0;
 		prStopBeat = if (defaultStopBeat.notNil, { defaultStopBeat }, { 128 });
@@ -106,6 +107,10 @@ PianoRollLoopMarkers {
 		Validator.validateMethodParameterType(action, Function, "action", "PianoRollLoopMarkers", "onLoopStartMove_");
 		prOnLoopStartMove = action;
 		^this;
+	}
+
+	playheadTime {
+		^prPlayheadTime;
 	}
 
 	playheadTime_ {

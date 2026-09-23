@@ -224,6 +224,7 @@ PianoRoll : SCViewHolder {
 			if (buttonNumber == 0, {
 				if (modifiers.isShift, {
 					prLoopMarkers.playheadTime_(beat);
+					prSequencePlayer.playheadTime_(prLoopMarkers.playheadTime);
 				}, {
 					prLoopMarkers.loopStart_(beat);
 				});
