@@ -130,9 +130,9 @@ PianoRollLoopMarkers {
 		var startX = prStartBeat * prHorizontalScale;
 		var stopX = prStopBeat * prHorizontalScale;
 		if (prStartLine.isNil, {
-			prStartLine = View(prParent, Rect(startX, 0, 1, prRollHeight)).background_(prLoopLineColour);
-			prStopLine = View(prParent, Rect(stopX, 0, 1, prRollHeight)).background_(prLoopLineColour);
-			prPlaybackLine = View(prParent, Rect(playX, 0, 1, prRollHeight)).background_(prPlaybackLineColour);
+			prStartLine = View(prParent, Rect(startX, 0, 1, prRollHeight)).background_(prLoopLineColour).acceptsMouse_(false);
+			prStopLine = View(prParent, Rect(stopX, 0, 1, prRollHeight)).background_(prLoopLineColour).acceptsMouse_(false);
+			prPlaybackLine = View(prParent, Rect(playX, 0, 1, prRollHeight)).background_(prPlaybackLineColour).acceptsMouse_(false);
 		}, {
 			prStartLine.bounds_(Rect(startX, 0, 1, prRollHeight));
 			prStopLine.bounds_(Rect(stopX, 0, 1, prRollHeight));

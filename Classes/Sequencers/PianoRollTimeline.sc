@@ -6,7 +6,7 @@ PianoRollTimeline : SCViewHolder {
 		this.view = View(parent, Rect(0, 0, width, timelineHeight)).background_(palette.colour1);
 		(this.view.bounds.width / horizontalScale).do({
 			|index|
-			View(this.view, Rect(index * horizontalScale, 0, 1, this.view.bounds.height)).background_(palette.colour1.multiply(0.5));
+			View(this.view, Rect(index * horizontalScale, 0, 1, this.view.bounds.height)).background_(palette.colour1.multiply(0.5)).acceptsMouse_(false);
 		});
 		if (loopClickFunc.notNil, {
 			this.view.mouseDownAction_({

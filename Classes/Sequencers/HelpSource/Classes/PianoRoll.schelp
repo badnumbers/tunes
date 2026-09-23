@@ -15,6 +15,9 @@ TABLE::
 
 Edits update the embedded LINK::Classes/SequencePlayer:: sequence and are allowed during playback. LINK::#-startRecording:: starts the LINK::Classes/Metronome::; LINK::#-stopRecording:: stops it. Note operations such as amp, delete, left, legato, right, snap, set, and write are invoked through the embedded LINK::Classes/CommandPrompt::. The prompt is constructed with LINK::Classes/AmpCommand#*new::, LINK::Classes/DeleteCommand#*new::, LINK::Classes/LeftCommand#*new::, LINK::Classes/LegatoCommand#*new::, LINK::Classes/RightCommand#*new::, LINK::Classes/SnapCommand#*new::, and LINK::Classes/WriteCommand#*new:: (passing the optional LINK::Classes/SequencerDocument::). Ambient parameters supply CODE::selectedNotes::, CODE::loopStart::, and CODE::loopEnd::. The CODE::delete:: command removes every selected note from the roll and from the sequence. The CODE::left:: and CODE::right:: commands move every selected note by the typed CODE::resolution::. The CODE::write:: command inserts dummy pattern text via LINK::Classes/SequencerDocument#-insertPattern::.
 
+SUBSECTION:: Navigation
+The mouse wheel scrolls the roll vertically. Shift and the mouse wheel scroll it horizontally; wheel-up moves toward earlier beats. Dragging on empty roll space draws a rectangle and selects the notes inside it. Shift+drag adds to the selection. Clicking empty space clears the selection.
+
 CLASSMETHODS::
 
 METHOD:: new

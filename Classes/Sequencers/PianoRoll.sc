@@ -30,6 +30,9 @@ PianoRoll : SCViewHolder {
 	init {
 		|parent,bounds,palette,tempoClock,devMode,keyRouter,sequencerDocument|
 		var contentLayoutView;
+		var dragOrigin;
+		var scrollWheel;
+		var selectionMoved = false;
 		var selectionView;
 		var pianoRollHeight,pianoRollWidth;
 
@@ -77,6 +80,19 @@ PianoRoll : SCViewHolder {
 		).margins_(0).spacing_(4);
 
 		prScrollView.background_(prPalette.extreme2);
+		// QtCollider delivers mouseWheelAction only for a spontaneous event on the view under the pointer, not for a wheel that bubbles to the ScrollView. Shift+wheel would otherwise be Qt's vertical page step.
+		scrollWheel = {
+			|view, x, y, modifiers, xDelta, yDelta|
+			var handled, origin;
+			handled = nil;
+			if (modifiers.isShift, {
+				origin = prScrollView.visibleOrigin;
+				prScrollView.visibleOrigin = (origin.x - yDelta) @ origin.y;
+				handled = true;
+			});
+			handled;
+		};
+		prScrollView.mouseWheelAction_(scrollWheel);
 		prTempoClock = tempoClock;
 		prRecordedNotes = Array.newClear;
 
@@ -111,8 +127,9 @@ PianoRoll : SCViewHolder {
 
 		this.prRegisterKeyHandlers;
 
-		prBackgroundView = UserView(prScrollView, Rect(0, 0, prPianoRollWidth, prPianoRollHeight)).background_(prPalette.extreme1)
-		.beginDragAction_({|me,x,y|selectionView.visible_(true);x@y;})
+		prBackgroundView = UserView(prScrollView, Rect(0, 0, prPianoRollWidth, prPianoRollHeight)).background_(prPalette.extreme1).mouseWheelAction_(scrollWheel);
+		selectionView = BorderView(prBackgroundView, Rect(10, 10, 10, 10)).background_(Color.clear).borderColour_(prPalette.colour1).borderWidth_(2).acceptsMouse_(false).visible_(false);
+		prBackgroundView
 		.keyDownAction_({
 			|view, char, modifiers, unicode, keycode, key|
 			prActiveModifierKeys = modifiers;
@@ -123,46 +140,62 @@ PianoRoll : SCViewHolder {
 			prActiveModifierKeys = modifiers;
 			prKeyRouter.keyUpReturnValue(char, modifiers, unicode, keycode, key);
 		})
-		.receiveDragHandler_({
-			|me,x,y|
-			selectionView.visible_(false);
-			prRecordedNotes.do({|recordedNote|recordedNote.selectIfEnclosed(selectionView,prActiveModifierKeys.isShift);});
-			this.prRefreshSidebar;
-		})
-		.canReceiveDragHandler_({
-			|me,x,y|
-			var left,top,width,height;
-			if ((View.currentDrag.x) < x,{
-				left = View.currentDrag.x;
-				width = x - (View.currentDrag.x);
-			},{
-				left = x;
-				width = (View.currentDrag.x) - x;
-			});
-			if ((View.currentDrag.y) < y,{
-				top = View.currentDrag.y;
-				height = y - (View.currentDrag.y);
-			},{
-				top = y;
-				height = (View.currentDrag.y) - y;
-			});
-			selectionView.bounds = Rect(left,top,width,height);
-			true; // Allow receiveDragHandler to do something
-		})
 		.mouseDownAction_({
-			|view,x,y,modifiers,buttonNumber,clickCount|
-			if (clickCount == 1,{
-				prRecordedNotes.do({|recordedNote|recordedNote.deselect;});
-				this.prRefreshSidebar;
+			|view, x, y, modifiers, buttonNumber, clickCount|
+			if ((buttonNumber == 0) && { clickCount == 1 }, {
+				dragOrigin = x @ y;
+				selectionMoved = false;
+				if (modifiers.isShift.not, {
+					prRecordedNotes.do({ |recordedNote| recordedNote.deselect });
+					this.prRefreshSidebar;
+				});
 			});
+			nil;
+		})
+		.mouseMoveAction_({
+			|view, x, y, modifiers|
+			var height, left, top, width;
+			if (dragOrigin.notNil && { (x != dragOrigin.x) || { y != dragOrigin.y } }, {
+				selectionMoved = true;
+				if (dragOrigin.x < x, {
+					left = dragOrigin.x;
+					width = x - dragOrigin.x;
+				}, {
+					left = x;
+					width = dragOrigin.x - x;
+				});
+				if (dragOrigin.y < y, {
+					top = dragOrigin.y;
+					height = y - dragOrigin.y;
+				}, {
+					top = y;
+					height = dragOrigin.y - y;
+				});
+				selectionView.bounds = Rect(left, top, width, height);
+				selectionView.visible_(true);
+			});
+			nil;
+		})
+		.mouseUpAction_({
+			|view, x, y, modifiers, buttonNumber|
+			if (dragOrigin.notNil && { buttonNumber == 0 }, {
+				if (selectionMoved, {
+					selectionView.visible_(false);
+					prRecordedNotes.do({ |recordedNote|
+						recordedNote.selectIfEnclosed(selectionView, modifiers.isShift);
+					});
+					this.prRefreshSidebar;
+				});
+				dragOrigin = nil;
+				selectionMoved = false;
+			});
+			nil;
 		});
 
 		(prBackgroundView.bounds.width / prNoteViewScale[\horizontal]).do({
 			|index|
-			View(prBackgroundView,Rect(index * prNoteViewScale[\horizontal], 0, 1, prBackgroundView.bounds.height)).background_(prPalette.colour1.multiply(0.5));
+			View(prBackgroundView, Rect(index * prNoteViewScale[\horizontal], 0, 1, prBackgroundView.bounds.height)).background_(prPalette.colour1.multiply(0.5)).acceptsMouse_(false);
 		});
-
-		selectionView = BorderView(prBackgroundView,Rect(10,10,10,10)).background_(Color.clear).borderColour_(prPalette.colour1).borderWidth_(2).acceptsMouse_(false).visible_(false);
 
 		prDrawNote = {
 			|pianoRollNote|
@@ -170,6 +203,7 @@ PianoRoll : SCViewHolder {
 			.background_(prPalette.colour1)
 			.borderWidth_(0)
 			.borderColour_(prPalette.extreme2)
+			.mouseWheelAction_(scrollWheel)
 			.mouseDownAction_({
 				|view, x, y, modifiers, buttonNumber, clickCount|
 				if (buttonNumber == 0,{
@@ -197,6 +231,7 @@ PianoRoll : SCViewHolder {
 				prLoopMarkers.loopEnd_(beat);
 			});
 		});
+		prTimeline.view.mouseWheelAction_(scrollWheel);
 		this.prRefreshSidebar;
 	}
 
