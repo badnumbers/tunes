@@ -20,7 +20,7 @@ Sequencer {
 		|id,synthId,pattern|
 		Validator.validateMethodParameterType(id, Symbol, "id", "Sequencer", "addMidiSequence");
 		Validator.validateMethodParameterType(synthId, Symbol, "synthId", "Sequencer", "addMidiSequence");
-		Validator.validateMethodParameterType(pattern, Pbind, "pattern", "Sequencer", "addMidiSequence");
+		Validator.validateMethodParameterType(pattern, Pattern, "pattern", "Sequencer", "addMidiSequence");
 
 		if (prSequences.includesKey(id),{
 			warn(format("Overwrote sequence %.", id));

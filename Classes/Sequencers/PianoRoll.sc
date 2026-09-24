@@ -70,8 +70,9 @@ PianoRoll : SCViewHolder {
 			ambientParameters: (
 				selectedNotes: { this.selectedNotes },
 				allNotes: { prRecordedNotes },
-				loopStart: { prLoopMarkers.loopStart },
-				loopEnd: { prLoopMarkers.loopEnd }
+				loopStart: { if (prLoopMarkers.isLoopDefined, { prLoopMarkers.loopStart }, { nil }) },
+				loopEnd: { if (prLoopMarkers.isLoopDefined, { prLoopMarkers.loopEnd }, { nil }) },
+				midiChannel: { prSequencePlayer.midiChannel }
 			),
 			overlayParent: prView,
 			onExecute: { this.prRefreshSidebar }

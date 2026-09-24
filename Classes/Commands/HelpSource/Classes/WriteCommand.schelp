@@ -1,12 +1,16 @@
 TITLE:: WriteCommand
 SUMMARY:: Command that writes the piano-roll pattern to the sequencer document.
 CATEGORIES:: Commands
-RELATED:: Classes/Command, Classes/CommandPrompt, Classes/PianoRoll, Classes/SequencerDocument
+RELATED:: Classes/Command, Classes/CommandPrompt, Classes/PianoRoll, Classes/SequencerDocument, Classes/HardwareSynthesizerConfig
 
 DESCRIPTION::
-TELETYPE::WriteCommand:: is a LINK::Classes/Command:: that inserts dummy pattern text through LINK::Classes/SequencerDocument#-insertPattern::. It is constructed with an optional LINK::Classes/SequencerDocument:: (CODE::nil:: is allowed for scratchpad use). Loop bounds are LINK::Classes/Parameter::s named CODE::loopStart:: and CODE::loopEnd::; LINK::Classes/PianoRoll:: supplies them through LINK::Classes/CommandPrompt#-ambientParameters::, so the user does not type them. After the CODE::write:: chip is committed, LINK::Classes/CommandPrompt:: treats the command as satisfied. Press Return to execute.
+TELETYPE::WriteCommand:: is a LINK::Classes/Command:: that inserts a CODE::~seq.addMidiSequence:: call through LINK::Classes/SequencerDocument#-insertPattern::. It is constructed with an optional LINK::Classes/SequencerDocument:: (CODE::nil:: is allowed for scratchpad use). The user types a non-empty CODE::name::. LINK::Classes/PianoRoll:: supplies CODE::allNotes::, CODE::midiChannel::, CODE::loopStart::, and CODE::loopEnd:: through LINK::Classes/CommandPrompt#-ambientParameters::. CODE::midiChannel:: is the roll's LINK::Classes/SequencePlayer#-midiChannel::. CODE::loopStart:: and CODE::loopEnd:: are nil until both loop markers have been set. After the CODE::write:: chip is committed, the prompt asks for CODE::name::. Press Return to execute.
 
-If the document is CODE::nil::, LINK::#-execute:: returns without writing.
+The inserted text names the sequence and the synthesizer as leading-slash symbols when those names contain no spaces, and as quoted symbols when they contain a space. The synthesizer is the first LINK::Classes/HardwareSynthesizerConfig:: in LINK::Classes/Config#*hardwareSynthesizers:: whose first MIDI channel equals CODE::midiChannel::.
+
+When every written note shares one part number, the pattern is a CODE::Pbind:: whose CODE::\midinote::, CODE::\amp::, CODE::\dur::, and CODE::\legato:: values are CODE::Pseq::s. A key whose onset values are all the same is written as that single value instead of a CODE::Pseq::. A repeated chord is that array, for example CODE::\midinote, [67,64,60]::, not a CODE::Pseq:: of the same array. Notes are ordered by start time. Notes with the same start time are a chord, highest MIDI note first, and that order is the same in every key. A chord is a nested array with no spaces. CODE::\amp:: is velocity mapped from 0–127 to 0–1. CODE::\dur:: is the gap until the next onset, or until CODE::loopEnd:: for the last onset. If a part's first note starts after CODE::loopStart::, that CODE::Pbind:: begins with a rest: a backslash for every key except CODE::\dur::, whose rest value is the first note's start minus CODE::loopStart::. CODE::\legato:: is the note length divided by that CODE::\dur::. Numbers use at most two decimal places, without trailing zeros. Only notes that start at or after CODE::loopStart:: and end at or before CODE::loopEnd:: are written. An empty note list is CODE::Pbind()::. More than one part number is a CODE::Ppar:: of one CODE::Pbind:: per part, in part-number order. Each part uses the same onset, chord, and duration rules, measured only against the other notes in that part.
+
+If the document is CODE::nil::, LINK::#-execute:: returns without writing. If either loop bound is nil, it posts a warning and does not insert. If no synthesizer matches the channel, it throws and does not insert.
 
 CLASSMETHODS::
 
@@ -22,9 +26,18 @@ A new TELETYPE::WriteCommand:: instance.
 INSTANCEMETHODS::
 
 METHOD:: execute
-Inserts dummy pattern text including the given loop start, end, and length. Returns without writing if no document was provided at construction.
+Inserts the CODE::~seq.addMidiSequence:: text. Returns without writing if no document was provided at construction, or if the loop bounds are nil.
 
 ARGUMENT:: args
-A LINK::Classes/Dictionary:: or LINK::Classes/Event:: with CODE::\loopStart:: and CODE::\loopEnd:: as LINK::Classes/Number::s.
+A LINK::Classes/Dictionary:: or LINK::Classes/Event:: with CODE::\name:: as a non-empty LINK::Classes/String::, CODE::\allNotes:: as an LINK::Classes/Array::, CODE::\midiChannel:: as a LINK::Classes/SimpleNumber::, and CODE::\loopStart:: and CODE::\loopEnd:: as LINK::Classes/Number::s or nil.
 
-PRIVATE:: prSetSequencerDocument
+METHOD:: isValid
+True when CODE::name::, CODE::allNotes::, and CODE::midiChannel:: are present and valid. CODE::loopStart:: and CODE::loopEnd:: may be nil.
+
+ARGUMENT:: argsDict
+The same dictionary LINK::#-execute:: receives.
+
+RETURNS::
+A LINK::Classes/Boolean::.
+
+PRIVATE:: prDurs, prFormatNumber, prKeyLine, prMatchingSynthesizer, prOnsets, prPatternText, prPbindText, prPparText, prSetSequencerDocument, prSymbolText

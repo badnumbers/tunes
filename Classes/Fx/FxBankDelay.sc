@@ -49,11 +49,11 @@ FxBankDelay : FxBankEffect {
 				VLayout(
 					HLayout(
 						StaticText().string_("LEFT DELAY").align_(\left).stringColor_(p.extreme2).minSize_(80@20).maxSize_(80@20).background_(p.colour4),
-						prLeftDelayDropDown = PopUpMenu().items_(["1/4", "1/3" , "1/2", "3/4" , "1", "5/4", "4/3", "1.5","2", "3","4","5","6","7","8"]).value_(4).background_(p.colour5)
+						prLeftDelayDropDown = PopUpMenu().items_(["1/4", "1/3" , "1/2", "3/4" , "1", "5/4", "4/3", "1.5","2", "3","4","5","6","7","8"]).value_(10).background_(p.colour5)
 					),
 					HLayout(
 						StaticText().string_("RIGHT DELAY").align_(\left).stringColor_(p.extreme2).minSize_(80@20).maxSize_(80@20).background_(p.colour1),
-						prRightDelayDropDown = PopUpMenu().items_(["1/4", "1/3" , "1/2", "3/4" , "1", "5/4", "4/3", "1.5","2", "3","4","5","6","7","8"]).value_(4).background_(p.colour2)
+						prRightDelayDropDown = PopUpMenu().items_(["1/4", "1/3" , "1/2", "3/4" , "1", "5/4", "4/3", "1.5","2", "3","4","5","6","7","8"]).value_(10).background_(p.colour2)
 					)
 				),
 				VLayout(
