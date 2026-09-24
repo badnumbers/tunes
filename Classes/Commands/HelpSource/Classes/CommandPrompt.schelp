@@ -73,6 +73,9 @@ When setting, an LINK::Classes/Array:: of LINK::Classes/Command:: instances.
 RETURNS::
 An LINK::Classes/Array:: of LINK::Classes/Command:: instances.
 
+METHOD:: focus
+Gives keyboard focus to the prompt's text field.
+
 METHOD:: palette
 The palette used for styling token chips.
 

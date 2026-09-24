@@ -34,6 +34,11 @@ SequencerKeyRouter {
 				contexts: [\record],
 				char: $4,
 				consume: true
+			),
+			\focusCommandPrompt: (
+				contexts: [\record],
+				qtKeys: [ViewQtKey.escape],
+				consume: true
 			)
 		);
 	}

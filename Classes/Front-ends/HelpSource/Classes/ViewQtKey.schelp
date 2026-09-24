@@ -16,6 +16,9 @@ The Control modifier key itself (key-up/key-down for the modifier, not “Ctrl h
 METHOD:: enter
 Qt Enter (typically keypad).
 
+METHOD:: escape
+Qt Escape (16777216).
+
 METHOD:: left
 Left arrow.
 

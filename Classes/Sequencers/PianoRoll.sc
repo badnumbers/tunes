@@ -342,6 +342,7 @@ PianoRoll : SCViewHolder {
 		prKeyRouter.on(\record, \assignPart2, { this.prAssignPartIfSelected(2); });
 		prKeyRouter.on(\record, \assignPart3, { this.prAssignPartIfSelected(3); });
 		prKeyRouter.on(\record, \assignPart4, { this.prAssignPartIfSelected(4); });
+		prKeyRouter.on(\record, \focusCommandPrompt, { prCommandPrompt.focus; });
 	}
 
 	prSelectedNotes {

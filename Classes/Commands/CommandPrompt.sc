@@ -42,6 +42,10 @@ CommandPrompt : SCViewHolder {
 		this.prUpdateSuggestions;
 	}
 
+	focus {
+		prTextField.focus;
+	}
+
 	init {
 		|parent, bounds, commands, palette, ambientParameters, overlayParent, onExecute|
 		var effectiveOverlayParent;
