@@ -1,0 +1,48 @@
+TITLE:: TransposeCommand
+SUMMARY:: Command that adds an integer to the MIDI note number of each selected note.
+CATEGORIES:: Commands
+RELATED:: Classes/Command, Classes/Parameter, Classes/CommandPrompt, Classes/PianoRoll, Classes/PianoRollNote
+
+DESCRIPTION::
+TELETYPE::TransposeCommand:: is a LINK::Classes/Command:: named CODE::transpose:: that adds an integer number of semitones to each selected note. LINK::Classes/PianoRoll:: supplies the notes through LINK::Classes/CommandPrompt#-ambientParameters:: as CODE::selectedNotes::.
+
+CODE::semitones:: is an LINK::Classes/Integer::. Positive values raise the note, negative values lower it, and zero leaves it unchanged. LINK::Classes/PianoRollNote#-transpose:: updates the wrapped LINK::Classes/PlayableNote:: and, when the note view exists, moves that view by the same number of rows.
+
+CLASSMETHODS::
+
+METHOD:: new
+Creates a new TELETYPE::TransposeCommand::. Takes no arguments; transposition is applied by LINK::#-execute::.
+
+RETURNS::
+A new TELETYPE::TransposeCommand:: instance.
+
+INSTANCEMETHODS::
+
+METHOD:: execute
+Adds CODE::\semitones:: to every note in CODE::\selectedNotes:: that responds to CODE::transpose::.
+
+ARGUMENT:: args
+A LINK::Classes/Dictionary:: or LINK::Classes/Event:: with CODE::\selectedNotes:: (an LINK::Classes/Array:: of notes) and CODE::\semitones:: (an LINK::Classes/Integer::).
+
+EXAMPLES::
+
+CODE::
+(
+var note = PianoRollNote(0.0, 60, 100,
+	viewFunc: { View() },
+	selectFunc: {},
+	deselectFunc: {},
+	setPart1Func: {},
+	setPart2Func: {},
+	setPart3Func: {},
+	setPart4Func: {},
+	moveFunc: {}
+);
+note.stop(1.0);
+TransposeCommand.new.execute((
+	selectedNotes: [note],
+	semitones: -2
+));
+note.noteNumber; // 58
+)
+::

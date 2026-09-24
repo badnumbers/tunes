@@ -63,6 +63,7 @@ PianoRoll : SCViewHolder {
 				LegatoCommand.new,
 				RightCommand.new,
 				SnapCommand.new,
+				TransposeCommand.new,
 				WriteCommand(prSequencerDocument)
 			],
 			palette: prPalette,

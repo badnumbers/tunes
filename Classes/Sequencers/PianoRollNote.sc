@@ -249,6 +249,20 @@ PianoRollNote {
 		});
 	}
 
+	transpose {
+		|semitones|
+		Validator.validateMethodParameterType(semitones, Integer, "semitones", "PianoRollNote", "transpose");
+		prPlayableNote.noteNumber = prPlayableNote.noteNumber + semitones;
+		if (prView.notNil, {
+			prView.bounds = Rect(
+				prView.bounds.left,
+				prView.bounds.top - (semitones * prView.bounds.height),
+				prView.bounds.width,
+				prView.bounds.height
+			);
+		});
+	}
+
 	velocity {
 		^prPlayableNote.velocity;
 	}

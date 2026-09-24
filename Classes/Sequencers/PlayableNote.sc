@@ -27,6 +27,12 @@ PlayableNote {
 		^prNoteNumber;
 	}
 
+	noteNumber_ {
+		|value|
+		Validator.validateMethodParameterType(value, Integer, "value", "PlayableNote", "noteNumber_");
+		prNoteNumber = value;
+	}
+
 	shouldBePlaying {
 		|playheadTime|
 		if (this.isPlayable,{

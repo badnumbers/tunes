@@ -152,6 +152,12 @@ Returns the note-off time in beats.
 METHOD:: toggleSelect
 Toggles selection and runs the select or deselect callback.
 
+METHOD:: transpose
+Adds CODE::semitones:: to the MIDI note number. When the note view exists, moves it vertically by that many rows. Positive values raise the note.
+
+ARGUMENT:: semitones
+An LINK::Classes/Integer::. Negative values lower the note.
+
 METHOD:: velocity
 Returns the wrapped note's velocity.
 

@@ -46,7 +46,10 @@ RETURNS::
 CODE::true:: if TELETYPE::stopTime:: is set, otherwise CODE::false::.
 
 METHOD:: noteNumber
-The MIDI note number.
+The MIDI note number. Setting replaces it with an LINK::Classes/Integer::.
+
+ARGUMENT:: value
+When setting, the new MIDI note number.
 
 RETURNS::
 An LINK::Classes/Integer::.
