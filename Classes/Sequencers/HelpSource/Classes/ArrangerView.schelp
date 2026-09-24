@@ -1,0 +1,19 @@
+TITLE:: ArrangerView
+SUMMARY:: Placeholder view for the SequencerGui Arrange page.
+CATEGORIES:: Streams-Patterns-Events
+RELATED:: Classes/SequencerGui, Classes/SCViewHolder
+
+DESCRIPTION::
+TELETYPE::ArrangerView:: is a LINK::Classes/SCViewHolder:: that LINK::Classes/SequencerGui:: shows when the Arrange button is pressed. It currently displays placeholder text while the arrangement interface is redesigned.
+
+CLASSMETHODS::
+
+METHOD:: new
+Creates an instance of TELETYPE::ArrangerView::.
+
+RETURNS::
+A new TELETYPE::ArrangerView:: instance.
+
+INSTANCEMETHODS::
+
+PRIVATE:: init

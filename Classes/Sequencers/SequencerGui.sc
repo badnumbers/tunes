@@ -1,14 +1,8 @@
 SequencerGui {
 	var prDocument;
 	var prKeyRouter;
-	var prLeftPanelBody;
-	var prLeftPanelHeader;
 	var prMainHeader;
-	var prMiddlePanelBody;
-	var prMiddlePanelHeader;
 	var prPalette;
-	var prRightPanelBody;
-	var prRightPanelHeader;
 	var prSequencer;
 	var prSequencerData;
 	var prSettingsView;
@@ -51,23 +45,7 @@ SequencerGui {
 				midiIndicator = BorderView().background_(prPalette.colour2).borderColour_(prPalette.colour3).borderRadius_(3).borderWidth_(2).minSize_(50@50).maxSize_(50@50);
 			).margins_(25).spacing_(25)),
 			stackLayout = StackLayout(
-				View().layout_(
-					HLayout(
-						BorderView().background_(prPalette.colour2).minSize_(200@200).maxWidth_(200).borderWidth_(0).layout_(VLayout(
-							prLeftPanelHeader = BorderView().background_(prPalette.colour3).minHeight_(100).maxHeight_(100).borderWidth_(0),
-							ScrollView().canvas_(prLeftPanelBody = View().background_(prPalette.colour4))
-						)),
-						BorderView().background_(prPalette.colour2).minSize_(200@200).maxWidth_(200).borderWidth_(0).layout_(VLayout(
-							prMiddlePanelHeader = BorderView().background_(prPalette.colour3).minHeight_(100).maxHeight_(100).borderWidth_(0),
-							ScrollView().canvas_(prMiddlePanelBody = View().background_(prPalette.colour4)),
-						)),
-						BorderView().background_(prPalette.colour2).minSize_(200@200).borderWidth_(0).layout_(VLayout(
-							prRightPanelHeader = BorderView().background_(prPalette.colour3).minHeight_(100).maxHeight_(100).borderWidth_(0),
-							ScrollView().canvas_(prRightPanelBody = View().background_(prPalette.colour4))
-						)
-						)
-					).margins_(0).spacing_(20)
-				),
+				ArrangerView(),
 				BorderView().background_(prPalette.colour2).layout_(VLayout(
 					pianoRoll = PianoRoll(palette: prPalette, tempoClock:prTempoClock, devMode: devMode, keyRouter: prKeyRouter, sequencerDocument: prDocument).minHeight_(100),
 					View().background_(prPalette.colour4).minHeight_(70).maxHeight_(70).layout_(
@@ -114,10 +92,6 @@ SequencerGui {
 				),
 				SynthDesk()
 		)).margins_(20).spacing_(20);
-
-		StaticText(prLeftPanelHeader, Rect(30, 30, 200, 40)).string_("Sections").stringColor_(prPalette.extreme2).font_(Font(size:24));
-		StaticText(prMiddlePanelHeader, Rect(30, 30, 200, 40)).string_("Parts").stringColor_(prPalette.extreme2).font_(Font(size:24));
-		StaticText(prRightPanelHeader, Rect(30, 30, 200, 40)).string_("Sequences").stringColor_(prPalette.extreme2).font_(Font(size:24));
 
 		// Draw buttons in main header
 		synthsButton.mouseUpAction_({
