@@ -1,10 +1,10 @@
 TITLE:: PianoRollSidebar
-SUMMARY:: Right-docked sidebar showing loop length and selection count for the piano roll.
+SUMMARY:: Right-docked sidebar showing loop length and the selected note for the piano roll.
 CATEGORIES:: Streams-Patterns-Events
-RELATED:: Classes/PianoRoll, Classes/PianoRollLoopMarkers
+RELATED:: Classes/PianoRoll, Classes/PianoRollLoopMarkers, Classes/PianoRollNote
 
 DESCRIPTION::
-TELETYPE::PianoRollSidebar:: is a LINK::Classes/SCViewHolder:: fixed to the right edge of LINK::Classes/PianoRoll:: (sibling of the roll LINK::Classes/ScrollView::, not inside the scroll canvas). It displays the loop length from LINK::Classes/PianoRollLoopMarkers:: when a loop has been defined (both start and end markers have been set), and the number of selected notes. The loop length is hidden until a loop is defined.
+TELETYPE::PianoRollSidebar:: is a LINK::Classes/SCViewHolder:: fixed to the right edge of LINK::Classes/PianoRoll:: (sibling of the roll LINK::Classes/ScrollView::, not inside the scroll canvas). It displays the loop length from LINK::Classes/PianoRollLoopMarkers:: when a loop has been defined (both start and end markers have been set). The loop length is hidden until a loop is defined. When exactly one LINK::Classes/PianoRollNote:: is selected, its properties are listed under the loop length in the same font and colour: CODE::midinote::, CODE::amp:: (0 to 1, from velocity), then any keys stored on the note's event. Timing keys, including CODE::legato::, are omitted, as are keys that repeat CODE::midinote:: or CODE::amp::. Numeric values use at most two decimal places. Lines that do not fit in the panel are clipped.
 
 CLASSMETHODS::
 
@@ -17,12 +17,12 @@ A LINK::Classes/GuiPalette:: used for label colours.
 INSTANCEMETHODS::
 
 METHOD:: refresh
-Updates the selection label and the loop-length display.
-
-ARGUMENT:: selectionCount
-Number of currently selected LINK::Classes/PianoRollNote:: instances.
+Updates the loop-length display and the selected-note lines.
 
 ARGUMENT:: loopLength
 Loop length in beats, or CODE::nil:: when no loop is defined. When CODE::nil::, the loop heading and value are hidden.
 
-PRIVATE:: init, prFormatLoopLength
+ARGUMENT:: note
+The single selected LINK::Classes/PianoRollNote::, or CODE::nil:: when no note or more than one note is selected. When CODE::nil::, the note lines are removed.
+
+PRIVATE:: init, prClearNoteLines, prFormatLoopLength, prFormatValue, prNoteLines

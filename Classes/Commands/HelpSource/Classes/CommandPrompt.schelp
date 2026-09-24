@@ -47,6 +47,9 @@ An optional LINK::Classes/Dictionary:: or LINK::Classes/Event:: mapping paramete
 ARGUMENT:: overlayParent
 An optional LINK::Classes/View:: or LINK::Classes/Window:: where the suggestions overlay view will be created. Pass the root container view if the command prompt is embedded within nested layouts, or CODE::nil:: to create it on the command prompt view.
 
+ARGUMENT:: onExecute
+An optional LINK::Classes/Function:: called after a command executes successfully, before the prompt is cleared. Pass CODE::nil:: to do nothing.
+
 RETURNS::
 A new TELETYPE::CommandPrompt:: instance.
 

@@ -68,7 +68,8 @@ PianoRoll : SCViewHolder {
 				loopStart: { prLoopMarkers.loopStart },
 				loopEnd: { prLoopMarkers.loopEnd }
 			),
-			overlayParent: prView
+			overlayParent: prView,
+			onExecute: { this.prRefreshSidebar }
 		);
 
 		contentLayoutView.layout = VLayout(
@@ -275,11 +276,12 @@ PianoRoll : SCViewHolder {
 	}
 
 	prRefreshSidebar {
-		var selectionCount, loopLength;
+		var loopLength, note, selected;
 		if (prSidebar.notNil, {
-			selectionCount = this.prSelectedNotes.size;
+			selected = this.prSelectedNotes;
+			note = if (selected.size == 1, { selected[0] }, { nil });
 			loopLength = if (prLoopMarkers.notNil, { prLoopMarkers.loopLength }, { nil });
-			prSidebar.refresh(selectionCount, loopLength);
+			prSidebar.refresh(loopLength, note);
 		});
 	}
 
