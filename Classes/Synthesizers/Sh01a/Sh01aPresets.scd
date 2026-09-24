@@ -117,6 +117,6 @@ Synths(\sh01a).setWorkingPatch(patch);
 (
 var patch = Sh01aPatch();
 patch.name = "Confident SH lead";
-patch.kvps[22]=2;patch.kvps[72]=109;patch.kvps[71]=70;patch.kvps[79]=0;patch.kvps[28]=1;patch.kvps[27]=60;patch.kvps[75]=120;patch.kvps[29]=1;patch.kvps[17]=10;patch.kvps[74]=70;patch.kvps[13]=2;patch.kvps[24]=64;patch.kvps[80]=0;patch.kvps[12]=2;patch.kvps[25]=0;patch.kvps[14]=4;patch.kvps[20]=127;patch.kvps[5]=4;patch.kvps[18]=60;patch.kvps[78]=0;patch.kvps[19]=127;patch.kvps[73]=93;patch.kvps[30]=106;patch.kvps[23]=5;patch.kvps[21]=0;patch.kvps[26]=63;patch.kvps[31]=2;patch.kvps[15]=68;patch.kvps[3]=42;patch.kvps[16]=2;
+patch.kvps[22]=2;patch.kvps[72]=61;patch.kvps[71]=70;patch.kvps[79]=0;patch.kvps[28]=1;patch.kvps[27]=60;patch.kvps[75]=120;patch.kvps[29]=1;patch.kvps[17]=10;patch.kvps[74]=70;patch.kvps[13]=6;patch.kvps[24]=64;patch.kvps[80]=0;patch.kvps[12]=2;patch.kvps[25]=0;patch.kvps[14]=4;patch.kvps[20]=127;patch.kvps[5]=4;patch.kvps[18]=60;patch.kvps[78]=0;patch.kvps[19]=127;patch.kvps[73]=57;patch.kvps[30]=106;patch.kvps[23]=5;patch.kvps[21]=0;patch.kvps[26]=63;patch.kvps[31]=2;patch.kvps[15]=68;patch.kvps[3]=42;patch.kvps[16]=2;
 Synths(\sh01a).setWorkingPatch(patch);
 )
