@@ -139,6 +139,12 @@ PianoRollNote {
 		^prPlayableNote;
 	}
 
+	refreshView {
+		if (prView.notNil, {
+			prMoveFunc.value(prView, this.startTime, this.stopTime);
+		});
+	}
+
 	prApplyTimeDelta {
 		|delta|
 		var newStart, newStop, duration;

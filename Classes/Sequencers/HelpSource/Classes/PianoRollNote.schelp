@@ -107,6 +107,9 @@ Grid spacing in beats.
 METHOD:: playableNote
 Returns the wrapped LINK::Classes/PlayableNote::.
 
+METHOD:: refreshView
+Repositions the note view from its current start and stop times using the piano roll's current horizontal scale. Does nothing when the view has not been created yet.
+
 METHOD:: selectIfEnclosed
 Selects or deselects based on whether this note's view lies inside CODE::possiblyEnclosingView::.
 

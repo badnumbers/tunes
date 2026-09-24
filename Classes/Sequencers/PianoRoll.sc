@@ -29,11 +29,14 @@ PianoRoll : SCViewHolder {
 
 	init {
 		|parent,bounds,palette,tempoClock,devMode,keyRouter,sequencerDocument|
+		var beatLineViews;
 		var contentLayoutView;
 		var dragOrigin;
 		var scrollWheel;
 		var selectionMoved = false;
 		var selectionView;
+		var zoomIndex = 1;
+		var zoomLevels = [20, 40, 80, 160];
 		var pianoRollHeight,pianoRollWidth;
 
 		prDevMode = devMode;
@@ -84,12 +87,56 @@ PianoRoll : SCViewHolder {
 		// QtCollider delivers mouseWheelAction only for a spontaneous event on the view under the pointer, not for a wheel that bubbles to the ScrollView. Shift+wheel would otherwise be Qt's vertical page step.
 		scrollWheel = {
 			|view, x, y, modifiers, xDelta, yDelta|
-			var handled, origin;
+			var canvasX, handled, newIndex, newScale, oldScale, origin, viewportOffset;
 			handled = nil;
-			if (modifiers.isShift, {
-				origin = prScrollView.visibleOrigin;
-				prScrollView.visibleOrigin = (origin.x - yDelta) @ origin.y;
+			if (modifiers.isCtrl, {
 				handled = true;
+				if (yDelta > 0, {
+					newIndex = (zoomIndex + 1).min(zoomLevels.size - 1);
+				}, {
+					if (yDelta < 0, {
+						newIndex = (zoomIndex - 1).max(0);
+					}, {
+						newIndex = zoomIndex;
+					});
+				});
+				if (newIndex != zoomIndex, {
+					origin = prScrollView.visibleOrigin;
+					oldScale = prNoteViewScale[\horizontal];
+					newScale = zoomLevels[newIndex];
+					if (view === prScrollView, {
+						canvasX = origin.x + x;
+					}, {
+						canvasX = view.bounds.left + x;
+					});
+					viewportOffset = canvasX - origin.x;
+					zoomIndex = newIndex;
+					prNoteViewScale[\horizontal] = newScale;
+					prPianoRollWidth = 130 * newScale;
+					prBackgroundView.bounds = Rect(0, 0, prPianoRollWidth, prPianoRollHeight);
+					beatLineViews.do({
+						|line, index|
+						line.bounds = Rect(index * newScale, 0, 1, prBackgroundView.bounds.height);
+					});
+					prRecordedNotes.do({ |note| note.refreshView });
+					if (selectionView.visible, {
+						selectionView.bounds = Rect(
+							selectionView.bounds.left * newScale / oldScale,
+							selectionView.bounds.top,
+							selectionView.bounds.width * newScale / oldScale,
+							selectionView.bounds.height
+						);
+					});
+					prLoopMarkers.horizontalScale_(newScale);
+					prTimeline.horizontalScale_(newScale, prPianoRollWidth - 4);
+					prScrollView.visibleOrigin = ((canvasX / oldScale * newScale) - viewportOffset) @ origin.y;
+				});
+			}, {
+				if (modifiers.isShift, {
+					origin = prScrollView.visibleOrigin;
+					prScrollView.visibleOrigin = (origin.x - yDelta) @ origin.y;
+					handled = true;
+				});
 			});
 			handled;
 		};
@@ -193,9 +240,12 @@ PianoRoll : SCViewHolder {
 			nil;
 		});
 
+		beatLineViews = Array.new;
 		(prBackgroundView.bounds.width / prNoteViewScale[\horizontal]).do({
 			|index|
-			View(prBackgroundView, Rect(index * prNoteViewScale[\horizontal], 0, 1, prBackgroundView.bounds.height)).background_(prPalette.colour1.multiply(0.5)).acceptsMouse_(false);
+			beatLineViews = beatLineViews.add(
+				View(prBackgroundView, Rect(index * prNoteViewScale[\horizontal], 0, 1, prBackgroundView.bounds.height)).background_(prPalette.colour1.multiply(0.5)).acceptsMouse_(false)
+			);
 		});
 
 		prDrawNote = {

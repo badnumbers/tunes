@@ -28,6 +28,17 @@ ARGUMENT:: horizontalScale
 Pixels per beat, matching the piano roll's horizontal scale.
 
 ARGUMENT:: loopClickFunc
-Optional LINK::Classes/Function:: evaluated as CODE::func.value(beat, buttonNumber, modifiers):: on a single left (0) or right (1) click. Beat is the click x-coordinate divided by horizontalScale. The LINK::Classes/Integer:: modifiers value is the same style as other LINK::Classes/View:: mouse actions (e.g. LINK::Classes/Integer#-isShift:: for Shift). Pass nil to disable click handling.
+Optional LINK::Classes/Function:: evaluated as CODE::func.value(beat, buttonNumber, modifiers):: on a single left (0) or right (1) click. Beat is the click x-coordinate divided by the stored horizontal scale. The LINK::Classes/Integer:: modifiers value is the same style as other LINK::Classes/View:: mouse actions (e.g. LINK::Classes/Integer#-isShift:: for Shift). Pass nil to disable click handling.
 
-PRIVATE:: init
+INSTANCEMETHODS::
+
+METHOD:: horizontalScale_
+Sets the pixels-per-beat scale, resizes the strip, and rebuilds the beat ticks. Later clicks divide x by this scale.
+
+ARGUMENT:: horizontalScale
+Pixels per beat.
+
+ARGUMENT:: width
+New strip width in pixels.
+
+PRIVATE:: init, prRebuildTicks

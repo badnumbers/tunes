@@ -16,6 +16,15 @@ PianoRollLoopMarkers {
 	var prStopBeat;
 	var prStopLine;
 
+	horizontalScale_ {
+		|horizontalScale|
+		Validator.validateMethodParameterType(horizontalScale, Number, "horizontalScale", "PianoRollLoopMarkers", "horizontalScale_");
+		prHorizontalScale = horizontalScale;
+		if (prStartLine.notNil, {
+			this.prUpdateLineViews;
+		});
+	}
+
 	init {
 		|parent, horizontalScale, rollHeight, palette, defaultStopBeat|
 		prParent = parent;

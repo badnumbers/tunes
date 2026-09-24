@@ -30,6 +30,12 @@ Initial loop end beat before any marker is set (for example the roll length in b
 
 INSTANCEMETHODS::
 
+METHOD:: horizontalScale_
+Stores the pixels-per-beat scale and, once the marker lines exist, moves them to the new scale. Does not create the lines.
+
+ARGUMENT:: horizontalScale
+Pixels per beat.
+
 METHOD:: isLoopDefined
 Whether both loop start and loop end have been set via LINK::#-loopStart_:: and LINK::#-loopEnd_::. Construction defaults and LINK::#-playheadTime_:: alone do not count as a defined loop.
 
