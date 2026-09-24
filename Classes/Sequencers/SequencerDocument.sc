@@ -1,5 +1,5 @@
 SequencerDocument {
-	classvar prAddMidiPartRegexp = "~seq\\.addMidiPart";
+	classvar prAddMidiSequenceRegexp = "~seq\\.addMidiSequence";
 
 	var prDocument;
 
@@ -35,7 +35,7 @@ SequencerDocument {
 		if (text.isNil, { ^0 });
 		if (text.size == 0, { ^0 });
 
-		matches = text.findRegexp(prAddMidiPartRegexp);
+		matches = text.findRegexp(prAddMidiSequenceRegexp);
 		if (matches.isNil || { matches.size == 0 }, {
 			^text.size;
 		});

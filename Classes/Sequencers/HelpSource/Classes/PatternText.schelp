@@ -38,7 +38,7 @@ The indentation level of round brackets which contains the body of this LINK::Cl
 For example, consider the following:
 
 CODE::
-~seq.addMidiPart(\intro, \unodrum, Pseq([ // This Pseq has bracket indent 1
+~seq.addMidiSequence(\intro, \unodrum, Pseq([ // This Pseq has bracket indent 1
 	Ppar([ // This Ppar has bracket indent 2
 		Pbind( // This Pbind has bracket indent 3
 			\midinote, Pseq([36, 40, 36, 40]),

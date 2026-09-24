@@ -3,7 +3,7 @@
 (
 ~findPattern = {
 	|sectionName, partName, address|
-	var regex = format("~seq.addMidiPart%( *%%, *%% *,", "\\", "\\\\", sectionName, "\\\\", partName);
+	var regex = format("~seq.addMidiSequence%( *%%, *%% *,", "\\", "\\\\", sectionName, "\\\\", partName);
 	var text = ~prDocument.getText;
 	var location = ~prDocument.getText.findRegexp(regex);
 	var patternSubstring = "";

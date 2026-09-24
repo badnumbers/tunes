@@ -16,7 +16,7 @@ Creates an instance of LINK::Classes/Sequencer_Old::.
 INSTANCEMETHODS::
 
 METHOD::addGlobalPreKeys
-Adds a set of pattern keys which are added EMPHASIS::before:: a pattern. This is generally done to provide defaults which can be overridden in the patterns provided by LINK::#-addMidiPart:: and LINK::#-addScPart::.
+Adds a set of pattern keys which are added EMPHASIS::before:: a pattern. This is generally done to provide defaults which can be overridden in the patterns provided by LINK::#-addMidiSequence:: and LINK::#-addScPart::.
 
 ARGUMENT::keysArray
 An even-numbered LINK::Classes/Array:: of keys and values. Each key (i.e. odd-numbered item) must be a LINK::Classes/Symbol::.
@@ -30,7 +30,7 @@ CODE::
 ]);
 ::
 
-METHOD::addMidiPart
+METHOD::addMidiSequence
 Adds a MIDI sequence to the specified section for the LINK::Classes/Synthesizer:: with the specified ID.
 
 ARGUMENT::section
@@ -59,7 +59,7 @@ ARGUMENT::pattern
 A LINK::Classes/Pattern:: to play on the LINK::Classes/SynthDef::. There is no need to specify the TELETYPE::\type::, TELETYPE::\midiout:: or TELETYPE::\chan:: keys since these are included automatically.
 
 METHOD::addSynthesizerPostKeys
-Adds a set of pattern keys which are added EMPHASIS::after:: every section for the specified LINK::Classes/Synthesizer::. These post-keys are generally patterns which use LINK::Classes/Pkey:: to access keys defined previously, for example by LINK::#-addMidiPart:: and LINK::#-addScPart::, and modify them in some way.
+Adds a set of pattern keys which are added EMPHASIS::after:: every section for the specified LINK::Classes/Synthesizer::. These post-keys are generally patterns which use LINK::Classes/Pkey:: to access keys defined previously, for example by LINK::#-addMidiSequence:: and LINK::#-addScPart::, and modify them in some way.
 
 ARGUMENT::synthId
 The ID of the LINK::Classes/Synthesizer:: that these post-keys will be applied to.
@@ -92,11 +92,11 @@ EXAMPLES::
 CODE::
 (
 ~seq = Sequencer_Old();
-~seq.addMidiPart(\section1, \rev2, Pbind(
+~seq.addMidiSequence(\section1, \rev2, Pbind(
 	\dur, 1,
 	\pitch, Pseq([31,41,51,61]).trace
 ));
-~seq.addMidiPart(\section2, \rev2, Pbind(
+~seq.addMidiSequence(\section2, \rev2, Pbind(
 	\dur, 0.5,
 	\pitch, Pseq([71,61,51,41,31]).trace
 ));

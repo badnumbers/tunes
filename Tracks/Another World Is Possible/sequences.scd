@@ -11,7 +11,7 @@ var tapping = (), knocking = (), thumping = ();
 	\timingOffset, Pexprand(0.0001,0.3) * Pbrown(0.8,1.2,0.1),
 	\amp, (Pkey(\amp) * Pbrown(0.8,1.2,0.1)).clip(0,1)
 ]);
-~seq.addMidiPart(\main1, ~rev2, Ppar([
+~seq.addMidiSequence(\main1, ~rev2, Ppar([
 	Pbind(
 		\pitch, Pseq([51,52,53,54, 51,47,46,45,44,47]),
 		\legato, Pseq([0.8,0.8,0.8,0.8, 0.8,0.8,0.8,0.8,0.8,0.8]),
@@ -50,7 +50,7 @@ var tapping = (), knocking = (), thumping = ();
 	\amp, Pkey(\amp) * Pbrown(0.8,1.2,0.1),
 	\timingOffset, Pkey(\timingOffset) * Pbrown(0.7,1.3,0.1)
 ]);
-~seq.addMidiPart(\main1, ~hydrasynth, Pbind(
+~seq.addMidiSequence(\main1, ~hydrasynth, Pbind(
 	\pitch, Pseq([53,54,55,51, 53,61,57,55, 56,54,54, 55,52,52, 53,51,51, 44,45,47,51, 45,47,51,53,52]),
 	\dur, Pseq([q,q,h,5.5, h,q,q,h, 1.5,h,2, 1.5,h,2, 1.5,h,2.5, q,q,q,6, q,q,q,2,2]),
 	\legato, Pseq([1.1, 1.1, 1.1, 0.3, 1.1,1.1,1.1,0.6, 0.9,0.4,0.65, 0.9,0.4,0.65, 0.9,0.4,0.65, 1.1,1.1,1.1,0.25, 1.1,1.1,1.1,0.9,0.8]),
@@ -64,7 +64,7 @@ var tapping = (), knocking = (), thumping = ();
 	\amp, Pkey(\amp) * Pbrown(0.8,1.2,0.1),
 	\timingOffset, Pkey(\timingOffset) * Pbrown(0.8,1.2,0.1)
 ]);
-~seq.addMidiPart(\main1, ~dx7, Pbind(
+~seq.addMidiSequence(\main1, ~dx7, Pbind(
 	\pitch, Pseq([53,52,47,44, 41,46,37,45, 47,52,54,55,53, 52,51,47]),
 	\dur, Pseq([2,w,w,4, 2,2,2,2, 3,w,2,2,3, 1,2,2]),
 	\legato, Pseq([0.8,0.8,0.8,0.8, 0.8,0.8,0.8,0.8, 0.8,0.8,0.8,0.8,0.8, 0.8,0.8,0.8]),

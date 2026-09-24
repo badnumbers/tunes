@@ -14,11 +14,11 @@ Sequencer_Old {
 		this.prAddKeySet(prPreKeySets,AutoKeySet({true},keysArray));
 	}
 
-	addMidiPart {
+	addMidiSequence {
 		|section,synthId,pattern|
-		Validator.validateMethodParameterType(section, Symbol, "section", "Sequencer_Old", "addMidiPart");
-		Validator.validateMethodParameterType(synthId, Symbol, "synthId", "Sequencer_Old", "addMidiPart");
-		Validator.validateMethodParameterType(pattern, Pattern, "pattern", "Sequencer_Old", "addMidiPart");
+		Validator.validateMethodParameterType(section, Symbol, "section", "Sequencer_Old", "addMidiSequence");
+		Validator.validateMethodParameterType(synthId, Symbol, "synthId", "Sequencer_Old", "addMidiSequence");
+		Validator.validateMethodParameterType(pattern, Pattern, "pattern", "Sequencer_Old", "addMidiSequence");
 		if (prSections.includesKey(section) == false,{
 			prSections.put(section, Dictionary());
 		});

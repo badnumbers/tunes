@@ -152,7 +152,7 @@ SequencerGui_Old {
 				text.background_(Color.clear);
 			};
 			text.mouseUpAction = {
-				var regex = format("~seq.addMidiPart%( *%%, *%% *,", "\\", "\\\\", sectionName, "\\\\", partName);
+				var regex = format("~seq.addMidiSequence%( *%%, *%% *,", "\\", "\\\\", sectionName, "\\\\", partName);
 				var location = prDocument.getText.findRegexp(regex);
 				if (location.size == 0,{
 					warn(format("Could not find the location in document %.", prDocument.path));
@@ -224,7 +224,7 @@ SequencerGui_Old {
 
 	prSelectPattern {
 		|sectionName, partName, address|
-		var regex = format("~seq.addMidiPart%( *%%, *%% *,", "\\", "\\\\", sectionName, "\\\\", partName);
+		var regex = format("~seq.addMidiSequence%( *%%, *%% *,", "\\", "\\\\", sectionName, "\\\\", partName);
 		var text = prDocument.getText;
 		var location = prDocument.getText.findRegexp(regex);
 		var patternSubstring = "";
