@@ -125,7 +125,7 @@ CommandPrompt : SCViewHolder {
 		if (prActiveCommand.isNil, { ^this });
 		unassigned = prActiveCommand.parameters.reject({
 			|param|
-			prCommittedArgs[param.name.asSymbol].notNil;
+			this.prIsParameterAssigned(param);
 		});
 		if (unassigned.size == 1, {
 			this.prCommitParameter(unassigned[0]);
@@ -225,7 +225,7 @@ CommandPrompt : SCViewHolder {
 		if (prActiveParameter.isNil, {
 			unassigned = prActiveCommand.parameters.reject({
 				|param|
-				prCommittedArgs[param.name.asSymbol].notNil;
+				this.prIsParameterAssigned(param);
 			});
 			if (unassigned.size > 0, {
 				^\expectingParameter;
@@ -289,7 +289,7 @@ CommandPrompt : SCViewHolder {
 			if (keyHandled.isNil
 				&& { prTextField.string.size == 0 }
 				&& { prCommittedTokens.size > 0 }
-				&& { (char == $\b) || (keycode == ViewKeycode.backspace) }, {
+				&& { keycode == ViewKeycode.backspace }, {
 				this.prRemoveLastCommittedToken;
 				keyHandled = true;
 			});
@@ -306,6 +306,19 @@ CommandPrompt : SCViewHolder {
 			});
 			nil;
 		});
+	}
+
+	prIsParameterAssigned {
+		|param|
+		var key, supplier;
+		key = param.name.asSymbol;
+		if (prCommittedArgs[key].notNil, { ^true });
+		if (prAmbientParameters.isNil, { ^false });
+		supplier = prAmbientParameters[key];
+		if (supplier.isNil, {
+			supplier = prAmbientParameters[param.name.asString];
+		});
+		^supplier.notNil;
 	}
 
 	prMoveSelection {
@@ -414,7 +427,7 @@ CommandPrompt : SCViewHolder {
 		if (state == \expectingParameter, {
 			unassigned = prActiveCommand.parameters.reject({
 				|param|
-				prCommittedArgs[param.name.asSymbol].notNil;
+				this.prIsParameterAssigned(param);
 			});
 			matchingItems = unassigned.select({
 				|param|
