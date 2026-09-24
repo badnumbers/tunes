@@ -1,0 +1,30 @@
+TITLE:: SynthDesk
+SUMMARY:: A user interface for adding effects to hardware synthesizers
+CATEGORIES:: External Control
+RELATED:: Classes/Config, Classes/FxBankSynth, Classes/FxBankChorus, Classes/SequencerGui, Classes/SCViewHolder
+
+DESCRIPTION::
+TELETYPE::SynthDesk:: is a LINK::Classes/SCViewHolder:: that routes hardware synths defined in LINK::Classes/Config:: into SuperCollider so effects can be added to them. It does not create a window. LINK::Classes/SequencerGui:: embeds an instance as a page in its stack; the header Synths button (between Record and the MIDI indicator) shows that page. To show the desk on its own, place it in a LINK::Classes/Window:: layout.
+
+Constructing TELETYPE::SynthDesk:: calls LINK::Classes/Setup#*server:: so the LINK::Classes/Server:: is started.
+
+CLASSMETHODS::
+
+METHOD:: new
+Creates an instance of TELETYPE::SynthDesk::.
+
+RETURNS::
+A new TELETYPE::SynthDesk:: instance.
+
+INSTANCEMETHODS::
+
+PRIVATE:: init, prBuildDesk, prSetupHardwareSynth
+
+EXAMPLES::
+
+CODE::
+// Embed in a window
+Window("Synths").layout_(VLayout(SynthDesk())).front;
+
+// Or open SequencerGui and click Synths in the header
+::

@@ -1,4 +1,4 @@
-FxBank : SCViewHolder {
+SynthDesk : SCViewHolder {
 	var prTempoClock;
 	var prBuildDesk;
 	var prSetupHardwareSynth;

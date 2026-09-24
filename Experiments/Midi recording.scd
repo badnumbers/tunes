@@ -1,5 +1,5 @@
 Config.openConfigFile
-FxBank()
+SynthDesk()
 TempoClock.tempo_(1.5)
 Setup.midi
 (

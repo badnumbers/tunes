@@ -17,7 +17,7 @@ SequencerGui {
 
 	init {
 		|sequencer,tempoClock,devMode|
-		var window, stackLayout, midiIndicator, fxBankButton, settingsButton, arrangeButton, recordButton, startRecordingButton, playLoopButton, pianoRoll;
+		var window, stackLayout, midiIndicator, synthsButton, settingsButton, arrangeButton, recordButton, startRecordingButton, playLoopButton, pianoRoll;
 		var tempoKnob, metronomeKnob;
 		var totalMidiNoteCount = 0;
 		var renderButtonFunc;
@@ -47,7 +47,7 @@ SequencerGui {
 				settingsButton = renderButtonFunc.value("Settings"),
 				arrangeButton = renderButtonFunc.value("Arrange"),
 				recordButton = renderButtonFunc.value("Record"),
-				fxBankButton = renderButtonFunc.value("FX bank"),
+				synthsButton = renderButtonFunc.value("Synths"),
 				midiIndicator = BorderView().background_(prPalette.colour2).borderColour_(prPalette.colour3).borderRadius_(3).borderWidth_(2).minSize_(50@50).maxSize_(50@50);
 			).margins_(25).spacing_(25)),
 			stackLayout = StackLayout(
@@ -112,7 +112,7 @@ SequencerGui {
 						[nil, s: 1]
 					).margins_(25).spacing_(25)
 				),
-				FxBank()
+				SynthDesk()
 		)).margins_(20).spacing_(20);
 
 		StaticText(prLeftPanelHeader, Rect(30, 30, 200, 40)).string_("Sections").stringColor_(prPalette.extreme2).font_(Font(size:24));
@@ -120,7 +120,7 @@ SequencerGui {
 		StaticText(prRightPanelHeader, Rect(30, 30, 200, 40)).string_("Sequences").stringColor_(prPalette.extreme2).font_(Font(size:24));
 
 		// Draw buttons in main header
-		fxBankButton.mouseUpAction_({
+		synthsButton.mouseUpAction_({
 			stackLayout.index_(3);
 		});
 		{
