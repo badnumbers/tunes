@@ -104,6 +104,12 @@ Moves the note one grid step right at CODE::resolution:: beats. If the start tim
 ARGUMENT:: resolution
 Grid spacing in beats.
 
+METHOD:: partNumber
+The part index stored for this note, from 1 to 4. New notes are part 1. LINK::#-setPartIfSelected:: changes it when the note is selected.
+
+RETURNS::
+An LINK::Classes/Integer::.
+
 METHOD:: playableNote
 Returns the wrapped LINK::Classes/PlayableNote::.
 

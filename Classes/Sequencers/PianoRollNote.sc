@@ -135,6 +135,10 @@ PianoRollNote {
 		this.prApplyTimeDelta(delta);
 	}
 
+	partNumber {
+		^prPartNumber;
+	}
+
 	playableNote {
 		^prPlayableNote;
 	}

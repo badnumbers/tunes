@@ -68,6 +68,7 @@ PianoRoll : SCViewHolder {
 			palette: prPalette,
 			ambientParameters: (
 				selectedNotes: { this.selectedNotes },
+				allNotes: { prRecordedNotes },
 				loopStart: { prLoopMarkers.loopStart },
 				loopEnd: { prLoopMarkers.loopEnd }
 			),

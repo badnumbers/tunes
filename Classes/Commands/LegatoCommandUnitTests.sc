@@ -50,7 +50,7 @@ LegatoCommandUnitTests : BNUnitTest {
 			this.prMockNote(2, stopTime: 3.5),
 			this.prMockNote(4, stopTime: 5.0)
 		];
-		cmd.execute((selectedNotes: notes, loopEnd: 8, values: [0.5, 1]));
+		cmd.execute((selectedNotes: notes, allNotes: notes, loopEnd: 8, values: [0.5, 1]));
 		this.assertEquals(notes[0].event[\legato], 0.5);
 		this.assertEquals(notes[0].stopTime, 0.5);
 		this.assertEquals(notes[1].event[\legato], 1);
@@ -70,7 +70,7 @@ LegatoCommandUnitTests : BNUnitTest {
 			this.prMockNote(1, 67, stopTime: 1.9),
 			this.prMockNote(2, 60, stopTime: 2.5)
 		];
-		cmd.execute((selectedNotes: notes, loopEnd: 4, values: [0.5]));
+		cmd.execute((selectedNotes: notes, allNotes: notes, loopEnd: 4, values: [0.5]));
 		this.assertEquals(notes[0].event[\legato], 0.5);
 		this.assertEquals(notes[0].stopTime, 0.5);
 		this.assertEquals(notes[1].event[\legato], 0.5);
@@ -88,7 +88,7 @@ LegatoCommandUnitTests : BNUnitTest {
 			this.prMockNote(0, stopTime: 0.9),
 			this.prMockNote(2, stopTime: 2.5)
 		];
-		cmd.execute((selectedNotes: notes, loopEnd: 4, values: [0.5]));
+		cmd.execute((selectedNotes: notes, allNotes: notes, loopEnd: 4, values: [0.5]));
 		this.assertEquals(notes[0].event[\legato], 0.5);
 		this.assertEquals(notes[0].stopTime, 1);
 		this.assertEquals(notes[1].event[\legato], 0.5);
@@ -102,10 +102,29 @@ LegatoCommandUnitTests : BNUnitTest {
 			this.prMockNote(0, stopTime: 0.9),
 			this.prMockNote(1, stopTime: 1.5)
 		];
-		cmd.execute((selectedNotes: notes, loopEnd: 4, values: [1.5]));
+		cmd.execute((selectedNotes: notes, allNotes: notes, loopEnd: 4, values: [1.5]));
 		this.assertEquals(notes[0].event[\legato], 1.5);
 		this.assertEquals(notes[0].stopTime, 1.5);
 		this.assertEquals(notes[1].event[\legato], 1.5);
 		this.assertEquals(notes[1].stopTime, 5.5);
+	}
+
+	test_execute_nextOnset_usesSamePartFromAllNotes {
+		var cmd, selected, otherPart, samePart;
+		cmd = LegatoCommand.new;
+		selected = this.prMockNote(0, stopTime: 0.9);
+		otherPart = this.prMockNote(1, stopTime: 1.5);
+		samePart = this.prMockNote(3, stopTime: 3.5);
+		otherPart.toggleSelect;
+		otherPart.setPartIfSelected(2);
+		otherPart.deselect;
+		cmd.execute((
+			selectedNotes: [selected],
+			allNotes: [selected, otherPart, samePart],
+			loopEnd: 8,
+			values: [0.5]
+		));
+		this.assertEquals(selected.event[\legato], 0.5);
+		this.assertEquals(selected.stopTime, 1.5);
 	}
 }
