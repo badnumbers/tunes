@@ -195,7 +195,7 @@ PianoRoll : SCViewHolder {
 			if ((buttonNumber == 0) && { clickCount == 1 }, {
 				dragOrigin = x @ y;
 				selectionMoved = false;
-				if (modifiers.isShift.not, {
+				if (modifiers.isCtrl.not, {
 					prRecordedNotes.do({ |recordedNote| recordedNote.deselect });
 					this.prRefreshSidebar;
 				});
@@ -232,7 +232,7 @@ PianoRoll : SCViewHolder {
 				if (selectionMoved, {
 					selectionView.visible_(false);
 					prRecordedNotes.do({ |recordedNote|
-						recordedNote.selectIfEnclosed(selectionView, modifiers.isShift);
+						recordedNote.selectIfEnclosed(selectionView, modifiers.isCtrl);
 					});
 					this.prRefreshSidebar;
 				});
@@ -260,7 +260,17 @@ PianoRoll : SCViewHolder {
 			.mouseDownAction_({
 				|view, x, y, modifiers, buttonNumber, clickCount|
 				if (buttonNumber == 0,{
-					pianoRollNote.toggleSelect();
+					if (modifiers.isCtrl.not, {
+						prRecordedNotes.do({
+							|recordedNote|
+							if ((recordedNote !== pianoRollNote) && { recordedNote.isSelected }, {
+								recordedNote.deselect;
+							});
+						});
+					});
+					if (pianoRollNote.isSelected.not, {
+						pianoRollNote.toggleSelect;
+					});
 				},{
 					if (buttonNumber == 1,{
 						postln(format("Note number: %, velocity: %.", pianoRollNote.noteNumber, pianoRollNote.velocity));
