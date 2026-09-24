@@ -10,8 +10,9 @@ SUBSECTION:: Keyboard editing
 Focus the note area after clicking it:
 
 TABLE::
-1–4                     Assign part on selected notes
-Escape                  Focus the command prompt
+## Keys || Behaviour
+## 1–4 || Assign part on selected notes
+## Escape || Focus the command prompt
 ::
 
 Edits update the embedded LINK::Classes/SequencePlayer:: sequence and are allowed during playback. LINK::#-startRecording:: starts the LINK::Classes/Metronome::; LINK::#-stopRecording:: stops it. Note operations such as amp, delete, left, legato, right, snap, transpose, and write are invoked through the embedded LINK::Classes/CommandPrompt::. The prompt is constructed with LINK::Classes/AmpCommand#*new::, LINK::Classes/DeleteCommand#*new::, LINK::Classes/LeftCommand#*new::, LINK::Classes/LegatoCommand#*new::, LINK::Classes/RightCommand#*new::, LINK::Classes/SnapCommand#*new::, LINK::Classes/TransposeCommand#*new::, and LINK::Classes/WriteCommand#*new:: (passing the optional LINK::Classes/SequencerDocument::). Ambient parameters supply CODE::selectedNotes::, CODE::allNotes::, CODE::loopStart::, CODE::loopEnd::, and CODE::midiChannel::. CODE::loopStart:: and CODE::loopEnd:: are nil until both loop markers have been set. The CODE::delete:: command removes every selected note from the roll and from the sequence. The CODE::left:: and CODE::right:: commands move every selected note by the typed CODE::resolution::. The CODE::transpose:: command adds the typed integer to every selected note's MIDI note number. The CODE::write:: command inserts a CODE::~seq.addMidiSequence:: line via LINK::Classes/SequencerDocument#-insertPattern::.
