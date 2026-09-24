@@ -1,8 +1,9 @@
 SequencerGui_Old {
+	var prColours;
 	var prDocument;
-	var prMainHeader;
 	var prLeftPanelBody;
 	var prLeftPanelHeader;
+	var prMainHeader;
 	var prMainHeaderData;
 	var prMainHeaderTitle;
 	var prMiddlePanelBody;
@@ -12,7 +13,6 @@ SequencerGui_Old {
 	var prSequencer;
 	var prSequencerData;
 	var prWindow;
-	var prColours;
 
 	init {
 		|sequencer,privateSequencerData|

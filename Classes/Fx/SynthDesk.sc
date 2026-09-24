@@ -1,7 +1,7 @@
 SynthDesk : SCViewHolder {
-	var prTempoClock;
 	var prBuildDesk;
 	var prSetupHardwareSynth;
+	var prTempoClock;
 
 	init {
 		Setup.server;

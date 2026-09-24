@@ -1,8 +1,8 @@
 Sequencer_Old {
 	var prEventStreamPlayer;
 	var prPartWrapper;
-	var prPreKeySets;
 	var prPostKeySets;
+	var prPreKeySets;
 	var prSections;
 
 	addGlobalPreKeys {
@@ -198,14 +198,14 @@ Sequencer_Old {
 		};
 	}
 
-	*new {
-		^super.new.init();
-	}
-
 	loop {
 		|section|
 		Validator.validateMethodParameterType(section, Symbol, "section", "Sequencer_Old", "loop");
 		this.play([section],loop:true);
+	}
+
+	*new {
+		^super.new.init();
 	}
 
 	play {
