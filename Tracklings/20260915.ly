@@ -29,3 +29,14 @@
     af1 f c' df c af bf f
   }
 >>
+
+\new GrandStaff <<
+  \new Staff \with { instrumentName = "SH-01A" } \relative c'' {
+    \time 4/4
+    \key ef \major
+    af8. f16~ f2 c'16 bf8. | % 1
+    g2. f'16 ef c8 | % 2
+    af8. bf c8 f,4 g16 af bf8 | % 3
+    ef,1 | % 4
+  }
+>>
