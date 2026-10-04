@@ -143,15 +143,6 @@ DrumProgrammer : SCViewHolder {
 		this.prSyncSequence;
 	}
 
-	prDropNotesForStartTime {
-		|startTime|
-		prNotes = prNotes.reject({
-			|note|
-			note.startTime == startTime
-		});
-		this.prSyncSequence;
-	}
-
 	prFindNote {
 		|noteNumber, startTime|
 		^prNotes.detect({
@@ -223,9 +214,13 @@ DrumProgrammer : SCViewHolder {
 
 	prMakeSquare {
 		|columnIndex, noteNumber|
-		var square;
+		var colour, square;
+		colour = prPalette.colour5;
+		if (noteNumber.notNil && { this.prFindNote(noteNumber, this.prNoteStartTime(columnIndex)).notNil }, {
+			colour = prPalette.colour3;
+		});
 		square = View()
-			.background_(prPalette.colour5)
+			.background_(colour)
 			.minSize_(prSquareSize@prSquareSize)
 			.maxSize_(prSquareSize@prSquareSize)
 			.mouseDownAction_({
@@ -266,9 +261,7 @@ DrumProgrammer : SCViewHolder {
 	}
 
 	prRemoveStep {
-		var startTime;
 		if (prStepCount == 0, { ^this });
-		startTime = this.prNoteStartTime(prStepCount - 1);
 		prRowSquares.do({
 			|squares, rowIndex|
 			var square;
@@ -277,7 +270,6 @@ DrumProgrammer : SCViewHolder {
 			this.prSyncRowBackground(prRowViews[rowIndex], squares.size);
 		});
 		prStepCount = prStepCount - 1;
-		this.prDropNotesForStartTime(startTime);
 		this.prUpdateLoopEnd;
 		this.prRefreshRemoveButtons;
 	}

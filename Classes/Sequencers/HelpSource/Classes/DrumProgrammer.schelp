@@ -8,7 +8,7 @@ TELETYPE::DrumProgrammer:: is a LINK::Classes/SCViewHolder:: that shows a grid o
 
 Clicking an empty square adds a hit and colours the square with colour3. Clicking it again removes the hit and restores colour5. Each hit is a LINK::Classes/PlayableNote:: with velocity 100. The column is a sixteenth note (start time CODE::columnIndex * 0.25:: beats) and the note lasts CODE::0.0625:: beats. MIDI is sent on channel 10.
 
-A strip along the bottom holds the controls. Play starts the LINK::Classes/SequencePlayer:: from beat 0. The loop runs to the last step and then wraps. A second Play while already playing does nothing. Stop ends playback. Add step appends a column on the right of every row and lengthens the loop. Remove step removes the rightmost column, drops any hits in that column, and is disabled when there are no steps. Removing the last step also stops playback. Add drum sound and Remove drum sound are hidden. Removing a row drops the hits for that drum sound.
+A strip along the bottom holds the controls. Play starts the LINK::Classes/SequencePlayer:: from beat 0. The loop runs to the last step and then wraps. A second Play while already playing does nothing. Stop ends playback. Add step appends a column on the right of every row and lengthens the loop. If that column was removed earlier, its hits are shown again and play once the loop includes them. Remove step removes the rightmost column and is disabled when there are no steps. Hits in a removed column are kept. Removing the last step also stops playback. Add drum sound and Remove drum sound are hidden. Removing a row drops the hits for that drum sound.
 
 It does not create a window. Place an instance in a LINK::Classes/Window:: layout to show it.
 
@@ -22,7 +22,7 @@ A new TELETYPE::DrumProgrammer:: instance.
 
 INSTANCEMETHODS::
 
-PRIVATE:: init, initClass, prAddDrumSound, prAddStep, prAppendDrumSound, prDropNotesForNoteNumber, prDropNotesForStartTime, prFindNote, prMakeButton, prMakeLabel, prMakeRow, prMakeSquare, prNoteStartTime, prPlay, prRefreshRemoveButtons, prRemoveDrumSound, prRemoveStep, prSetButtonEnabled, prSortedDrumSoundNames, prStop, prSyncRowBackground, prSyncSequence, prToggleHit, prUpdateLoopEnd
+PRIVATE:: init, initClass, prAddDrumSound, prAddStep, prAppendDrumSound, prDropNotesForNoteNumber, prFindNote, prMakeButton, prMakeLabel, prMakeRow, prMakeSquare, prNoteStartTime, prPlay, prRefreshRemoveButtons, prRemoveDrumSound, prRemoveStep, prSetButtonEnabled, prSortedDrumSoundNames, prStop, prSyncRowBackground, prSyncSequence, prToggleHit, prUpdateLoopEnd
 
 EXAMPLES::
 
