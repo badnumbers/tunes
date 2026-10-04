@@ -1,0 +1,18 @@
+---
+description: Future direction for DrumProgrammer, the drum-machine page to embed in SequencerGui. Use when working on DrumProgrammer or that embedding.
+alwaysApply: false
+---
+
+# DrumProgrammer direction
+
+Planned behaviour only. Do not implement it unless the user asks for a specific piece.
+
+`DrumProgrammer` (`Classes/Sequencers/DrumProgrammer.sc`) is the view, parallel to `PianoRoll`: a user interface for programming MIDI sequences for a drum machine and playing them back. It composes a `CommandPrompt`. The scratchpad window is temporary. Embed the view in `SequencerGui` once it is workable.
+
+## Grid
+
+- Rows are drum sounds. The user can add and remove rows. Names and MIDI note numbers will come from an extension of `Config` for drum synthesizers, not from free note entry. Until that exists, `DrumProgrammer` keeps the interim map in the class dictionary `prDrumSounds`. Add drum sound and Remove drum sound stay hidden while that map is fixed.
+- Columns are steps in a loop, working assumption 16th notes. The user can add and remove columns to lengthen or shorten the loop. The step length may change later.
+- A cell is one drum hit. The default display is a cross, or something similar, when a hit is present for that step and drum sound.
+- Velocity matters. A keypress switches the grid to a view where crosses are replaced by knobs so amplitude can be set in the interface. The key is not chosen yet. `AmpCommand` through the `CommandPrompt` is the other way to set amplitude.
+- Dragging selects a section of one row so commands can apply to it. Selection does not cross rows.

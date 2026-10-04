@@ -1,9 +1,8 @@
 SequencePlayer {
-	classvar prCutSliceFunc;
 	classvar prDelta = 0.0625;
-	classvar prPlaySliceFunc;
 
 	var prCurrentlyPlayingNotes;
+	var prCutSliceFunc;
 	var prIsPlaying = false;
 	var prLatency = 0.01;
 	var prLoopEnd = 64;
@@ -13,6 +12,7 @@ SequencePlayer {
 	var prMidiOut;
 	var prOnPlayheadMove;
 	var prPlayheadTime = 0;
+	var prPlaySliceFunc;
 	var prSequence;
 	var prTempoClock;
 

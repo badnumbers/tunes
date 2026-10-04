@@ -1,0 +1,35 @@
+TITLE:: DrumProgrammer
+SUMMARY:: Drum-machine step grid with looping playback.
+CATEGORIES:: GUI>Views
+RELATED:: Classes/EnhancedButton, Classes/GuiPalette, Classes/PlayableNote, Classes/SCViewHolder, Classes/SequencePlayer, Classes/StaticText, Classes/View, Classes/Window
+
+DESCRIPTION::
+TELETYPE::DrumProgrammer:: is a LINK::Classes/SCViewHolder:: that shows a grid of step squares on a LINK::Classes/GuiPalette:: colour1 background. Sound names and MIDI note numbers are held in a class LINK::Classes/Dictionary:: for now. It opens with one row of 16 squares for each sound, ordered by MIDI note number ascending from top to bottom: Kick 2 (35), Kick 1 (36), Rim (37), Snare (38), Clap (39), Tom 1 (41), Closed hi-hat (42), Tom 2 (43), Open hi-hat (46), Cymbal (49), Ride (51), Cowbell (56). Each row has its sound name in a LINK::Classes/StaticText:: on the left. That label column is as wide as the longest name.
+
+Clicking an empty square adds a hit and colours the square with colour3. Clicking it again removes the hit and restores colour5. Each hit is a LINK::Classes/PlayableNote:: with velocity 100. The column is a sixteenth note (start time CODE::columnIndex * 0.25:: beats) and the note lasts CODE::0.0625:: beats. MIDI is sent on channel 10.
+
+A strip along the bottom holds the controls. Play starts the LINK::Classes/SequencePlayer:: from beat 0. The loop runs to the last step and then wraps. A second Play while already playing does nothing. Stop ends playback. Add step appends a column on the right of every row and lengthens the loop. Remove step removes the rightmost column, drops any hits in that column, and is disabled when there are no steps. Removing the last step also stops playback. Add drum sound and Remove drum sound are hidden. Removing a row drops the hits for that drum sound.
+
+It does not create a window. Place an instance in a LINK::Classes/Window:: layout to show it.
+
+CLASSMETHODS::
+
+METHOD:: new
+Creates an instance of TELETYPE::DrumProgrammer::.
+
+RETURNS::
+A new TELETYPE::DrumProgrammer:: instance.
+
+INSTANCEMETHODS::
+
+PRIVATE:: init, initClass, prAddDrumSound, prAddStep, prAppendDrumSound, prDropNotesForNoteNumber, prDropNotesForStartTime, prFindNote, prMakeButton, prMakeLabel, prMakeRow, prMakeSquare, prNoteStartTime, prPlay, prRefreshRemoveButtons, prRemoveDrumSound, prRemoveStep, prSetButtonEnabled, prSortedDrumSoundNames, prStop, prSyncRowBackground, prSyncSequence, prToggleHit, prUpdateLoopEnd
+
+EXAMPLES::
+
+CODE::
+(
+var window = Window("Window", Rect(100, 100, 1000, 800));
+window.layout = VLayout(DrumProgrammer()).margins_(0);
+window.front;
+)
+::
