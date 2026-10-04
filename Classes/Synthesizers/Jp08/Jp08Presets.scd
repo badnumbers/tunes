@@ -255,3 +255,10 @@ patch.name = "80s sync tynkle";
 patch.kvps[4102]=9;patch.kvps[4358]=0;patch.kvps[1282]=145;patch.kvps[1286]=128;patch.kvps[268]=3;patch.kvps[770]=0;patch.kvps[1284]=0;patch.kvps[4]=0;patch.kvps[274]=165;patch.kvps[264]=0;patch.kvps[280]=100;patch.kvps[1288]=3;patch.kvps[768]=161;patch.kvps[1032]=1;patch.kvps[260]=0;patch.kvps[278]=2;patch.kvps[522]=1;patch.kvps[524]=0;patch.kvps[4098]=13;patch.kvps[270]=1;patch.kvps[276]=128;patch.kvps[1026]=143;patch.kvps[1024]=0;patch.kvps[272]=1;patch.kvps[4352]=0;patch.kvps[4360]=2;patch.kvps[514]=255;patch.kvps[262]=0;patch.kvps[4100]=11;patch.kvps[258]=187;patch.kvps[1028]=0;patch.kvps[518]=0;patch.kvps[516]=0;patch.kvps[0]=157;patch.kvps[266]=4;patch.kvps[526]=160;patch.kvps[512]=0;patch.kvps[4354]=128;patch.kvps[4096]=1;patch.kvps[520]=0;patch.kvps[1280]=0;patch.kvps[256]=0;patch.kvps[2]=0;patch.kvps[1030]=128;
 Synths(\jp08).setWorkingPatch(patch);
 )
+
+(
+var patch = Jp08Patch();
+patch.name = "20260925";
+patch.kvps[4102]=11;patch.kvps[4358]=0;patch.kvps[1282]=209;patch.kvps[1286]=128;patch.kvps[268]=3;patch.kvps[770]=0;patch.kvps[1284]=76;patch.kvps[4]=0;patch.kvps[274]=165;patch.kvps[264]=1;patch.kvps[280]=128;patch.kvps[1288]=0;patch.kvps[768]=255;patch.kvps[1032]=1;patch.kvps[260]=1;patch.kvps[278]=1;patch.kvps[522]=1;patch.kvps[524]=38;patch.kvps[4098]=11;patch.kvps[270]=2;patch.kvps[276]=125;patch.kvps[1026]=128;patch.kvps[1024]=0;patch.kvps[272]=0;patch.kvps[4352]=0;patch.kvps[4360]=2;patch.kvps[514]=46;patch.kvps[262]=0;patch.kvps[4100]=9;patch.kvps[258]=0;patch.kvps[1028]=229;patch.kvps[518]=0;patch.kvps[516]=0;patch.kvps[0]=141;patch.kvps[266]=0;patch.kvps[526]=160;patch.kvps[512]=0;patch.kvps[4354]=128;patch.kvps[4096]=0;patch.kvps[520]=255;patch.kvps[1280]=225;patch.kvps[256]=10;patch.kvps[2]=50;patch.kvps[1030]=128;
+Synths(\jp08).setWorkingPatch(patch);
+)
