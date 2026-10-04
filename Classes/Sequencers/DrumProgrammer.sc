@@ -2,6 +2,7 @@ DrumProgrammer : SCViewHolder {
 	classvar prDrumSounds;
 
 	var prGrid;
+	var prHighlightedColumn;
 	var prHitDuration = 0.0625;
 	var prIsPlaying = false;
 	var prLabelColumnWidth;
@@ -31,6 +32,13 @@ DrumProgrammer : SCViewHolder {
 		prRowViews = Array.new;
 		prSequencePlayer = SequencePlayer(TempoClock.default, Setup.midi);
 		prSequencePlayer.midiChannel_(9);
+		prSequencePlayer.onPlayheadMove_({
+			|beat|
+			AppClock.sched(0.0, {
+				this.prHighlightColumn(beat);
+				nil
+			});
+		});
 		prGrid = VLayout().spacing_(8).margins_(8);
 		prLabelFont = Font(size: 16);
 		prLabelColumnWidth = prDrumSounds.keys.asArray.collect({
@@ -133,6 +141,21 @@ DrumProgrammer : SCViewHolder {
 		this.prRefreshRemoveButtons;
 	}
 
+	prClearColumnHighlight {
+		var columnIndex;
+		columnIndex = prHighlightedColumn;
+		if (columnIndex.isNil, { ^this });
+		prHighlightedColumn = nil;
+		prRowSquares.do({
+			|squares|
+			var square;
+			square = squares[columnIndex];
+			if (square.notNil, {
+				square.borderWidth_(0);
+			});
+		});
+	}
+
 	prDropNotesForNoteNumber {
 		|noteNumber|
 		if (noteNumber.isNil, { ^this });
@@ -149,6 +172,29 @@ DrumProgrammer : SCViewHolder {
 			|note|
 			(note.noteNumber == noteNumber) && { note.startTime == startTime }
 		});
+	}
+
+	prHighlightColumn {
+		|beat|
+		var columnIndex;
+		if (prIsPlaying.not, {
+			this.prClearColumnHighlight;
+			^this;
+		});
+		columnIndex = (beat.round(prSequencePlayer.delta) / prStepBeats).floor.asInteger;
+		if (columnIndex == prHighlightedColumn, { ^this });
+		this.prClearColumnHighlight;
+		if ((columnIndex < 0) || (columnIndex >= prStepCount), { ^this });
+		prRowSquares.do({
+			|squares|
+			var square;
+			square = squares[columnIndex];
+			if (square.notNil, {
+				square.borderColour_(prPalette.extreme2);
+				square.borderWidth_(2);
+			});
+		});
+		prHighlightedColumn = columnIndex;
 	}
 
 	prMakeButton {
@@ -219,15 +265,20 @@ DrumProgrammer : SCViewHolder {
 		if (noteNumber.notNil && { this.prFindNote(noteNumber, this.prNoteStartTime(columnIndex)).notNil }, {
 			colour = prPalette.colour3;
 		});
-		square = View()
-			.background_(colour)
-			.minSize_(prSquareSize@prSquareSize)
-			.maxSize_(prSquareSize@prSquareSize)
-			.mouseDownAction_({
-				if (noteNumber.notNil, {
-					this.prToggleHit(square, columnIndex, noteNumber);
-				});
+		square = BorderView();
+		square.minSize_(prSquareSize@prSquareSize);
+		square.maxSize_(prSquareSize@prSquareSize);
+		square.borderColour_(prPalette.extreme2);
+		square.borderWidth_(0);
+		square.background_(colour);
+		square.mouseDownAction_({
+			if (noteNumber.notNil, {
+				this.prToggleHit(square, columnIndex, noteNumber);
 			});
+		});
+		if (prIsPlaying && { columnIndex == prHighlightedColumn }, {
+			square.borderWidth_(2);
+		});
 		^square;
 	}
 
@@ -242,6 +293,7 @@ DrumProgrammer : SCViewHolder {
 		prSequencePlayer.sequence_(prNotes);
 		prSequencePlayer.play();
 		prIsPlaying = true;
+		this.prHighlightColumn(0);
 	}
 
 	prRefreshRemoveButtons {
@@ -262,6 +314,9 @@ DrumProgrammer : SCViewHolder {
 
 	prRemoveStep {
 		if (prStepCount == 0, { ^this });
+		if (prHighlightedColumn == (prStepCount - 1), {
+			prHighlightedColumn = nil;
+		});
 		prRowSquares.do({
 			|squares, rowIndex|
 			var square;
@@ -301,6 +356,7 @@ DrumProgrammer : SCViewHolder {
 		if (prIsPlaying.not, { ^this });
 		prSequencePlayer.stop();
 		prIsPlaying = false;
+		this.prClearColumnHighlight;
 	}
 
 	prSyncRowBackground {
