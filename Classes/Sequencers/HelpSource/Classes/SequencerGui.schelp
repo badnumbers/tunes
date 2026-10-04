@@ -4,7 +4,7 @@ CATEGORIES:: Streams-Patterns-Events
 RELATED:: Classes/Sequencer, Classes/PianoRoll, Classes/SequencerKeyRouter, Classes/SequencerDocument, Classes/Metronome, Classes/SynthDesk, Classes/ArrangerView
 
 DESCRIPTION::
-LINK::Classes/SequencerGui:: provides a visualisation of a graph of LINK::Classes/Pattern::s created using a LINK::Classes/Sequencer::. This is created when calling LINK::Classes/Sequencer#-showGui::. It owns a LINK::Classes/SequencerDocument:: wrapping LINK::Classes/Document#*current::, and a LINK::Classes/SequencerKeyRouter:: whose active context is set when the user switches between Arrange, Record, and Settings views. The header bar includes Settings, Arrange, Record, and Synths buttons (Synths sits between Record and the MIDI indicator). The Arrange button shows an embedded LINK::Classes/ArrangerView:: (the first page of the stack). The Settings view includes knobs for tempo and LINK::Classes/Metronome:: volume. The Synths button shows an embedded LINK::Classes/SynthDesk:: (the fourth page of the stack, after Arrange, Record, and Settings).
+LINK::Classes/SequencerGui:: provides a visualisation of a graph of LINK::Classes/Pattern::s created using a LINK::Classes/Sequencer::. This is created when calling LINK::Classes/Sequencer#-showGui::. It owns a LINK::Classes/SequencerDocument:: wrapping LINK::Classes/Document#*current::, and a LINK::Classes/SequencerKeyRouter:: whose active context is set when the user switches between Arrange, Record, and Settings views. The header bar includes Settings, Arrange, Record, and Synths buttons (Synths sits between Record and the MIDI indicator). The Arrange button shows an embedded LINK::Classes/ArrangerView:: (the first page of the stack). TELETYPE::SequencerGui:: subscribes to the LINK::Classes/Sequencer:: with CODE::addDependant:: and forwards each CODE::\midiSequenceAdded:: id to LINK::Classes/ArrangerView#-addSequence::. Closing the window removes that dependant. The Settings view includes knobs for tempo and LINK::Classes/Metronome:: volume. The Synths button shows an embedded LINK::Classes/SynthDesk:: (the fourth page of the stack, after Arrange, Record, and Settings).
 
 CLASSMETHODS::
 
@@ -16,5 +16,17 @@ The LINK::Classes/Sequencer:: that this LINK::Classes/SequencerGui:: provides a 
 
 
 INSTANCEMETHODS::
+
+METHOD:: update
+Receives LINK::Classes/Sequencer:: notifications. CODE::\midiSequenceAdded:: adds that sequence name to the LINK::Classes/ArrangerView::.
+
+ARGUMENT:: theChanged
+The LINK::Classes/Sequencer:: that changed.
+
+ARGUMENT:: what
+The notification symbol. CODE::\midiSequenceAdded:: is handled.
+
+ARGUMENT:: id
+The sequence LINK::Classes/Symbol:: when CODE::what:: is CODE::\midiSequenceAdded::.
 
 PRIVATE:: init

@@ -26,6 +26,7 @@ Sequencer {
 			warn(format("Overwrote sequence %.", id));
 		});
 		prSequences.put(id, Sequence(id,pattern,\midi,synthId));
+		this.changed(\midiSequenceAdded, id);
 	}
 
 	addSynthesizerPostKeys {
@@ -167,6 +168,10 @@ Sequencer {
 		});
 
 		existingkeysets.add(newkeyset);
+	}
+
+	sequenceIds {
+		^prSequences.keys.asArray;
 	}
 
 	showGui {

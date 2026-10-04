@@ -1,10 +1,10 @@
 TITLE:: ArrangerView
-SUMMARY:: Placeholder view for the SequencerGui Arrange page.
+SUMMARY:: Flow of sequence-name labels for the SequencerGui Arrange page.
 CATEGORIES:: Streams-Patterns-Events
 RELATED:: Classes/SequencerGui, Classes/SCViewHolder
 
 DESCRIPTION::
-TELETYPE::ArrangerView:: is a LINK::Classes/SCViewHolder:: that LINK::Classes/SequencerGui:: shows when the Arrange button is pressed. It currently displays placeholder text while the arrangement interface is redesigned.
+TELETYPE::ArrangerView:: is a LINK::Classes/SCViewHolder:: that LINK::Classes/SequencerGui:: shows when the Arrange button is pressed. Its view uses a LINK::Classes/FlowLayout:: decorator. Each sequence name is a LINK::Classes/StaticText:: sized to that name, placed beside the previous label.
 
 CLASSMETHODS::
 
@@ -15,5 +15,11 @@ RETURNS::
 A new TELETYPE::ArrangerView:: instance.
 
 INSTANCEMETHODS::
+
+METHOD:: addSequence
+Adds a label for CODE::name::. A name that is already shown is left as it is.
+
+ARGUMENT:: name
+A LINK::Classes/Symbol::, displayed with CODE::asString::.
 
 PRIVATE:: init

@@ -29,7 +29,7 @@ CODE::
 ::
 
 METHOD::addMidiSequence
-Adds the supplied sequence (generally a LINK::Classes/Pbind::, LINK::Classes/Pseq:: or LINK::Classes/Ppar::), which defines a MIDI sequence to be sent to some synthesizer, to the sequencer.
+Adds the supplied sequence (generally a LINK::Classes/Pbind::, LINK::Classes/Pseq:: or LINK::Classes/Ppar::), which defines a MIDI sequence to be sent to some synthesizer, to the sequencer. Then it notifies dependants with CODE::changed(\midiSequenceAdded, id)::.
 
 ARGUMENT::id
 A LINK::Classes/Symbol:: which is the ID of the sequence. This is used to identify it when using it to compose larger patterns, or to play on its own (see LINK::#-play::).
@@ -77,6 +77,12 @@ A LINK::Classes/Symbol:: which is the ID of the sequence to play (see (see LINK:
 
 ARGUMENT::loop
 Whether or not the sequence should be looped indefinitely.
+
+METHOD::sequenceIds
+The ids of sequences stored by LINK::#-addMidiSequence::.
+
+RETURNS::
+An LINK::Classes/Array:: of LINK::Classes/Symbol::s.
 
 METHOD::showGui
 Opens an instance of LINK::Classes/SequencerGui:: to help manage the sequences for this track.

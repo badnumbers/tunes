@@ -1,4 +1,5 @@
 SequencerGui {
+	var prArrangerView;
 	var prDocument;
 	var prKeyRouter;
 	var prMainHeader;
@@ -33,6 +34,13 @@ SequencerGui {
 			EnhancedButton().background_(prPalette.colour3).borderRadius_(3).borderWidth_(2).minSize_(size).maxSize_(size).font_(Font(size:16)).string_(text).stringColor_(prPalette.colour5).align_(\center).mouseEnterBorderColour_(prPalette.extreme2).mouseEnterStringColour_(prPalette.extreme2).mouseDownBackgroundColour_(prPalette.colour2);
 		};
 
+		prArrangerView = ArrangerView();
+		prSequencer.addDependant(this);
+		prSequencer.sequenceIds.do({
+			|id|
+			prArrangerView.addSequence(id);
+		});
+
 		prWindow = Window("Sequencer").background_(prPalette.colour1).front;
 		prWindow.layout = VLayout(
 			prMainHeader = BorderView().background_(prPalette.colour2).minHeight_(100).maxHeight_(100).borderWidth_(0).layout_(HLayout(
@@ -45,7 +53,7 @@ SequencerGui {
 				midiIndicator = BorderView().background_(prPalette.colour2).borderColour_(prPalette.colour3).borderRadius_(3).borderWidth_(2).minSize_(50@50).maxSize_(50@50);
 			).margins_(25).spacing_(25)),
 			stackLayout = StackLayout(
-				ArrangerView(),
+				prArrangerView,
 				BorderView().background_(prPalette.colour2).layout_(VLayout(
 					pianoRoll = PianoRoll(palette: prPalette, tempoClock:prTempoClock, devMode: devMode, keyRouter: prKeyRouter, sequencerDocument: prDocument).minHeight_(100),
 					View().background_(prPalette.colour4).minHeight_(70).maxHeight_(70).layout_(
@@ -171,6 +179,7 @@ SequencerGui {
 
 		// Tidy up when the window is closed
 		prWindow.onClose_({
+			prSequencer.removeDependant(this);
 			[\noteOn,\noteOff].do({
 				|msgType|
 				MIDIdef(format("%_%", \monitorMidi, msgType).asSymbol).free;
@@ -184,5 +193,12 @@ SequencerGui {
 		Validator.validateMethodParameterType(tempoClock, TempoClock, "tempoClock", "SequencerGui", "new");
 		Validator.validateMethodParameterType(devMode,Boolean,"devMode","SequencerGui","new");
 		^super.new.init(sequencer,tempoClock,devMode);
+	}
+
+	update {
+		|theChanged, what, id|
+		if (what == \midiSequenceAdded, {
+			prArrangerView.addSequence(id);
+		});
 	}
 }

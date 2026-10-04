@@ -31,6 +31,17 @@ WriteCommandUnitTests : BNUnitTest {
 		});
 	}
 
+	prWithSequencer {
+		|func|
+		var previous = currentEnvironment[\seq];
+		currentEnvironment[\seq] = Sequencer();
+		protect {
+			func.value;
+		} {
+			currentEnvironment[\seq] = previous;
+		};
+	}
+
 	test_execute_chord_sharesIndexAcrossKeys {
 		var channel, cmd, config, document, notes;
 		config = this.prSynth;
@@ -43,7 +54,7 @@ WriteCommandUnitTests : BNUnitTest {
 		];
 		document = WriteCommandTestDocument.new;
 		cmd = WriteCommand(document);
-		cmd.execute((name: "verse", allNotes: notes, midiChannel: channel, loopStart: 0, loopEnd: 2));
+		this.prWithSequencer({ cmd.execute((name: "verse", allNotes: notes, midiChannel: channel, loopStart: 0, loopEnd: 2)) });
 		this.assertEquals(
 			document.lastInserted,
 			format(
@@ -64,7 +75,7 @@ WriteCommandUnitTests : BNUnitTest {
 		];
 		document = WriteCommandTestDocument.new;
 		cmd = WriteCommand(document);
-		cmd.execute((name: "verse", allNotes: notes, midiChannel: channel, loopStart: 0, loopEnd: 4));
+		this.prWithSequencer({ cmd.execute((name: "verse", allNotes: notes, midiChannel: channel, loopStart: 0, loopEnd: 4)) });
 		this.assertEquals(
 			document.lastInserted,
 			format(
@@ -80,7 +91,7 @@ WriteCommandUnitTests : BNUnitTest {
 		channel = config.midiChannels[0];
 		document = WriteCommandTestDocument.new;
 		cmd = WriteCommand(document);
-		cmd.execute((name: "verse", allNotes: [], midiChannel: channel, loopStart: 0, loopEnd: 4));
+		this.prWithSequencer({ cmd.execute((name: "verse", allNotes: [], midiChannel: channel, loopStart: 0, loopEnd: 4)) });
 		this.assertEquals(
 			document.lastInserted,
 			format("~seq.addMidiSequence(\\verse,%,Pbind());", "\\" ++ config.id.asString)
@@ -96,7 +107,7 @@ WriteCommandUnitTests : BNUnitTest {
 		];
 		document = WriteCommandTestDocument.new;
 		cmd = WriteCommand(document);
-		cmd.execute((name: "verse", allNotes: notes, midiChannel: channel, loopStart: 0, loopEnd: 8));
+		this.prWithSequencer({ cmd.execute((name: "verse", allNotes: notes, midiChannel: channel, loopStart: 0, loopEnd: 8)) });
 		this.assertEquals(
 			document.lastInserted.find("\\midinote, Pseq([\\,56])").notNil,
 			true
@@ -125,7 +136,7 @@ WriteCommandUnitTests : BNUnitTest {
 		];
 		document = WriteCommandTestDocument.new;
 		cmd = WriteCommand(document);
-		cmd.execute((name: "verse", allNotes: notes, midiChannel: channel, loopStart: 0, loopEnd: 2));
+		this.prWithSequencer({ cmd.execute((name: "verse", allNotes: notes, midiChannel: channel, loopStart: 0, loopEnd: 2)) });
 		this.assertEquals(
 			document.lastInserted.find("\\legato, Pseq([1.5,1])").notNil,
 			true
@@ -138,7 +149,7 @@ WriteCommandUnitTests : BNUnitTest {
 		channel = config.midiChannels[0];
 		document = WriteCommandTestDocument.new;
 		cmd = WriteCommand(document);
-		cmd.execute((name: "my verse", allNotes: [], midiChannel: channel, loopStart: 0, loopEnd: 4));
+		this.prWithSequencer({ cmd.execute((name: "my verse", allNotes: [], midiChannel: channel, loopStart: 0, loopEnd: 4)) });
 		this.assertEquals(
 			document.lastInserted,
 			format("~seq.addMidiSequence('my verse',%,Pbind());", "\\" ++ config.id.asString)
@@ -148,7 +159,7 @@ WriteCommandUnitTests : BNUnitTest {
 	test_execute_nilDocument_doesNotError {
 		var cmd = WriteCommand.new;
 		this.assertNoException({
-			cmd.execute((name: "verse", allNotes: [], midiChannel: 0, loopStart: 0, loopEnd: 4));
+			this.prWithSequencer({ cmd.execute((name: "verse", allNotes: [], midiChannel: 0, loopStart: 0, loopEnd: 4)) });
 		});
 		this.assertEquals(cmd.name, "write");
 	}
@@ -165,7 +176,7 @@ WriteCommandUnitTests : BNUnitTest {
 		];
 		document = WriteCommandTestDocument.new;
 		cmd = WriteCommand(document);
-		cmd.execute((name: "verse", allNotes: notes, midiChannel: channel, loopStart: 0, loopEnd: 2));
+		this.prWithSequencer({ cmd.execute((name: "verse", allNotes: notes, midiChannel: channel, loopStart: 0, loopEnd: 2)) });
 		this.assertEquals(
 			document.lastInserted.find("\\midinote, Pseq([60,64])").notNil,
 			true
@@ -185,7 +196,7 @@ WriteCommandUnitTests : BNUnitTest {
 		];
 		document = WriteCommandTestDocument.new;
 		cmd = WriteCommand(document);
-		cmd.execute((name: "verse", allNotes: notes, midiChannel: channel, loopStart: 0, loopEnd: 2));
+		this.prWithSequencer({ cmd.execute((name: "verse", allNotes: notes, midiChannel: channel, loopStart: 0, loopEnd: 2)) });
 		this.assertEquals(
 			document.lastInserted,
 			format(
@@ -212,7 +223,7 @@ WriteCommandUnitTests : BNUnitTest {
 		];
 		document = WriteCommandTestDocument.new;
 		cmd = WriteCommand(document);
-		cmd.execute((name: "verse", allNotes: notes, midiChannel: channel, loopStart: 0, loopEnd: 3));
+		this.prWithSequencer({ cmd.execute((name: "verse", allNotes: notes, midiChannel: channel, loopStart: 0, loopEnd: 3)) });
 		this.assertEquals(
 			document.lastInserted.find("\\midinote, [3,2,1],").notNil,
 			true
@@ -233,7 +244,7 @@ WriteCommandUnitTests : BNUnitTest {
 		];
 		document = WriteCommandTestDocument.new;
 		cmd = WriteCommand(document);
-		cmd.execute((name: "verse", allNotes: notes, midiChannel: channel, loopStart: 0, loopEnd: 1));
+		this.prWithSequencer({ cmd.execute((name: "verse", allNotes: notes, midiChannel: channel, loopStart: 0, loopEnd: 1)) });
 		this.assertEquals(
 			document.lastInserted.find("\\amp, Pseq([0.1,1])").notNil,
 			true
@@ -249,7 +260,7 @@ WriteCommandUnitTests : BNUnitTest {
 		document = WriteCommandTestDocument.new;
 		cmd = WriteCommand(document);
 		this.assertNoException({
-			cmd.execute((name: "verse", allNotes: [], midiChannel: 0, loopStart: nil, loopEnd: nil));
+			this.prWithSequencer({ cmd.execute((name: "verse", allNotes: [], midiChannel: 0, loopStart: nil, loopEnd: nil)) });
 		});
 		this.assertEquals(document.lastInserted, nil);
 	}
@@ -259,7 +270,7 @@ WriteCommandUnitTests : BNUnitTest {
 		document = WriteCommandTestDocument.new;
 		cmd = WriteCommand(document);
 		this.assertException({
-			cmd.execute((name: "verse", allNotes: [], midiChannel: -1, loopStart: 0, loopEnd: 4));
+			this.prWithSequencer({ cmd.execute((name: "verse", allNotes: [], midiChannel: -1, loopStart: 0, loopEnd: 4)) });
 		}, Error);
 		this.assertEquals(document.lastInserted, nil);
 	}

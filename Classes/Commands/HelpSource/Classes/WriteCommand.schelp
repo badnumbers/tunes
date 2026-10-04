@@ -10,7 +10,7 @@ The inserted text names the sequence and the synthesizer as leading-slash symbol
 
 When every written note shares one part number, the pattern is a CODE::Pbind:: whose CODE::\midinote::, CODE::\amp::, CODE::\dur::, and CODE::\legato:: values are CODE::Pseq::s. A key whose onset values are all the same is written as that single value instead of a CODE::Pseq::. A repeated chord is that array, for example CODE::\midinote, [67,64,60]::, not a CODE::Pseq:: of the same array. Notes are ordered by start time. Notes with the same start time are a chord, highest MIDI note first, and that order is the same in every key. A chord is a nested array with no spaces. CODE::\amp:: is velocity mapped from 0–127 to 0–1. CODE::\dur:: is the gap until the next onset, or until CODE::loopEnd:: for the last onset. If a part's first note starts after CODE::loopStart::, that CODE::Pbind:: begins with a rest: a backslash for every key except CODE::\dur::, whose rest value is the first note's start minus CODE::loopStart::. CODE::\legato:: is the note length divided by that CODE::\dur::. Numbers use at most two decimal places, without trailing zeros. Only notes that start at or after CODE::loopStart:: and end at or before CODE::loopEnd:: are written. An empty note list is CODE::Pbind()::. More than one part number is a CODE::Ppar:: of one CODE::Pbind:: per part, in part-number order. Each part uses the same onset, chord, and duration rules, measured only against the other notes in that part.
 
-If the document is CODE::nil::, LINK::#-execute:: returns without writing. If either loop bound is nil, it posts a warning and does not insert. If no synthesizer matches the channel, it throws and does not insert.
+If the document is CODE::nil::, LINK::#-execute:: returns without writing. If either loop bound is nil, it posts a warning and does not insert. If no synthesizer matches the channel, it throws and does not insert. After a successful insert, the same text is interpreted, which calls CODE::~seq.addMidiSequence::.
 
 CLASSMETHODS::
 
@@ -26,7 +26,7 @@ A new TELETYPE::WriteCommand:: instance.
 INSTANCEMETHODS::
 
 METHOD:: execute
-Inserts the CODE::~seq.addMidiSequence:: text. Returns without writing if no document was provided at construction, or if the loop bounds are nil.
+Inserts the CODE::~seq.addMidiSequence:: text and interprets it. Returns without writing if no document was provided at construction, or if the loop bounds are nil.
 
 ARGUMENT:: args
 A LINK::Classes/Dictionary:: or LINK::Classes/Event:: with CODE::\name:: as a non-empty LINK::Classes/String::, CODE::\allNotes:: as an LINK::Classes/Array::, CODE::\midiChannel:: as a LINK::Classes/SimpleNumber::, and CODE::\loopStart:: and CODE::\loopEnd:: as LINK::Classes/Number::s or nil.

@@ -27,6 +27,7 @@ WriteCommand : Command {
 			line = format("~seq.addMidiSequence(%,%,%);", this.prSymbolText(name), this.prSymbolText(synth.id), pattern);
 		});
 		prSequencerDocument.insertPattern(line);
+		line.interpret;
 	}
 
 	isValid {
