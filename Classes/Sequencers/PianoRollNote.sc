@@ -26,7 +26,7 @@ PianoRollNote {
 		Validator.validateMethodParameterType(value, SimpleNumber, "value", "PianoRollNote", "amp_");
 		clipped = value.clip(0, 1);
 		prEvent[\amp] = clipped;
-		prPlayableNote.velocity_(clipped.linlin(0, 1, 0, 127).round.asInteger);
+		prPlayableNote.amp_(clipped);
 	}
 
 	delete {

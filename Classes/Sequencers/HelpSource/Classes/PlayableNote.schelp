@@ -39,6 +39,12 @@ A new instance.
 
 INSTANCEMETHODS::
 
+METHOD:: amp_
+Clips CODE::value:: to CODE::0::–CODE::1:: and stores the MIDI velocity CODE::value.linlin(0, 1, 0, 127):: rounded to an LINK::Classes/Integer::.
+
+ARGUMENT:: value
+A LINK::Classes/SimpleNumber:: amplitude. Values outside CODE::0:: to CODE::1:: are clipped silently.
+
 METHOD:: isPlayable
 Whether this note has a stop time and can take part in playback queries.
 

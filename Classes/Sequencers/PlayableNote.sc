@@ -4,6 +4,14 @@ PlayableNote {
 	var prStopTime;
 	var prVelocity;
 
+	amp_ {
+		|value|
+		var clipped;
+		Validator.validateMethodParameterType(value, SimpleNumber, "value", "PlayableNote", "amp_");
+		clipped = value.clip(0, 1);
+		this.velocity_(clipped.linlin(0, 1, 0, 127).round.asInteger);
+	}
+
 	init {
 		|startTime,noteNumber,velocity|
 		prStartTime = startTime;
