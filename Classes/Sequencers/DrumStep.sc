@@ -9,9 +9,14 @@ DrumStep {
 	var prStartTime;
 	var prVelocity;
 
+	amp_ {
+		|value|
+		Validator.validateMethodParameterType(value, SimpleNumber, "value", "DrumStep", "amp_");
+		this.prSetAmp(value);
+	}
+
 	init {
 		|noteNumber, startTime, palette, squareSize, velocity, hitDuration, addFunc, removeFunc, existingNote|
-		var colour;
 		prNoteNumber = noteNumber;
 		prStartTime = startTime;
 		prPalette = palette;
@@ -20,27 +25,17 @@ DrumStep {
 		prAddFunc = addFunc;
 		prRemoveFunc = removeFunc;
 		prNote = existingNote;
-		colour = prPalette.colour5;
-		if (prNote.notNil, {
-			colour = prPalette.colour3;
-		});
-		prSquare = BorderView();
+		prSquare = GridSlider(
+			prPalette.colour5,
+			prPalette.colour3,
+			{ |amp| this.prSetAmp(amp) },
+			{ this.prClearHit; this.prSyncSlider }
+		);
 		prSquare.minSize_(squareSize@squareSize);
 		prSquare.maxSize_(squareSize@squareSize);
 		prSquare.borderColour_(prPalette.extreme2);
 		prSquare.borderWidth_(0);
-		prSquare.background_(colour);
-		prSquare.mouseDownAction_({
-			|view, x, y, modifiers, buttonNumber, clickCount|
-			if ((buttonNumber == 0) && { prNoteNumber.notNil }, {
-				if (prNote.isNil, {
-					this.switch_(1);
-				}, {
-					this.switch_(0);
-				});
-			});
-			nil
-		});
+		this.prSyncSlider;
 	}
 
 	*new {
@@ -66,19 +61,52 @@ DrumStep {
 		if (prNote.isNil, { ^this });
 		note = prNote;
 		prNote = nil;
-		prSquare.background_(prPalette.colour5);
 		prRemoveFunc.value(note);
 	}
 
 	prEnsureHit {
-		var note;
+		|velocity|
+		var note, usedVelocity;
 		if (prNote.notNil, { ^this });
 		if (prNoteNumber.isNil, { ^this });
-		note = PlayableNote(prStartTime, prNoteNumber, prVelocity);
+		usedVelocity = prVelocity;
+		if (velocity.notNil, {
+			usedVelocity = velocity;
+		});
+		note = PlayableNote(prStartTime, prNoteNumber, usedVelocity);
 		note.stopTime_(prStartTime + prHitDuration);
 		prNote = note;
-		prSquare.background_(prPalette.colour3);
 		prAddFunc.value(note);
+	}
+
+	prSetAmp {
+		|amp|
+		var clipped, velocity;
+		if (prNoteNumber.isNil, {
+			this.prSyncSlider;
+			^this
+		});
+		clipped = amp.clip(0, 1);
+		velocity = clipped.linlin(0, 1, 0, 127).round.asInteger;
+		if (velocity == 0, {
+			this.prClearHit;
+			this.prSyncSlider;
+			^this
+		});
+		this.prEnsureHit(velocity);
+		if (prNote.notNil, {
+			prNote.amp_(clipped);
+		});
+		this.prSyncSlider;
+	}
+
+	prSyncSlider {
+		var amp;
+		amp = 0;
+		if (prNote.notNil, {
+			amp = prNote.velocity.linlin(0, 127, 0, 1);
+		});
+		prSquare.value_(amp);
 	}
 
 	square {
@@ -98,5 +126,6 @@ DrumStep {
 		if (value == 0, {
 			this.prClearHit;
 		});
+		this.prSyncSlider;
 	}
 }

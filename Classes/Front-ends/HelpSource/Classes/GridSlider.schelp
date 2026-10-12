@@ -1,0 +1,84 @@
+TITLE:: GridSlider
+SUMMARY:: Vertical slider drawn as one view growing over another.
+CATEGORIES:: GUI>Views
+RELATED:: Classes/BorderView, Classes/Color, Classes/DrumStep, Classes/SCViewHolder, Classes/View
+
+DESCRIPTION::
+TELETYPE::GridSlider:: is a LINK::Classes/SCViewHolder::. The bottom layer is a LINK::Classes/BorderView::. A second LINK::Classes/View:: sits on top of it, aligned to the bottom, and grows upward. Value CODE::1:: fills the area inside the border. Value CODE::0:: gives that top view no height, so only the bottom colour shows. The parent of the top view has no layout; its rectangle is set from the value. A border insets the top view by the border width so the top view does not paint over the outline.
+
+The top of the inner area is value CODE::1:: and the bottom pixel is value CODE::0::. A left press and a left drag both set the value from the pointer, including when the pointer leaves the control. A right press calls the right-click function and does not change the value.
+
+CLASSMETHODS::
+
+METHOD:: new
+Creates a slider at value CODE::0::.
+
+ARGUMENT:: bottomColour
+The LINK::Classes/Color:: of the bottom layer.
+
+ARGUMENT:: topColour
+The LINK::Classes/Color:: of the top view.
+
+ARGUMENT:: action
+Called with the new value after a left press or left drag. May be CODE::nil::.
+
+ARGUMENT:: rightClickAction
+Called on a right press. May be CODE::nil::.
+
+RETURNS::
+A new TELETYPE::GridSlider:: instance.
+
+METHOD:: valueForY
+Maps a vertical pointer position to a value from CODE::0:: to CODE::1::.
+
+ARGUMENT:: y
+Distance from the top of the control, in pixels.
+
+ARGUMENT:: height
+Height of the control, in pixels.
+
+ARGUMENT:: inset
+Border inset, in pixels. The track is the area inside this inset. The default is CODE::0::.
+
+RETURNS::
+A LINK::Classes/SimpleNumber:: from CODE::0:: to CODE::1::. The top of the track is CODE::1:: and its bottom pixel is CODE::0::. Positions outside the track are clipped.
+
+INSTANCEMETHODS::
+
+METHOD:: borderColour
+The outline colour.
+
+RETURNS::
+A LINK::Classes/Color::.
+
+METHOD:: borderColour_
+Sets the outline colour on the bottom layer.
+
+ARGUMENT:: colour
+A LINK::Classes/Color::.
+
+METHOD:: borderWidth
+The outline width in pixels.
+
+RETURNS::
+A LINK::Classes/SimpleNumber::.
+
+METHOD:: borderWidth_
+Sets the outline width and insets the top view by that many pixels.
+
+ARGUMENT:: width
+Width in pixels.
+
+METHOD:: value
+The current value, from CODE::0:: to CODE::1::.
+
+RETURNS::
+A LINK::Classes/SimpleNumber::.
+
+METHOD:: value_
+Sets the value and updates the top view. Values below CODE::0:: or above CODE::1:: are clipped. This does not call the left-drag action.
+
+ARGUMENT:: value
+A LINK::Classes/SimpleNumber::.
+
+PRIVATE:: init, prApplyPointer, prInstallMouse, prLayoutTop, prOnMouseDown, prOnMouseMove, prOnMouseUp

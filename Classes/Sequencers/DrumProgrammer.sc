@@ -422,15 +422,15 @@ DrumProgrammer : SCViewHolder {
 	}
 
 	prSelectedNotes {
-		var index, noteNumber;
+		var index, steps;
 		if (prSelectedRow.isNil, { ^[] });
 		index = prRowViews.indexOf(prSelectedRow);
 		if (index.isNil, { ^[] });
-		noteNumber = prRowNoteNumbers[index];
-		if (noteNumber.isNil, { ^[] });
-		^prNotes.select({
-			|note|
-			note.noteNumber == noteNumber
+		steps = prRowSteps[index];
+		if (steps.isNil, { ^[] });
+		^steps.select({
+			|step|
+			step.playableNote.notNil
 		});
 	}
 
