@@ -23,7 +23,7 @@ DrumProgrammer : SCViewHolder {
 	var prVelocity = 100;
 
 	init {
-		var addDrumSoundButton, addStepButton, playButton, stopButton, strip;
+		var addDrumSoundButton, addStepButton, playButton, scroll, stopButton, strip;
 		prPalette = GuiPalette.default;
 		prStepCount = 16;
 		prNotes = Array.new;
@@ -64,10 +64,13 @@ DrumProgrammer : SCViewHolder {
 				[nil, s: 1]
 			).margins_(10).spacing_(10)
 		);
+		scroll = ScrollView();
+		scroll.hasBorder_(false);
+		scroll.background_(prPalette.colour1);
+		scroll.canvas_(View().background_(prPalette.colour1).layout_(prGrid));
 		this.view = View().background_(prPalette.colour1).layout_(
 			VLayout(
-				prGrid,
-				[nil, s: 1],
+				[scroll, s: 1],
 				strip
 			).margins_(0).spacing_(0)
 		);
