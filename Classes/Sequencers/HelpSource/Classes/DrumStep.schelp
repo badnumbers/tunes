@@ -1,0 +1,70 @@
+TITLE:: DrumStep
+SUMMARY:: One drum-grid column, with or without a hit.
+CATEGORIES:: GUI>Views
+RELATED:: Classes/BorderView, Classes/DrumProgrammer, Classes/PlayableNote, Classes/SwitchCommand
+
+DESCRIPTION::
+TELETYPE::DrumStep:: is one column of a LINK::Classes/DrumProgrammer:: row. It is not a view. It holds the square, the column start time, the drum's MIDI note number, and a LINK::Classes/PlayableNote:: when that square is a hit. An empty square still has a step, so LINK::Classes/SwitchCommand:: can turn it on. LINK::#-switch_:: takes an integer: CODE::1:: ensures a hit and CODE::0:: clears one. An existing hit keeps its velocity. LINK::Classes/DrumProgrammer:: supplies the callbacks that add and remove the note from the sequence.
+
+CLASSMETHODS::
+
+METHOD:: new
+Creates a step and its square.
+
+ARGUMENT:: noteNumber
+MIDI note number for this drum, or CODE::nil:: for a row that has no sound yet.
+
+ARGUMENT:: startTime
+Column start time in beats.
+
+ARGUMENT:: palette
+The LINK::Classes/GuiPalette:: used for the square colours.
+
+ARGUMENT:: squareSize
+Width and height of the square, in pixels.
+
+ARGUMENT:: velocity
+MIDI velocity used when CODE::1:: creates a new hit.
+
+ARGUMENT:: hitDuration
+Length of a new hit, in beats.
+
+ARGUMENT:: addFunc
+Called with the new LINK::Classes/PlayableNote:: when a hit is created.
+
+ARGUMENT:: removeFunc
+Called with the LINK::Classes/PlayableNote:: when a hit is cleared.
+
+ARGUMENT:: existingNote
+A LINK::Classes/PlayableNote:: already stored for this column, or CODE::nil::. When present, the square is coloured as a hit and the add callback is not called.
+
+RETURNS::
+A new TELETYPE::DrumStep:: instance.
+
+INSTANCEMETHODS::
+
+METHOD:: playableNote
+The LINK::Classes/PlayableNote:: for this column, or CODE::nil:: when the square is empty.
+
+RETURNS::
+A LINK::Classes/PlayableNote::, or CODE::nil::.
+
+METHOD:: square
+The square for this column.
+
+RETURNS::
+A LINK::Classes/BorderView::.
+
+METHOD:: startTime
+The column start time in beats.
+
+RETURNS::
+A LINK::Classes/SimpleNumber::.
+
+METHOD:: switch_
+Sets whether this column is a hit. CODE::1:: creates a hit when the square is empty, with the velocity and duration given to LINK::#*new::, colours the square with colour3, and calls the add callback. If a hit is already there, it is left as it is. CODE::0:: removes a hit, colours the square with colour5, and calls the remove callback. An empty square stays empty.
+
+ARGUMENT:: value
+An LINK::Classes/Integer::. CODE::1:: ensures a hit. CODE::0:: clears a hit.
+
+PRIVATE:: init, prClearHit, prEnsureHit

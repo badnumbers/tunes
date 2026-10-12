@@ -14,7 +14,7 @@ DrumProgrammer : SCViewHolder {
 	var prRemoveStepButton;
 	var prRemoveStepEnabled = true;
 	var prRowNoteNumbers;
-	var prRowSquares;
+	var prRowSteps;
 	var prRowViews;
 	var prSelectedRow;
 	var prSequencePlayer;
@@ -29,7 +29,7 @@ DrumProgrammer : SCViewHolder {
 		prStepCount = 16;
 		prNotes = Array.new;
 		prRowNoteNumbers = Array.new;
-		prRowSquares = Array.new;
+		prRowSteps = Array.new;
 		prRowViews = Array.new;
 		prSequencePlayer = SequencePlayer(TempoClock.default, Setup.midi);
 		prSequencePlayer.midiChannel_(9);
@@ -70,9 +70,12 @@ DrumProgrammer : SCViewHolder {
 		prompt = CommandPrompt(
 			parent: nil,
 			bounds: nil,
-			commands: [AmpCommand.new],
+			commands: [AmpCommand.new, SwitchCommand.new],
 			palette: prPalette,
-			ambientParameters: (selectedNotes: { this.prSelectedNotes }),
+			ambientParameters: (
+				selectedNotes: { this.prSelectedNotes },
+				allNotesInRow: { this.prAllNotesInRow }
+			),
 			overlayParent: root,
 			onExecute: nil
 		);
@@ -123,31 +126,45 @@ DrumProgrammer : SCViewHolder {
 	}
 
 	prAddDrumSound {
-		var rowView, squares;
-		# rowView, squares = this.prMakeRow(nil, nil);
+		var rowView, steps;
+		# rowView, steps = this.prMakeRow(nil, nil);
 		prGrid.insert(rowView, 0);
 		prRowViews = prRowViews.insert(0, rowView);
-		prRowSquares = prRowSquares.insert(0, squares);
+		prRowSteps = prRowSteps.insert(0, steps);
 		prRowNoteNumbers = prRowNoteNumbers.insert(0, nil);
 		this.prRefreshRemoveButtons;
+	}
+
+	prAddNote {
+		|note|
+		prNotes = prNotes.add(note);
+		this.prSyncSequence;
 	}
 
 	prAddStep {
 		var index;
 		index = prStepCount;
-		prRowSquares.do({
-			|squares, rowIndex|
-			var square;
-			square = this.prMakeSquare(index, prRowNoteNumbers[rowIndex]);
-			prRowViews[rowIndex].layout.insert(square, squares.size + 1);
-			squares = squares.add(square);
-			prRowSquares[rowIndex] = squares;
-			this.prSyncSquareBorder(square, index, prRowViews[rowIndex] === prSelectedRow);
-			this.prSyncRowBackground(prRowViews[rowIndex], squares.size);
+		prRowSteps.do({
+			|steps, rowIndex|
+			var step;
+			step = this.prMakeStep(index, prRowNoteNumbers[rowIndex]);
+			prRowViews[rowIndex].layout.insert(step.square, steps.size + 1);
+			steps = steps.add(step);
+			prRowSteps[rowIndex] = steps;
+			this.prSyncSquareBorder(step.square, index, prRowViews[rowIndex] === prSelectedRow);
+			this.prSyncRowBackground(prRowViews[rowIndex], steps.size);
 		});
 		prStepCount = prStepCount + 1;
 		this.prUpdateLoopEnd;
 		this.prRefreshRemoveButtons;
+	}
+
+	prAllNotesInRow {
+		var index;
+		if (prSelectedRow.isNil, { ^[] });
+		index = prRowViews.indexOf(prSelectedRow);
+		if (index.isNil, { ^[] });
+		^prRowSteps[index];
 	}
 
 	prAppendDrumSound {
@@ -166,9 +183,13 @@ DrumProgrammer : SCViewHolder {
 		columnIndex = prHighlightedColumn;
 		if (columnIndex.isNil, { ^this });
 		prHighlightedColumn = nil;
-		prRowSquares.do({
-			|squares, rowIndex|
-			this.prSyncSquareBorder(squares[columnIndex], columnIndex, prRowViews[rowIndex] === prSelectedRow);
+		prRowSteps.do({
+			|steps, rowIndex|
+			var step;
+			step = steps[columnIndex];
+			if (step.notNil, {
+				this.prSyncSquareBorder(step.square, columnIndex, prRowViews[rowIndex] === prSelectedRow);
+			});
 		});
 	}
 
@@ -211,19 +232,23 @@ DrumProgrammer : SCViewHolder {
 		this.prClearColumnHighlight;
 		if ((columnIndex < 0) || (columnIndex >= prStepCount), { ^this });
 		prHighlightedColumn = columnIndex;
-		prRowSquares.do({
-			|squares, rowIndex|
-			this.prSyncSquareBorder(squares[columnIndex], columnIndex, prRowViews[rowIndex] === prSelectedRow);
+		prRowSteps.do({
+			|steps, rowIndex|
+			var step;
+			step = steps[columnIndex];
+			if (step.notNil, {
+				this.prSyncSquareBorder(step.square, columnIndex, prRowViews[rowIndex] === prSelectedRow);
+			});
 		});
 	}
 
 	prInstallRow {
 		|name, noteNumber|
-		var rowView, squares;
-		# rowView, squares = this.prMakeRow(name, noteNumber);
+		var rowView, steps;
+		# rowView, steps = this.prMakeRow(name, noteNumber);
 		prGrid.add(rowView);
 		prRowViews = prRowViews.add(rowView);
-		prRowSquares = prRowSquares.add(squares);
+		prRowSteps = prRowSteps.add(steps);
 		prRowNoteNumbers = prRowNoteNumbers.add(noteNumber);
 	}
 
@@ -271,24 +296,24 @@ DrumProgrammer : SCViewHolder {
 
 	prMakeRow {
 		|name, noteNumber|
-		var label, layout, squares, rowView;
+		var label, layout, rowView, steps;
 		layout = HLayout().spacing_(8).margins_(0);
 		label = this.prMakeLabel(name);
 		layout.add(label);
-		squares = Array.new;
+		steps = Array.new;
 		prStepCount.do({
 			|index|
-			var square;
-			square = this.prMakeSquare(index, noteNumber);
-			layout.add(square);
-			squares = squares.add(square);
+			var step;
+			step = this.prMakeStep(index, noteNumber);
+			layout.add(step.square);
+			steps = steps.add(step);
 		});
 		layout.add(nil, 1);
 		rowView = View().minHeight_(prSquareSize).layout_(layout);
-		this.prSyncRowBackground(rowView, squares.size);
-		squares.do({
-			|square, columnIndex|
-			this.prSyncSquareBorder(square, columnIndex, false);
+		this.prSyncRowBackground(rowView, steps.size);
+		steps.do({
+			|step, columnIndex|
+			this.prSyncSquareBorder(step.square, columnIndex, false);
 		});
 		label.mouseDownAction_({
 			|view, x, y, modifiers, buttonNumber, clickCount|
@@ -297,28 +322,27 @@ DrumProgrammer : SCViewHolder {
 			});
 			nil
 		});
-		^[rowView, squares];
+		^[rowView, steps];
 	}
 
-	prMakeSquare {
+	prMakeStep {
 		|columnIndex, noteNumber|
-		var colour, square;
-		colour = prPalette.colour5;
-		if (noteNumber.notNil && { this.prFindNote(noteNumber, this.prNoteStartTime(columnIndex)).notNil }, {
-			colour = prPalette.colour3;
+		var existing;
+		existing = nil;
+		if (noteNumber.notNil, {
+			existing = this.prFindNote(noteNumber, this.prNoteStartTime(columnIndex));
 		});
-		square = BorderView();
-		square.minSize_(prSquareSize@prSquareSize);
-		square.maxSize_(prSquareSize@prSquareSize);
-		square.borderColour_(prPalette.extreme2);
-		square.borderWidth_(0);
-		square.background_(colour);
-		square.mouseDownAction_({
-			if (noteNumber.notNil, {
-				this.prToggleHit(square, columnIndex, noteNumber);
-			});
-		});
-		^square;
+		^DrumStep(
+			noteNumber,
+			this.prNoteStartTime(columnIndex),
+			prPalette,
+			prSquareSize,
+			prVelocity,
+			prHitDuration,
+			{ |note| this.prAddNote(note) },
+			{ |note| this.prRemoveNote(note) },
+			existing
+		);
 	}
 
 	prNoteStartTime {
@@ -348,10 +372,19 @@ DrumProgrammer : SCViewHolder {
 		if (rowView === prSelectedRow, {
 			prSelectedRow = nil;
 		});
-		prRowSquares.removeAt(0);
+		prRowSteps.removeAt(0);
 		rowView.remove;
 		this.prDropNotesForNoteNumber(noteNumber);
 		this.prRefreshRemoveButtons;
+	}
+
+	prRemoveNote {
+		|note|
+		prNotes = prNotes.reject({
+			|item|
+			item === note
+		});
+		this.prSyncSequence;
 	}
 
 	prRemoveStep {
@@ -359,12 +392,14 @@ DrumProgrammer : SCViewHolder {
 		if (prHighlightedColumn == (prStepCount - 1), {
 			prHighlightedColumn = nil;
 		});
-		prRowSquares.do({
-			|squares, rowIndex|
-			var square;
-			square = squares.pop;
-			square.remove;
-			this.prSyncRowBackground(prRowViews[rowIndex], squares.size);
+		prRowSteps.do({
+			|steps, rowIndex|
+			var step;
+			step = steps.pop;
+			if (step.notNil, {
+				step.square.remove;
+			});
+			this.prSyncRowBackground(prRowViews[rowIndex], steps.size);
 		});
 		prStepCount = prStepCount - 1;
 		this.prUpdateLoopEnd;
@@ -440,13 +475,13 @@ DrumProgrammer : SCViewHolder {
 
 	prSyncRowBorders {
 		|rowView|
-		var index, squares;
+		var index, steps;
 		index = prRowViews.indexOf(rowView);
 		if (index.isNil, { ^this });
-		squares = prRowSquares[index];
-		squares.do({
-			|square, columnIndex|
-			this.prSyncSquareBorder(square, columnIndex, rowView === prSelectedRow);
+		steps = prRowSteps[index];
+		steps.do({
+			|step, columnIndex|
+			this.prSyncSquareBorder(step.square, columnIndex, rowView === prSelectedRow);
 		});
 	}
 
@@ -465,27 +500,6 @@ DrumProgrammer : SCViewHolder {
 		}, {
 			square.borderWidth_(0);
 		});
-	}
-
-	prToggleHit {
-		|square, columnIndex, noteNumber|
-		var existing, startTime;
-		startTime = this.prNoteStartTime(columnIndex);
-		existing = this.prFindNote(noteNumber, startTime);
-		if (existing.isNil, {
-			var note;
-			note = PlayableNote(startTime, noteNumber, prVelocity);
-			note.stopTime_(startTime + prHitDuration);
-			prNotes = prNotes.add(note);
-			square.background_(prPalette.colour3);
-		}, {
-			prNotes = prNotes.reject({
-				|note|
-				note === existing
-			});
-			square.background_(prPalette.colour5);
-		});
-		this.prSyncSequence;
 	}
 
 	prUpdateLoopEnd {
