@@ -25,6 +25,10 @@ PianoRollNote {
 		var clipped;
 		Validator.validateMethodParameterType(value, SimpleNumber, "value", "PianoRollNote", "amp_");
 		clipped = value.clip(0, 1);
+		if (clipped == 0, {
+			this.delete;
+			^this
+		});
 		prEvent[\amp] = clipped;
 		prPlayableNote.amp_(clipped);
 	}

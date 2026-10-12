@@ -70,12 +70,9 @@ DrumProgrammer : SCViewHolder {
 		prompt = CommandPrompt(
 			parent: nil,
 			bounds: nil,
-			commands: [AmpCommand.new, SwitchCommand.new],
+			commands: [AmpCommand.new],
 			palette: prPalette,
-			ambientParameters: (
-				selectedNotes: { this.prSelectedNotes },
-				allNotesInRow: { this.prAllNotesInRow }
-			),
+			ambientParameters: (selectedNotes: { this.prSelectedNotes }),
 			overlayParent: root,
 			onExecute: nil
 		);
@@ -157,14 +154,6 @@ DrumProgrammer : SCViewHolder {
 		prStepCount = prStepCount + 1;
 		this.prUpdateLoopEnd;
 		this.prRefreshRemoveButtons;
-	}
-
-	prAllNotesInRow {
-		var index;
-		if (prSelectedRow.isNil, { ^[] });
-		index = prRowViews.indexOf(prSelectedRow);
-		if (index.isNil, { ^[] });
-		^prRowSteps[index];
 	}
 
 	prAppendDrumSound {
@@ -422,16 +411,11 @@ DrumProgrammer : SCViewHolder {
 	}
 
 	prSelectedNotes {
-		var index, steps;
+		var index;
 		if (prSelectedRow.isNil, { ^[] });
 		index = prRowViews.indexOf(prSelectedRow);
 		if (index.isNil, { ^[] });
-		steps = prRowSteps[index];
-		if (steps.isNil, { ^[] });
-		^steps.select({
-			|step|
-			step.playableNote.notNil
-		});
+		^prRowSteps[index];
 	}
 
 	prSetButtonEnabled {

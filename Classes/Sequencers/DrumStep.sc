@@ -116,16 +116,4 @@ DrumStep {
 	startTime {
 		^prStartTime;
 	}
-
-	switch_ {
-		|value|
-		Validator.validateMethodParameterType(value, Integer, "value", "DrumStep", "switch_");
-		if (value == 1, {
-			this.prEnsureHit;
-		});
-		if (value == 0, {
-			this.prClearHit;
-		});
-		this.prSyncSlider;
-	}
 }

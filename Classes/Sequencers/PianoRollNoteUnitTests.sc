@@ -33,6 +33,18 @@ PianoRollNoteUnitTests : BNUnitTest {
 		this.assertEquals(note.velocity, 64);
 	}
 
+	test_amp__zeroDeletesTheNote {
+		var notePair, note, deleted;
+		deleted = [];
+		notePair = this.prMockNote(0, stopTime: 1.0, deleteFunc: { |deletedNote| deleted = deleted.add(deletedNote) });
+		note = notePair[0];
+		note.amp_(0);
+		this.assertEquals(deleted, [note]);
+		this.assertEquals(note.isSelected, false);
+		note.amp_(-1);
+		this.assertEquals(deleted, [note]);
+	}
+
 	test_delete_invokesDeleteFuncOnce {
 		var notePair, note, deleted;
 		deleted = [];

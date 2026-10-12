@@ -1,10 +1,10 @@
 TITLE:: DrumStep
 SUMMARY:: One drum-grid column, with or without a hit.
 CATEGORIES:: GUI>Views
-RELATED:: Classes/AmpCommand, Classes/BorderView, Classes/DrumProgrammer, Classes/GridSlider, Classes/PlayableNote, Classes/SwitchCommand
+RELATED:: Classes/AmpCommand, Classes/BorderView, Classes/DrumProgrammer, Classes/GridSlider, Classes/PlayableNote
 
 DESCRIPTION::
-TELETYPE::DrumStep:: is one column of a LINK::Classes/DrumProgrammer:: row. It is not a view. It holds a LINK::Classes/GridSlider::, the column start time, the drum's MIDI note number, and a LINK::Classes/PlayableNote:: when that square is a hit. An empty square still has a step, so LINK::Classes/SwitchCommand:: can turn it on. The slider shows the hit's amplitude: the top of the square is CODE::1:: and the bottom is CODE::0::. Left click or left drag sets that amplitude and turns the hit on. Dragging to CODE::0::, or a right click, turns it off. LINK::#-switch_:: takes an integer: CODE::1:: ensures a hit at velocity 100 and CODE::0:: clears one. An existing hit keeps its velocity. LINK::Classes/DrumProgrammer:: supplies the callbacks that add and remove the note from the sequence. A row with no MIDI note number ignores both mouse buttons.
+TELETYPE::DrumStep:: is one column of a LINK::Classes/DrumProgrammer:: row. It is not a view. It holds a LINK::Classes/GridSlider::, the column start time, the drum's MIDI note number, and a LINK::Classes/PlayableNote:: when that square is a hit. An empty square still has a step, so LINK::Classes/AmpCommand:: can turn it on. The slider shows the hit's amplitude: the top of the square is CODE::1:: and the bottom is CODE::0::. Left click or left drag sets that amplitude and turns the hit on. Dragging to CODE::0::, or a right click, turns it off. LINK::#-amp_:: does the same: a mapped velocity above CODE::0:: ensures a hit, and a mapped velocity of CODE::0:: clears one. An existing hit keeps its velocity until a new amplitude is set. LINK::Classes/DrumProgrammer:: supplies the callbacks that add and remove the note from the sequence. A row with no MIDI note number ignores both mouse buttons.
 
 CLASSMETHODS::
 
@@ -24,7 +24,7 @@ ARGUMENT:: squareSize
 Width and height of the square, in pixels.
 
 ARGUMENT:: velocity
-MIDI velocity used when CODE::1:: creates a new hit.
+MIDI velocity stored for a hit created without an explicit amplitude.
 
 ARGUMENT:: hitDuration
 Length of a new hit, in beats.
@@ -66,11 +66,5 @@ The column start time in beats.
 
 RETURNS::
 A LINK::Classes/SimpleNumber::.
-
-METHOD:: switch_
-Sets whether this column is a hit. CODE::1:: creates a hit when the square is empty, with the velocity and duration given to LINK::#*new::, and calls the add callback. The slider then shows velocity 100, which is CODE::100/127:: of the square. If a hit is already there, it is left as it is. CODE::0:: removes a hit and calls the remove callback. The slider then shows amplitude CODE::0::. An empty square stays empty.
-
-ARGUMENT:: value
-An LINK::Classes/Integer::. CODE::1:: ensures a hit. CODE::0:: clears a hit.
 
 PRIVATE:: init, prClearHit, prEnsureHit, prSetAmp, prSyncSlider

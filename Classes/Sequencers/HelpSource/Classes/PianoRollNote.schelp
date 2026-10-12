@@ -60,7 +60,7 @@ Optional LINK::Classes/Function:: called from LINK::#-delete:: with the note as 
 INSTANCEMETHODS::
 
 METHOD:: amp_
-Clips CODE::value:: to CODE::0::–CODE::1::, stores it as CODE::\amp:: on the composed LINK::Classes/Event::, and passes the clipped value to LINK::Classes/PlayableNote#-amp_::, which sets the MIDI velocity.
+Clips CODE::value:: to CODE::0::–CODE::1::. A clipped value of CODE::0:: calls LINK::#-delete:: and does not write the event or the velocity. Any value above CODE::0:: stores it as CODE::\amp:: on the composed LINK::Classes/Event:: and passes the clipped value to LINK::Classes/PlayableNote#-amp_::, which sets the MIDI velocity. A tiny positive value stays a note even when that velocity rounds to CODE::0::.
 
 ARGUMENT:: value
 A LINK::Classes/SimpleNumber:: amplitude. Values outside CODE::0:: to CODE::1:: are clipped silently.
