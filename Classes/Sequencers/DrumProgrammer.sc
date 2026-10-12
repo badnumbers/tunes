@@ -345,7 +345,6 @@ DrumProgrammer : SCViewHolder {
 		prSequencePlayer.sequence_(prNotes);
 		prSequencePlayer.play();
 		prIsPlaying = true;
-		this.prHighlightColumn(0);
 	}
 
 	prRefreshRemoveButtons {

@@ -274,6 +274,24 @@ SequencePlayerUnitTests : BNUnitTest {
 		]);
 	}
 
+	test_play_offBeat_startsAtNextWholeBeat {
+		var latency, mockMidiOut, mockTempoClock, sequencePlayer;
+		mockMidiOut = MockMIDIOut();
+		mockTempoClock = MockTempoClock(mockMidiOut);
+		sequencePlayer = SequencePlayer(tempoClock: mockTempoClock, midiOut: mockMidiOut);
+		sequencePlayer.sequence = [PlayableNote(startTime: 0, noteNumber: 60, velocity: 100).stopTime_(0.0625)];
+		sequencePlayer.loopStart = 0;
+		sequencePlayer.loopEnd = 1;
+		sequencePlayer.playheadTime_(0);
+		latency = sequencePlayer.latency;
+		mockTempoClock.schedAbs(0.25, { sequencePlayer.play(); });
+		mockTempoClock.schedAbs(1.05, { sequencePlayer.stop(); });
+		mockTempoClock.play();
+		this.assert(mockMidiOut.sentMidiEvents.size > 0, "a note should play once the next beat arrives", true);
+		this.assertEquals(mockMidiOut.sentMidiEvents[0].scheduledTime, 1.0 + latency);
+		this.assertEquals(mockMidiOut.sentMidiEvents[0].type, \noteOn);
+	}
+
 	assertSentMidi {
 		|actualMidiEvents,expectedMidiEvents|
 		if (this.assertWithMessage(

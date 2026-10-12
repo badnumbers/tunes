@@ -55,7 +55,7 @@ RETURNS::
 A LINK::Classes/CommandPrompt::.
 
 METHOD:: playLoop
-Starts playback of the recorded sequence via the embedded LINK::Classes/SequencePlayer::. Returns false and posts a warning if no notes have been recorded.
+Starts playback of the recorded sequence via the embedded LINK::Classes/SequencePlayer::. Playback waits for the next whole beat of the tempo clock, or starts immediately if the clock is already on a beat. Returns false and posts a warning if no notes have been recorded.
 
 METHOD:: selectedNotes
 Returns an LINK::Classes/Array:: of currently selected LINK::Classes/PianoRollNote:: instances.

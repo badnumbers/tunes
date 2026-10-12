@@ -76,9 +76,9 @@ ARGUMENT:: action
 A LINK::Classes/Function:: invoked when the playhead moves to the start of the next slice.
 
 METHOD:: play
-Starts playback from the current playhead position.
+Starts playback from the current playhead position on the next whole beat of the tempo clock. If the clock is already on a beat, playback starts immediately. Slices after that stay on the slice grid.
 
-returns:: A report string from the first playback slice.
+returns:: A report string from the first playback slice when playback starts immediately. Otherwise CODE::nil::, because the first slice is still waiting for the beat.
 
 METHOD:: playheadTime
 The current playback position in beats. Set with TELETYPE::playheadTime_::.

@@ -198,9 +198,17 @@ SequencePlayer {
 	}
 
 	play {
+		var startBeat;
 		this.prResetPlayingNotes();
 		prIsPlaying = true;
-		^prPlaySliceFunc.value();
+		startBeat = prTempoClock.nextTimeOnGrid(quant: 1);
+		if (startBeat <= prTempoClock.beats, {
+			^prPlaySliceFunc.value();
+		});
+		prTempoClock.schedAbs(startBeat, {
+			prPlaySliceFunc.value();
+			nil
+		});
 	}
 
 	playheadTime {
