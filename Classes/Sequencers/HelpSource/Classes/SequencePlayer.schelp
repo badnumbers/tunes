@@ -49,6 +49,12 @@ The MIDI output device. Defaults to Setup.midi.
 
 returns:: This instance.
 
+METHOD:: isPlaying
+CODE::true:: after LINK::#-play:: until LINK::#-stop::. This becomes false as soon as stop is called, before the final slice sends note-offs.
+
+RETURNS::
+CODE::true:: while playback is in progress.
+
 METHOD:: latency
 The scheduling offset applied to MIDI events, in beats.
 
@@ -75,10 +81,32 @@ Registers a function called each time the playhead advances during playback. The
 ARGUMENT:: action
 A LINK::Classes/Function:: invoked when the playhead moves to the start of the next slice.
 
-METHOD:: play
-Starts playback from the current playhead position on the next whole beat of the tempo clock. If the clock is already on a beat, playback starts immediately. Slices after that stay on the slice grid.
+METHOD:: alignPlayhead
+Moves the playhead to the nearest point on a Sync-to grid that has the same offset into that grid as CODE::beat::. The loop start is local beat 0, and distance is the shorter way around the loop. When two points are equally close, the one forward from the playhead is chosen. Does not start playback.
 
-returns:: A report string from the first playback slice when playback starts immediately. Otherwise CODE::nil::, because the first slice is still waiting for the beat.
+ARGUMENT:: syncTo
+An integer from 1 to 16. The grid size in beats.
+
+ARGUMENT:: beat
+The clock beat used to read the offset, CODE::beat.mod(syncTo)::.
+
+RETURNS::
+The playhead time after the snap, in beats.
+
+METHOD:: play
+Starts playback from the current playhead position on the next whole beat of the tempo clock. If the clock is already on a beat, playback starts immediately. Slices after that stay on the slice grid. The playhead is not rewritten from the clock.
+
+ARGUMENT:: tempoClock
+An optional LINK::Classes/TempoClock:: for this run. When omitted, playback uses the clock passed to LINK::#*new::, or LINK::Classes/TempoClock::.default when that was CODE::nil::.
+
+ARGUMENT:: startImmediately
+When CODE::true::, sets the clock to beat 0 and plays the first slice now. Defaults to CODE::false::.
+
+ARGUMENT:: startNow
+When CODE::true::, plays the first slice now and leaves the clock's beat unchanged. Defaults to CODE::false::. Use this after LINK::#-alignPlayhead:: so playback begins at the snapped playhead.
+
+RETURNS::
+A report string from the first playback slice when playback starts immediately. Otherwise CODE::nil::, because the first slice is still waiting for the beat.
 
 METHOD:: playheadTime
 The current playback position in beats. Set with TELETYPE::playheadTime_::.
@@ -91,9 +119,10 @@ The array of LINK::Classes/PlayableNote:: instances to play.
 returns:: The current sequence.
 
 METHOD:: stop
-Stops playback and sends note-off for any currently playing notes.
+Stops playback. Note-offs for sounding notes are sent on the next slice. When CODE::onStopped:: is supplied, that function runs once after those note-offs.
 
-returns:: This instance.
+ARGUMENT:: onStopped
+An optional LINK::Classes/Function::. Called once from the final slice, after note-offs, so a shared clock can be released without cancelling those note-offs.
 
 
 EXAMPLES::

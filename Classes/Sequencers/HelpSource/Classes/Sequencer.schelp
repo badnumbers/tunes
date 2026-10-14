@@ -1,7 +1,7 @@
 TITLE:: Sequencer
 SUMMARY:: A sequencer for managing and playing patterns
 CATEGORIES:: Streams-Patterns-Events
-RELATED:: Classes/SequencerGui
+RELATED:: Classes/PianoRoll, Classes/SequencePlayer, Classes/SequencerGui
 
 DESCRIPTION::
 LINK::Classes/Sequencer:: is intended to cut down the amount of boilerplate code required to sequence tracks. For example, it reduces the amount of keys that you need to specify when writing a pattern.
@@ -69,6 +69,15 @@ CODE::
 ]);
 ::
 
+METHOD::acquirePlaybackClock
+Returns the shared playback LINK::Classes/TempoClock::, creating it when no holder is using it. A new clock starts at beat 0. A later call while that clock exists returns the same clock.
+
+ARGUMENT::holder
+The object that needs the clock. Must not be CODE::nil::. A playing LINK::Classes/SequencePlayer:: passes itself. A recording LINK::Classes/PianoRoll:: passes itself, so recording and playback on the same roll can overlap. Passing the same holder again does not create another clock.
+
+RETURNS::
+An LINK::Classes/Event:: with CODE::\clock:: and CODE::\isTransportStart::. CODE::\isTransportStart:: is CODE::true:: only when this call created the clock.
+
 METHOD::play
 Plays the specified sequence.
 
@@ -77,6 +86,12 @@ A LINK::Classes/Symbol:: which is the ID of the sequence to play (see (see LINK:
 
 ARGUMENT::loop
 Whether or not the sequence should be looped indefinitely.
+
+METHOD::releasePlaybackClock
+Removes a holder from the shared playback clock. When the last holder releases, the clock is stopped and discarded. CODE::TempoClock.default:: is not stopped.
+
+ARGUMENT::holder
+The same object passed to LINK::#-acquirePlaybackClock::. Must not be CODE::nil::. Releasing a holder that is not currently acquired leaves an existing clock running.
 
 METHOD::sequenceIds
 The ids of sequences stored by LINK::#-addMidiSequence::.
@@ -89,6 +104,9 @@ Opens an instance of LINK::Classes/SequencerGui:: to help manage the sequences f
 
 METHOD::stop
 Stops playback.
+
+METHOD::tempo
+The transport tempo in beats per second. Defaults to 1. CODE::tempo_:: stores a positive LINK::Classes/SimpleNumber:: and applies it to the shared clock when one exists.
 
 EXAMPLES::
 

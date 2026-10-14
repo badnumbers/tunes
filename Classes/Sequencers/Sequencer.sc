@@ -5,7 +5,9 @@ Sequencer {
 	var prPostKeySets;
 	var prSequences;
 	var prSequenceWrapper;
-	var prTempoClock;
+	var prPlaybackClock;
+	var prHolders;
+	var prTempo = 1;
 
 	addGlobalPreKeys {
 		|keysArray|
@@ -39,13 +41,32 @@ Sequencer {
 		this.prAddKeySet(prPostKeySets,AutoKeySet({|sequence|sequence.synthId==synthId},keysArray));
 	}
 
+	acquirePlaybackClock {
+		|holder|
+		var isTransportStart;
+		if (holder.isNil, {
+			Error("The 'holder' parameter of Sequencer.acquirePlaybackClock() must not be nil.").throw;
+		});
+		if (prHolders.includes(holder), {
+			^(clock: prPlaybackClock, isTransportStart: false);
+		});
+		isTransportStart = prPlaybackClock.isNil;
+		if (isTransportStart, {
+			prPlaybackClock = TempoClock.new(prTempo);
+		});
+		prHolders.add(holder);
+		^(clock: prPlaybackClock, isTransportStart: isTransportStart);
+	}
+
 	init {
 		|devMode|
 		prDevMode = devMode;
 		prPreKeySets = List();
 		prPostKeySets = List();
 		prSequences = Dictionary();
-		prTempoClock = TempoClock.default;
+		prHolders = IdentitySet.new;
+		prPlaybackClock = nil;
+		prTempo = 1;
 
 		prSequenceWrapper = {
 			|sequence|
@@ -170,17 +191,47 @@ Sequencer {
 		existingkeysets.add(newkeyset);
 	}
 
+	releasePlaybackClock {
+		|holder|
+		var clock;
+		if (holder.isNil, {
+			Error("The 'holder' parameter of Sequencer.releasePlaybackClock() must not be nil.").throw;
+		});
+		prHolders.remove(holder);
+		if (prHolders.isEmpty && { prPlaybackClock.notNil }, {
+			clock = prPlaybackClock;
+			prPlaybackClock = nil;
+			{ if (clock.isRunning, { clock.stop }); nil }.defer;
+		});
+	}
+
 	sequenceIds {
 		^prSequences.keys.asArray;
 	}
 
 	showGui {
-		SequencerGui.new(this,prTempoClock,prDevMode);
+		SequencerGui.new(this,prDevMode);
 	}
 
 	stop {
 		if (prEventStreamPlayer.isMemberOf(EventStreamPlayer), {
 			prEventStreamPlayer.stop;
+		});
+	}
+
+	tempo {
+		^prTempo;
+	}
+
+	tempo_ {
+		|newTempo|
+		Validator.validateMethodParameterType(newTempo, SimpleNumber, "newTempo", "Sequencer", "tempo_");
+		if (newTempo <= 0, {
+			Error(format("The newTempo parameter provided to Sequencer.tempo_ must be greater than 0. The value % was provided.", newTempo)).throw;
+		});
+		prTempo = newTempo;
+		if (prPlaybackClock.notNil, {
+			prPlaybackClock.tempo_(prTempo);
 		});
 	}
 }

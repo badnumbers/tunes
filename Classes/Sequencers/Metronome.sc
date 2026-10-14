@@ -7,9 +7,13 @@ Metronome {
 	}
 
 	*play {
+		|clock|
+		if (clock.notNil, {
+			Validator.validateMethodParameterType(clock, TempoClock, "clock", "Metronome", "play");
+		});
 		if (Server.default.serverRunning.not, {
 			Setup.server;
-			Server.default.doWhenBooted({ this.play });
+			Server.default.doWhenBooted({ this.play(clock) });
 			^this;
 		});
 		if (synthDefSent == false, {
@@ -31,7 +35,7 @@ Metronome {
 				\legato, 0.2,
 				\trig, 1
 			)
-		).play;
+		).play(clock, quant: 1);
 	}
 
 	*stop {

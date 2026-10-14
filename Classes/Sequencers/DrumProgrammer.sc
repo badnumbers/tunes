@@ -18,13 +18,17 @@ DrumProgrammer : SCViewHolder {
 	var prRowViews;
 	var prSelectedRow;
 	var prSequencePlayer;
+	var prSequencer;
+	var prSyncTo = 4;
 	var prSquareSize = 48;
 	var prStepBeats = 0.25;
 	var prStepCount;
 	var prVelocity = 100;
 
 	init {
-		var addDrumSoundButton, addStepButton, canvas, content, playButton, prompt, root, scroll, stopButton, strip;
+		|sequencer|
+		var addDrumSoundButton, addStepButton, canvas, content, playButton, prompt, root, scroll, stopButton, strip, syncMenu;
+		prSequencer = sequencer;
 		prPalette = GuiPalette.default;
 		prStepCount = 16;
 		prNotes = Array.new;
@@ -54,12 +58,22 @@ DrumProgrammer : SCViewHolder {
 		prRemoveStepButton = this.prMakeButton("Remove step", { this.prRemoveStep });
 		playButton = this.prMakeButton("Play", { this.prPlay });
 		stopButton = this.prMakeButton("Stop", { this.prStop });
+		syncMenu = PopUpMenu()
+			.items_((1..16).collect({ |number| number.asString }))
+			.value_(3)
+			.font_(Font(size: 16))
+			.minWidth_(70)
+			.action_({ |menu|
+				prSyncTo = menu.item.asInteger;
+			});
 		strip = View().background_(prPalette.colour2).minHeight_(70).maxHeight_(70).layout_(
 			HLayout(
 				addDrumSoundButton,
 				prRemoveDrumSoundButton,
 				addStepButton,
 				prRemoveStepButton,
+				StaticText().string_("Sync to").stringColor_(prPalette.colour5).align_(\center).font_(Font(size: 16)).minWidth_(80),
+				syncMenu,
 				playButton,
 				stopButton,
 				[nil, s: 1]
@@ -119,7 +133,9 @@ DrumProgrammer : SCViewHolder {
 	}
 
 	*new {
-		^super.new.init;
+		|sequencer|
+		Validator.validateMethodParameterType(sequencer, Sequencer, "sequencer", "DrumProgrammer", "new", allowNil: true);
+		^super.new.init(sequencer);
 	}
 
 	prAddDrumSound {
@@ -340,10 +356,23 @@ DrumProgrammer : SCViewHolder {
 	}
 
 	prPlay {
+		var acquired;
 		if (prIsPlaying, { ^this });
-		prSequencePlayer.playheadTime_(0);
 		prSequencePlayer.sequence_(prNotes);
-		prSequencePlayer.play();
+		if (prSequencer.notNil, {
+			acquired = prSequencer.acquirePlaybackClock(prSequencePlayer);
+			if (acquired.isTransportStart, {
+				acquired.clock.beats_(0);
+			});
+			prSequencePlayer.alignPlayhead(prSyncTo, acquired.clock.beats);
+			prSequencePlayer.play(
+				tempoClock: acquired.clock,
+				startNow: true
+			);
+		}, {
+			prSequencePlayer.playheadTime_(0);
+			prSequencePlayer.play();
+		});
 		prIsPlaying = true;
 	}
 
@@ -440,9 +469,17 @@ DrumProgrammer : SCViewHolder {
 		});
 	}
 
+	stop {
+		this.prStop;
+	}
+
 	prStop {
 		if (prIsPlaying.not, { ^this });
-		prSequencePlayer.stop();
+		if (prSequencer.notNil, {
+			prSequencePlayer.stop({ prSequencer.releasePlaybackClock(prSequencePlayer) });
+		}, {
+			prSequencePlayer.stop();
+		});
 		prIsPlaying = false;
 		this.prClearColumnHighlight;
 	}

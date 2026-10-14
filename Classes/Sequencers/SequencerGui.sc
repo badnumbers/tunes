@@ -7,19 +7,17 @@ SequencerGui {
 	var prSequencer;
 	var prSequencerData;
 	var prSettingsView;
-	var prTempoClock;
 	var prWindow;
 
 	init {
-		|sequencer,tempoClock,devMode|
-		var window, stackLayout, midiIndicator, synthsButton, drumsButton, settingsButton, arrangeButton, recordButton, startRecordingButton, playLoopButton, pianoRoll;
+		|sequencer,devMode|
+		var window, stackLayout, midiIndicator, synthsButton, drumsButton, settingsButton, arrangeButton, recordButton, startRecordingButton, playLoopButton, pianoRoll, drumProgrammer;
 		var tempoKnob, metronomeKnob;
 		var totalMidiNoteCount = 0;
 		var renderButtonFunc;
 
 		Validator.validateMethodParameterType(sequencer, Sequencer, "sequencer", "SequencerGui", "init");
 		prSequencer = sequencer;
-		prTempoClock = TempoClock.default;
 
 		//prDocument = Document.open(thisProcess.nowExecutingPath);
 		prDocument = SequencerDocument(Document.current);
@@ -56,11 +54,20 @@ SequencerGui {
 			stackLayout = StackLayout(
 				prArrangerView,
 				BorderView().background_(prPalette.colour2).layout_(VLayout(
-					pianoRoll = PianoRoll(palette: prPalette, tempoClock:prTempoClock, devMode: devMode, keyRouter: prKeyRouter, sequencerDocument: prDocument).minHeight_(100),
+					pianoRoll = PianoRoll(palette: prPalette, sequencer: prSequencer, devMode: devMode, keyRouter: prKeyRouter, sequencerDocument: prDocument).minHeight_(100),
 					View().background_(prPalette.colour4).minHeight_(70).maxHeight_(70).layout_(
 						HLayout(
 							startRecordingButton = renderButtonFunc.value("Start recording", width:150),
 							playLoopButton = renderButtonFunc.value("Play loop", width:150),
+							StaticText().string_("Sync to").stringColor_(prPalette.colour5).align_(\center).font_(Font(size: 16)).minWidth_(80),
+							PopUpMenu()
+								.items_((1..16).collect({ |number| number.asString }))
+								.value_(3)
+								.font_(Font(size: 16))
+								.minWidth_(70)
+								.action_({ |menu|
+									pianoRoll.syncTo_(menu.item.asInteger);
+								}),
 							[nil, s: 1]
 						).margins_(10).spacing_(10)
 					)
@@ -100,7 +107,7 @@ SequencerGui {
 					).margins_(25).spacing_(25)
 				),
 				SynthDesk(),
-				DrumProgrammer()
+				drumProgrammer = DrumProgrammer(prSequencer)
 		)).margins_(20).spacing_(20);
 
 		// Draw buttons in main header
@@ -111,14 +118,12 @@ SequencerGui {
 			stackLayout.index_(4);
 		});
 		{
-			var initialTempo = prTempoClock.tryPerform(\tempo) ? 1.0;
-			if (initialTempo.isNumber.not, { initialTempo = 1.0; });
-			initialTempo = initialTempo.clip(1, 4);
-			prTempoClock.tempo_(initialTempo);
+			var initialTempo = prSequencer.tempo.clip(1, 4);
+			prSequencer.tempo_(initialTempo);
 			tempoKnob.value_(initialTempo.explin(1, 4, 0, 1));
 		}.value;
 		tempoKnob.action_({ |knob|
-			prTempoClock.tempo_(knob.value.linexp(0, 1, 1, 4));
+			prSequencer.tempo_(knob.value.linexp(0, 1, 1, 4));
 		});
 		metronomeKnob.value_(Metronome.volume);
 		metronomeKnob.action_({ |knob|
@@ -184,6 +189,9 @@ SequencerGui {
 
 		// Tidy up when the window is closed
 		prWindow.onClose_({
+			pianoRoll.stopLoop;
+			pianoRoll.stopRecording;
+			drumProgrammer.stop;
 			prSequencer.removeDependant(this);
 			[\noteOn,\noteOff].do({
 				|msgType|
@@ -193,11 +201,10 @@ SequencerGui {
 	}
 
 	*new {
-		|sequencer,tempoClock,devMode=false|
+		|sequencer,devMode=false|
 		Validator.validateMethodParameterType(sequencer, Sequencer, "sequencer", "SequencerGui", "new");
-		Validator.validateMethodParameterType(tempoClock, TempoClock, "tempoClock", "SequencerGui", "new");
 		Validator.validateMethodParameterType(devMode,Boolean,"devMode","SequencerGui","new");
-		^super.new.init(sequencer,tempoClock,devMode);
+		^super.new.init(sequencer,devMode);
 	}
 
 	update {

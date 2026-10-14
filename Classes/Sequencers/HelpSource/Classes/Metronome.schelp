@@ -4,7 +4,7 @@ CATEGORIES:: Streams-Patterns-Events
 RELATED:: Classes/Sequencer, Classes/PianoRoll, Classes/SequencerGui
 
 DESCRIPTION::
-This class plays short bursts of noise on the beat of LINK::Classes/TempoClock#*default::, and quieter bursts on the offbeats.
+This class plays short bursts of noise on each beat, and quieter bursts on the offbeats. LINK::#*play:: uses the clock it is given, or LINK::Classes/TempoClock#*default:: when none is passed. Recording passes the sequencer's shared playback clock so the click stays on that clock's beats.
 
 NOTE::
 The metronome depends on the server running.
@@ -19,7 +19,10 @@ RETURNS::
 CODE::true:: or CODE::false::.
 
 METHOD:: play
-Starts playing the metronome. If the server is not running, boots it via LINK::Classes/Setup:: and starts playback when boot completes.
+Starts playing the metronome on the next whole beat of CODE::clock::. If the server is not running, boots it via LINK::Classes/Setup:: and starts playback when boot completes.
+
+ARGUMENT:: clock
+The LINK::Classes/TempoClock:: to play on. CODE::nil:: uses LINK::Classes/TempoClock#*default::.
 
 NOTE::
 As this method will add the LINK::Classes/SynthDef:: TELETYPE::\metronome:: if it hasn't already, there could conceivably be a delay or some warnings to the post window while this is happening.

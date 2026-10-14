@@ -344,6 +344,43 @@ SequencePlayerUnitTests : BNUnitTest {
 		});
 	}
 
+	test_alignPlayhead_phaseWithinBar_snapsToNearestLanding {
+		var sequencePlayer;
+		sequencePlayer = SequencePlayer(midiOut: ());
+		sequencePlayer.loopStart = 10;
+		sequencePlayer.loopEnd = 26;
+		sequencePlayer.playheadTime = 19.5;
+		this.assertEquals(sequencePlayer.alignPlayhead(4, 19.125), 21.125);
+		this.assertEquals(sequencePlayer.isPlaying, false);
+	}
+
+	test_alignPlayhead_nearLoopStart_wrapsToEnd {
+		var sequencePlayer;
+		sequencePlayer = SequencePlayer(midiOut: ());
+		sequencePlayer.loopStart = 0;
+		sequencePlayer.loopEnd = 16;
+		sequencePlayer.playheadTime = 0.5;
+		this.assertEquals(sequencePlayer.alignPlayhead(4, 3.125), 15.125);
+	}
+
+	test_alignPlayhead_equalDistance_choosesForwardPoint {
+		var sequencePlayer;
+		sequencePlayer = SequencePlayer(midiOut: ());
+		sequencePlayer.loopStart = 0;
+		sequencePlayer.loopEnd = 16;
+		sequencePlayer.playheadTime = 2;
+		this.assertEquals(sequencePlayer.alignPlayhead(4, 0), 4);
+	}
+
+	test_alignPlayhead_syncLongerThanLoop_usesSingleLanding {
+		var sequencePlayer;
+		sequencePlayer = SequencePlayer(midiOut: ());
+		sequencePlayer.loopStart = 0;
+		sequencePlayer.loopEnd = 4;
+		sequencePlayer.playheadTime = 0;
+		this.assertFloatEquals(sequencePlayer.alignPlayhead(8, 5.2), 1.2);
+	}
+
 	nextIterationAfter {
 		|time,delta|
 		var numberOfDeltas = time / delta;

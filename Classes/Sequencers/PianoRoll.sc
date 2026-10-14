@@ -17,9 +17,12 @@ PianoRoll : SCViewHolder {
 	var prRecordedNotes;
 	var prScrollView;
 	var prSequencePlayer;
+	var prSequencer;
 	var prSequencerDocument;
 	var prSidebar;
-	var prTempoClock;
+	var prSyncTo = 4;
+	var prIsRecording = false;
+	var prRecordingClock;
 	var prTimeline;
 	var prView;
 
@@ -28,7 +31,7 @@ PianoRoll : SCViewHolder {
 	}
 
 	init {
-		|parent,bounds,palette,tempoClock,devMode,keyRouter,sequencerDocument|
+		|parent,bounds,palette,sequencer,devMode,keyRouter,sequencerDocument|
 		var beatLineViews;
 		var contentLayoutView;
 		var dragOrigin;
@@ -42,6 +45,7 @@ PianoRoll : SCViewHolder {
 		prDevMode = devMode;
 		prKeyRouter = keyRouter;
 		prPalette = palette;
+		prSequencer = sequencer;
 		prSequencerDocument = sequencerDocument;
 		prSidebar = PianoRollSidebar(prPalette);
 
@@ -144,7 +148,6 @@ PianoRoll : SCViewHolder {
 			handled;
 		};
 		prScrollView.mouseWheelAction_(scrollWheel);
-		prTempoClock = tempoClock;
 		prRecordedNotes = Array.newClear;
 
 		prNoteViewScale = Dictionary.with(*[\horizontal -> 40, \vertical -> 10]);
@@ -156,7 +159,7 @@ PianoRoll : SCViewHolder {
 			Setup.server;
 		});
 
-		prSequencePlayer = SequencePlayer(tempoClock,Setup.midi).onPlayheadMove_({
+		prSequencePlayer = SequencePlayer(midiOut: Setup.midi).onPlayheadMove_({
 			|newPosition|
 			AppClock.sched(0.0, { prLoopMarkers.playheadTime_(newPosition,snap:false); });
 		});
@@ -301,18 +304,28 @@ PianoRoll : SCViewHolder {
 	}
 
 	*new {
-		|parent,bounds,palette,tempoClock,devMode=false,keyRouter,sequencerDocument|
+		|parent,bounds,palette,sequencer,devMode=false,keyRouter,sequencerDocument|
 		Validator.validateMethodParameterType(palette, GuiPalette, "palette", "PianoRoll", "new");
-		Validator.validateMethodParameterType(tempoClock, TempoClock, "tempoClock", "PianoRoll", "new");
+		Validator.validateMethodParameterType(sequencer, Sequencer, "sequencer", "PianoRoll", "new");
 		Validator.validateMethodParameterType(devMode,Boolean,"devMode","PianoRoll","new");
 		Validator.validateMethodParameterType(keyRouter, SequencerKeyRouter, "keyRouter", "PianoRoll", "new");
 		Validator.validateMethodParameterType(sequencerDocument, SequencerDocument, "sequencerDocument", "PianoRoll", "new", allowNil: true);
-		^super.new.init(parent,bounds,palette,tempoClock,devMode,keyRouter,sequencerDocument);
+		^super.new.init(parent,bounds,palette,sequencer,devMode,keyRouter,sequencerDocument);
 	}
 
 	playLoop {
+		var acquired;
 		if (prRecordedNotes.size > 0,{
-			prSequencePlayer.play();
+			acquired = prSequencer.acquirePlaybackClock(prSequencePlayer);
+			if (acquired.isTransportStart, {
+				acquired.clock.beats_(0);
+			});
+			prSequencePlayer.alignPlayhead(prSyncTo, acquired.clock.beats);
+			prLoopMarkers.playheadTime_(prSequencePlayer.playheadTime, snap: false);
+			prSequencePlayer.play(
+				tempoClock: acquired.clock,
+				startNow: true
+			);
 			^true;
 		});
 
@@ -364,11 +377,35 @@ PianoRoll : SCViewHolder {
 		^this.prSelectedNotes;
 	}
 
+	syncTo {
+		^prSyncTo;
+	}
+
+	syncTo_ {
+		|newSyncTo|
+		Validator.validateMethodParameterType(newSyncTo, Integer, "newSyncTo", "PianoRoll", "syncTo_");
+		if (newSyncTo < 1 or: { newSyncTo > 16 }, {
+			Error(format("The newSyncTo parameter provided to PianoRoll.syncTo_ must be an integer from 1 to 16. The value % was provided.", newSyncTo)).throw;
+		});
+		prSyncTo = newSyncTo;
+	}
+
 	startRecording {
+		var acquired;
 		var fakeNotes;
 		var startOffset = 5.0.rand + 2;
-		var absoluteStartTime = prTempoClock.beats.floor;
-		var nowFunc = {(TempoClock.default.beats - (Server.default.latency * TempoClock.tempo)) - absoluteStartTime};
+		var absoluteStartTime;
+		var nowFunc;
+
+		if (prIsRecording, { ^this });
+		acquired = prSequencer.acquirePlaybackClock(this);
+		prIsRecording = true;
+		if (acquired.isTransportStart, {
+			acquired.clock.beats_(0);
+		});
+		prRecordingClock = acquired.clock;
+		absoluteStartTime = prRecordingClock.beats.floor;
+		nowFunc = {(prRecordingClock.beats - (Server.default.latency * prRecordingClock.tempo)) - absoluteStartTime};
 
 		if (prDevMode,{
 			var now = nowFunc.value();
@@ -425,15 +462,17 @@ PianoRoll : SCViewHolder {
 			});
 			Setup.server;
 		});
-		Metronome.play;
+		Metronome.play(prRecordingClock);
 	}
 
 	stopLoop {
-		prSequencePlayer.stop();
+		if (prSequencePlayer.isPlaying.not, { ^this });
+		prSequencePlayer.stop({ prSequencer.releasePlaybackClock(prSequencePlayer) });
 	}
 
 	stopRecording {
 		var startTime = inf, stopTime = 0;
+		if (prIsRecording.not, { ^this });
 		if (prDevMode,{
 		},{
 			[\noteOn,\noteOff].do({
@@ -465,6 +504,8 @@ PianoRoll : SCViewHolder {
 		},{
 			warn("Nothing has been recorded!")
 		});
-
+		prSequencer.releasePlaybackClock(this);
+		prIsRecording = false;
+		prRecordingClock = nil;
 	}
 }

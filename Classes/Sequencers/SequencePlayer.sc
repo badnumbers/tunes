@@ -11,6 +11,7 @@ SequencePlayer {
 	var prMidiChannel = 0;
 	var prMidiOut;
 	var prOnPlayheadMove;
+	var prOnStopped;
 	var prPlayheadTime = 0;
 	var prPlaySliceFunc;
 	var prSequence;
@@ -42,6 +43,7 @@ SequencePlayer {
 			var slice = prCutSliceFunc.value();
 			var nextStartTime;
 			var sliceStartTime = prPlayheadTime;
+			var onStoppedCallback;
 			var report = format("Called prPlaySliceFunc for slice % -> %. Input slice starts %, stops % and terminates %. "
 				,prPlayheadTime
 				,prPlayheadTime + prDelta
@@ -89,6 +91,11 @@ SequencePlayer {
 					prMidiOut.noteOff(chan:prMidiChannel,note:note.noteNumber,veloc:note.velocity);
 				});
 				prCurrentlyPlayingNotes.clear;
+				if (prOnStopped.notNil, {
+					onStoppedCallback = prOnStopped;
+					prOnStopped = nil;
+					onStoppedCallback.value;
+				});
 			});
 			report;
 		};
@@ -116,6 +123,10 @@ SequencePlayer {
 
 			slice[\items] = (starts ++ stops ++ terminations).sort({ |a, b| a[\time] <= b[\time] });
 		};
+	}
+
+	isPlaying {
+		^prIsPlaying;
 	}
 
 	latency {
@@ -197,10 +208,64 @@ SequencePlayer {
 		^super.new.init(tempoClock,midiOut);
 	}
 
+	alignPlayhead {
+		|syncTo, beat|
+		var loopLength, phase, local, first, position, bestLocal, bestDistance, bestForward, forward, distance, steps, done;
+		Validator.validateMethodParameterType(syncTo, Integer, "syncTo", "SequencePlayer", "alignPlayhead");
+		Validator.validateMethodParameterType(beat, SimpleNumber, "beat", "SequencePlayer", "alignPlayhead");
+		if (syncTo < 1 or: { syncTo > 16 }, {
+			Error(format("The syncTo parameter provided to SequencePlayer.alignPlayhead must be an integer from 1 to 16. The value % was provided.", syncTo)).throw;
+		});
+		loopLength = prLoopEnd - prLoopStart;
+		phase = beat.mod(syncTo);
+		local = (prPlayheadTime - prLoopStart).mod(loopLength);
+		first = phase.mod(loopLength);
+		position = first;
+		bestDistance = inf;
+		bestForward = inf;
+		steps = 0;
+		done = false;
+		while { done.not } {
+			forward = (position - local).mod(loopLength);
+			distance = forward.min(loopLength - forward);
+			if (distance < bestDistance, {
+				bestDistance = distance;
+				bestForward = forward;
+				bestLocal = position;
+			}, {
+				if ((distance == bestDistance) && { forward < bestForward }, {
+					bestForward = forward;
+					bestLocal = position;
+				});
+			});
+			position = (position + syncTo).mod(loopLength);
+			steps = steps + 1;
+			if (((position - first).abs < 1e-9) or: { steps >= 64 }, {
+				done = true;
+			});
+		};
+		prPlayheadTime = prLoopStart + bestLocal;
+		^prPlayheadTime;
+	}
+
 	play {
+		|tempoClock, startImmediately = false, startNow = false|
 		var startBeat;
+		if (tempoClock.notNil, {
+			Validator.validateMethodParameterType(tempoClock, TempoClock, "tempoClock", "SequencePlayer", "play");
+			prTempoClock = tempoClock;
+		});
+		Validator.validateMethodParameterType(startImmediately, Boolean, "startImmediately", "SequencePlayer", "play");
+		Validator.validateMethodParameterType(startNow, Boolean, "startNow", "SequencePlayer", "play");
 		this.prResetPlayingNotes();
 		prIsPlaying = true;
+		if (startImmediately, {
+			prTempoClock.beats_(0);
+			^prPlaySliceFunc.value();
+		});
+		if (startNow, {
+			^prPlaySliceFunc.value();
+		});
 		startBeat = prTempoClock.nextTimeOnGrid(quant: 1);
 		if (startBeat <= prTempoClock.beats, {
 			^prPlaySliceFunc.value();
@@ -243,6 +308,11 @@ SequencePlayer {
 	}
 
 	stop {
+		|onStopped|
+		if (onStopped.notNil, {
+			Validator.validateMethodParameterType(onStopped, Function, "onStopped", "SequencePlayer", "stop");
+		});
+		prOnStopped = onStopped;
 		prIsPlaying = false;
 	}
 }
