@@ -7,7 +7,7 @@ Sequencer {
 	var prSequenceWrapper;
 	var prPlaybackClock;
 	var prHolders;
-	var prTempo = 1;
+	var prTempo = 2;
 
 	addGlobalPreKeys {
 		|keysArray|
@@ -66,7 +66,7 @@ Sequencer {
 		prSequences = Dictionary();
 		prHolders = IdentitySet.new;
 		prPlaybackClock = nil;
-		prTempo = 1;
+		prTempo = 2;
 
 		prSequenceWrapper = {
 			|sequence|

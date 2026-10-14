@@ -301,7 +301,8 @@ DrumProgrammer : SCViewHolder {
 
 	prMakeRow {
 		|name, noteNumber|
-		var label, layout, rowView, steps;
+		var held, label, layout, rowView, steps;
+		held = false;
 		layout = HLayout().spacing_(8).margins_(0);
 		label = this.prMakeLabel(name);
 		layout.add(label);
@@ -323,7 +324,30 @@ DrumProgrammer : SCViewHolder {
 		label.mouseDownAction_({
 			|view, x, y, modifiers, buttonNumber, clickCount|
 			if (buttonNumber == 0, {
+				held = true;
+				this.prSetLabelPressed(view, true);
 				this.prSelectRow(rowView);
+				this.prPreviewDrum(noteNumber);
+			});
+			nil
+		});
+		label.mouseUpAction_({
+			|view|
+			held = false;
+			this.prSetLabelPressed(view, false);
+			nil
+		});
+		label.mouseLeaveAction_({
+			|view|
+			if (held, {
+				this.prSetLabelPressed(view, false);
+			});
+			nil
+		});
+		label.mouseEnterAction_({
+			|view|
+			if (held, {
+				this.prSetLabelPressed(view, true);
 			});
 			nil
 		});
@@ -353,6 +377,18 @@ DrumProgrammer : SCViewHolder {
 	prNoteStartTime {
 		|columnIndex|
 		^(columnIndex * prStepBeats);
+	}
+
+	prPreviewDrum {
+		|noteNumber|
+		var midi;
+		if (noteNumber.isNil, { ^this });
+		midi = Setup.midi;
+		midi.noteOn(chan: prSequencePlayer.midiChannel, note: noteNumber, veloc: 100);
+		TempoClock.default.sched(prHitDuration, {
+			midi.noteOff(chan: prSequencePlayer.midiChannel, note: noteNumber, veloc: 100);
+			nil
+		});
 	}
 
 	prPlay {
@@ -421,6 +457,15 @@ DrumProgrammer : SCViewHolder {
 		prStepCount = prStepCount - 1;
 		this.prUpdateLoopEnd;
 		this.prRefreshRemoveButtons;
+	}
+
+	prSetLabelPressed {
+		|label, isPressed|
+		if (isPressed, {
+			label.background_(prPalette.colour3);
+		}, {
+			label.background_(prPalette.colour1);
+		});
 	}
 
 	prSelectRow {
