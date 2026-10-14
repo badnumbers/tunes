@@ -1,6 +1,6 @@
 AmpCommandUnitTests : BNUnitTest {
 	prMockNote {
-		|startTime = 0, noteNumber = 60, velocity = 100, stopTime = 1|
+		|startTime = 0, noteNumber = 60, velocity = 100, stopTime = 1, deleteFunc|
 		var note;
 		note = PianoRollNote(
 			startTime,
@@ -13,7 +13,8 @@ AmpCommandUnitTests : BNUnitTest {
 			setPart2Func: { },
 			setPart3Func: { },
 			setPart4Func: { },
-			moveFunc: { |view, newStart, newStop| }
+			moveFunc: { |view, newStart, newStop| },
+			deleteFunc: deleteFunc
 		);
 		note.stop(stopTime);
 		^note;
@@ -73,15 +74,17 @@ AmpCommandUnitTests : BNUnitTest {
 	}
 
 	test_execute_clipsOutOfRangeValues {
-		var cmd, notes;
+		var cmd, notes, deleted;
+		deleted = [];
 		cmd = AmpCommand.new;
 		notes = [
-			this.prMockNote(0, stopTime: 1.0),
+			this.prMockNote(0, stopTime: 1.0, deleteFunc: { |note| deleted = deleted.add(note) }),
 			this.prMockNote(1, stopTime: 2.0)
 		];
 		cmd.execute((selectedNotes: notes, values: [-0.2, 1.5]));
-		this.assertEquals(notes[0].event[\amp], 0);
-		this.assertEquals(notes[0].velocity, 0);
+		this.assertEquals(deleted, [notes[0]]);
+		this.assertEquals(notes[0].event[\amp], nil);
+		this.assertEquals(notes[0].velocity, 100);
 		this.assertEquals(notes[1].event[\amp], 1);
 		this.assertEquals(notes[1].velocity, 127);
 	}
