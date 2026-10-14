@@ -7,6 +7,7 @@ SequencerGui {
 	var prSequencer;
 	var prSequencerData;
 	var prSettingsView;
+	var prSynthDesk;
 	var prWindow;
 
 	init {
@@ -106,7 +107,7 @@ SequencerGui {
 						[nil, s: 1]
 					).margins_(25).spacing_(25)
 				),
-				SynthDesk(),
+				prSynthDesk = SynthDesk(),
 				drumProgrammer = DrumProgrammer(prSequencer)
 		)).margins_(20).spacing_(20);
 
@@ -211,6 +212,9 @@ SequencerGui {
 		|theChanged, what, id|
 		if (what == \midiSequenceAdded, {
 			prArrangerView.addSequence(id);
+		});
+		if (what == \tempo, {
+			prSynthDesk.tempo_(id);
 		});
 	}
 }

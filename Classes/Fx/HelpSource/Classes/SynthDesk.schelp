@@ -4,7 +4,7 @@ CATEGORIES:: External Control
 RELATED:: Classes/Config, Classes/FxBankSynth, Classes/FxBankChorus, Classes/SequencerGui, Classes/SCViewHolder
 
 DESCRIPTION::
-TELETYPE::SynthDesk:: is a LINK::Classes/SCViewHolder:: that routes hardware synths defined in LINK::Classes/Config:: into SuperCollider so effects can be added to them. It does not create a window. LINK::Classes/SequencerGui:: embeds an instance as a page in its stack; the header Synths button (between Record and the MIDI indicator) shows that page. To show the desk on its own, place it in a LINK::Classes/Window:: layout.
+TELETYPE::SynthDesk:: is a LINK::Classes/SCViewHolder:: that routes hardware synths defined in LINK::Classes/Config:: into SuperCollider so effects can be added to them. It does not create a window. LINK::Classes/SequencerGui:: embeds an instance as a page in its stack; the header Synths button (between Record and the MIDI indicator) shows that page. To show the desk on its own, place it in a LINK::Classes/Window:: layout. LINK::#-tempo_:: passes a tempo through to every effect. The embedded desk receives the sequencer tempo that way. A desk created on its own does not.
 
 Constructing TELETYPE::SynthDesk:: calls LINK::Classes/Setup#*server:: so the LINK::Classes/Server:: is started.
 
@@ -17,6 +17,12 @@ RETURNS::
 A new TELETYPE::SynthDesk:: instance.
 
 INSTANCEMETHODS::
+
+METHOD:: tempo_
+Passes a positive tempo, in beats per second, to every effect on the desk.
+
+ARGUMENT:: newTempo
+A LINK::Classes/SimpleNumber:: greater than 0.
 
 PRIVATE:: init, prBuildDesk, prSetupHardwareSynth
 

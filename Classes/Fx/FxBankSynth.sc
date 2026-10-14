@@ -26,7 +26,7 @@ FxBankSynth {
 	}
 
 	init {
-		|synthConfig,uiContainer,tempoClock|
+		|synthConfig,uiContainer|
 		prEffectTypes = [FxBankGain,FxBankChorus,FxBankPowerChorus,FxBankDelay,FxBankNHHall,FxBankLPF,FxBankHPF];
 		prEffectTypeDictionary = Dictionary();
 		prSynthConfig = synthConfig;
@@ -89,7 +89,7 @@ FxBankSynth {
 
 			prEffectTypes.do({
 				|effectType|
-				prEffectTypeDictionary.put(effectType, effectType.new(this,effectsLayout,tempoClock));
+				prEffectTypeDictionary.put(effectType, effectType.new(this, effectsLayout));
 			});
 			effectsLayout.add(nil,1);
 		};
@@ -116,15 +116,26 @@ FxBankSynth {
 	}
 
 	*new {
-		|synthConfig, uiContainer, tempoClock|
+		|synthConfig, uiContainer|
 		Validator.validateMethodParameterType(synthConfig,HardwareSynthesizerConfig,"synthConfig","FxBankSynth","new");
 		Validator.validateMethodParameterType(uiContainer,StackLayout,"uiContainer","FxBankSynth","new");
-		Validator.validateMethodParameterType(tempoClock,TempoClock,"tempoClock","FxBankSynth","new");
-		^super.new.init(synthConfig,uiContainer,tempoClock);
+		^super.new.init(synthConfig,uiContainer);
 	}
 
 	synthConfig {
 		^prSynthConfig;
+	}
+
+	tempo_ {
+		|newTempo|
+		Validator.validateMethodParameterType(newTempo, SimpleNumber, "newTempo", "FxBankSynth", "tempo_");
+		if (newTempo <= 0, {
+			Error(format("The newTempo parameter provided to FxBankSynth.tempo_ must be greater than 0. The value % was provided.", newTempo)).throw;
+		});
+		prEffectTypeDictionary.do({
+			|effect|
+			effect.tempo_(newTempo);
+		});
 	}
 }
 

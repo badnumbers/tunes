@@ -106,7 +106,7 @@ METHOD::stop
 Stops playback.
 
 METHOD::tempo
-The transport tempo in beats per second. Defaults to 2. CODE::tempo_:: stores a positive LINK::Classes/SimpleNumber:: and applies it to the shared clock when one exists.
+The transport tempo in beats per second. Defaults to 2. CODE::tempo_:: stores a positive LINK::Classes/SimpleNumber:: and applies it to the shared clock when one exists. Dependants are notified with CODE::\tempo:: and the new tempo.
 
 EXAMPLES::
 

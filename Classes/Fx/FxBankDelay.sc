@@ -65,7 +65,6 @@ FxBankDelay : FxBankEffect {
 	}
 
 	prNdefFunction {
-		|tempoClock|
 		^{
 			var audio = NamedControl.ar(\in, 0!2);
 			var drywet =  NamedControl.kr(\drywet, 0);
@@ -73,7 +72,8 @@ FxBankDelay : FxBankEffect {
 			var leftdelay = NamedControl.kr(\leftdelay,3);
 			var rightdelay = NamedControl.kr(\rightdelay,3);
 			var wander = NamedControl.kr(\wander,0);
-			XFade2.ar(audio,CombC.ar(audio, 2, [tempoClock.beatDur*leftdelay*LFNoise1.kr(0.25).range(1-wander,1+wander),tempoClock.beatDur*rightdelay*LFNoise1.kr(0.2).range(1-wander,1+wander)], decay),drywet);
+			var tempo = NamedControl.kr(\tempo, prTempo);
+			XFade2.ar(audio,CombC.ar(audio, 2, [leftdelay / tempo * LFNoise1.kr(0.25).range(1-wander,1+wander), rightdelay / tempo * LFNoise1.kr(0.2).range(1-wander,1+wander)], decay),drywet);
 		};
 	}
 }

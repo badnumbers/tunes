@@ -28,4 +28,30 @@ SequencerUnitTests : BNUnitTest {
 		0.05.wait;
 		this.assertEquals(fresh.clock.isRunning, false, "releasing the last holder stops the new clock");
 	}
+
+	test_tempo__notifiesDependants {
+		var dependant, sequencer;
+		sequencer = Sequencer();
+		dependant = SequencerTempoDependant();
+		sequencer.addDependant(dependant);
+		sequencer.tempo_(2);
+		this.assertEquals(dependant.receivedWhat, \tempo, "writing the current tempo still notifies");
+		this.assertEquals(dependant.receivedTempo, 2, "the notification carries the current tempo");
+		sequencer.tempo_(3);
+		this.assertEquals(dependant.receivedWhat, \tempo, "a changed tempo notifies");
+		this.assertEquals(dependant.receivedTempo, 3, "the notification carries the new tempo");
+		this.assertEquals(sequencer.tempo, 3, "the sequencer stores the new tempo");
+		sequencer.removeDependant(dependant);
+	}
+}
+
+SequencerTempoDependant {
+	var <receivedTempo;
+	var <receivedWhat;
+
+	update {
+		|theChanged, what, tempo|
+		receivedWhat = what;
+		receivedTempo = tempo;
+	}
 }

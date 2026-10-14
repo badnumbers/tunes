@@ -8,6 +8,7 @@ FxBankEffect {
 	var prFxBankSynth;
 	var prNdefFunction;
 	var prRenderControls;
+	var prTempo;
 	var prToggle;
 	var prToggleEffect;
 
@@ -16,7 +17,7 @@ FxBankEffect {
 	}
 
 	init {
-		|fxBankSynth,uiContainer,tempoClock|
+		|fxBankSynth,uiContainer|
 		var controlMappings;
 		prFxBankSynth = fxBankSynth;
 		ndefId = format("%_%",prFxBankSynth.synthConfig.id, this.class.name).asSymbol;
@@ -30,13 +31,18 @@ FxBankEffect {
 		prToggleEffect = {
 			|enabled|
 			if (enabled, {
-				Ndef(ndefId,this.prNdefFunction(tempoClock));
+				Ndef(ndefId, this.prNdefFunction);
 				controlMappings.keys.do({
 					|key|
-					Ndef(ndefId).set(key, controlMappings[key][\mappingFunction].value(controlMappings[key][\control].value)); // Set the Ndef's parameters according to the values of the GUI controls
+					Ndef(ndefId).set(key, controlMappings[key][\mappingFunction].value(controlMappings[key][\control].value));
 				});
+				if (prTempo.notNil, {
+					Ndef(ndefId).set(\tempo, prTempo);
+				});
+				prEffectEnabled = true;
 			},{
 				Ndef(ndefId).end;
+				prEffectEnabled = false;
 			});
 			fxBankSynth.arrange();
 		};
@@ -80,11 +86,22 @@ FxBankEffect {
 	}
 
 	*new {
-		|fxBankSynth,uiContainer,tempoClock|
+		|fxBankSynth,uiContainer|
 		Validator.validateMethodParameterType(fxBankSynth,FxBankSynth,"fxBankSynth","FxBankEffect","new");
 		Validator.validateMethodParameterType(uiContainer,VLayout,"uiContainer","FxBankEffect","new");
-		Validator.validateMethodParameterType(tempoClock,TempoClock,"tempoClock","FxBankEffect","new");
-		^super.new.init(fxBankSynth,uiContainer,tempoClock);
+		^super.new.init(fxBankSynth,uiContainer);
+	}
+
+	tempo_ {
+		|newTempo|
+		Validator.validateMethodParameterType(newTempo, SimpleNumber, "newTempo", "FxBankEffect", "tempo_");
+		if (newTempo <= 0, {
+			Error(format("The newTempo parameter provided to FxBankEffect.tempo_ must be greater than 0. The value % was provided.", newTempo)).throw;
+		});
+		prTempo = newTempo;
+		if (prEffectEnabled, {
+			Ndef(ndefId).set(\tempo, prTempo);
+		});
 	}
 
 	toggle {

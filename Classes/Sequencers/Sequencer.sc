@@ -233,5 +233,6 @@ Sequencer {
 		if (prPlaybackClock.notNil, {
 			prPlaybackClock.tempo_(prTempo);
 		});
+		this.changed(\tempo, prTempo);
 	}
 }

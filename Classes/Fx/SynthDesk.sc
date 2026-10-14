@@ -1,11 +1,11 @@
 SynthDesk : SCViewHolder {
 	var prBuildDesk;
+	var prFxBankSynths;
 	var prSetupHardwareSynth;
-	var prTempoClock;
 
 	init {
 		Setup.server;
-		prTempoClock = TempoClock.default;
+		prFxBankSynths = Array.new;
 
 		prBuildDesk = {
 			var carousel, synthsStackContainer, carouselviews;
@@ -57,7 +57,8 @@ SynthDesk : SCViewHolder {
 				StaticText(tile, Rect(5,60,170,20)).string_(synthConfig.id).stringColor_(Color.black).align_(\center);
 			});
 
-			fxBankSynth = FxBankSynth(synthConfig,synthsStackContainer,prTempoClock);
+			fxBankSynth = FxBankSynth(synthConfig, synthsStackContainer);
+			prFxBankSynths = prFxBankSynths.add(fxBankSynth);
 
 			tile;
 		};
@@ -67,5 +68,17 @@ SynthDesk : SCViewHolder {
 
 	*new {
 		^super.new.init;
+	}
+
+	tempo_ {
+		|newTempo|
+		Validator.validateMethodParameterType(newTempo, SimpleNumber, "newTempo", "SynthDesk", "tempo_");
+		if (newTempo <= 0, {
+			Error(format("The newTempo parameter provided to SynthDesk.tempo_ must be greater than 0. The value % was provided.", newTempo)).throw;
+		});
+		prFxBankSynths.do({
+			|fxBankSynth|
+			fxBankSynth.tempo_(newTempo);
+		});
 	}
 }

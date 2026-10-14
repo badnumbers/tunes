@@ -4,7 +4,7 @@ CATEGORIES:: Streams-Patterns-Events
 RELATED:: Classes/ArrangerView, Classes/DrumProgrammer, Classes/Metronome, Classes/PianoRoll, Classes/Sequencer, Classes/SequencerDocument, Classes/SequencerKeyRouter, Classes/SynthDesk
 
 DESCRIPTION::
-LINK::Classes/SequencerGui:: provides a visualisation of a graph of LINK::Classes/Pattern::s created using a LINK::Classes/Sequencer::. This is created when calling LINK::Classes/Sequencer#-showGui::. It owns a LINK::Classes/SequencerDocument:: wrapping LINK::Classes/Document#*current::, and a LINK::Classes/SequencerKeyRouter:: whose active context is set when the user switches between Arrange, Record, and Settings views. The header bar includes Settings, Arrange, Record, Synths, and Drums buttons (Drums sits between Synths and the MIDI indicator). The Arrange button shows an embedded LINK::Classes/ArrangerView:: (the first page of the stack). TELETYPE::SequencerGui:: subscribes to the LINK::Classes/Sequencer:: with CODE::addDependant:: and forwards each CODE::\midiSequenceAdded:: id to LINK::Classes/ArrangerView#-addSequence::. Closing the window removes that dependant, stops playback, and stops recording so the shared clock can be released. The Settings view includes a tempo knob, which sets LINK::Classes/Sequencer#-tempo:: for the shared playback clock, and a knob for LINK::Classes/Metronome:: volume. The Synths button shows an embedded LINK::Classes/SynthDesk:: (the fourth page of the stack, after Arrange, Record, and Settings). The Drums button shows an embedded LINK::Classes/DrumProgrammer:: (the fifth page). The record page places a Sync to menu, values 1 to 16 and default 4, beside Play loop. Play loop snaps the piano-roll playhead onto that grid on the shared clock and starts immediately.
+LINK::Classes/SequencerGui:: provides a visualisation of a graph of LINK::Classes/Pattern::s created using a LINK::Classes/Sequencer::. This is created when calling LINK::Classes/Sequencer#-showGui::. It owns a LINK::Classes/SequencerDocument:: wrapping LINK::Classes/Document#*current::, and a LINK::Classes/SequencerKeyRouter:: whose active context is set when the user switches between Arrange, Record, and Settings views. The header bar includes Settings, Arrange, Record, Synths, and Drums buttons (Drums sits between Synths and the MIDI indicator). The Arrange button shows an embedded LINK::Classes/ArrangerView:: (the first page of the stack). TELETYPE::SequencerGui:: subscribes to the LINK::Classes/Sequencer:: with CODE::addDependant:: and forwards each CODE::\midiSequenceAdded:: id to LINK::Classes/ArrangerView#-addSequence::. The same subscription forwards CODE::\tempo:: to the embedded LINK::Classes/SynthDesk::. Closing the window removes that dependant, stops playback, and stops recording so the shared clock can be released. The Settings view includes a tempo knob, which sets LINK::Classes/Sequencer#-tempo:: for the shared playback clock, and a knob for LINK::Classes/Metronome:: volume. The Synths button shows an embedded LINK::Classes/SynthDesk:: (the fourth page of the stack, after Arrange, Record, and Settings). The Drums button shows an embedded LINK::Classes/DrumProgrammer:: (the fifth page). The record page places a Sync to menu, values 1 to 16 and default 4, beside Play loop. Play loop snaps the piano-roll playhead onto that grid on the shared clock and starts immediately.
 
 CLASSMETHODS::
 
@@ -21,15 +21,15 @@ When CODE::true::, the embedded LINK::Classes/PianoRoll:: skips MIDI setup and f
 INSTANCEMETHODS::
 
 METHOD:: update
-Receives LINK::Classes/Sequencer:: notifications. CODE::\midiSequenceAdded:: adds that sequence name to the LINK::Classes/ArrangerView::.
+Receives LINK::Classes/Sequencer:: notifications. CODE::\midiSequenceAdded:: adds that sequence name to the LINK::Classes/ArrangerView::. CODE::\tempo:: forwards the new tempo to the embedded LINK::Classes/SynthDesk::.
 
 ARGUMENT:: theChanged
 The LINK::Classes/Sequencer:: that changed.
 
 ARGUMENT:: what
-The notification symbol. CODE::\midiSequenceAdded:: is handled.
+The notification symbol. CODE::\midiSequenceAdded:: and CODE::\tempo:: are handled.
 
 ARGUMENT:: id
-The sequence LINK::Classes/Symbol:: when CODE::what:: is CODE::\midiSequenceAdded::.
+The sequence LINK::Classes/Symbol:: when CODE::what:: is CODE::\midiSequenceAdded::. The new tempo when CODE::what:: is CODE::\tempo::.
 
 PRIVATE:: init
