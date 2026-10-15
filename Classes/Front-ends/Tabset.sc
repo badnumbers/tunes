@@ -18,6 +18,14 @@ Tabset : SCViewHolder {
 	var prUnselectedTabTextColour;
 	var prPagePadding;
 	var prPageLayout;
+	var prAddViewFunc;
+	var prAddTabView;
+	var prAddTabLabel;
+	var prAddTabStrip;
+	var prAddTabBody;
+	var prAddTabPressed;
+	var prMinTabWidth;
+	var prTabViews;
 
 	addTab {
 		|name, view|
@@ -44,7 +52,9 @@ Tabset : SCViewHolder {
 			label
 		).mode_(\stackAll);
 		tabStack.index_(1);
-		tabView = View().background_(Color.clear).minWidth_(100).maxWidth_(100).layout_(tabStack);
+		tabView = View().background_(Color.clear).layout_(tabStack);
+		this.prApplyTabWidth(tabView, label);
+		prTabViews = prTabViews.add(tabView);
 		selectTab = {
 			this.prSelectTab(index);
 		};
@@ -63,6 +73,7 @@ Tabset : SCViewHolder {
 		prTabCount = 0;
 		prStrips = Array.new;
 		prLabels = Array.new;
+		prTabViews = Array.new;
 		prTabBodies = Array.new;
 		prSelectedIndex = nil;
 		prBackgroundColour = Color.gray;
@@ -74,6 +85,13 @@ Tabset : SCViewHolder {
 		prSelectedTabTextColour = Color.black;
 		prUnselectedTabTextColour = Color.grey;
 		prPagePadding = 5;
+		prAddViewFunc = nil;
+		prAddTabView = nil;
+		prAddTabLabel = nil;
+		prAddTabStrip = nil;
+		prAddTabBody = nil;
+		prAddTabPressed = false;
+		prMinTabWidth = 50;
 		prTabBar = HLayout([nil, s: 1]).margins_(0).spacing_(prTabGapWidth);
 		prPages = StackLayout().mode_(0);
 		prTabBarView = View().background_(prBackgroundColour).layout_(prTabBar);
@@ -136,6 +154,7 @@ Tabset : SCViewHolder {
 				label.stringColor_(prUnselectedTabTextColour);
 			});
 		});
+		this.prSyncAddTab;
 	}
 
 	prDrawTabBody {
@@ -188,6 +207,7 @@ Tabset : SCViewHolder {
 		prBackgroundColour = colour;
 		prTabBarView.background_(colour);
 		this.prSyncStrips;
+		this.prSyncAddTab;
 	}
 
 	foregroundColour {
@@ -204,6 +224,7 @@ Tabset : SCViewHolder {
 		});
 		prPagesView.refresh;
 		this.prSyncStrips;
+		this.prSyncAddTab;
 	}
 
 	tabHeight {
@@ -238,6 +259,7 @@ Tabset : SCViewHolder {
 			strip.maxHeight_(prTabGapWidth);
 		});
 		this.prApplyTabHeight;
+		this.prSyncAddTab;
 	}
 
 	tabFont {
@@ -252,6 +274,8 @@ Tabset : SCViewHolder {
 			|label|
 			label.font_(prTabFont);
 		});
+		this.prApplyAllTabWidths;
+		this.prSyncAddTab;
 	}
 
 	cornerRadius {
@@ -270,6 +294,7 @@ Tabset : SCViewHolder {
 			body.refresh;
 		});
 		prPagesView.refresh;
+		this.prSyncAddTab;
 	}
 
 	selectedTabTextColour {
@@ -306,5 +331,160 @@ Tabset : SCViewHolder {
 		});
 		prPagePadding = newPagePadding;
 		prPageLayout.margins_(prPagePadding);
+	}
+
+	addViewFunc {
+		^prAddViewFunc;
+	}
+
+	addViewFunc_ {
+		|func|
+		if (func.isNil, {
+			prAddViewFunc = nil;
+			this.prRemoveAddTab;
+		}, {
+			Validator.validateMethodParameterType(func, Function, "func", "Tabset", "addViewFunc_");
+			prAddViewFunc = func;
+			this.prShowAddTab;
+		});
+	}
+
+	minTabWidth {
+		^prMinTabWidth;
+	}
+
+	minTabWidth_ {
+		|newMinTabWidth|
+		Validator.validateMethodParameterType(newMinTabWidth, SimpleNumber, "newMinTabWidth", "Tabset", "minTabWidth_");
+		if (newMinTabWidth < 0, {
+			Error(format("The newMinTabWidth parameter provided to Tabset.minTabWidth_ must not be less than 0. The value % was provided.", newMinTabWidth)).throw;
+		});
+		prMinTabWidth = newMinTabWidth;
+		this.prApplyAllTabWidths;
+		this.prSyncAddTab;
+	}
+
+	prShowAddTab {
+		var onMouseDown, onMouseLeave, onMouseUp, tabStack;
+		if (prAddTabView.notNil, {
+			^this;
+		});
+		prAddTabLabel = StaticText().string_("+").align_(\center).stringColor_(prUnselectedTabTextColour).background_(Color.clear).font_(prTabFont);
+		prAddTabBody = UserView().background_(Color.clear).canFocus_(false).drawFunc_({
+			|view|
+			this.prDrawTabBody(view);
+		});
+		prAddTabStrip = View().background_(prBackgroundColour).minHeight_(prTabGapWidth).maxHeight_(prTabGapWidth);
+		tabStack = StackLayout(
+			View().background_(Color.clear).layout_(
+				VLayout(
+					[prAddTabBody, s: 1],
+					prAddTabStrip
+				).margins_(0).spacing_(0)
+			),
+			prAddTabLabel
+		).mode_(\stackAll);
+		tabStack.index_(1);
+		prAddTabView = View().background_(Color.clear).layout_(tabStack);
+		this.prApplyTabWidth(prAddTabView, prAddTabLabel);
+		onMouseDown = { this.prAddTabMouseDown };
+		onMouseLeave = { this.prAddTabMouseLeave };
+		onMouseUp = { this.prAddTabMouseUp };
+		prAddTabView.mouseDownAction_(onMouseDown);
+		prAddTabView.mouseLeaveAction_(onMouseLeave);
+		prAddTabView.mouseUpAction_(onMouseUp);
+		prAddTabLabel.mouseDownAction_(onMouseDown);
+		prAddTabLabel.mouseLeaveAction_(onMouseLeave);
+		prAddTabLabel.mouseUpAction_(onMouseUp);
+		prTabBar.insert(prAddTabView, prTabCount);
+	}
+
+	prRemoveAddTab {
+		if (prAddTabView.notNil, {
+			prAddTabView.remove;
+		});
+		prAddTabView = nil;
+		prAddTabLabel = nil;
+		prAddTabStrip = nil;
+		prAddTabBody = nil;
+		prAddTabPressed = false;
+	}
+
+	prAddTabMouseDown {
+		prAddTabPressed = true;
+		prAddTabLabel.stringColor_(prSelectedTabTextColour);
+	}
+
+	prAddTabMouseLeave {
+		if (prAddTabPressed, {
+			prAddTabPressed = false;
+			prAddTabLabel.stringColor_(prUnselectedTabTextColour);
+		});
+	}
+
+	prAddTabMouseUp {
+		if (prAddTabPressed, {
+			prAddTabPressed = false;
+			prAddTabLabel.stringColor_(prUnselectedTabTextColour);
+			this.prRunAddViewFunc;
+		});
+	}
+
+	prRunAddViewFunc {
+		var index, name, pageView, result;
+		result = prAddViewFunc.value;
+		name = nil;
+		pageView = nil;
+		if (result.isKindOf(Array) && { result.size == 2 }, {
+			name = result[0];
+			pageView = result[1];
+		});
+		if (name.isKindOf(String) && { pageView.isKindOf(View) || { pageView.isKindOf(SCViewHolder) } }, {
+			index = prTabCount;
+			this.addTab(name, pageView);
+			this.prSelectTab(index);
+		}, {
+			"ERROR: The Function in Tabset.addViewFunc must return an Array of a String and a View or SCViewHolder.".postln;
+		});
+	}
+
+	prSyncAddTab {
+		if (prAddTabLabel.notNil, {
+			prAddTabLabel.font_(prTabFont);
+			if (prAddTabPressed, {
+				prAddTabLabel.stringColor_(prSelectedTabTextColour);
+			}, {
+				prAddTabLabel.stringColor_(prUnselectedTabTextColour);
+			});
+		});
+		if (prAddTabStrip.notNil, {
+			prAddTabStrip.background_(prBackgroundColour);
+			prAddTabStrip.minHeight_(prTabGapWidth);
+			prAddTabStrip.maxHeight_(prTabGapWidth);
+		});
+		if (prAddTabBody.notNil, {
+			prAddTabBody.refresh;
+		});
+		if (prAddTabView.notNil && { prAddTabLabel.notNil }, {
+			this.prApplyTabWidth(prAddTabView, prAddTabLabel);
+		});
+	}
+
+	prApplyTabWidth {
+		|tabView, label|
+		var width;
+		width = label.string.bounds(prTabFont).width + 20;
+		if (width < prMinTabWidth, {
+			width = prMinTabWidth;
+		});
+		tabView.minWidth_(width);
+		tabView.maxWidth_(width);
+	}
+
+	prApplyAllTabWidths {
+		prTabViews.do({
+			|tabView, index|
+			this.prApplyTabWidth(tabView, prLabels[index]);
+		});
 	}
 }

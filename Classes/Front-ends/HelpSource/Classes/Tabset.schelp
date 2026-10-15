@@ -4,7 +4,7 @@ CATEGORIES:: GUI>Views
 RELATED:: Classes/Font, Classes/HLayout, Classes/Pen, Classes/SCViewHolder, Classes/StackLayout, Classes/StaticText, Classes/UserView, Classes/View, Classes/VLayout
 
 DESCRIPTION::
-TELETYPE::Tabset:: is a LINK::Classes/SCViewHolder::. Its view is a LINK::Classes/VLayout::. The top region holds an LINK::Classes/HLayout:: for the tabs. Its height is LINK::#-tabHeight:: plus LINK::#-tabGapWidth::. Each tab is 100 pixels wide, with LINK::#-tabGapWidth:: pixels between tabs and none before the first. The space to the right of them stretches. The region underneath stretches. A LINK::Classes/UserView:: fills it with the foreground colour. LINK::#-cornerRadius:: rounds that view's bottom two corners; its top corners stay square. A LINK::Classes/StackLayout:: of the views passed to LINK::#-addTab:: lies on top of the drawing. Each of those views fills its page, inset by LINK::#-pagePadding::. LINK::#-backgroundColour:: is the bar behind the tabs. LINK::#-foregroundColour:: is every tab and the page area. Each tab is a LINK::Classes/StackLayout:: in CODE::\stackAll:: mode. Underneath is a LINK::Classes/VLayout:: whose top section is a LINK::Classes/UserView:: that stretches and is filled with the foreground colour. LINK::#-cornerRadius:: rounds its top two corners; the bottom two stay square. The bottom section is LINK::#-tabGapWidth:: pixels high and stays square. That strip uses the foreground colour on the selected tab and the background colour on the others. The LINK::Classes/StaticText:: label is the top layer, centred over the tab. The selected label uses LINK::#-selectedTabTextColour::. The other labels use LINK::#-unselectedTabTextColour::. Clicking a tab shows its page. LINK::#-addTab:: adds a tab and a page.
+TELETYPE::Tabset:: is a LINK::Classes/SCViewHolder::. Its view is a LINK::Classes/VLayout::. The top region holds an LINK::Classes/HLayout:: for the tabs. Its height is LINK::#-tabHeight:: plus LINK::#-tabGapWidth::. Each tab's width is LINK::#-minTabWidth::, or the width of its label plus 20 pixels, whichever is larger. LINK::#-tabGapWidth:: pixels separate the tabs, and none come before the first. The space to the right of them stretches. The region underneath stretches. A LINK::Classes/UserView:: fills it with the foreground colour. LINK::#-cornerRadius:: rounds that view's bottom two corners; its top corners stay square. A LINK::Classes/StackLayout:: of the views passed to LINK::#-addTab:: lies on top of the drawing. Each of those views fills its page, inset by LINK::#-pagePadding::. LINK::#-backgroundColour:: is the bar behind the tabs. LINK::#-foregroundColour:: is every tab and the page area. Each tab is a LINK::Classes/StackLayout:: in CODE::\stackAll:: mode. Underneath is a LINK::Classes/VLayout:: whose top section is a LINK::Classes/UserView:: that stretches and is filled with the foreground colour. LINK::#-cornerRadius:: rounds its top two corners; the bottom two stay square. The bottom section is LINK::#-tabGapWidth:: pixels high and stays square. That strip uses the foreground colour on the selected tab and the background colour on the others. The LINK::Classes/StaticText:: label is the top layer, centred over the tab. The selected label uses LINK::#-selectedTabTextColour::. The other labels use LINK::#-unselectedTabTextColour::. Clicking a tab shows its page. When LINK::#-addViewFunc:: is a LINK::Classes/Function::, a tab labelled CODE::+:: stays to the right of the other tabs. It uses the same spacing and bottom strip. Pressing it colours the CODE::+:: with LINK::#-selectedTabTextColour:: until the pointer is released over it or leaves it. Releasing over it runs the function. A returned LINK::Classes/Array:: of a LINK::Classes/String:: and a LINK::Classes/View:: or LINK::Classes/SCViewHolder:: is passed to LINK::#-addTab::, and that new tab is selected. Any other result is posted as an error.
 
 CLASSMETHODS::
 
@@ -17,7 +17,7 @@ A new TELETYPE::Tabset:: instance.
 INSTANCEMETHODS::
 
 METHOD:: addTab
-Adds a tab of width 100 and places CODE::view:: in the page LINK::Classes/StackLayout::. The stack gives that view the page area inside LINK::#-pagePadding::. The label CODE::name:: is centred over the tab, above a strip LINK::#-tabGapWidth:: pixels high. The strip matches the foreground colour while the tab is selected and the background colour otherwise. The selected label uses LINK::#-selectedTabTextColour::. Other labels use LINK::#-unselectedTabTextColour::. The first tab is selected. Later tabs stay unselected until clicked.
+Adds a tab and places CODE::view:: in the page LINK::Classes/StackLayout::. The stack gives that view the page area inside LINK::#-pagePadding::. The label CODE::name:: is centred over the tab, above a strip LINK::#-tabGapWidth:: pixels high. The strip matches the foreground colour while the tab is selected and the background colour otherwise. The selected label uses LINK::#-selectedTabTextColour::. Other labels use LINK::#-unselectedTabTextColour::. The first tab is selected. Later tabs stay unselected until clicked.
 
 ARGUMENT:: name
 The label text. A LINK::Classes/String::.
@@ -79,7 +79,19 @@ The space in pixels between the page contents and each edge of the page area. Th
 ARGUMENT:: newPagePadding
 The new padding when setting. A LINK::Classes/SimpleNumber:: greater than or equal to 0.
 
-PRIVATE:: init, prApplyTabHeight, prSelectTab, prSyncStrips, prSyncLabelColours, prDrawTabBody, prDrawPages
+METHOD:: addViewFunc
+The LINK::Classes/Function:: that creates a tab when the CODE::+:: tab is released. CODE::nil:: hides that tab. CODE::addViewFunc_:: replaces it. The function returns an LINK::Classes/Array:: of two items: the tab name, then the page LINK::Classes/View:: or LINK::Classes/SCViewHolder::.
+
+ARGUMENT:: func
+The new function when setting. A LINK::Classes/Function::, or CODE::nil:: to hide the CODE::+:: tab.
+
+METHOD:: minTabWidth
+The minimum width of each tab in pixels, including the CODE::+:: tab. The default is 25. A tab uses this width, or the width of its label plus 20 pixels, whichever is larger. CODE::minTabWidth_:: replaces it, including tabs already added. The value must not be less than 0.
+
+ARGUMENT:: newMinTabWidth
+The new minimum width when setting. A LINK::Classes/SimpleNumber:: greater than or equal to 0.
+
+PRIVATE:: init, prApplyTabHeight, prSelectTab, prSyncStrips, prSyncLabelColours, prDrawTabBody, prDrawPages, prShowAddTab, prRemoveAddTab, prAddTabMouseDown, prAddTabMouseLeave, prAddTabMouseUp, prRunAddViewFunc, prSyncAddTab, prApplyTabWidth, prApplyAllTabWidths
 
 EXAMPLES::
 
@@ -92,9 +104,11 @@ tabset.backgroundColour_(Color.rand);
 tabset.foregroundColour_(Color.rand);
 tabset.cornerRadius_(12);
 tabset.selectedTabTextColour_(Color.rand);
-tabset.addTab("One", StaticText().string_("Apple").align_(\center).background_(Color.clear));
-tabset.addTab("Two", StaticText().string_("Berry").align_(\center).background_(Color.clear));
-tabset.addTab("Three", StaticText().string_("Cherry").align_(\center).background_(Color.clear));
+tabset.addViewFunc_({
+	var word;
+	word = rrand(5, 100).collect({ "abcdefghijklmnopqrstuvwxyz".choose }).join;
+	[word, StaticText().string_(word).align_(\center).background_(Color.clear)];
+});
 window.layout = VLayout(tabset).margins_(0);
 window.front;
 )
