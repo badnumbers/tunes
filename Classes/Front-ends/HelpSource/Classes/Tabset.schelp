@@ -4,7 +4,7 @@ CATEGORIES:: GUI>Views
 RELATED:: Classes/Font, Classes/HLayout, Classes/Pen, Classes/SCViewHolder, Classes/StackLayout, Classes/StaticText, Classes/UserView, Classes/View, Classes/VLayout
 
 DESCRIPTION::
-TELETYPE::Tabset:: is a LINK::Classes/SCViewHolder::. Its view is a LINK::Classes/VLayout::. The top region holds an LINK::Classes/HLayout:: for the tabs. Its height is LINK::#-tabHeight:: plus LINK::#-tabGapWidth::. Each tab is 100 pixels wide, with LINK::#-tabGapWidth:: pixels between tabs and none before the first. The space to the right of them stretches. The region underneath stretches. A LINK::Classes/UserView:: fills it with the foreground colour. LINK::#-cornerRadius:: rounds that view's bottom two corners; its top corners stay square. A LINK::Classes/StackLayout:: of the views passed to LINK::#-addTab:: lies on top of the drawing. Each of those views fills its page. LINK::#-backgroundColour:: is the bar behind the tabs. LINK::#-foregroundColour:: is every tab and the page area. Each tab is a LINK::Classes/StackLayout:: in CODE::\stackAll:: mode. Underneath is a LINK::Classes/VLayout:: whose top section is a LINK::Classes/UserView:: that stretches and is filled with the foreground colour. LINK::#-cornerRadius:: rounds its top two corners; the bottom two stay square. The bottom section is LINK::#-tabGapWidth:: pixels high and stays square. That strip uses the foreground colour on the selected tab and the background colour on the others. The LINK::Classes/StaticText:: label is the top layer, centred over the tab. The selected label uses LINK::#-selectedTabTextColour::. The other labels are black. Clicking a tab shows its page. LINK::#-addTab:: adds a tab and a page.
+TELETYPE::Tabset:: is a LINK::Classes/SCViewHolder::. Its view is a LINK::Classes/VLayout::. The top region holds an LINK::Classes/HLayout:: for the tabs. Its height is LINK::#-tabHeight:: plus LINK::#-tabGapWidth::. Each tab is 100 pixels wide, with LINK::#-tabGapWidth:: pixels between tabs and none before the first. The space to the right of them stretches. The region underneath stretches. A LINK::Classes/UserView:: fills it with the foreground colour. LINK::#-cornerRadius:: rounds that view's bottom two corners; its top corners stay square. A LINK::Classes/StackLayout:: of the views passed to LINK::#-addTab:: lies on top of the drawing. Each of those views fills its page, inset by LINK::#-pagePadding::. LINK::#-backgroundColour:: is the bar behind the tabs. LINK::#-foregroundColour:: is every tab and the page area. Each tab is a LINK::Classes/StackLayout:: in CODE::\stackAll:: mode. Underneath is a LINK::Classes/VLayout:: whose top section is a LINK::Classes/UserView:: that stretches and is filled with the foreground colour. LINK::#-cornerRadius:: rounds its top two corners; the bottom two stay square. The bottom section is LINK::#-tabGapWidth:: pixels high and stays square. That strip uses the foreground colour on the selected tab and the background colour on the others. The LINK::Classes/StaticText:: label is the top layer, centred over the tab. The selected label uses LINK::#-selectedTabTextColour::. The other labels are black. Clicking a tab shows its page. LINK::#-addTab:: adds a tab and a page.
 
 CLASSMETHODS::
 
@@ -17,7 +17,7 @@ A new TELETYPE::Tabset:: instance.
 INSTANCEMETHODS::
 
 METHOD:: addTab
-Adds a tab of width 100 and places CODE::view:: in the page LINK::Classes/StackLayout::. The stack gives that view the whole page area. The label CODE::name:: is centred over the tab, above a strip LINK::#-tabGapWidth:: pixels high. The strip matches the foreground colour while the tab is selected and the background colour otherwise. The selected label uses LINK::#-selectedTabTextColour::. Other labels are black. The first tab is selected. Later tabs stay unselected until clicked.
+Adds a tab of width 100 and places CODE::view:: in the page LINK::Classes/StackLayout::. The stack gives that view the page area inside LINK::#-pagePadding::. The label CODE::name:: is centred over the tab, above a strip LINK::#-tabGapWidth:: pixels high. The strip matches the foreground colour while the tab is selected and the background colour otherwise. The selected label uses LINK::#-selectedTabTextColour::. Other labels are black. The first tab is selected. Later tabs stay unselected until clicked.
 
 ARGUMENT:: name
 The label text. A LINK::Classes/String::.
@@ -66,6 +66,12 @@ The colour of the selected tab's label. Other labels stay black. The default is 
 
 ARGUMENT:: colour
 The new colour when setting. A LINK::Classes/Color::.
+
+METHOD:: pagePadding
+The space in pixels between the page contents and each edge of the page area. The default is 5. CODE::pagePadding_:: replaces it, including pages already added. The value must not be less than 0.
+
+ARGUMENT:: newPagePadding
+The new padding when setting. A LINK::Classes/SimpleNumber:: greater than or equal to 0.
 
 PRIVATE:: init, prApplyTabHeight, prSelectTab, prSyncStrips, prSyncLabelColours, prDrawTabBody, prDrawPages
 

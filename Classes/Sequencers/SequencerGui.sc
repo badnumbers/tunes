@@ -12,7 +12,7 @@ SequencerGui {
 
 	init {
 		|sequencer,devMode|
-		var window, stackLayout, midiIndicator, synthsButton, drumsButton, settingsButton, arrangeButton, recordButton, startRecordingButton, playLoopButton, pianoRoll, drumProgrammer;
+		var window, stackLayout, midiIndicator, synthsButton, drumsButton, settingsButton, arrangeButton, recordButton, startRecordingButton, playLoopButton, pianoRoll, drumProgrammer, tabset;
 		var tempoKnob, metronomeKnob;
 		var totalMidiNoteCount = 0;
 		var renderButtonFunc;
@@ -41,6 +41,11 @@ SequencerGui {
 		});
 
 		prWindow = Window("Sequencer").background_(prPalette.colour1).front;
+		pianoRoll = PianoRoll(palette: prPalette, sequencer: prSequencer, devMode: devMode, keyRouter: prKeyRouter, sequencerDocument: prDocument).minHeight_(100);
+		tabset = Tabset().minHeight_(100);
+		tabset.pagePadding_(50);
+		tabset.foregroundColour_(Color.red);
+		tabset.addTab("Piano roll", pianoRoll);
 		prWindow.layout = VLayout(
 			prMainHeader = BorderView().background_(prPalette.colour2).minHeight_(100).maxHeight_(100).borderWidth_(0).layout_(HLayout(
 				StaticText().string_("Sequencer").stringColor_(prPalette.colour5).font_(Font(size:32)),
@@ -55,7 +60,7 @@ SequencerGui {
 			stackLayout = StackLayout(
 				prArrangerView,
 				BorderView().background_(prPalette.colour2).layout_(VLayout(
-					pianoRoll = PianoRoll(palette: prPalette, sequencer: prSequencer, devMode: devMode, keyRouter: prKeyRouter, sequencerDocument: prDocument).minHeight_(100),
+					[tabset, s: 1],
 					View().background_(prPalette.colour4).minHeight_(70).maxHeight_(70).layout_(
 						HLayout(
 							startRecordingButton = renderButtonFunc.value("Start recording", width:150),

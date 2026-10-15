@@ -15,6 +15,8 @@ Tabset : SCViewHolder {
 	var prTabBodies;
 	var prPagesView;
 	var prSelectedTabTextColour;
+	var prPagePadding;
+	var prPageLayout;
 
 	addTab {
 		|name, view|
@@ -69,6 +71,7 @@ Tabset : SCViewHolder {
 		prTabFont = Font.default;
 		prCornerRadius = 0;
 		prSelectedTabTextColour = Color.black;
+		prPagePadding = 5;
 		prTabBar = HLayout([nil, s: 1]).margins_(0).spacing_(prTabGapWidth);
 		prPages = StackLayout().mode_(0);
 		prTabBarView = View().background_(prBackgroundColour).layout_(prTabBar);
@@ -78,10 +81,13 @@ Tabset : SCViewHolder {
 			|view|
 			this.prDrawPages(view);
 		});
+		prPageLayout = VLayout(
+			[View().background_(Color.clear).layout_(prPages), s: 1]
+		).margins_(prPagePadding).spacing_(0);
 		pages = View().background_(Color.clear).layout_(
 			StackLayout(
 				prPagesView,
-				View().background_(Color.clear).layout_(prPages)
+				View().background_(Color.clear).layout_(prPageLayout)
 			).mode_(\stackAll).index_(1)
 		);
 		this.view = View().background_(Color.clear).layout_(
@@ -273,5 +279,19 @@ Tabset : SCViewHolder {
 		Validator.validateMethodParameterType(colour, Color, "colour", "Tabset", "selectedTabTextColour_");
 		prSelectedTabTextColour = colour;
 		this.prSyncLabelColours;
+	}
+
+	pagePadding {
+		^prPagePadding;
+	}
+
+	pagePadding_ {
+		|newPagePadding|
+		Validator.validateMethodParameterType(newPagePadding, SimpleNumber, "newPagePadding", "Tabset", "pagePadding_");
+		if (newPagePadding < 0, {
+			Error(format("The newPagePadding parameter provided to Tabset.pagePadding_ must not be less than 0. The value % was provided.", newPagePadding)).throw;
+		});
+		prPagePadding = newPagePadding;
+		prPageLayout.margins_(prPagePadding);
 	}
 }
