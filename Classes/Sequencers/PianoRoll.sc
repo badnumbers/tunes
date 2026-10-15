@@ -84,10 +84,14 @@ PianoRoll : SCViewHolder {
 
 		contentLayoutView.layout = VLayout(
 			prCommandPrompt.view,
-			HLayout(
-				[prScrollView = ScrollView(), s: 1],
-				prSidebar.view
-			)
+			[
+				HLayout(
+					[prScrollView = ScrollView(), s: 1],
+					prSidebar.view
+				),
+				s: 1
+			],
+			this.prMakeTransportStrip
 		).margins_(0).spacing_(4);
 
 		prScrollView.background_(prPalette.extreme2);
@@ -507,5 +511,52 @@ PianoRoll : SCViewHolder {
 		prSequencer.releasePlaybackClock(this);
 		prIsRecording = false;
 		prRecordingClock = nil;
+	}
+
+	prMakeTransportStrip {
+		var playLoopButton, renderButton, startRecordingButton;
+		renderButton = {
+			|text, width = 100|
+			var size;
+			size = width@50;
+			EnhancedButton().background_(prPalette.colour3).borderRadius_(3).borderWidth_(2).minSize_(size).maxSize_(size).font_(Font(size: 16)).string_(text).stringColor_(prPalette.colour5).align_(\center).mouseEnterBorderColour_(prPalette.extreme2).mouseEnterStringColour_(prPalette.extreme2).mouseDownBackgroundColour_(prPalette.colour2);
+		};
+		startRecordingButton = renderButton.value("Start recording", 150);
+		startRecordingButton.mouseUpAction_({
+			if (startRecordingButton.string == "Start recording", {
+				startRecordingButton.string_("Stop recording");
+				this.startRecording;
+			}, {
+				startRecordingButton.string_("Start recording");
+				this.stopRecording;
+			});
+		});
+		playLoopButton = renderButton.value("Play loop", 150);
+		playLoopButton.mouseUpAction_({
+			if (playLoopButton.string == "Play loop", {
+				if (this.playLoop, {
+					playLoopButton.string_("Stop loop");
+				});
+			}, {
+				playLoopButton.string_("Play loop");
+				this.stopLoop;
+			});
+		});
+		^View().background_(prPalette.colour4).minHeight_(70).maxHeight_(70).layout_(
+			HLayout(
+				startRecordingButton,
+				playLoopButton,
+				StaticText().string_("Sync to").stringColor_(prPalette.colour5).align_(\center).font_(Font(size: 16)).minWidth_(80),
+				PopUpMenu()
+					.items_((1..16).collect({ |number| number.asString }))
+					.value_(prSyncTo - 1)
+					.font_(Font(size: 16))
+					.minWidth_(70)
+					.action_({ |menu|
+						this.syncTo_(menu.item.asInteger);
+					}),
+				[nil, s: 1]
+			).margins_(10).spacing_(10)
+		);
 	}
 }

@@ -12,7 +12,7 @@ SequencerGui {
 
 	init {
 		|sequencer,devMode|
-		var window, stackLayout, midiIndicator, synthsButton, drumsButton, settingsButton, arrangeButton, recordButton, startRecordingButton, playLoopButton, pianoRoll, drumProgrammer, tabset;
+		var window, stackLayout, midiIndicator, synthsButton, drumsButton, settingsButton, arrangeButton, recordButton, pianoRoll, drumProgrammer, tabset;
 		var tempoKnob, metronomeKnob;
 		var totalMidiNoteCount = 0;
 		var renderButtonFunc;
@@ -42,8 +42,8 @@ SequencerGui {
 
 		prWindow = Window("Sequencer").background_(prPalette.colour1).front;
 		pianoRoll = PianoRoll(palette: prPalette, sequencer: prSequencer, devMode: devMode, keyRouter: prKeyRouter, sequencerDocument: prDocument).minHeight_(100);
-		tabset = Tabset().minHeight_(100);
-		tabset.pagePadding_(50);
+		tabset = Tabset().minHeight_(100).cornerRadius_(5).tabHeight_(25);
+		tabset.pagePadding_(5);
 		tabset.foregroundColour_(Color.red);
 		tabset.addTab("Piano roll", pianoRoll);
 		prWindow.layout = VLayout(
@@ -59,25 +59,7 @@ SequencerGui {
 			).margins_(25).spacing_(25)),
 			stackLayout = StackLayout(
 				prArrangerView,
-				BorderView().background_(prPalette.colour2).layout_(VLayout(
-					[tabset, s: 1],
-					View().background_(prPalette.colour4).minHeight_(70).maxHeight_(70).layout_(
-						HLayout(
-							startRecordingButton = renderButtonFunc.value("Start recording", width:150),
-							playLoopButton = renderButtonFunc.value("Play loop", width:150),
-							StaticText().string_("Sync to").stringColor_(prPalette.colour5).align_(\center).font_(Font(size: 16)).minWidth_(80),
-							PopUpMenu()
-								.items_((1..16).collect({ |number| number.asString }))
-								.value_(3)
-								.font_(Font(size: 16))
-								.minWidth_(70)
-								.action_({ |menu|
-									pianoRoll.syncTo_(menu.item.asInteger);
-								}),
-							[nil, s: 1]
-						).margins_(10).spacing_(10)
-					)
-				)),
+				tabset,
 				prSettingsView = View().background_(prPalette.colour2).layout_(
 					VLayout(
 						HLayout(
@@ -146,25 +128,6 @@ SequencerGui {
 		recordButton.mouseUpAction_({
 			stackLayout.index_(1);
 			prKeyRouter.activeContext_(\record);
-		});
-		startRecordingButton.mouseUpAction_({
-			if (startRecordingButton.string == "Start recording", {
-				startRecordingButton.string_("Stop recording");
-				pianoRoll.startRecording;
-			}, {
-				startRecordingButton.string_("Start recording");
-				pianoRoll.stopRecording;
-			});
-		});
-		playLoopButton.mouseUpAction_({
-			if (playLoopButton.string == "Play loop", {
-				if (pianoRoll.playLoop(),{
-					playLoopButton.string_("Stop loop");
-				});
-			}, {
-				playLoopButton.string_("Play loop");
-				pianoRoll.stopLoop();
-			});
 		});
 
 		// Set up MIDI indicator
