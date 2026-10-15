@@ -1,0 +1,89 @@
+TITLE:: Tabset
+SUMMARY:: A tabbed container.
+CATEGORIES:: GUI>Views
+RELATED:: Classes/Font, Classes/HLayout, Classes/Pen, Classes/SCViewHolder, Classes/StackLayout, Classes/StaticText, Classes/UserView, Classes/View, Classes/VLayout
+
+DESCRIPTION::
+TELETYPE::Tabset:: is a LINK::Classes/SCViewHolder::. Its view is a LINK::Classes/VLayout::. The top region holds an LINK::Classes/HLayout:: for the tabs. Its height is LINK::#-tabHeight:: plus LINK::#-tabGapWidth::. Each tab is 100 pixels wide, with LINK::#-tabGapWidth:: pixels between tabs and none before the first. The space to the right of them stretches. The region underneath stretches. A LINK::Classes/UserView:: fills it with the foreground colour. LINK::#-cornerRadius:: rounds that view's bottom two corners; its top corners stay square. A LINK::Classes/StackLayout:: of the views passed to LINK::#-addTab:: lies on top of the drawing. Each of those views fills its page. LINK::#-backgroundColour:: is the bar behind the tabs. LINK::#-foregroundColour:: is every tab and the page area. Each tab is a LINK::Classes/StackLayout:: in CODE::\stackAll:: mode. Underneath is a LINK::Classes/VLayout:: whose top section is a LINK::Classes/UserView:: that stretches and is filled with the foreground colour. LINK::#-cornerRadius:: rounds its top two corners; the bottom two stay square. The bottom section is LINK::#-tabGapWidth:: pixels high and stays square. That strip uses the foreground colour on the selected tab and the background colour on the others. The LINK::Classes/StaticText:: label is the top layer, centred over the tab. The selected label uses LINK::#-selectedTabTextColour::. The other labels are black. Clicking a tab shows its page. LINK::#-addTab:: adds a tab and a page.
+
+CLASSMETHODS::
+
+METHOD:: new
+Creates an instance of TELETYPE::Tabset::.
+
+RETURNS::
+A new TELETYPE::Tabset:: instance.
+
+INSTANCEMETHODS::
+
+METHOD:: addTab
+Adds a tab of width 100 and places CODE::view:: in the page LINK::Classes/StackLayout::. The stack gives that view the whole page area. The label CODE::name:: is centred over the tab, above a strip LINK::#-tabGapWidth:: pixels high. The strip matches the foreground colour while the tab is selected and the background colour otherwise. The selected label uses LINK::#-selectedTabTextColour::. Other labels are black. The first tab is selected. Later tabs stay unselected until clicked.
+
+ARGUMENT:: name
+The label text. A LINK::Classes/String::.
+
+ARGUMENT:: view
+The page contents. A LINK::Classes/View:: or an LINK::Classes/SCViewHolder::.
+
+METHOD:: backgroundColour
+The colour of the bar behind the tabs. CODE::backgroundColour_:: replaces it.
+
+ARGUMENT:: colour
+The new colour when setting. A LINK::Classes/Color::.
+
+METHOD:: foregroundColour
+The colour of every tab and every page. CODE::foregroundColour_:: replaces it, including tabs and pages already added.
+
+ARGUMENT:: colour
+The new colour when setting. A LINK::Classes/Color::.
+
+METHOD:: tabHeight
+The height of each tab in pixels, excluding the bottom strip. The default is 50. CODE::tabHeight_:: replaces it. The value must be greater than 0.
+
+ARGUMENT:: newTabHeight
+The new height when setting. A LINK::Classes/SimpleNumber:: greater than 0.
+
+METHOD:: tabGapWidth
+The space between tabs, and the height of the strip at the bottom of each tab, in pixels. The default is 5. There is no space before the first tab. CODE::tabGapWidth_:: replaces it, including tabs already added. The value must not be less than 0.
+
+ARGUMENT:: newTabGapWidth
+The new size when setting. A LINK::Classes/SimpleNumber:: greater than or equal to 0.
+
+METHOD:: tabFont
+The LINK::Classes/Font:: used for every tab label. The default is CODE::Font.default::. CODE::tabFont_:: replaces it, including tabs already added.
+
+ARGUMENT:: newTabFont
+The new font when setting. A LINK::Classes/Font::.
+
+METHOD:: cornerRadius
+The radius in pixels of the top two corners of each tab, and of the bottom two corners of the page area. The bottom corners of each tab and the top corners of the page area stay square. The default is 0. CODE::cornerRadius_:: replaces it, including tabs already added. The value must not be less than 0. A radius larger than the area being drawn is drawn no larger than half that area's width or its full height.
+
+ARGUMENT:: newCornerRadius
+The new radius when setting. A LINK::Classes/SimpleNumber:: greater than or equal to 0.
+
+METHOD:: selectedTabTextColour
+The colour of the selected tab's label. Other labels stay black. The default is black. CODE::selectedTabTextColour_:: replaces it.
+
+ARGUMENT:: colour
+The new colour when setting. A LINK::Classes/Color::.
+
+PRIVATE:: init, prApplyTabHeight, prSelectTab, prSyncStrips, prSyncLabelColours, prDrawTabBody, prDrawPages
+
+EXAMPLES::
+
+CODE::
+(
+var tabset, window;
+window = Window("Window", Rect(100, 100, 1000, 800));
+tabset = Tabset();
+tabset.backgroundColour_(Color.rand);
+tabset.foregroundColour_(Color.rand);
+tabset.cornerRadius_(12);
+tabset.selectedTabTextColour_(Color.rand);
+tabset.addTab("One", StaticText().string_("Apple").align_(\center).background_(Color.clear));
+tabset.addTab("Two", StaticText().string_("Berry").align_(\center).background_(Color.clear));
+tabset.addTab("Three", StaticText().string_("Cherry").align_(\center).background_(Color.clear));
+window.layout = VLayout(tabset).margins_(0);
+window.front;
+)
+::
