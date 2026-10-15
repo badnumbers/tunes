@@ -77,7 +77,7 @@ FxBankSynth {
 							effectsLayout = VLayout()
 						)
 					)
-			)));
+				).margins_(0).spacing_(0)));
 
 			if (prSynthConfig.logoImage.isKindOf(Image),{
 				logoView.drawFunc_({

@@ -42,9 +42,8 @@ SequencerGui {
 
 		prWindow = Window("Sequencer").background_(prPalette.colour1).front;
 		pianoRoll = PianoRoll(palette: prPalette, sequencer: prSequencer, devMode: devMode, keyRouter: prKeyRouter, sequencerDocument: prDocument).minHeight_(100);
-		tabset = Tabset().minHeight_(100).cornerRadius_(5).tabHeight_(25);
+		tabset = Tabset().minHeight_(100).cornerRadius_(5).tabHeight_(25).backgroundColour_(prPalette.colour1).foregroundColour_(prPalette.colour2).selectedTabTextColour_(prPalette.colour5).unselectedTabTextColour_(prPalette.colour4);
 		tabset.pagePadding_(5);
-		tabset.foregroundColour_(Color.red);
 		tabset.addTab("Piano roll", pianoRoll);
 		prWindow.layout = VLayout(
 			prMainHeader = BorderView().background_(prPalette.colour2).minHeight_(100).maxHeight_(100).borderWidth_(0).layout_(HLayout(

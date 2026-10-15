@@ -15,6 +15,7 @@ Tabset : SCViewHolder {
 	var prTabBodies;
 	var prPagesView;
 	var prSelectedTabTextColour;
+	var prUnselectedTabTextColour;
 	var prPagePadding;
 	var prPageLayout;
 
@@ -24,7 +25,7 @@ Tabset : SCViewHolder {
 		Validator.validateMethodParameterType(name, String, "name", "Tabset", "addTab");
 		Validator.validateMethodParameterType(view, [View, SCViewHolder], "view", "Tabset", "addTab");
 		index = prTabCount;
-		label = StaticText().string_(name).align_(\center).stringColor_(Color.black).background_(Color.clear).font_(prTabFont);
+		label = StaticText().string_(name).align_(\center).stringColor_(prUnselectedTabTextColour).background_(Color.clear).font_(prTabFont);
 		prLabels = prLabels.add(label);
 		body = UserView().background_(Color.clear).canFocus_(false).drawFunc_({
 			|view|
@@ -71,6 +72,7 @@ Tabset : SCViewHolder {
 		prTabFont = Font.default;
 		prCornerRadius = 0;
 		prSelectedTabTextColour = Color.black;
+		prUnselectedTabTextColour = Color.grey;
 		prPagePadding = 5;
 		prTabBar = HLayout([nil, s: 1]).margins_(0).spacing_(prTabGapWidth);
 		prPages = StackLayout().mode_(0);
@@ -131,7 +133,7 @@ Tabset : SCViewHolder {
 			if (labelIndex == prSelectedIndex, {
 				label.stringColor_(prSelectedTabTextColour);
 			}, {
-				label.stringColor_(Color.black);
+				label.stringColor_(prUnselectedTabTextColour);
 			});
 		});
 	}
@@ -278,6 +280,17 @@ Tabset : SCViewHolder {
 		|colour|
 		Validator.validateMethodParameterType(colour, Color, "colour", "Tabset", "selectedTabTextColour_");
 		prSelectedTabTextColour = colour;
+		this.prSyncLabelColours;
+	}
+
+	unselectedTabTextColour {
+		^prUnselectedTabTextColour;
+	}
+
+	unselectedTabTextColour_ {
+		|colour|
+		Validator.validateMethodParameterType(colour, Color, "colour", "Tabset", "unselectedTabTextColour_");
+		prUnselectedTabTextColour = colour;
 		this.prSyncLabelColours;
 	}
 
