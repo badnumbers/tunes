@@ -25,9 +25,14 @@ PianoRoll : SCViewHolder {
 	var prRecordingClock;
 	var prTimeline;
 	var prView;
+	var prRecordingNow;
 
 	commandPrompt {
 		^prCommandPrompt;
+	}
+
+	focusBackground {
+		prBackgroundView.focus;
 	}
 
 	init {
@@ -183,8 +188,6 @@ PianoRoll : SCViewHolder {
 			this.prRefreshSidebar;
 		};
 
-		this.prRegisterKeyHandlers;
-
 		prBackgroundView = UserView(prScrollView, Rect(0, 0, prPianoRollWidth, prPianoRollHeight)).background_(prPalette.extreme1).mouseWheelAction_(scrollWheel);
 		selectionView = BorderView(prBackgroundView, Rect(10, 10, 10, 10)).background_(Color.clear).borderColour_(prPalette.colour1).borderWidth_(2).acceptsMouse_(false).visible_(false);
 		prBackgroundView
@@ -260,14 +263,33 @@ PianoRoll : SCViewHolder {
 
 		prDrawNote = {
 			|pianoRollNote|
-			BorderView(prBackgroundView, Rect(pianoRollNote.startTime * prNoteViewScale[\horizontal], (127 - pianoRollNote.noteNumber) * prNoteViewScale[\vertical] + (prNoteViewScale[\vertical] * 5), (pianoRollNote.stopTime - pianoRollNote.startTime) * prNoteViewScale[\horizontal], prNoteViewScale[\vertical]))
+			var dragDuration, dragMoved = false, dragNoteNumber, dragOrigin, dragOriginBounds, dragStartTime, noteView, snappedDrag;
+			snappedDrag = {
+				|dx, dy|
+				var horizontalScale, newNote, newStart, rawStart, rowDelta, verticalScale;
+				horizontalScale = prNoteViewScale[\horizontal];
+				verticalScale = prNoteViewScale[\vertical];
+				rawStart = dragStartTime + (dx / horizontalScale);
+				newStart = ((rawStart / 0.25).round * 0.25).max(0);
+				rowDelta = (dy / verticalScale).round;
+				newNote = (dragNoteNumber - rowDelta).clip(0, 127).asInteger;
+				(
+					left: newStart * horizontalScale,
+					top: dragOriginBounds.top - ((newNote - dragNoteNumber) * verticalScale),
+					width: dragDuration * horizontalScale,
+					height: dragOriginBounds.height,
+					startTime: newStart,
+					noteNumber: newNote
+				)
+			};
+			noteView = BorderView(prBackgroundView, Rect(pianoRollNote.startTime * prNoteViewScale[\horizontal], (127 - pianoRollNote.noteNumber) * prNoteViewScale[\vertical] + (prNoteViewScale[\vertical] * 5), (pianoRollNote.stopTime - pianoRollNote.startTime) * prNoteViewScale[\horizontal], prNoteViewScale[\vertical]))
 			.background_(prPalette.colour1)
 			.borderWidth_(0)
 			.borderColour_(prPalette.extreme2)
 			.mouseWheelAction_(scrollWheel)
 			.mouseDownAction_({
 				|view, x, y, modifiers, buttonNumber, clickCount|
-				if (buttonNumber == 0,{
+				if (buttonNumber == 0, {
 					if (modifiers.isCtrl.not, {
 						prRecordedNotes.do({
 							|recordedNote|
@@ -279,13 +301,59 @@ PianoRoll : SCViewHolder {
 					if (pianoRollNote.isSelected.not, {
 						pianoRollNote.toggleSelect;
 					});
-				},{
-					if (buttonNumber == 1,{
+					if ((clickCount == 1) && { modifiers.isCtrl.not }, {
+						dragOrigin = (view.bounds.left + x) @ (view.bounds.top + y);
+						dragOriginBounds = Rect(view.bounds.left, view.bounds.top, view.bounds.width, view.bounds.height);
+						dragStartTime = pianoRollNote.startTime;
+						dragDuration = pianoRollNote.stopTime - pianoRollNote.startTime;
+						dragNoteNumber = pianoRollNote.noteNumber;
+						dragMoved = false;
+					});
+				}, {
+					if (buttonNumber == 1, {
 						postln(format("Note number: %, velocity: %.", pianoRollNote.noteNumber, pianoRollNote.velocity));
 					});
 				});
-
+				nil;
 			})
+			.mouseMoveAction_({
+				|view, x, y, modifiers|
+				var dx, dy, parentX, parentY, placed;
+				if (dragOrigin.notNil, {
+					parentX = view.bounds.left + x;
+					parentY = view.bounds.top + y;
+					dx = parentX - dragOrigin.x;
+					dy = parentY - dragOrigin.y;
+					if (dragMoved.not && { ((dx * dx) + (dy * dy)) > 9 }, {
+						dragMoved = true;
+					});
+					if (dragMoved, {
+						placed = snappedDrag.value(dx, dy);
+						view.bounds = Rect(placed.left, placed.top, placed.width, placed.height);
+					});
+				});
+				nil;
+			})
+			.mouseUpAction_({
+				|view, x, y, modifiers, buttonNumber|
+				var dx, dy, parentX, parentY, placed;
+				if (dragOrigin.notNil && { buttonNumber == 0 }, {
+					if (dragMoved, {
+						parentX = view.bounds.left + x;
+						parentY = view.bounds.top + y;
+						dx = parentX - dragOrigin.x;
+						dy = parentY - dragOrigin.y;
+						placed = snappedDrag.value(dx, dy);
+						view.bounds = dragOriginBounds;
+						pianoRollNote.moveTo(placed.startTime, placed.noteNumber);
+						this.prApplyNoteEdits;
+					});
+					dragOrigin = nil;
+					dragMoved = false;
+				});
+				nil;
+			});
+			noteView
 		};
 
 		prLoopMarkers = PianoRollLoopMarkers(prBackgroundView, prNoteViewScale[\horizontal], prPianoRollHeight, prPalette, prPianoRollWidth / prNoteViewScale[\horizontal])
@@ -342,6 +410,15 @@ PianoRoll : SCViewHolder {
 		this.prRefreshSidebar;
 	}
 
+	assignSelectedToPart {
+		|partNumber|
+		Validator.validateMethodParameterType(partNumber, Integer, "partNumber", "PianoRoll", "assignSelectedToPart");
+		if (partNumber < 1 or: { partNumber > 4 }, {
+			Error(format("The partNumber parameter provided to PianoRoll.assignSelectedToPart must be an integer from 1 to 4. The value % was provided.", partNumber)).throw;
+		});
+		this.prAssignPartIfSelected(partNumber);
+	}
+
 	prAssignPartIfSelected {
 		|partNumber|
 		prRecordedNotes.do({|recordedNote| recordedNote.setPartIfSelected(partNumber); });
@@ -365,14 +442,6 @@ PianoRoll : SCViewHolder {
 		});
 	}
 
-	prRegisterKeyHandlers {
-		prKeyRouter.on(\record, \assignPart1, { this.prAssignPartIfSelected(1); });
-		prKeyRouter.on(\record, \assignPart2, { this.prAssignPartIfSelected(2); });
-		prKeyRouter.on(\record, \assignPart3, { this.prAssignPartIfSelected(3); });
-		prKeyRouter.on(\record, \assignPart4, { this.prAssignPartIfSelected(4); });
-		prKeyRouter.on(\record, \focusCommandPrompt, { prCommandPrompt.focus; });
-	}
-
 	prSelectedNotes {
 		^prRecordedNotes.select({|note| note.isSelected});
 	}
@@ -394,12 +463,42 @@ PianoRoll : SCViewHolder {
 		prSyncTo = newSyncTo;
 	}
 
+	receiveRecordingMidi {
+		|msgType, velocity, noteNumber, chan|
+		var activeNotesForThisNoteNumber, now, pianoRollNote;
+		if (prIsRecording.not, {
+			^this;
+		});
+		now = prRecordingNow.value;
+		if (msgType == \noteOn, {
+			pianoRollNote = PianoRollNote(now, noteNumber, velocity,
+				viewFunc: prDrawNote,
+				selectFunc: { |view| view.borderWidth_(2); this.prRefreshSidebar },
+				deselectFunc: prNoteDeselectFunc,
+				setPart1Func: { |view| view.background_(prPalette.colour1) },
+				setPart2Func: { |view| view.background_(prPalette.colour2) },
+				setPart3Func: { |view| view.background_(prPalette.colour3) },
+				setPart4Func: { |view| view.background_(prPalette.colour4) },
+				moveFunc: { |view, startTime, stopTime| view.bounds_(Rect(startTime * prNoteViewScale[\horizontal], view.bounds.top, (stopTime - startTime) * prNoteViewScale[\horizontal], view.bounds.height)) },
+				deleteFunc: prNoteDeleteFunc
+			);
+			prRecordedNotes = prRecordedNotes.add(pianoRollNote);
+			prSequencePlayer.midiChannel_(chan);
+		}, {
+			activeNotesForThisNoteNumber = prRecordedNotes.select({ |note| (note.noteNumber == noteNumber) && (note.stopTime.isNil) });
+			if (activeNotesForThisNoteNumber.size > 1, {
+				Error(format("Something has gone really wrong here. There was more than one active note for note number %.", noteNumber)).throw;
+			});
+			if (activeNotesForThisNoteNumber.size == 1, {
+				activeNotesForThisNoteNumber[0].stop(now);
+			});
+		});
+	}
+
 	startRecording {
 		var acquired;
-		var fakeNotes;
 		var startOffset = 5.0.rand + 2;
 		var absoluteStartTime;
-		var nowFunc;
 
 		if (prIsRecording, { ^this });
 		acquired = prSequencer.acquirePlaybackClock(this);
@@ -409,64 +508,36 @@ PianoRoll : SCViewHolder {
 		});
 		prRecordingClock = acquired.clock;
 		absoluteStartTime = prRecordingClock.beats.floor;
-		nowFunc = {(prRecordingClock.beats - (Server.default.latency * prRecordingClock.tempo)) - absoluteStartTime};
+		prRecordingNow = { (prRecordingClock.beats - (Server.default.latency * prRecordingClock.tempo)) - absoluteStartTime };
 
-		if (prDevMode,{
-			var now = nowFunc.value();
+		if (prDevMode, {
+			var now = prRecordingNow.value;
 			16.do({
 				|index|
 				var start = now + startOffset + 10.0.rand;
 				var stop = start + 10.0.rand;
-				var noteNumber = if (index == 0,{0},{
-					if (index == 1,{127},{127.rand});
+				var noteNumber = if (index == 0, { 0 }, {
+					if (index == 1, { 127 }, { 127.rand });
 				});
-				var pianoRollNote = PianoRollNote(start,noteNumber,127.rand,
-					viewFunc:prDrawNote,
-					selectFunc:prNoteSelectFunc,
-					deselectFunc:prNoteDeselectFunc,
-					setPart1Func:{|view|view.background_(prPalette.colour1);},
-					setPart2Func:{|view|view.background_(prPalette.colour2);},
-					setPart3Func:{|view|view.background_(prPalette.colour3);},
-					setPart4Func:{|view|view.background_(prPalette.colour4);},
-					moveFunc:{|view,startTime,stopTime|view.bounds_( Rect(startTime * prNoteViewScale[\horizontal],view.bounds.top,(stopTime - startTime) * prNoteViewScale[\horizontal],view.bounds.height));},
-					deleteFunc:prNoteDeleteFunc,
+				var pianoRollNote = PianoRollNote(start, noteNumber, 127.rand,
+					viewFunc: prDrawNote,
+					selectFunc: prNoteSelectFunc,
+					deselectFunc: prNoteDeselectFunc,
+					setPart1Func: { |view| view.background_(prPalette.colour1) },
+					setPart2Func: { |view| view.background_(prPalette.colour2) },
+					setPart3Func: { |view| view.background_(prPalette.colour3) },
+					setPart4Func: { |view| view.background_(prPalette.colour4) },
+					moveFunc: { |view, startTime, stopTime| view.bounds_(Rect(startTime * prNoteViewScale[\horizontal], view.bounds.top, (stopTime - startTime) * prNoteViewScale[\horizontal], view.bounds.height)) },
+					deleteFunc: prNoteDeleteFunc
 				);
 				pianoRollNote.stop(stop);
 				prRecordedNotes = prRecordedNotes.add(pianoRollNote);
 			});
-		},{
-			[\noteOn,\noteOff].do({
-				|msgType|
-				MIDIdef(format("%_%", \recordMidi, msgType).asSymbol,{
-					|velocity,noteNumber,chan,src|
-					if (msgType == \noteOn, {
-						var pianoRollNote = PianoRollNote(nowFunc.value(),noteNumber,velocity,
-							viewFunc:prDrawNote,
-							selectFunc:{|view| view.borderWidth_(2); this.prRefreshSidebar; },
-							deselectFunc:prNoteDeselectFunc,
-							setPart1Func:{|view|view.background_(prPalette.colour1);},
-							setPart2Func:{|view|view.background_(prPalette.colour2);},
-							setPart3Func:{|view|view.background_(prPalette.colour3);},
-							setPart4Func:{|view|view.background_(prPalette.colour4);},
-							moveFunc:{|view,startTime,stopTime|view.bounds_( Rect(startTime * prNoteViewScale[\horizontal],view.bounds.top,(stopTime - startTime) * prNoteViewScale[\horizontal],view.bounds.height));},
-							deleteFunc:prNoteDeleteFunc,
-						);
-						prRecordedNotes = prRecordedNotes.add(pianoRollNote);
-						prSequencePlayer.midiChannel_(chan);
-					},{
-						var activeNotesForThisNoteNumber = prRecordedNotes.select({|note|(note.noteNumber == noteNumber) && (note.stopTime.isNil)});
-						if (activeNotesForThisNoteNumber.size > 1, {
-							Error(format("Something has gone really wrong here. There was more than one active note for note number %.", noteNumber)).throw;
-						});
-						if (activeNotesForThisNoteNumber.size == 1, {
-							activeNotesForThisNoteNumber[0].stop(nowFunc.value());
-						});
-					});
-				},msgType:msgType);
-			});
+		}, {
 			Setup.server;
 		});
 		Metronome.play(prRecordingClock);
+		this.changed(\isRecording, prIsRecording);
 	}
 
 	stopLoop {
@@ -477,25 +548,20 @@ PianoRoll : SCViewHolder {
 	stopRecording {
 		var startTime = inf, stopTime = 0;
 		if (prIsRecording.not, { ^this });
-		if (prDevMode,{
-		},{
-			[\noteOn,\noteOff].do({
-			|msgType|
-				MIDIdef(format("%_%", \recordMidi, msgType).asSymbol).free;
-			});
-		});
+		prIsRecording = false;
+		this.changed(\isRecording, prIsRecording);
 		Metronome.stop;
-		if (prRecordedNotes.size > 0,{
+		if (prRecordedNotes.size > 0, {
 			prRecordedNotes.do({
 				|recordedNote|
-				if (recordedNote.startTime.trunc < startTime,{
+				if (recordedNote.startTime.trunc < startTime, {
 					startTime = recordedNote.startTime.trunc;
 				});
-				if (recordedNote.stopTime.roundUp > stopTime,{
+				if (recordedNote.stopTime.roundUp > stopTime, {
 					stopTime = recordedNote.stopTime.roundUp;
 				});
 			});
-			if (startTime >= stopTime,{
+			if (startTime >= stopTime, {
 				stopTime = startTime + 1;
 			});
 			prLoopMarkers.loopStart_(startTime);
@@ -504,13 +570,13 @@ PianoRoll : SCViewHolder {
 			prSequencePlayer.loopStart_(startTime);
 			prSequencePlayer.loopEnd_(stopTime);
 			prSequencePlayer.playheadTime_(startTime);
-			prSequencePlayer.sequence = prRecordedNotes.collect({|note|note.playableNote});
-		},{
+			prSequencePlayer.sequence = prRecordedNotes.collect({ |note| note.playableNote });
+		}, {
 			warn("Nothing has been recorded!")
 		});
 		prSequencer.releasePlaybackClock(this);
-		prIsRecording = false;
 		prRecordingClock = nil;
+		prRecordingNow = nil;
 	}
 
 	prMakeTransportStrip {

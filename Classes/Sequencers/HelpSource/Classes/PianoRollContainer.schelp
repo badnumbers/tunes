@@ -1,0 +1,49 @@
+TITLE:: PianoRollContainer
+SUMMARY:: Tabbed container that directs keystrokes and recording MIDI to one piano roll.
+CATEGORIES:: Streams-Patterns-Events
+RELATED:: Classes/MIDIdef, Classes/PianoRoll, Classes/Sequencer, Classes/SequencerDocument, Classes/SequencerGui, Classes/SequencerKeyRouter, Classes/Tabset
+
+DESCRIPTION::
+TELETYPE::PianoRollContainer:: is a LINK::Classes/SCViewHolder:: whose view is a LINK::Classes/Tabset:: of LINK::Classes/PianoRoll::s. The first roll is created by calling the tabset's LINK::Classes/Tabset#-addViewFunc::, and the CODE::+:: tab uses that same function. Every roll is named Sequence plus an incrementing count, starting at 1. The container registers the record-context actions CODE::\assignPart1::, CODE::\assignPart2::, CODE::\assignPart3::, CODE::\assignPart4::, and CODE::\focusCommandPrompt:: once on the shared LINK::Classes/SequencerKeyRouter::, and those actions call the selected roll. It subscribes to that roll. When the roll announces CODE::\isRecording:: as CODE::true::, the container sets the tabset's LINK::Classes/Tabset#-canSwitchTab:: to CODE::false::, so neither another tab nor CODE::+:: can be selected until recording stops. Unless dev mode is on, it also installs CODE::recordMidi_noteOn:: and CODE::recordMidi_noteOff:: and forwards each message to LINK::Classes/PianoRoll#-receiveRecordingMidi::. When recording stops, it frees those defs and allows tab switching again. Loops that are already playing are left running. LINK::#-stopAll:: stops the loop and recording on every roll.
+
+CLASSMETHODS::
+
+METHOD:: new
+Creates a TELETYPE::PianoRollContainer:: with one piano roll already selected. That roll is produced by the tabset's LINK::Classes/Tabset#-addViewFunc::, so its name is Sequence 1.
+
+ARGUMENT:: palette
+The LINK::Classes/GuiPalette:: passed to every LINK::Classes/PianoRoll::.
+
+ARGUMENT:: sequencer
+The LINK::Classes/Sequencer:: passed to every LINK::Classes/PianoRoll::.
+
+ARGUMENT:: devMode
+When CODE::true::, rolls fill fake notes instead of receiving recording MIDI. The default is CODE::false::.
+
+ARGUMENT:: keyRouter
+The LINK::Classes/SequencerKeyRouter:: whose record-context actions this container registers.
+
+ARGUMENT:: sequencerDocument
+The optional LINK::Classes/SequencerDocument:: passed to every LINK::Classes/PianoRoll::. CODE::nil:: is allowed.
+
+RETURNS::
+A new TELETYPE::PianoRollContainer:: instance.
+
+INSTANCEMETHODS::
+
+METHOD:: stopAll
+Stops the loop and recording on every LINK::Classes/PianoRoll:: in the tabset, and frees any recording LINK::Classes/MIDIdef::s this container installed.
+
+METHOD:: update
+Receives LINK::Classes/PianoRoll:: notifications. CODE::\isRecording:: with CODE::true:: blocks tab switching and, unless dev mode is on, installs the recording LINK::Classes/MIDIdef::s. CODE::false:: frees those defs and allows tab switching again.
+
+ARGUMENT:: theChanged
+The LINK::Classes/PianoRoll:: that changed.
+
+ARGUMENT:: what
+The notification symbol. CODE::\isRecording:: is handled.
+
+ARGUMENT:: isRecording
+CODE::true:: when that roll has started recording, CODE::false:: when it has stopped.
+
+PRIVATE:: init, prAddRoll, prAssignPart, prFocusCommandPrompt, prFreeRecordingMidi, prInstallRecordingMidi, prMakeRoll, prRegisterKeyHandlers, prSelectRoll

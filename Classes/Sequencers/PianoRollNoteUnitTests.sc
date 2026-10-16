@@ -109,6 +109,40 @@ PianoRollNoteUnitTests : BNUnitTest {
 		this.assertEquals(note.stopTime, 3);
 	}
 
+	test_moveTo_changesStartAndNoteNumber_preservesDuration {
+		var duration, note, notePair;
+		notePair = this.prMockNote(1, 60, stopTime: 2.5);
+		note = notePair[0];
+		note.moveTo(3.25, 72);
+		duration = note.stopTime - note.startTime;
+		this.assertEquals(note.startTime, 3.25);
+		this.assertEquals(note.noteNumber, 72);
+		this.assertWithMessage((duration - 1.5).abs < 1e-9, "Duration should be preserved");
+	}
+
+	test_moveTo_clampsNoteNumberToMidiRange {
+		var note, notePair;
+		notePair = this.prMockNote(1, 60, stopTime: 2.0);
+		note = notePair[0];
+		note.moveTo(1, -5);
+		this.assertEquals(note.noteNumber, 0);
+		this.assertEquals(note.startTime, 1);
+		note.moveTo(1, 200);
+		this.assertEquals(note.noteNumber, 127);
+		this.assertEquals(note.startTime, 1);
+	}
+
+	test_moveTo_clampsStartAtZero {
+		var duration, note, notePair;
+		notePair = this.prMockNote(1, 60, stopTime: 1.5);
+		note = notePair[0];
+		note.moveTo(-2, 64);
+		duration = note.stopTime - note.startTime;
+		this.assertEquals(note.startTime, 0);
+		this.assertEquals(note.noteNumber, 64);
+		this.assertWithMessage((duration - 0.5).abs < 1e-9, "Duration should be preserved after clamp");
+	}
+
 	test_nudgeLeft_clampsStartAtZero {
 		var notePair, note, duration;
 		notePair = this.prMockNote(0.0625, stopTime: 0.5);

@@ -92,6 +92,33 @@ PianoRollNote {
 		});
 	}
 
+	moveTo {
+		|startTime, noteNumber|
+		var duration, newNote, newStart, newStop, oldNote, semitones;
+		Validator.validateMethodParameterType(startTime, SimpleNumber, "startTime", "PianoRollNote", "moveTo");
+		Validator.validateMethodParameterType(noteNumber, Integer, "noteNumber", "PianoRollNote", "moveTo");
+		duration = this.stopTime - this.startTime;
+		newStart = startTime.max(0);
+		newStop = newStart + duration;
+		oldNote = this.noteNumber;
+		newNote = noteNumber.clip(0, 127);
+		semitones = newNote - oldNote;
+		prOriginalStartTime = newStart;
+		prOriginalStopTime = newStop;
+		prPlayableNote.startTime = newStart;
+		prPlayableNote.stopTime = newStop;
+		prPlayableNote.noteNumber = newNote;
+		if (prView.notNil, {
+			prView.bounds = Rect(
+				prView.bounds.left,
+				prView.bounds.top - (semitones * prView.bounds.height),
+				prView.bounds.width,
+				prView.bounds.height
+			);
+			prMoveFunc.value(prView, newStart, newStop);
+		});
+	}
+
 	*new {
 		|startTime,noteNumber,velocity,viewFunc,selectFunc,deselectFunc,setPart1Func,setPart2Func,setPart3Func,setPart4Func,moveFunc,deleteFunc|
 		Validator.validateMethodParameterType(startTime,SimpleNumber,"startTime","SequencerNote","new");

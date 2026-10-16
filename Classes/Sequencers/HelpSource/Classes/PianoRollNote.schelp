@@ -89,6 +89,15 @@ A LINK::Classes/SimpleNumber:: legato greater than CODE::0::. Values greater tha
 ARGUMENT:: nextOnsetTime
 The beat of the next distinct onset, or the loop end for the last note group.
 
+METHOD:: moveTo
+Places the note at CODE::startTime:: and CODE::noteNumber::. Duration is preserved. The start time is clamped at beat zero. The MIDI note number is clamped to CODE::0::–CODE::127::. When the note view exists, it is moved to the new time and pitch.
+
+ARGUMENT:: startTime
+Note-on time in beats. A LINK::Classes/SimpleNumber::. Values below CODE::0:: are clamped to CODE::0::.
+
+ARGUMENT:: noteNumber
+MIDI note number. An LINK::Classes/Integer::. Values outside CODE::0:: to CODE::127:: are clamped.
+
 METHOD:: noteNumber
 Returns the wrapped note's MIDI note number.
 

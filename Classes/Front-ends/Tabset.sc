@@ -26,6 +26,8 @@ Tabset : SCViewHolder {
 	var prAddTabPressed;
 	var prMinTabWidth;
 	var prTabViews;
+	var prCanSwitchTab;
+	var prSelectFunc;
 
 	addTab {
 		|name, view|
@@ -92,6 +94,8 @@ Tabset : SCViewHolder {
 		prAddTabBody = nil;
 		prAddTabPressed = false;
 		prMinTabWidth = 50;
+		prCanSwitchTab = true;
+		prSelectFunc = nil;
 		prTabBar = HLayout([nil, s: 1]).margins_(0).spacing_(prTabGapWidth);
 		prPages = StackLayout().mode_(0);
 		prTabBarView = View().background_(prBackgroundColour).layout_(prTabBar);
@@ -128,10 +132,18 @@ Tabset : SCViewHolder {
 
 	prSelectTab {
 		|index|
+		var switched;
+		switched = index != prSelectedIndex;
+		if (switched && { prCanSwitchTab.not }, {
+			^this;
+		});
 		prSelectedIndex = index;
 		prPages.index_(index);
 		this.prSyncStrips;
 		this.prSyncLabelColours;
+		if (switched && { prSelectFunc.notNil }, {
+			prSelectFunc.value(index);
+		});
 	}
 
 	prSyncStrips {
@@ -364,6 +376,28 @@ Tabset : SCViewHolder {
 		this.prSyncAddTab;
 	}
 
+	canSwitchTab {
+		^prCanSwitchTab;
+	}
+
+	canSwitchTab_ {
+		|newCanSwitchTab|
+		Validator.validateMethodParameterType(newCanSwitchTab, Boolean, "newCanSwitchTab", "Tabset", "canSwitchTab_");
+		prCanSwitchTab = newCanSwitchTab;
+	}
+
+	selectFunc {
+		^prSelectFunc;
+	}
+
+	selectFunc_ {
+		|func|
+		if (func.notNil, {
+			Validator.validateMethodParameterType(func, Function, "func", "Tabset", "selectFunc_");
+		});
+		prSelectFunc = func;
+	}
+
 	prShowAddTab {
 		var onMouseDown, onMouseLeave, onMouseUp, tabStack;
 		if (prAddTabView.notNil, {
@@ -432,6 +466,9 @@ Tabset : SCViewHolder {
 
 	prRunAddViewFunc {
 		var index, name, pageView, result;
+		if (prCanSwitchTab.not, {
+			^this;
+		});
 		result = prAddViewFunc.value;
 		name = nil;
 		pageView = nil;
