@@ -175,7 +175,8 @@ PianoRoll : SCViewHolder {
 
 		prNoteSelectFunc = {
 			|view|
-			view.borderWidth_(1);
+			view.borderWidth_(2);
+			view.borderColour_(prPalette.extreme2);
 			this.prRefreshSidebar;
 		};
 		prNoteDeleteFunc = {
@@ -184,7 +185,8 @@ PianoRoll : SCViewHolder {
 		};
 		prNoteDeselectFunc = {
 			|view|
-			view.borderWidth_(0);
+			view.borderWidth_(2);
+			view.borderColour_(prPalette.colour1);
 			this.prRefreshSidebar;
 		};
 
@@ -283,9 +285,9 @@ PianoRoll : SCViewHolder {
 				)
 			};
 			noteView = BorderView(prBackgroundView, Rect(pianoRollNote.startTime * prNoteViewScale[\horizontal], (127 - pianoRollNote.noteNumber) * prNoteViewScale[\vertical] + (prNoteViewScale[\vertical] * 5), (pianoRollNote.stopTime - pianoRollNote.startTime) * prNoteViewScale[\horizontal], prNoteViewScale[\vertical]))
-			.background_(prPalette.colour1)
-			.borderWidth_(0)
-			.borderColour_(prPalette.extreme2)
+			.background_(this.prFillForNote(pianoRollNote, prPalette.colour1))
+			.borderWidth_(2)
+			.borderColour_(prPalette.colour1)
 			.mouseWheelAction_(scrollWheel)
 			.mouseDownAction_({
 				|view, x, y, modifiers, buttonNumber, clickCount|
@@ -432,6 +434,18 @@ PianoRoll : SCViewHolder {
 		});
 	}
 
+	prFillForNote {
+		|note, colour|
+		var amp, fill;
+		amp = note.event[\amp];
+		if (amp.isNil, {
+			amp = note.velocity.linlin(0, 127, 0, 1);
+		});
+		fill = colour.copy;
+		fill.alpha = amp;
+		^fill;
+	}
+
 	prRefreshSidebar {
 		var loopLength, note, selected;
 		if (prSidebar.notNil, {
@@ -473,12 +487,12 @@ PianoRoll : SCViewHolder {
 		if (msgType == \noteOn, {
 			pianoRollNote = PianoRollNote(now, noteNumber, velocity,
 				viewFunc: prDrawNote,
-				selectFunc: { |view| view.borderWidth_(2); this.prRefreshSidebar },
+				selectFunc: prNoteSelectFunc,
 				deselectFunc: prNoteDeselectFunc,
-				setPart1Func: { |view| view.background_(prPalette.colour1) },
-				setPart2Func: { |view| view.background_(prPalette.colour2) },
-				setPart3Func: { |view| view.background_(prPalette.colour3) },
-				setPart4Func: { |view| view.background_(prPalette.colour4) },
+				setPart1Func: { |view| view.background_(this.prFillForNote(pianoRollNote, prPalette.colour1)) },
+				setPart2Func: { |view| view.background_(this.prFillForNote(pianoRollNote, prPalette.colour2)) },
+				setPart3Func: { |view| view.background_(this.prFillForNote(pianoRollNote, prPalette.colour3)) },
+				setPart4Func: { |view| view.background_(this.prFillForNote(pianoRollNote, prPalette.colour4)) },
 				moveFunc: { |view, startTime, stopTime| view.bounds_(Rect(startTime * prNoteViewScale[\horizontal], view.bounds.top, (stopTime - startTime) * prNoteViewScale[\horizontal], view.bounds.height)) },
 				deleteFunc: prNoteDeleteFunc
 			);
@@ -523,10 +537,10 @@ PianoRoll : SCViewHolder {
 					viewFunc: prDrawNote,
 					selectFunc: prNoteSelectFunc,
 					deselectFunc: prNoteDeselectFunc,
-					setPart1Func: { |view| view.background_(prPalette.colour1) },
-					setPart2Func: { |view| view.background_(prPalette.colour2) },
-					setPart3Func: { |view| view.background_(prPalette.colour3) },
-					setPart4Func: { |view| view.background_(prPalette.colour4) },
+					setPart1Func: { |view| view.background_(this.prFillForNote(pianoRollNote, prPalette.colour1)) },
+					setPart2Func: { |view| view.background_(this.prFillForNote(pianoRollNote, prPalette.colour2)) },
+					setPart3Func: { |view| view.background_(this.prFillForNote(pianoRollNote, prPalette.colour3)) },
+					setPart4Func: { |view| view.background_(this.prFillForNote(pianoRollNote, prPalette.colour4)) },
 					moveFunc: { |view, startTime, stopTime| view.bounds_(Rect(startTime * prNoteViewScale[\horizontal], view.bounds.top, (stopTime - startTime) * prNoteViewScale[\horizontal], view.bounds.height)) },
 					deleteFunc: prNoteDeleteFunc
 				);

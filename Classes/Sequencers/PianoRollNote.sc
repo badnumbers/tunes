@@ -31,6 +31,7 @@ PianoRollNote {
 		});
 		prEvent[\amp] = clipped;
 		prPlayableNote.amp_(clipped);
+		this.prApplyPartColour;
 	}
 
 	delete {
@@ -180,6 +181,16 @@ PianoRollNote {
 		});
 	}
 
+	prApplyPartColour {
+		if (prView.isNil, { ^this });
+		switch (prPartNumber,
+			1, { prSetPart1Func.value(prView); },
+			2, { prSetPart2Func.value(prView); },
+			3, { prSetPart3Func.value(prView); },
+			4, { prSetPart4Func.value(prView); }
+		);
+	}
+
 	prApplyTimeDelta {
 		|delta|
 		var newStart, newStop, duration;
@@ -231,12 +242,7 @@ PianoRollNote {
 		});
 		if (prSelected,{
 			prPartNumber = partNumber;
-			switch (partNumber,
-				1, { prSetPart1Func.value(prView); },
-				2, { prSetPart2Func.value(prView); },
-				3, { prSetPart3Func.value(prView); },
-				4, { prSetPart4Func.value(prView); }
-			);
+			this.prApplyPartColour;
 		});
 	}
 
