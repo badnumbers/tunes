@@ -1,15 +1,18 @@
 TITLE:: Arranger
 SUMMARY:: Flow of sequence-name labels for the SequencerGui Arrange page.
 CATEGORIES:: Streams-Patterns-Events
-RELATED:: Classes/SequencerGui, Classes/SCViewHolder
+RELATED:: Classes/BorderView, Classes/SCViewHolder, Classes/Sequencer, Classes/SequencerGui
 
 DESCRIPTION::
-TELETYPE::Arranger:: is a LINK::Classes/SCViewHolder:: that LINK::Classes/SequencerGui:: shows when the Arrange button is pressed. Its view uses a LINK::Classes/FlowLayout:: decorator. Each sequence name is a LINK::Classes/StaticText:: sized to that name, placed beside the previous label.
+TELETYPE::Arranger:: is a LINK::Classes/SCViewHolder:: that LINK::Classes/SequencerGui:: shows when the Arrange button is pressed. Its view uses a LINK::Classes/FlowLayout:: decorator. Each sequence name is a LINK::Classes/StaticText:: on a LINK::Classes/BorderView:: sized to that name, placed beside the previous label. Double-clicking a sequence calls LINK::Classes/Sequencer#-play:: with looping on and draws a border on that view. Double-clicking the sequence that is playing calls LINK::Classes/Sequencer#-stop:: and removes the border. Double-clicking a different sequence moves the border to that sequence.
 
 CLASSMETHODS::
 
 METHOD:: new
 Creates an instance of TELETYPE::Arranger::.
+
+ARGUMENT:: sequencer
+The LINK::Classes/Sequencer:: whose sequences this arranger lists and plays.
 
 RETURNS::
 A new TELETYPE::Arranger:: instance.
@@ -22,4 +25,4 @@ Adds a label for CODE::name::. A name that is already shown is left as it is.
 ARGUMENT:: name
 A LINK::Classes/Symbol::, displayed with CODE::asString::.
 
-PRIVATE:: init
+PRIVATE:: init, prSetBorder, prToggleSequence
