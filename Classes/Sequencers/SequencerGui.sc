@@ -1,5 +1,5 @@
 SequencerGui {
-	var prArrangerView;
+	var prArranger;
 	var prDocument;
 	var prKeyRouter;
 	var prMainHeader;
@@ -33,11 +33,11 @@ SequencerGui {
 			EnhancedButton().background_(prPalette.colour3).borderRadius_(3).borderWidth_(2).minSize_(size).maxSize_(size).font_(Font(size:16)).string_(text).stringColor_(prPalette.colour5).align_(\center).mouseEnterBorderColour_(prPalette.extreme2).mouseEnterStringColour_(prPalette.extreme2).mouseDownBackgroundColour_(prPalette.colour2);
 		};
 
-		prArrangerView = ArrangerView();
+		prArranger = Arranger();
 		prSequencer.addDependant(this);
 		prSequencer.sequenceIds.do({
 			|id|
-			prArrangerView.addSequence(id);
+			prArranger.addSequence(id);
 		});
 
 		prWindow = Window("Sequencer").background_(prPalette.colour1).front;
@@ -54,7 +54,7 @@ SequencerGui {
 				midiIndicator = BorderView().background_(prPalette.colour2).borderColour_(prPalette.colour3).borderRadius_(3).borderWidth_(2).minSize_(50@50).maxSize_(50@50);
 			).margins_(25).spacing_(25)),
 			stackLayout = StackLayout(
-				prArrangerView,
+				prArranger,
 				recordPage,
 				prSettingsView = View().background_(prPalette.colour2).layout_(
 					VLayout(
@@ -174,7 +174,7 @@ SequencerGui {
 	update {
 		|theChanged, what, id|
 		if (what == \midiSequenceAdded, {
-			prArrangerView.addSequence(id);
+			prArranger.addSequence(id);
 		});
 		if (what == \tempo, {
 			prSynthDesk.tempo_(id);

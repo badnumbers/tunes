@@ -1,10 +1,10 @@
-ArrangerView : SCViewHolder {
+Arranger : SCViewHolder {
 	var prSequenceNames;
 
 	addSequence {
 		|name|
 		var font, label, text;
-		Validator.validateMethodParameterType(name, Symbol, "name", "ArrangerView", "addSequence");
+		Validator.validateMethodParameterType(name, Symbol, "name", "Arranger", "addSequence");
 		text = name.asString;
 		if (prSequenceNames.includes(text), { ^this });
 		prSequenceNames.add(text);
