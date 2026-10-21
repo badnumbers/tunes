@@ -175,12 +175,6 @@ PianoRollNote {
 		^prPlayableNote;
 	}
 
-	refreshView {
-		if (prView.notNil, {
-			prMoveFunc.value(prView, this.startTime, this.stopTime);
-		});
-	}
-
 	prApplyPartColour {
 		if (prView.isNil, { ^this });
 		switch (prPartNumber,
@@ -215,6 +209,12 @@ PianoRollNote {
 		var gridIndex;
 		gridIndex = this.startTime / resolution;
 		^ (gridIndex - gridIndex.round).abs < 1e-9;
+	}
+
+	refreshView {
+		if (prView.notNil, {
+			prMoveFunc.value(prView, this.startTime, this.stopTime);
+		});
 	}
 
 	selectIfEnclosed {

@@ -5,6 +5,7 @@ PianoRoll : SCViewHolder {
 	var prCommandPrompt;
 	var prDevMode;
 	var prDrawNote;
+	var prIsRecording = false;
 	var prKeyRouter;
 	var prLoopMarkers;
 	var prNoteDeleteFunc;
@@ -14,21 +15,29 @@ PianoRoll : SCViewHolder {
 	var prPalette;
 	var prPianoRollHeight;
 	var prPianoRollWidth;
+	var prPlayLoopButton;
 	var prRecordedNotes;
+	var prRecordingClock;
+	var prRecordingNow;
 	var prScrollView;
 	var prSequencePlayer;
 	var prSequencer;
 	var prSequencerDocument;
 	var prSidebar;
-	var prSyncTo = 4;
-	var prIsRecording = false;
-	var prRecordingClock;
-	var prTimeline;
-	var prView;
-	var prRecordingNow;
-	var prPlayLoopButton;
 	var prSyncLabel;
 	var prSyncMenu;
+	var prSyncTo = 4;
+	var prTimeline;
+	var prView;
+
+	assignSelectedToPart {
+		|partNumber|
+		Validator.validateMethodParameterType(partNumber, Integer, "partNumber", "PianoRoll", "assignSelectedToPart");
+		if (partNumber < 1 or: { partNumber > 4 }, {
+			Error(format("The partNumber parameter provided to PianoRoll.assignSelectedToPart must be an integer from 1 to 4. The value % was provided.", partNumber)).throw;
+		});
+		this.prAssignPartIfSelected(partNumber);
+	}
 
 	commandPrompt {
 		^prCommandPrompt;
@@ -411,15 +420,6 @@ PianoRoll : SCViewHolder {
 		this.prRefreshSidebar;
 	}
 
-	assignSelectedToPart {
-		|partNumber|
-		Validator.validateMethodParameterType(partNumber, Integer, "partNumber", "PianoRoll", "assignSelectedToPart");
-		if (partNumber < 1 or: { partNumber > 4 }, {
-			Error(format("The partNumber parameter provided to PianoRoll.assignSelectedToPart must be an integer from 1 to 4. The value % was provided.", partNumber)).throw;
-		});
-		this.prAssignPartIfSelected(partNumber);
-	}
-
 	prAssignPartIfSelected {
 		|partNumber|
 		prRecordedNotes.do({|recordedNote| recordedNote.setPartIfSelected(partNumber); });
@@ -456,6 +456,56 @@ PianoRoll : SCViewHolder {
 		^fill;
 	}
 
+	prMakeTransportStrip {
+		var renderButton, startRecordingButton;
+		renderButton = {
+			|text, width = 100|
+			var size;
+			size = width@50;
+			EnhancedButton().background_(prPalette.colour3).borderRadius_(3).borderWidth_(2).minSize_(size).maxSize_(size).font_(Font(size: 16)).string_(text).stringColor_(prPalette.colour5).align_(\center).mouseEnterBorderColour_(prPalette.extreme2).mouseEnterStringColour_(prPalette.extreme2).mouseDownBackgroundColour_(prPalette.colour2);
+		};
+		startRecordingButton = renderButton.value("Start recording", 150);
+		startRecordingButton.mouseUpAction_({
+			if (startRecordingButton.string == "Start recording", {
+				startRecordingButton.string_("Stop recording");
+				this.startRecording;
+			}, {
+				startRecordingButton.string_("Start recording");
+				this.stopRecording;
+			});
+		});
+		prPlayLoopButton = renderButton.value("Play loop", 150);
+		prPlayLoopButton.mouseUpAction_({
+			if (prPlayLoopButton.string == "Play loop", {
+				if (this.playLoop, {
+					prPlayLoopButton.string_("Stop loop");
+				});
+			}, {
+				prPlayLoopButton.string_("Play loop");
+				this.stopLoop;
+			});
+		});
+		prSyncLabel = StaticText().string_("Sync to").stringColor_(prPalette.colour5).align_(\center).font_(Font(size: 16)).minWidth_(80);
+		prSyncMenu = PopUpMenu()
+			.items_((1..16).collect({ |number| number.asString }))
+			.value_(prSyncTo - 1)
+			.font_(Font(size: 16))
+			.minWidth_(70)
+			.action_({ |menu|
+				this.syncTo_(menu.item.asInteger);
+			});
+		this.prUpdateLoopControls;
+		^View().background_(prPalette.colour4).minHeight_(70).maxHeight_(70).layout_(
+			HLayout(
+				startRecordingButton,
+				prPlayLoopButton,
+				prSyncLabel,
+				prSyncMenu,
+				[nil, s: 1]
+			).margins_(10).spacing_(10)
+		);
+	}
+
 	prPaintNote {
 		|note, view|
 		var border, colour;
@@ -485,21 +535,13 @@ PianoRoll : SCViewHolder {
 		^prRecordedNotes.select({|note| note.isSelected});
 	}
 
-	selectedNotes {
-		^this.prSelectedNotes;
-	}
-
-	syncTo {
-		^prSyncTo;
-	}
-
-	syncTo_ {
-		|newSyncTo|
-		Validator.validateMethodParameterType(newSyncTo, Integer, "newSyncTo", "PianoRoll", "syncTo_");
-		if (newSyncTo < 1 or: { newSyncTo > 16 }, {
-			Error(format("The newSyncTo parameter provided to PianoRoll.syncTo_ must be an integer from 1 to 16. The value % was provided.", newSyncTo)).throw;
-		});
-		prSyncTo = newSyncTo;
+	prUpdateLoopControls {
+		var show;
+		if (prPlayLoopButton.isNil, { ^this });
+		show = prIsRecording.not && { prRecordedNotes.notNil && { prRecordedNotes.size > 0 } };
+		prPlayLoopButton.visible_(show);
+		prSyncLabel.visible_(show);
+		prSyncMenu.visible_(show);
 	}
 
 	receiveRecordingMidi {
@@ -533,6 +575,10 @@ PianoRoll : SCViewHolder {
 				activeNotesForThisNoteNumber[0].stop(now);
 			});
 		});
+	}
+
+	selectedNotes {
+		^this.prSelectedNotes;
 	}
 
 	startRecording {
@@ -621,62 +667,16 @@ PianoRoll : SCViewHolder {
 		this.prUpdateLoopControls;
 	}
 
-	prUpdateLoopControls {
-		var show;
-		if (prPlayLoopButton.isNil, { ^this });
-		show = prIsRecording.not && { prRecordedNotes.notNil && { prRecordedNotes.size > 0 } };
-		prPlayLoopButton.visible_(show);
-		prSyncLabel.visible_(show);
-		prSyncMenu.visible_(show);
+	syncTo {
+		^prSyncTo;
 	}
 
-	prMakeTransportStrip {
-		var renderButton, startRecordingButton;
-		renderButton = {
-			|text, width = 100|
-			var size;
-			size = width@50;
-			EnhancedButton().background_(prPalette.colour3).borderRadius_(3).borderWidth_(2).minSize_(size).maxSize_(size).font_(Font(size: 16)).string_(text).stringColor_(prPalette.colour5).align_(\center).mouseEnterBorderColour_(prPalette.extreme2).mouseEnterStringColour_(prPalette.extreme2).mouseDownBackgroundColour_(prPalette.colour2);
-		};
-		startRecordingButton = renderButton.value("Start recording", 150);
-		startRecordingButton.mouseUpAction_({
-			if (startRecordingButton.string == "Start recording", {
-				startRecordingButton.string_("Stop recording");
-				this.startRecording;
-			}, {
-				startRecordingButton.string_("Start recording");
-				this.stopRecording;
-			});
+	syncTo_ {
+		|newSyncTo|
+		Validator.validateMethodParameterType(newSyncTo, Integer, "newSyncTo", "PianoRoll", "syncTo_");
+		if (newSyncTo < 1 or: { newSyncTo > 16 }, {
+			Error(format("The newSyncTo parameter provided to PianoRoll.syncTo_ must be an integer from 1 to 16. The value % was provided.", newSyncTo)).throw;
 		});
-		prPlayLoopButton = renderButton.value("Play loop", 150);
-		prPlayLoopButton.mouseUpAction_({
-			if (prPlayLoopButton.string == "Play loop", {
-				if (this.playLoop, {
-					prPlayLoopButton.string_("Stop loop");
-				});
-			}, {
-				prPlayLoopButton.string_("Play loop");
-				this.stopLoop;
-			});
-		});
-		prSyncLabel = StaticText().string_("Sync to").stringColor_(prPalette.colour5).align_(\center).font_(Font(size: 16)).minWidth_(80);
-		prSyncMenu = PopUpMenu()
-			.items_((1..16).collect({ |number| number.asString }))
-			.value_(prSyncTo - 1)
-			.font_(Font(size: 16))
-			.minWidth_(70)
-			.action_({ |menu|
-				this.syncTo_(menu.item.asInteger);
-			});
-		this.prUpdateLoopControls;
-		^View().background_(prPalette.colour4).minHeight_(70).maxHeight_(70).layout_(
-			HLayout(
-				startRecordingButton,
-				prPlayLoopButton,
-				prSyncLabel,
-				prSyncMenu,
-				[nil, s: 1]
-			).margins_(10).spacing_(10)
-		);
+		prSyncTo = newSyncTo;
 	}
 }

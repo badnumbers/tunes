@@ -48,6 +48,12 @@ An optional LINK::Classes/SequencerDocument:: used to write pattern source. Pass
 
 INSTANCEMETHODS::
 
+METHOD:: assignSelectedToPart
+Sets the part of every selected note. CODE::partNumber:: is an integer from 1 to 4.
+
+ARGUMENT:: partNumber
+The part to assign. An integer from 1 to 4.
+
 METHOD:: commandPrompt
 The embedded LINK::Classes/CommandPrompt:: instance used for command input.
 
@@ -59,24 +65,6 @@ Gives keyboard focus to the note area.
 
 METHOD:: playLoop
 Starts playback of the recorded sequence. The player acquires the sequencer's shared clock. When this play creates the clock, that clock is set to beat 0 first. The playhead then snaps to the nearest point on the LINK::#-syncTo:: grid that shares the clock's offset into that grid, measured from the loop start around the loop, and playback starts from there immediately. Returns false and posts a warning if no notes have been recorded.
-
-METHOD:: assignSelectedToPart
-Sets the part of every selected note. CODE::partNumber:: is an integer from 1 to 4.
-
-ARGUMENT:: partNumber
-The part to assign. An integer from 1 to 4.
-
-METHOD:: selectedNotes
-Returns an LINK::Classes/Array:: of currently selected LINK::Classes/PianoRollNote:: instances.
-
-RETURNS::
-An LINK::Classes/Array:: of LINK::Classes/PianoRollNote:: instances.
-
-METHOD:: syncTo
-The Sync-to grid in beats. An integer from 1 to 16. The default is 4. LINK::#-playLoop:: uses it to choose where the playhead starts.
-
-ARGUMENT:: newSyncTo
-The new grid size when setting. An integer from 1 to 16.
 
 METHOD:: receiveRecordingMidi
 Records one MIDI message into the open take. A note-on adds a LINK::Classes/PianoRollNote::. A note-off ends the open note of that number. Does nothing when this roll is not recording.
@@ -93,6 +81,12 @@ The MIDI note number.
 ARGUMENT:: chan
 The MIDI channel. A note-on stores it on the embedded LINK::Classes/SequencePlayer::.
 
+METHOD:: selectedNotes
+Returns an LINK::Classes/Array:: of currently selected LINK::Classes/PianoRollNote:: instances.
+
+RETURNS::
+An LINK::Classes/Array:: of LINK::Classes/PianoRollNote:: instances.
+
 METHOD:: startRecording
 Acquires the sequencer's shared clock, creating it at beat 0 when nothing else holds it, and timestamps notes from that clock. In dev mode, fills fake notes. Starts the LINK::Classes/Metronome:: on that same clock, then announces CODE::\isRecording:: as CODE::true:: to dependants. Does nothing if recording is already in progress.
 
@@ -102,4 +96,10 @@ Stops playback via the embedded LINK::Classes/SequencePlayer:: and, after the fi
 METHOD:: stopRecording
 Announces CODE::\isRecording:: as CODE::false:: to dependants, stops the LINK::Classes/Metronome::, updates LINK::Classes/PianoRollLoopMarkers:: from recorded notes (loop bounds plus LINK::Classes/PianoRollLoopMarkers#-playheadTime_:: at the loop start beat), and releases this roll's hold on the shared clock. Does nothing when recording is not in progress.
 
-PRIVATE:: init, prApplyNoteEdits, prAssignPartIfSelected, prColourForPart, prDeleteNote, prFillForNote, prPaintNote, prRefreshSidebar, prSelectedNotes, prUpdateLoopControls, prMakeTransportStrip
+METHOD:: syncTo
+The Sync-to grid in beats. An integer from 1 to 16. The default is 4. LINK::#-playLoop:: uses it to choose where the playhead starts.
+
+ARGUMENT:: newSyncTo
+The new grid size when setting. An integer from 1 to 16.
+
+PRIVATE:: init, prApplyNoteEdits, prAssignPartIfSelected, prColourForPart, prDeleteNote, prFillForNote, prMakeTransportStrip, prPaintNote, prRefreshSidebar, prSelectedNotes, prUpdateLoopControls
