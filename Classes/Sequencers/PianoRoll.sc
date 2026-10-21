@@ -174,9 +174,8 @@ PianoRoll : SCViewHolder {
 		});
 
 		prNoteSelectFunc = {
-			|view|
-			view.borderWidth_(2);
-			view.borderColour_(prPalette.extreme2);
+			|view, note|
+			this.prPaintNote(note, view);
 			this.prRefreshSidebar;
 		};
 		prNoteDeleteFunc = {
@@ -184,9 +183,8 @@ PianoRoll : SCViewHolder {
 			this.prDeleteNote(note);
 		};
 		prNoteDeselectFunc = {
-			|view|
-			view.borderWidth_(2);
-			view.borderColour_(prPalette.colour1);
+			|view, note|
+			this.prPaintNote(note, view);
 			this.prRefreshSidebar;
 		};
 
@@ -284,11 +282,9 @@ PianoRoll : SCViewHolder {
 					noteNumber: newNote
 				)
 			};
-			noteView = BorderView(prBackgroundView, Rect(pianoRollNote.startTime * prNoteViewScale[\horizontal], (127 - pianoRollNote.noteNumber) * prNoteViewScale[\vertical] + (prNoteViewScale[\vertical] * 5), (pianoRollNote.stopTime - pianoRollNote.startTime) * prNoteViewScale[\horizontal], prNoteViewScale[\vertical]))
-			.background_(this.prFillForNote(pianoRollNote, prPalette.colour1))
-			.borderWidth_(2)
-			.borderColour_(prPalette.colour1)
-			.mouseWheelAction_(scrollWheel)
+			noteView = BorderView(prBackgroundView, Rect(pianoRollNote.startTime * prNoteViewScale[\horizontal], (127 - pianoRollNote.noteNumber) * prNoteViewScale[\vertical] + (prNoteViewScale[\vertical] * 5), (pianoRollNote.stopTime - pianoRollNote.startTime) * prNoteViewScale[\horizontal], prNoteViewScale[\vertical]));
+			this.prPaintNote(pianoRollNote, noteView);
+			noteView.mouseWheelAction_(scrollWheel)
 			.mouseDownAction_({
 				|view, x, y, modifiers, buttonNumber, clickCount|
 				if (buttonNumber == 0, {
@@ -426,6 +422,16 @@ PianoRoll : SCViewHolder {
 		prRecordedNotes.do({|recordedNote| recordedNote.setPartIfSelected(partNumber); });
 	}
 
+	prColourForPart {
+		|partNumber|
+		switch (partNumber,
+			1, { ^prPalette.colour1 },
+			2, { ^prPalette.colour2 },
+			3, { ^prPalette.colour3 },
+			4, { ^prPalette.colour4 }
+		);
+	}
+
 	prDeleteNote {
 		|note|
 		if (prRecordedNotes.includes(note), {
@@ -444,6 +450,21 @@ PianoRoll : SCViewHolder {
 		fill = colour.copy;
 		fill.alpha = amp;
 		^fill;
+	}
+
+	prPaintNote {
+		|note, view|
+		var border, colour;
+		colour = this.prColourForPart(note.partNumber);
+		view.background_(this.prFillForNote(note, colour));
+		if (note.isSelected, {
+			border = prPalette.extreme2;
+		}, {
+			border = colour.copy;
+			border.alpha = 1;
+		});
+		view.borderColour_(border);
+		view.borderWidth_(2);
 	}
 
 	prRefreshSidebar {
@@ -489,10 +510,10 @@ PianoRoll : SCViewHolder {
 				viewFunc: prDrawNote,
 				selectFunc: prNoteSelectFunc,
 				deselectFunc: prNoteDeselectFunc,
-				setPart1Func: { |view| view.background_(this.prFillForNote(pianoRollNote, prPalette.colour1)) },
-				setPart2Func: { |view| view.background_(this.prFillForNote(pianoRollNote, prPalette.colour2)) },
-				setPart3Func: { |view| view.background_(this.prFillForNote(pianoRollNote, prPalette.colour3)) },
-				setPart4Func: { |view| view.background_(this.prFillForNote(pianoRollNote, prPalette.colour4)) },
+				setPart1Func: { |view| this.prPaintNote(pianoRollNote, view) },
+				setPart2Func: { |view| this.prPaintNote(pianoRollNote, view) },
+				setPart3Func: { |view| this.prPaintNote(pianoRollNote, view) },
+				setPart4Func: { |view| this.prPaintNote(pianoRollNote, view) },
 				moveFunc: { |view, startTime, stopTime| view.bounds_(Rect(startTime * prNoteViewScale[\horizontal], view.bounds.top, (stopTime - startTime) * prNoteViewScale[\horizontal], view.bounds.height)) },
 				deleteFunc: prNoteDeleteFunc
 			);
@@ -537,10 +558,10 @@ PianoRoll : SCViewHolder {
 					viewFunc: prDrawNote,
 					selectFunc: prNoteSelectFunc,
 					deselectFunc: prNoteDeselectFunc,
-					setPart1Func: { |view| view.background_(this.prFillForNote(pianoRollNote, prPalette.colour1)) },
-					setPart2Func: { |view| view.background_(this.prFillForNote(pianoRollNote, prPalette.colour2)) },
-					setPart3Func: { |view| view.background_(this.prFillForNote(pianoRollNote, prPalette.colour3)) },
-					setPart4Func: { |view| view.background_(this.prFillForNote(pianoRollNote, prPalette.colour4)) },
+					setPart1Func: { |view| this.prPaintNote(pianoRollNote, view) },
+					setPart2Func: { |view| this.prPaintNote(pianoRollNote, view) },
+					setPart3Func: { |view| this.prPaintNote(pianoRollNote, view) },
+					setPart4Func: { |view| this.prPaintNote(pianoRollNote, view) },
 					moveFunc: { |view, startTime, stopTime| view.bounds_(Rect(startTime * prNoteViewScale[\horizontal], view.bounds.top, (stopTime - startTime) * prNoteViewScale[\horizontal], view.bounds.height)) },
 					deleteFunc: prNoteDeleteFunc
 				);

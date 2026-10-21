@@ -51,7 +51,7 @@ PianoRollNote {
 
 	deselect {
 		prSelected = false;
-		prDeselectFunc.value(prView);
+		prDeselectFunc.value(prView, this);
 	}
 
 	event {
@@ -225,11 +225,11 @@ PianoRollNote {
 			&& ((prView.bounds.left + prView.bounds.width) <= (possiblyEnclosingView.bounds.left + possiblyEnclosingView.bounds.width))
 			&& ((prView.bounds.top + prView.bounds.height) <= (possiblyEnclosingView.bounds.top + possiblyEnclosingView.bounds.height)),{
 				prSelected = true;
-				prSelectFunc.value(prView);
+				prSelectFunc.value(prView, this);
 			},{
 				if (addToExistingSelection.not, {
 					prSelected = false;
-					prDeselectFunc.value(prView);
+					prDeselectFunc.value(prView, this);
 				});
 		});
 	}
@@ -279,10 +279,10 @@ PianoRollNote {
 	toggleSelect {
 		if (prSelected,{
 			prSelected = false;
-			prDeselectFunc.value(prView);
+			prDeselectFunc.value(prView, this);
 		},{
 			prSelected = true;
-			prSelectFunc.value(prView);
+			prSelectFunc.value(prView, this);
 		});
 	}
 

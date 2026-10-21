@@ -34,10 +34,10 @@ ARGUMENT:: viewFunc
 LINK::Classes/Function:: called from LINK::#-stop:: to create the note's LINK::Classes/View::.
 
 ARGUMENT:: selectFunc
-LINK::Classes/Function:: called when the note becomes selected.
+LINK::Classes/Function:: called when the note becomes selected, with the note view and this note. LINK::Classes/PianoRoll:: paints the border LINK::Classes/GuiPalette#-extreme2::.
 
 ARGUMENT:: deselectFunc
-LINK::Classes/Function:: called when the note is deselected.
+LINK::Classes/Function:: called when the note is deselected, with the note view and this note. LINK::Classes/PianoRoll:: restores the part colour on the border.
 
 ARGUMENT:: setPart1Func
 LINK::Classes/Function:: called when part 1 is assigned to a selected note.
@@ -60,7 +60,7 @@ Optional LINK::Classes/Function:: called from LINK::#-delete:: with the note as 
 INSTANCEMETHODS::
 
 METHOD:: amp_
-Clips CODE::value:: to CODE::0::–CODE::1::. A clipped value of CODE::0:: calls LINK::#-delete:: and does not write the event or the velocity. Any value above CODE::0:: stores it as CODE::\amp:: on the composed LINK::Classes/Event:: and passes the clipped value to LINK::Classes/PlayableNote#-amp_::, which sets the MIDI velocity. A tiny positive value stays a note even when that velocity rounds to CODE::0::. When the note view exists, the fill is drawn again at this amplitude as opacity. LINK::Classes/AmpCommand:: calls this method, so that opacity updates. Part 1 uses LINK::Classes/GuiPalette#-colour1::. Parts 2–4 keep their part colour at the same opacity.
+Clips CODE::value:: to CODE::0::–CODE::1::. A clipped value of CODE::0:: calls LINK::#-delete:: and does not write the event or the velocity. Any value above CODE::0:: stores it as CODE::\amp:: on the composed LINK::Classes/Event:: and passes the clipped value to LINK::Classes/PlayableNote#-amp_::, which sets the MIDI velocity. A tiny positive value stays a note even when that velocity rounds to CODE::0::. When the note view exists, the fill and the opaque border are drawn again. LINK::Classes/AmpCommand:: calls this method, so that opacity updates. Part 1 uses LINK::Classes/GuiPalette#-colour1::, part 2 uses LINK::Classes/GuiPalette#-colour2::, part 3 uses LINK::Classes/GuiPalette#-colour3::, and part 4 uses LINK::Classes/GuiPalette#-colour4::. An unselected note's border is that colour at full opacity. A selected note's border stays LINK::Classes/GuiPalette#-extreme2::. The fill uses the same colour at this amplitude as opacity.
 
 ARGUMENT:: value
 A LINK::Classes/SimpleNumber:: amplitude. Values outside CODE::0:: to CODE::1:: are clipped silently.
