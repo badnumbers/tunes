@@ -68,19 +68,29 @@ PianoRollSidebar : SCViewHolder {
 
 	prNoteLines {
 		|note|
-		var lines, skipped;
+		var keys, lines, skipped;
 		skipped = [\amp, \delta, \dur, \duration, \legato, \midinote, \note, \start, \startTime, \stop, \stopTime, \sustain, \velocity];
 		lines = [
 			format("midinote: %", note.noteNumber),
 			format("amp: %", this.prFormatValue(note.velocity.linlin(0, 127, 0, 1)))
 		];
-		note.event.keys.asArray.sort({
+		keys = note.event.keys.asArray;
+		if (keys.any({ |key| key.asSymbol == \part }).not, {
+			keys = keys.add(\part);
+		});
+		keys.sort({
 			|a, b|
 			a.asString < b.asString;
 		}).do({
 			|key|
+			var value;
 			if (skipped.includes(key.asSymbol).not, {
-				lines = lines.add(format("%: %", key.asString, this.prFormatValue(note.event[key])));
+				if (key.asSymbol == \part, {
+					value = note.partNumber;
+				}, {
+					value = note.event[key];
+				});
+				lines = lines.add(format("%: %", key.asString, this.prFormatValue(value)));
 			});
 		});
 		^lines;
