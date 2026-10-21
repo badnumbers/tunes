@@ -23,9 +23,10 @@ PatternChip : BorderView {
 		prSequenceId = sequenceId;
 		text = sequenceId.asString;
 		font = Font(size: 16);
+		this.borderRadius_(5);
 		this.background_(GuiPalette.default.colour3);
-		this.borderColour_(GuiPalette.default.extreme2);
-		this.borderWidth_(0);
+		this.borderColour_(GuiPalette.default.colour4);
+		this.borderWidth_(1);
 		StaticText(this.view, Rect(2, 2, this.view.bounds.width - 4, this.view.bounds.height - 4))
 			.string_(text)
 			.font_(font)
@@ -46,14 +47,17 @@ PatternChip : BorderView {
 	prTogglePlay {
 		if (prPlayingChip === this, {
 			prSequencer.stop;
-			this.borderWidth_(0);
+			this.borderColour_(GuiPalette.default.colour4);
+			this.borderWidth_(1);
 			prPlayingChip = nil;
 		}, {
 			prSequencer.play(prSequenceId, true);
 			if (prPlayingChip.notNil, {
-				prPlayingChip.borderWidth_(0);
+				prPlayingChip.borderColour_(GuiPalette.default.colour4);
+				prPlayingChip.borderWidth_(1);
 			});
-			this.borderWidth_(2);
+			this.borderColour_(GuiPalette.default.extreme2);
+			this.borderWidth_(1);
 			prPlayingChip = this;
 		});
 	}

@@ -26,6 +26,9 @@ PianoRoll : SCViewHolder {
 	var prTimeline;
 	var prView;
 	var prRecordingNow;
+	var prPlayLoopButton;
+	var prSyncLabel;
+	var prSyncMenu;
 
 	commandPrompt {
 		^prCommandPrompt;
@@ -437,6 +440,7 @@ PianoRoll : SCViewHolder {
 		if (prRecordedNotes.includes(note), {
 			prRecordedNotes.remove(note);
 			this.prApplyNoteEdits;
+			this.prUpdateLoopControls;
 		});
 	}
 
@@ -519,6 +523,7 @@ PianoRoll : SCViewHolder {
 			);
 			prRecordedNotes = prRecordedNotes.add(pianoRollNote);
 			prSequencePlayer.midiChannel_(chan);
+			this.prUpdateLoopControls;
 		}, {
 			activeNotesForThisNoteNumber = prRecordedNotes.select({ |note| (note.noteNumber == noteNumber) && (note.stopTime.isNil) });
 			if (activeNotesForThisNoteNumber.size > 1, {
@@ -573,6 +578,7 @@ PianoRoll : SCViewHolder {
 		});
 		Metronome.play(prRecordingClock);
 		this.changed(\isRecording, prIsRecording);
+		this.prUpdateLoopControls;
 	}
 
 	stopLoop {
@@ -612,10 +618,20 @@ PianoRoll : SCViewHolder {
 		prSequencer.releasePlaybackClock(this);
 		prRecordingClock = nil;
 		prRecordingNow = nil;
+		this.prUpdateLoopControls;
+	}
+
+	prUpdateLoopControls {
+		var show;
+		if (prPlayLoopButton.isNil, { ^this });
+		show = prIsRecording.not && { prRecordedNotes.notNil && { prRecordedNotes.size > 0 } };
+		prPlayLoopButton.visible_(show);
+		prSyncLabel.visible_(show);
+		prSyncMenu.visible_(show);
 	}
 
 	prMakeTransportStrip {
-		var playLoopButton, renderButton, startRecordingButton;
+		var renderButton, startRecordingButton;
 		renderButton = {
 			|text, width = 100|
 			var size;
@@ -632,30 +648,33 @@ PianoRoll : SCViewHolder {
 				this.stopRecording;
 			});
 		});
-		playLoopButton = renderButton.value("Play loop", 150);
-		playLoopButton.mouseUpAction_({
-			if (playLoopButton.string == "Play loop", {
+		prPlayLoopButton = renderButton.value("Play loop", 150);
+		prPlayLoopButton.mouseUpAction_({
+			if (prPlayLoopButton.string == "Play loop", {
 				if (this.playLoop, {
-					playLoopButton.string_("Stop loop");
+					prPlayLoopButton.string_("Stop loop");
 				});
 			}, {
-				playLoopButton.string_("Play loop");
+				prPlayLoopButton.string_("Play loop");
 				this.stopLoop;
 			});
 		});
+		prSyncLabel = StaticText().string_("Sync to").stringColor_(prPalette.colour5).align_(\center).font_(Font(size: 16)).minWidth_(80);
+		prSyncMenu = PopUpMenu()
+			.items_((1..16).collect({ |number| number.asString }))
+			.value_(prSyncTo - 1)
+			.font_(Font(size: 16))
+			.minWidth_(70)
+			.action_({ |menu|
+				this.syncTo_(menu.item.asInteger);
+			});
+		this.prUpdateLoopControls;
 		^View().background_(prPalette.colour4).minHeight_(70).maxHeight_(70).layout_(
 			HLayout(
 				startRecordingButton,
-				playLoopButton,
-				StaticText().string_("Sync to").stringColor_(prPalette.colour5).align_(\center).font_(Font(size: 16)).minWidth_(80),
-				PopUpMenu()
-					.items_((1..16).collect({ |number| number.asString }))
-					.value_(prSyncTo - 1)
-					.font_(Font(size: 16))
-					.minWidth_(70)
-					.action_({ |menu|
-						this.syncTo_(menu.item.asInteger);
-					}),
+				prPlayLoopButton,
+				prSyncLabel,
+				prSyncMenu,
 				[nil, s: 1]
 			).margins_(10).spacing_(10)
 		);
