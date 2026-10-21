@@ -42,6 +42,36 @@ WriteCommandUnitTests : BNUnitTest {
 		};
 	}
 
+	test_execute_chord_sharedValue_isScalarInsidePseq {
+		var channel, cmd, config, document, notes;
+		config = this.prSynth;
+		channel = config.midiChannels[0];
+		notes = [
+			this.prNote(0.0, 0.5, 60, 127),
+			this.prNote(1.0, 1.5, 67, 64),
+			this.prNote(1.0, 2.0, 64, 64)
+		];
+		document = WriteCommandTestDocument.new;
+		cmd = WriteCommand(document);
+		this.prWithSequencer({ cmd.execute((name: "verse", allNotes: notes, midiChannel: channel, loopStart: 0, loopEnd: 3)) });
+		this.assertEquals(
+			document.lastInserted.find("\\midinote, Pseq([60,[67,64]])").notNil,
+			true
+		);
+		this.assertEquals(
+			document.lastInserted.find("\\amp, Pseq([1,0.5])").notNil,
+			true
+		);
+		this.assertEquals(
+			document.lastInserted.find("\\dur, Pseq([1,2])").notNil,
+			true
+		);
+		this.assertEquals(
+			document.lastInserted.find("\\legato, Pseq([0.5,[0.25,0.5]])").notNil,
+			true
+		);
+	}
+
 	test_execute_chord_sharesIndexAcrossKeys {
 		var channel, cmd, config, document, notes;
 		config = this.prSynth;
@@ -58,7 +88,7 @@ WriteCommandUnitTests : BNUnitTest {
 		this.assertEquals(
 			document.lastInserted,
 			format(
-				"(\n~seq.addMidiSequence(\\verse,%,Pbind(\n    \\midinote, Pseq([60,[67,64,60]]),\n    \\amp, Pseq([1,[1,0.5,0]]),\n    \\dur, Pseq([1,[1,1,1]]),\n    \\legato, Pseq([0.5,[1,0.5,0.2]])\n));\n)",
+				"(\n~seq.addMidiSequence(\\verse,%,Pbind(\n    \\midinote, Pseq([60,[67,64,60]]),\n    \\amp, Pseq([1,[1,0.5,0]]),\n    \\dur, 1,\n    \\legato, Pseq([0.5,[1,0.5,0.2]])\n));\n)",
 				"\\" ++ config.id.asString
 			)
 		);
@@ -230,6 +260,18 @@ WriteCommandUnitTests : BNUnitTest {
 		);
 		this.assertEquals(
 			document.lastInserted.find("Pseq([[3,2,1]]").isNil,
+			true
+		);
+		this.assertEquals(
+			document.lastInserted.find("\\amp, 1,").notNil,
+			true
+		);
+		this.assertEquals(
+			document.lastInserted.find("\\dur, 1,").notNil,
+			true
+		);
+		this.assertEquals(
+			document.lastInserted.find("\\legato, 0.5").notNil,
 			true
 		);
 	}

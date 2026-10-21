@@ -104,10 +104,10 @@ WriteCommand : Command {
 				|note|
 				this.prFormatNumber(valueFunc.value(note, durs[index]));
 			});
-			if (texts.size > 1, {
-				"[" ++ texts.join(",") ++ "]"
-			}, {
+			if (texts.every({ |text| text == texts[0] }), {
 				texts[0]
+			}, {
+				"[" ++ texts.join(",") ++ "]"
 			});
 		});
 		if (restDur.notNil, {
