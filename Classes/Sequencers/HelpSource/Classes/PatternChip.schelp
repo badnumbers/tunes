@@ -1,0 +1,26 @@
+TITLE:: PatternChip
+SUMMARY:: Labelled chip for one sequence in the Arranger.
+CATEGORIES:: GUI>Views
+RELATED:: Classes/Arranger, Classes/BorderView, Classes/Sequencer
+
+DESCRIPTION::
+TELETYPE::PatternChip:: is a LINK::Classes/BorderView:: that LINK::Classes/Arranger:: places for each sequence. It stores that sequence's LINK::Classes/Symbol:: id, the same id LINK::Classes/Sequencer:: uses, and shows it as a centred LINK::Classes/StaticText::. The chip uses LINK::Classes/GuiPalette:: colour3 as its fill and LINK::Classes/GuiPalette#-extreme2:: as its border colour. The border width starts at 0. A left double-click calls LINK::Classes/Sequencer#-play:: with that id and looping on, and sets this chip's border width to 2. Double-clicking the chip that is playing calls LINK::Classes/Sequencer#-stop:: and sets the border width to 0. Double-clicking a different chip moves the border to that chip.
+
+CLASSMETHODS::
+
+METHOD:: new
+Creates a TELETYPE::PatternChip:: and adds it to CODE::parent::.
+
+ARGUMENT:: parent
+The LINK::Classes/View:: that holds the chip.
+
+ARGUMENT:: sequencer
+The LINK::Classes/Sequencer:: that plays this chip's sequence.
+
+ARGUMENT:: sequenceId
+The LINK::Classes/Symbol:: that identifies the sequence, displayed with CODE::asString::.
+
+RETURNS::
+A new TELETYPE::PatternChip:: instance.
+
+PRIVATE:: prInit, prTogglePlay
