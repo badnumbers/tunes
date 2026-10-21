@@ -5,7 +5,6 @@ PerformVeScGuiControlSurface : ScGuiControlSurface {
 	var litGreen;
 	var <orange;
 	var knobcolors;
-	var loadSampleVolume;
 
 	addDropDownListWithLabel {
 		|parent,left,top,labelText,parameterNumber,midiMappings|
@@ -50,6 +49,15 @@ PerformVeScGuiControlSurface : ScGuiControlSurface {
 			lightGrey,
 			Color.red
 		];
+
+		Setup.server; // TODO: synchronise these two
+		SynthDef(\performVeSamplePlayer,
+			{
+				|out = 2, buffer, amp = 0.5|
+				var audio = PlayBuf.ar(1, buffer, BufRateScale.kr(buffer), doneAction: Done.freeSelf) * amp;
+				Out.ar(2, audio);
+			}
+		).add;
 
 		name = "Perform-VE";
 		background = backgroundYellow;
@@ -103,20 +111,6 @@ PerformVeScGuiControlSurface : ScGuiControlSurface {
 		.stringColor_(Color.black)
 		.align_(\center)
 		.mouseUpAction_({super.prSynthesizer.randomisePatch(0)});
-
-		StaticText(window,Rect(270,710,100,30))
-		.background_(lightGrey)
-		.string_("Load sample")
-		.stringColor_(Color.black)
-		.align_(\center)
-		.mouseUpAction_({this.loadSample()});
-
-		StaticText(window,Rect(380,710,100,30))
-		.background_(lightGrey)
-		.string_("Set input level")
-		.stringColor_(Color.black)
-		.align_(\center)
-		.mouseUpAction_({this.setInputLevel()});
 
 		StaticText(window,Rect(680,710,100,30))
 		.background_(lightGrey)
@@ -200,6 +194,12 @@ PerformVeScGuiControlSurface : ScGuiControlSurface {
 		|tab|
 		var loadSampleVolumeContainer;
 		var container = View(tab.body,Rect(0,0,tab.body.bounds.width,tab.body.bounds.height));
+		var loadSampleContainer;
+		var loadSampleBuffer;
+		var loadSampleVolume = 0.5;
+		var audioMidiSendOffsetSeconds = 0.2;
+		var loadSampleButton, playSampleButton, sendSampleButton, unloadSampleButton;
+		var loadedSamplePathStaticText;
 
 		this.addToggleButtonWithLabel(container,50,0,PerformVe.sampleEnabledCcNo,"Enabled");
 		this.addDropDownListWithLabel(container,50,100,"Sample Mode",PerformVe.sampleModeCcNo,[
@@ -209,9 +209,83 @@ PerformVeScGuiControlSurface : ScGuiControlSurface {
 		this.addKnobWithLabel(container,50,300,PerformVe.envelopeAttackCcNo,"Envelope attack",false);
 		this.addKnobWithLabel(container,50,400,PerformVe.envelopeReleaseCcNo,"Envelope release",false);
 
-		loadSampleVolumeContainer = View(container, Rect(250, 250, 100, 100)).background_(backgroundYellow);
-		this.addControlLabel(loadSampleVolumeContainer, Rect(0,0,100,25), "Load sample volume", \center, Color.black);
-		Knob(loadSampleVolumeContainer,Rect(10,25,80,80))
+		loadSampleContainer = BorderView(container,Rect(300,25,500,500)).borderWidth_(1).borderColour_(Color.grey);
+
+		StaticText(loadSampleContainer,Rect(25,25,450,200)).align_(\topLeft).string_("In order for this to work, check the following:\n- there is a physical cable path between output 3 of the soundcard and input to the Perform VE, including on the patchbay\n- MIDI and LEAD volume are up on the Perform VE\n - `SuperCollider` output `out_3` is connected to `Scarlett 18i8 3rd Gen Analogue Surround 7.1` input `playback_FC` in PipeWire itself");
+
+		loadSampleButton = StaticText(loadSampleContainer,Rect(25,200,90,30))
+		.background_(lightGrey)
+		.string_("Load sample")
+		.stringColor_(Color.black)
+		.align_(\center)
+		.mouseUpAction_({
+			FileDialog({ |path|
+				if (loadSampleBuffer.isKindOf(Buffer),{
+					postln("Clearing existing buffer...");
+					loadSampleBuffer.free;
+					loadSampleBuffer = nil;
+				});
+				loadSampleBuffer = Buffer.read(Server.default, path, action:{
+					AppClock.sched(0.0, {
+						loadedSamplePathStaticText.string_(path);
+					});
+				});
+			},
+			fileMode: 1,
+			stripResult: true,
+			path: Platform.userAppSupportDir);
+		});
+
+		playSampleButton = StaticText(loadSampleContainer,Rect(125,200,90,30))
+		.background_(lightGrey)
+		.string_("Play sample")
+		.stringColor_(Color.black)
+		.align_(\center)
+		.mouseUpAction_({
+			if (loadSampleBuffer.isNil,{
+				warn("You need to load a sample first.");
+			},{
+				{ var audio = PlayBuf.ar(1, loadSampleBuffer, BufRateScale.kr(loadSampleBuffer), doneAction: Done.freeSelf) * loadSampleVolume; Out.ar(2, audio); }.play;
+			});
+		});
+
+		sendSampleButton = StaticText(loadSampleContainer,Rect(225,200,90,30))
+		.background_(lightGrey)
+		.string_("Send sample")
+		.stringColor_(Color.black)
+		.align_(\center)
+		.mouseUpAction_({
+			if (loadSampleBuffer.isNil,{
+				warn("You need to load a sample first.");
+			},{
+				Routine({
+					Setup.midi.control(Synths(\performve).midiChannel, PerformVe.sampleRecordSwitchCcNo, 127);
+					postln("Playing the sample into the Perform VE...");
+					audioMidiSendOffsetSeconds.wait; // The audio seems to arrive before the MIDI
+					Synth(\performVeSamplePlayer,args:[\out:2,\buffer,loadSampleBuffer,\amp,loadSampleVolume]);
+					loadSampleBuffer.duration.wait;
+					Setup.midi.control(Synths(\performve).midiChannel, PerformVe.sampleRecordSwitchCcNo, 0);
+				}).play(AppClock);
+			});
+		});
+
+		unloadSampleButton = StaticText(loadSampleContainer,Rect(325,200,90,30))
+		.background_(lightGrey)
+		.string_("Unload sample")
+		.stringColor_(Color.black)
+		.align_(\center)
+		.mouseUpAction_({
+			if (loadSampleBuffer.isNil,{
+				warn("You need to load a sample first.");
+			},{
+				loadSampleBuffer.free;
+				loadSampleBuffer = nil;
+				loadedSamplePathStaticText.string_("");
+			});
+		});
+
+		this.addControlLabel(loadSampleContainer, Rect(25,250,80,50), "Load sample volume", \center, Color.black);
+		Knob(loadSampleContainer,Rect(25,300,80,80))
 		.color_([Color.black,litGreen,backgroundYellow,Color.black])
 		.centered_(False)
 		.mode_(\vert)
@@ -220,6 +294,19 @@ PerformVeScGuiControlSurface : ScGuiControlSurface {
 			loadSampleVolume = knob.value;
 		})
 		.valueAction_(0.5);
+
+		this.addControlLabel(loadSampleContainer, Rect(125,250,80,50), "Audio <> MIDI send offset", \center, Color.black);
+		Knob(loadSampleContainer,Rect(125,300,80,80))
+		.color_([Color.black,litGreen,backgroundYellow,Color.black])
+		.centered_(False)
+		.mode_(\vert)
+		.action_({
+			|knob|
+			audioMidiSendOffsetSeconds = knob.value.linlin(0,1,0,0.4);
+		})
+		.valueAction_(0.5);
+
+		loadedSamplePathStaticText = StaticText(loadSampleContainer, Rect(25,400,400,50));
 	}
 
 	initXfxTab {
@@ -230,41 +317,5 @@ PerformVeScGuiControlSurface : ScGuiControlSurface {
 		this.addDropDownListWithLabel(container,50,100,"XFX Style",PerformVe.xfxStyleCcNo,[
 			[ "Stutter", [0] ], [ "Mono Chopper", [1] ], [ "Stereo Chopper", [2] ], [ "Ring Mod", [3] ], [ "Negative Flange", [4] ], [ "Positive Flange", [5] ], [ "Sidechain Pumping", [6] ]
 		]);
-	}
-
-	loadSample {
-		if (Server.default.serverRunning,{
-			Buffer.loadDialog(Server.default, action: {
-				|buffer|
-				~routine = Routine({
-					prSynthesizer.modifyWorkingPatch(PerformVe.sampleRecordSwitchCcNo, 127, nil);
-					postln("Playing the sample into the Perform VE...");
-					{ var audio = PlayBuf.ar(1, buffer, BufRateScale.kr(buffer), doneAction: Done.freeSelf) * loadSampleVolume; Out.ar(2, audio); }.play;
-					buffer.duration.wait;
-					prSynthesizer.modifyWorkingPatch(PerformVe.sampleRecordSwitchCcNo, 0, nil);
-					postln("Finished!");
-					buffer.free;
-				}).play;
-			});
-		},{
-			warn("Loading a sample won't work because the server is not running.");
-		});
-	}
-
-	setInputLevel {
-		if (Server.default.serverRunning,{
-			Buffer.loadDialog(Server.default, action: {
-				|buffer|
-				~routine = Routine({
-					postln("Playing the sample into the Perform VE...");
-					{ var audio = PlayBuf.ar(1, buffer, BufRateScale.kr(buffer), doneAction: Done.freeSelf) * loadSampleVolume; Out.ar(2, audio); }.play;
-					buffer.duration.wait;
-					postln("Finished!");
-					buffer.free;
-				}).play;
-			});
-		},{
-			warn("Setting the input level won't work because the server is not running.");
-		});
 	}
 }
