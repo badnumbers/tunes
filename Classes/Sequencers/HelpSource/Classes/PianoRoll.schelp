@@ -64,7 +64,7 @@ METHOD:: focusBackground
 Gives keyboard focus to the note area.
 
 METHOD:: playLoop
-Starts playback of the recorded sequence. The player acquires the sequencer's shared clock. When this play creates the clock, that clock is set to beat 0 first. The playhead then snaps to the nearest point on the LINK::#-syncTo:: grid that shares the clock's offset into that grid, measured from the loop start around the loop, and playback starts from there immediately. Returns false and posts a warning if no notes have been recorded.
+Starts playback of the recorded sequence. The embedded LINK::Classes/SequencePlayer:: acquires the sequencer's shared clock and releases that hold when playback stops. When this play creates the clock, that clock is set to beat 0. The playhead then snaps to the nearest point on the LINK::#-syncTo:: grid that shares the clock's offset into that grid, measured from the loop start around the loop, and playback starts from there immediately. Returns false and posts a warning if no notes have been recorded.
 
 METHOD:: receiveRecordingMidi
 Records one MIDI message into the open take. A note-on adds a LINK::Classes/PianoRollNote::. A note-off ends the open note of that number. Does nothing when this roll is not recording.
@@ -91,7 +91,7 @@ METHOD:: startRecording
 Acquires the sequencer's shared clock, creating it at beat 0 when nothing else holds it, and timestamps notes from that clock. In dev mode, fills fake notes. Starts the LINK::Classes/Metronome:: on that same clock, then announces CODE::\isRecording:: as CODE::true:: to dependants. Does nothing if recording is already in progress.
 
 METHOD:: stopLoop
-Stops playback via the embedded LINK::Classes/SequencePlayer:: and, after the final slice sends note-offs, releases that player's hold on the shared clock. Does nothing when playback is not in progress.
+Stops playback via the embedded LINK::Classes/SequencePlayer::. That player releases its hold on the shared clock after the final slice sends note-offs. Does nothing when playback is not in progress.
 
 METHOD:: stopRecording
 Announces CODE::\isRecording:: as CODE::false:: to dependants, stops the LINK::Classes/Metronome::, updates LINK::Classes/PianoRollLoopMarkers:: from recorded notes (loop bounds plus LINK::Classes/PianoRollLoopMarkers#-playheadTime_:: at the loop start beat), and releases this roll's hold on the shared clock. Does nothing when recording is not in progress.

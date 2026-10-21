@@ -8,6 +8,7 @@ Sequencer {
 	var prPlaybackClock;
 	var prHolders;
 	var prTempo = 2;
+	var prPatternHolder;
 
 	addGlobalPreKeys {
 		|keysArray|
@@ -53,6 +54,7 @@ Sequencer {
 		isTransportStart = prPlaybackClock.isNil;
 		if (isTransportStart, {
 			prPlaybackClock = TempoClock.new(prTempo);
+			prPlaybackClock.beats_(0);
 		});
 		prHolders.add(holder);
 		^(clock: prPlaybackClock, isTransportStart: isTransportStart);
@@ -67,6 +69,7 @@ Sequencer {
 		prHolders = IdentitySet.new;
 		prPlaybackClock = nil;
 		prTempo = 2;
+		prPatternHolder = Object.new;
 
 		prSequenceWrapper = {
 			|sequence|
@@ -162,7 +165,7 @@ Sequencer {
 
 	play {
 		|sequenceId,loop=false|
-		var repeats;
+		var acquired, repeats;
 		if (loop == true, {
 			repeats = inf;
 		}, {
@@ -170,12 +173,17 @@ Sequencer {
 		});
 		Validator.validateMethodParameterType(sequenceId, Symbol, "sequenceId", "Sequencer", "play");
 		this.stop;
-		prEventStreamPlayer = Pspawner({
-			|sp|
-			repeats.do({
-				sp.seq(prSequenceWrapper.value(prSequences[sequenceId]));
-			});
-		}).play;
+		acquired = this.acquirePlaybackClock(prPatternHolder);
+		prEventStreamPlayer = Pfset(
+			{},
+			Pspawner({
+				|sp|
+				repeats.do({
+					sp.seq(prSequenceWrapper.value(prSequences[sequenceId]));
+				});
+			}),
+			{ this.releasePlaybackClock(prPatternHolder) }
+		).play(acquired.clock);
 	}
 
 	prAddKeySet {
@@ -216,7 +224,9 @@ Sequencer {
 	stop {
 		if (prEventStreamPlayer.isMemberOf(EventStreamPlayer), {
 			prEventStreamPlayer.stop;
+			prEventStreamPlayer = nil;
 		});
+		this.releasePlaybackClock(prPatternHolder);
 	}
 
 	tempo {

@@ -180,7 +180,7 @@ PianoRoll : SCViewHolder {
 			Setup.server;
 		});
 
-		prSequencePlayer = SequencePlayer(midiOut: Setup.midi).onPlayheadMove_({
+		prSequencePlayer = SequencePlayer(midiOut: Setup.midi, sequencer: prSequencer).onPlayheadMove_({
 			|newPosition|
 			AppClock.sched(0.0, { prLoopMarkers.playheadTime_(newPosition,snap:false); });
 		});
@@ -396,17 +396,10 @@ PianoRoll : SCViewHolder {
 	}
 
 	playLoop {
-		var acquired;
 		if (prRecordedNotes.size > 0,{
-			acquired = prSequencer.acquirePlaybackClock(prSequencePlayer);
-			if (acquired.isTransportStart, {
-				acquired.clock.beats_(0);
-			});
-			prSequencePlayer.alignPlayhead(prSyncTo, acquired.clock.beats);
-			prLoopMarkers.playheadTime_(prSequencePlayer.playheadTime, snap: false);
 			prSequencePlayer.play(
-				tempoClock: acquired.clock,
-				startNow: true
+				startNow: true,
+				syncTo: prSyncTo
 			);
 			^true;
 		});
@@ -589,9 +582,6 @@ PianoRoll : SCViewHolder {
 		if (prIsRecording, { ^this });
 		acquired = prSequencer.acquirePlaybackClock(this);
 		prIsRecording = true;
-		if (acquired.isTransportStart, {
-			acquired.clock.beats_(0);
-		});
 		prRecordingClock = acquired.clock;
 		absoluteStartTime = prRecordingClock.beats.floor;
 		prRecordingNow = { (prRecordingClock.beats - (Server.default.latency * prRecordingClock.tempo)) - absoluteStartTime };
@@ -629,7 +619,7 @@ PianoRoll : SCViewHolder {
 
 	stopLoop {
 		if (prSequencePlayer.isPlaying.not, { ^this });
-		prSequencePlayer.stop({ prSequencer.releasePlaybackClock(prSequencePlayer) });
+		prSequencePlayer.stop;
 	}
 
 	stopRecording {

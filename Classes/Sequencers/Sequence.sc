@@ -16,11 +16,11 @@ Sequence {
 
 		if (type == \midi,{
 			if (synthId.isKindOf(Symbol) == false,{
-				Error(format("If Sequencer.init is called with a `type` of `midi`, the `synthId` parameter must also be provided and be a Symbol. However, `synthId` had the value of % and the class of %.", synthId, synthId.class)).throw;
+				Error(format("If Sequence.init is called with a `type` of `midi`, the `synthId` parameter must also be provided and be a Symbol. However, `synthId` had the value of % and the class of %.", synthId, synthId.class)).throw;
 			},
 			{
 				if (Config.hasHardwareSynthesizer(synthId) == false, {
-					Error(format("Sequencer.init was called with a `synthId` of % which does not exist in the configuration file.", synthId)).throw;
+					Error(format("Sequence.init was called with a `synthId` of % which does not exist in the configuration file.", synthId)).throw;
 				});
 			}
 			);

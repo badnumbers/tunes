@@ -156,6 +156,7 @@ SequencerGui {
 		prWindow.onClose_({
 			recordPage.stopAll;
 			drumProgrammer.stop;
+			prSequencer.stop;
 			prSequencer.removeDependant(this);
 			[\noteOn,\noteOff].do({
 				|msgType|

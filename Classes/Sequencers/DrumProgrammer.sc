@@ -35,7 +35,7 @@ DrumProgrammer : SCViewHolder {
 		prRowNoteNumbers = Array.new;
 		prRowSteps = Array.new;
 		prRowViews = Array.new;
-		prSequencePlayer = SequencePlayer(TempoClock.default, Setup.midi);
+		prSequencePlayer = SequencePlayer(TempoClock.default, Setup.midi, prSequencer);
 		prSequencePlayer.midiChannel_(9);
 		prSequencePlayer.onPlayheadMove_({
 			|beat|
@@ -392,18 +392,12 @@ DrumProgrammer : SCViewHolder {
 	}
 
 	prPlay {
-		var acquired;
 		if (prIsPlaying, { ^this });
 		prSequencePlayer.sequence_(prNotes);
 		if (prSequencer.notNil, {
-			acquired = prSequencer.acquirePlaybackClock(prSequencePlayer);
-			if (acquired.isTransportStart, {
-				acquired.clock.beats_(0);
-			});
-			prSequencePlayer.alignPlayhead(prSyncTo, acquired.clock.beats);
 			prSequencePlayer.play(
-				tempoClock: acquired.clock,
-				startNow: true
+				startNow: true,
+				syncTo: prSyncTo
 			);
 		}, {
 			prSequencePlayer.playheadTime_(0);
@@ -520,11 +514,7 @@ DrumProgrammer : SCViewHolder {
 
 	prStop {
 		if (prIsPlaying.not, { ^this });
-		if (prSequencer.notNil, {
-			prSequencePlayer.stop({ prSequencer.releasePlaybackClock(prSequencePlayer) });
-		}, {
-			prSequencePlayer.stop();
-		});
+		prSequencePlayer.stop;
 		prIsPlaying = false;
 		this.prClearColumnHighlight;
 	}

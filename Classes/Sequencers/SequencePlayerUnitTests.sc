@@ -381,6 +381,36 @@ SequencePlayerUnitTests : BNUnitTest {
 		this.assertFloatEquals(sequencePlayer.alignPlayhead(8, 5.2), 1.2);
 	}
 
+	test_play_withSequencer_sharesClockUntilLastStop {
+		var clock, first, probe, second, seen, sequencer;
+		sequencer = Sequencer();
+		probe = ();
+		first = SequencePlayer(midiOut: (), sequencer: sequencer);
+		second = SequencePlayer(midiOut: (), sequencer: sequencer);
+		first.sequence_([]);
+		second.sequence_([]);
+		first.play(startNow: true);
+		seen = sequencer.acquirePlaybackClock(probe);
+		clock = seen.clock;
+		this.assertEquals(seen.isTransportStart, false, "the first player creates the shared clock");
+		this.assert(clock.isKindOf(TempoClock), "the shared clock is a TempoClock");
+		sequencer.releasePlaybackClock(probe);
+		second.play(startNow: true);
+		seen = sequencer.acquirePlaybackClock(probe);
+		this.assert(seen.clock === clock, "the second player joins the same clock");
+		this.assertEquals(seen.isTransportStart, false, "the second player does not create a clock");
+		sequencer.releasePlaybackClock(probe);
+		first.stop;
+		0.25.wait;
+		seen = sequencer.acquirePlaybackClock(probe);
+		this.assert(seen.clock === clock, "stopping one player leaves the clock running");
+		this.assertEquals(clock.isRunning, true, "the clock is still running for the other player");
+		sequencer.releasePlaybackClock(probe);
+		second.stop;
+		0.25.wait;
+		this.assertEquals(clock.isRunning, false, "the clock stops when the last player stops");
+	}
+
 	nextIterationAfter {
 		|time,delta|
 		var numberOfDeltas = time / delta;

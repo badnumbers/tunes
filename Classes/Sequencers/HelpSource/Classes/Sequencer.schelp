@@ -70,7 +70,7 @@ CODE::
 ::
 
 METHOD::acquirePlaybackClock
-Returns the shared playback LINK::Classes/TempoClock::, creating it when no holder is using it. A new clock starts at beat 0. A later call while that clock exists returns the same clock.
+Returns the shared playback LINK::Classes/TempoClock::, creating it when no holder is using it. A new clock is set to beat 0 before it is returned. A later call while that clock exists returns the same clock and does not reset it.
 
 ARGUMENT::holder
 The object that needs the clock. Must not be CODE::nil::. A playing LINK::Classes/SequencePlayer:: passes itself. A recording LINK::Classes/PianoRoll:: passes itself, so recording and playback on the same roll can overlap. Passing the same holder again does not create another clock.
@@ -79,7 +79,7 @@ RETURNS::
 An LINK::Classes/Event:: with CODE::\clock:: and CODE::\isTransportStart::. CODE::\isTransportStart:: is CODE::true:: only when this call created the clock.
 
 METHOD::play
-Plays the specified sequence.
+Plays the specified sequence on the shared playback clock. When this play creates the clock, that clock is at beat 0. When another holder already has the clock, this play joins it. The pattern's hold is released when playback stops or the pattern ends. CODE::TempoClock.default:: is not used.
 
 ARGUMENT::sequenceId
 A LINK::Classes/Symbol:: which is the ID of the sequence to play (see (see LINK::#-addMidiSequence::).
@@ -103,7 +103,7 @@ METHOD::showGui
 Opens an instance of LINK::Classes/SequencerGui:: to help manage the sequences for this track.
 
 METHOD::stop
-Stops playback.
+Stops pattern playback and releases that pattern's hold on the shared clock. When it was the last holder, the clock is stopped and discarded.
 
 METHOD::tempo
 The transport tempo in beats per second. Defaults to 2. CODE::tempo_:: stores a positive LINK::Classes/SimpleNumber:: and applies it to the shared clock when one exists. Dependants are notified with CODE::\tempo:: and the new tempo.

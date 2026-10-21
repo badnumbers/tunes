@@ -16,13 +16,15 @@ SequencePlayer {
 	var prPlaySliceFunc;
 	var prSequence;
 	var prTempoClock;
+	var prSequencer;
 
 	delta {
 		^prDelta;
 	}
 
 	init {
-		|tempoClock,midiOut|
+		|tempoClock,midiOut,sequencer|
+		prSequencer = sequencer;
 
 		if (tempoClock.isNil,{
 			prTempoClock = TempoClock.default;
@@ -91,6 +93,9 @@ SequencePlayer {
 					prMidiOut.noteOff(chan:prMidiChannel,note:note.noteNumber,veloc:note.velocity);
 				});
 				prCurrentlyPlayingNotes.clear;
+				if (prSequencer.notNil, {
+					prSequencer.releasePlaybackClock(this);
+				});
 				if (prOnStopped.notNil, {
 					onStoppedCallback = prOnStopped;
 					prOnStopped = nil;
@@ -204,8 +209,9 @@ SequencePlayer {
 	}
 
 	*new {
-		|tempoClock=nil,midiOut=nil|
-		^super.new.init(tempoClock,midiOut);
+		|tempoClock=nil,midiOut=nil,sequencer=nil|
+		Validator.validateMethodParameterType(sequencer, Sequencer, "sequencer", "SequencePlayer", "new", allowNil: true);
+		^super.new.init(tempoClock,midiOut,sequencer);
 	}
 
 	alignPlayhead {
@@ -249,18 +255,42 @@ SequencePlayer {
 	}
 
 	play {
-		|tempoClock, startImmediately = false, startNow = false|
-		var startBeat;
-		if (tempoClock.notNil, {
+		|tempoClock, startImmediately = false, startNow = false, syncTo|
+		var acquired, startBeat;
+		if (prSequencer.isNil && { tempoClock.notNil }, {
 			Validator.validateMethodParameterType(tempoClock, TempoClock, "tempoClock", "SequencePlayer", "play");
 			prTempoClock = tempoClock;
 		});
 		Validator.validateMethodParameterType(startImmediately, Boolean, "startImmediately", "SequencePlayer", "play");
 		Validator.validateMethodParameterType(startNow, Boolean, "startNow", "SequencePlayer", "play");
+		if (syncTo.notNil, {
+			Validator.validateMethodParameterType(syncTo, Integer, "syncTo", "SequencePlayer", "play");
+			if (syncTo < 1 or: { syncTo > 16 }, {
+				Error(format("The syncTo parameter provided to SequencePlayer.play must be an integer from 1 to 16. The value % was provided.", syncTo)).throw;
+			});
+		});
+		if (prSequencer.notNil, {
+			acquired = prSequencer.acquirePlaybackClock(this);
+			prTempoClock = acquired.clock;
+		});
+		if (prSequencer.isNil && startImmediately, {
+			prTempoClock.beats_(0);
+		});
+		if (syncTo.notNil, {
+			protect {
+				this.alignPlayhead(syncTo, prTempoClock.beats);
+				if (prOnPlayheadMove.notNil, {
+					prOnPlayheadMove.value(prPlayheadTime);
+				});
+			} { |error|
+				if (error.notNil && { prSequencer.notNil }, {
+					prSequencer.releasePlaybackClock(this);
+				});
+			};
+		});
 		this.prResetPlayingNotes();
 		prIsPlaying = true;
 		if (startImmediately, {
-			prTempoClock.beats_(0);
 			^prPlaySliceFunc.value();
 		});
 		if (startNow, {

@@ -43,6 +43,50 @@ SequencerUnitTests : BNUnitTest {
 		this.assertEquals(sequencer.tempo, 3, "the sequencer stores the new tempo");
 		sequencer.removeDependant(dependant);
 	}
+
+	test_play_stop_releasesSharedClock {
+		var clock, probe, seen, sequencer;
+		sequencer = Sequencer();
+		probe = ();
+		sequencer.play(\arp);
+		seen = sequencer.acquirePlaybackClock(probe);
+		clock = seen.clock;
+		// The pattern is scheduled immediately. Move it into the future so this test can stop it before the sequence is read.
+		clock.beats_(clock.beats - 100000);
+		this.assertEquals(seen.isTransportStart, false, "pattern playback creates the shared clock");
+		this.assert(clock.isKindOf(TempoClock), "pattern playback uses a TempoClock");
+		sequencer.releasePlaybackClock(probe);
+		sequencer.stop;
+		0.05.wait;
+		this.assertEquals(clock.isRunning, false, "stopping pattern playback releases the clock");
+	}
+
+	test_play_sharesClockWithSequencePlayerUntilLastStops {
+		var clock, player, probe, seen, sequencer;
+		sequencer = Sequencer();
+		probe = ();
+		sequencer.play(\arp);
+		seen = sequencer.acquirePlaybackClock(probe);
+		clock = seen.clock;
+		// The pattern is scheduled immediately. Move it into the future so this test can stop it before the sequence is read.
+		clock.beats_(clock.beats - 100000);
+		sequencer.releasePlaybackClock(probe);
+		player = SequencePlayer(midiOut: (), sequencer: sequencer);
+		player.sequence_([]);
+		player.play(startNow: true);
+		seen = sequencer.acquirePlaybackClock(probe);
+		this.assert(seen.clock === clock, "pattern playback and the player share one clock");
+		this.assertEquals(seen.isTransportStart, false, "the player joins the pattern clock");
+		sequencer.releasePlaybackClock(probe);
+		sequencer.stop;
+		seen = sequencer.acquirePlaybackClock(probe);
+		this.assert(seen.clock === clock, "stopping the pattern keeps the clock while the player holds it");
+		this.assertEquals(clock.isRunning, true, "the clock keeps running after the pattern stops");
+		sequencer.releasePlaybackClock(probe);
+		player.stop;
+		0.25.wait;
+		this.assertEquals(clock.isRunning, false, "the clock stops when the player releases it");
+	}
 }
 
 SequencerTempoDependant {
