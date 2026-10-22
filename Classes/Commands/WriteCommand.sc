@@ -1,5 +1,6 @@
 WriteCommand : Command {
 	var prSequencerDocument;
+	var prSequencer;
 
 	execute {
 		|args|
@@ -22,12 +23,14 @@ WriteCommand : Command {
 		});
 		pattern = this.prPatternText(allNotes, loopStart, loopEnd);
 		if (pattern.includes($\n), {
-			line = format("(\n~seq.addMidiSequence(%,%,%);\n)", this.prSymbolText(name), this.prSymbolText(synth.id), pattern);
+			line = format("(\nSeq().addMidiSequence(%,%,%);\n)", this.prSymbolText(name), this.prSymbolText(synth.id), pattern);
 		}, {
-			line = format("~seq.addMidiSequence(%,%,%);", this.prSymbolText(name), this.prSymbolText(synth.id), pattern);
+			line = format("Seq().addMidiSequence(%,%,%);", this.prSymbolText(name), this.prSymbolText(synth.id), pattern);
 		});
 		prSequencerDocument.insertPattern(line);
-		line.interpret;
+		if (prSequencer.notNil, {
+			prSequencer.addMidiSequence(name.asSymbol, synth.id, pattern.interpret);
+		});
 	}
 
 	isValid {
@@ -48,9 +51,10 @@ WriteCommand : Command {
 	}
 
 	*new {
-		|sequencerDocument|
+		|sequencerDocument, sequencer|
 		var instance;
 		Validator.validateMethodParameterType(sequencerDocument, SequencerDocument, "sequencerDocument", "WriteCommand", "new", allowNil: true);
+		Validator.validateMethodParameterType(sequencer, Sequencer, "sequencer", "WriteCommand", "new", allowNil: true);
 		instance = super.new("write", [
 			Parameter("name", String, constraint: { |v| v.size > 0 }),
 			Parameter("allNotes", Array),
@@ -59,6 +63,7 @@ WriteCommand : Command {
 			Parameter("loopEnd", Number)
 		]);
 		instance.prSetSequencerDocument(sequencerDocument);
+		instance.prSetSequencer(sequencer);
 		^instance;
 	}
 
@@ -213,6 +218,11 @@ WriteCommand : Command {
 			this.prPbindText(partNotes, loopEnd, "\t", "\t\t", loopStart);
 		});
 		^"Ppar([\n" ++ blocks.join(",\n") ++ "\n])\n";
+	}
+
+	prSetSequencer {
+		|sequencer|
+		prSequencer = sequencer;
 	}
 
 	prSetSequencerDocument {

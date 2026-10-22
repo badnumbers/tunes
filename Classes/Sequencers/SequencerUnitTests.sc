@@ -106,6 +106,94 @@ SequencerUnitTests : BNUnitTest {
 		this.assertEquals(log.messages[0], [2, 60, 127], "the first note-off matches the first sounding note");
 		this.assertEquals(log.messages[1], [2, 64, 127], "the second note-off matches the second sounding note");
 	}
+
+	test_new_sameDocument_returnsSameSequencer {
+		var document, first, second;
+		document = SequencerDocumentFixture.new;
+		protect {
+			first = Sequencer.new(document);
+			second = Sequencer.new(document, true);
+			this.assert(first === second, "the same document returns the stored sequencer");
+			this.assertEquals(first.document, document, "the sequencer keeps that document");
+			this.assert(Sequencer.prAt(document) === first, "the dictionary holds that sequencer");
+		} {
+			this.prCloseFixture(document);
+		};
+	}
+
+	test_new_twoDocuments_returnTwoSequencers {
+		var first, firstDocument, second, secondDocument;
+		firstDocument = SequencerDocumentFixture.new;
+		secondDocument = SequencerDocumentFixture.new;
+		protect {
+			first = Sequencer.new(firstDocument);
+			second = Sequencer.new(secondDocument);
+			this.assert(first !== second, "each document has its own sequencer");
+		} {
+			this.prCloseFixture(firstDocument);
+			this.prCloseFixture(secondDocument);
+		};
+	}
+
+	test_new_withoutDocument_isNotRegistered {
+		var document, sequencer;
+		document = SequencerDocumentFixture.new;
+		sequencer = Sequencer();
+		this.assertEquals(sequencer.document, nil, "an unregistered sequencer has no document");
+		this.assertEquals(Sequencer.prAt(document), nil, "Sequencer() is not stored for a document");
+	}
+
+	test_documentOnClose_removesSequencerAndRunsPreviousHandler {
+		var document, first, previousRan, second;
+		document = SequencerDocumentFixture.new;
+		previousRan = false;
+		document.onClose_({ previousRan = true });
+		protect {
+			first = Sequencer.new(document);
+			document.onClose.value(document);
+			this.assertEquals(previousRan, true, "the previous onClose still runs");
+			this.assertEquals(Sequencer.prAt(document), nil, "closing the document drops the sequencer");
+			this.assertEquals(first.document, nil, "the sequencer forgets the closed document");
+			second = Sequencer.new(document);
+			this.assert(second !== first, "a later lookup creates a new sequencer");
+		} {
+			this.prCloseFixture(document);
+		};
+	}
+
+	test_seq_new_usesDocumentCurrent {
+		var document, previous, sequencer;
+		document = SequencerDocumentFixture.new;
+		previous = Document.current;
+		protect {
+			Document.current = document;
+			sequencer = Seq();
+			this.assert(sequencer === Sequencer.new(document), "Seq() is the sequencer for Document.current");
+		} {
+			Document.current = previous;
+			this.prCloseFixture(document);
+		};
+	}
+
+	test_seq_new_nilDocumentCurrent_throws {
+		var previous;
+		previous = Document.current;
+		protect {
+			Document.current = nil;
+			this.assertException({
+				Seq();
+			}, Error);
+		} {
+			Document.current = previous;
+		};
+	}
+
+	prCloseFixture {
+		|document|
+		if (document.onClose.notNil, {
+			document.onClose.value(document);
+		});
+	}
 }
 
 SequencerNoteOffLog {
@@ -133,5 +221,11 @@ SequencerTempoDependant {
 		|theChanged, what, tempo|
 		receivedWhat = what;
 		receivedTempo = tempo;
+	}
+}
+
+SequencerDocumentFixture : Document {
+	*new {
+		^super.prNew;
 	}
 }

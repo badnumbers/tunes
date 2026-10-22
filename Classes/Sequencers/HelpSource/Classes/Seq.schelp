@@ -1,0 +1,30 @@
+TITLE:: Seq
+SUMMARY:: The Sequencer for the front Document.
+CATEGORIES:: Streams-Patterns-Events
+RELATED:: Classes/Document, Classes/Sequencer
+
+DESCRIPTION::
+TELETYPE::Seq:: is the shortcut for the LINK::Classes/Sequencer:: bound to LINK::Classes/Document#*current::. CODE::Seq():: calls LINK::Classes/Sequencer#*new:: with that document. The same document returns the same sequencer. Each call resolves the front document again.
+
+CLASSMETHODS::
+
+METHOD:: new
+Returns the LINK::Classes/Sequencer:: for LINK::Classes/Document#*current::. Throws if there is no front document.
+
+ARGUMENT:: devMode
+When CODE::true::, a sequencer created by this call stores dev mode. A sequencer that already exists for the document is returned as it is, and this value is ignored.
+
+RETURNS::
+The LINK::Classes/Sequencer:: for the front document.
+
+EXAMPLES::
+
+CODE::
+Seq().addMidiSequence(\arp, \jx03, Pbind(
+	\midinote, Pseq([51, 63, 70, 82]),
+	\amp, 1,
+	\dur, 0.25,
+	\legato, 0.5
+));
+Seq().showGui;
+::

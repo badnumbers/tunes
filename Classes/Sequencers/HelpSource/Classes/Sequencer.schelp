@@ -1,7 +1,7 @@
 TITLE:: Sequencer
 SUMMARY:: A sequencer for managing and playing patterns
 CATEGORIES:: Streams-Patterns-Events
-RELATED:: Classes/PianoRoll, Classes/RealTimePlayer, Classes/SequencerGui
+RELATED:: Classes/Document, Classes/PianoRoll, Classes/RealTimePlayer, Classes/Seq, Classes/SequencerGui
 
 DESCRIPTION::
 LINK::Classes/Sequencer:: is intended to cut down the amount of boilerplate code required to sequence tracks. For example, it reduces the amount of keys that you need to specify when writing a pattern.
@@ -9,7 +9,19 @@ LINK::Classes/Sequencer:: is intended to cut down the amount of boilerplate code
 CLASSMETHODS::
 
 METHOD::new
-Creates an instance of LINK::Classes/Sequencer::.
+Returns the LINK::Classes/Sequencer:: bound to CODE::document::. The same document returns the same instance. CODE::nil:: returns a new sequencer that is not bound to a document.
+
+ARGUMENT::document
+The LINK::Classes/Document:: this sequencer belongs to. CODE::nil:: leaves the sequencer unregistered.
+
+ARGUMENT::devMode
+When CODE::true::, a newly created sequencer stores dev mode for LINK::#-showGui::. A sequencer that already exists for CODE::document:: is returned as it is, and this value is ignored.
+
+RETURNS::
+A LINK::Classes/Sequencer::.
+
+DISCUSSION::
+Closing CODE::document:: stops playback, closes the GUI if it is open, and drops the binding. A later call for that document creates a new sequencer. An earlier CODE::onClose:: handler on the document runs after that. LINK::Classes/Seq#*new:: is the shortcut for CODE::Sequencer.new(Document.current)::.
 
 INSTANCEMETHODS::
 
@@ -43,7 +55,7 @@ A pattern (generally a LINK::Classes/Pbind::, LINK::Classes/Pseq:: or LINK::Clas
 DISCUSSION::
 CODE::
 (
-~seq.addMidiSequence(\arp,\jx03,Pbind(
+Seq().addMidiSequence(\arp,\jx03,Pbind(
 	\midinote, Pseq([51,63,70,82]),
 	\amp, 1,
 	\dur, 0.25,
@@ -93,6 +105,12 @@ Removes a holder from the shared playback clock. When the last holder releases, 
 ARGUMENT::holder
 The same object passed to LINK::#-acquirePlaybackClock::. Must not be CODE::nil::. Releasing a holder that is not currently acquired leaves an existing clock running.
 
+METHOD::document
+The LINK::Classes/Document:: this sequencer is bound to, or CODE::nil:: when it was created with no document. CODE::nil:: after that document has closed.
+
+RETURNS::
+A LINK::Classes/Document:: or CODE::nil::.
+
 METHOD::sequenceIds
 The ids of sequences stored by LINK::#-addMidiSequence::.
 
@@ -100,7 +118,7 @@ RETURNS::
 An LINK::Classes/Array:: of LINK::Classes/Symbol::s.
 
 METHOD::showGui
-Opens an instance of LINK::Classes/SequencerGui:: to help manage the sequences for this track.
+Opens an instance of LINK::Classes/SequencerGui:: for this sequencer. The GUI writes into LINK::#-document::. A second call brings the existing window to the front. Closing the window leaves this sequencer in place. Closing the document closes the window.
 
 METHOD::stop
 Stops pattern playback and sends note-offs for MIDI notes that are still sounding. Releases that pattern's hold on the shared clock. When it was the last holder, the clock is stopped and discarded.
@@ -108,19 +126,18 @@ Stops pattern playback and sends note-offs for MIDI notes that are still soundin
 METHOD::tempo
 The transport tempo in beats per second. Defaults to 2. CODE::tempo_:: stores a positive LINK::Classes/SimpleNumber:: and applies it to the shared clock when one exists. Dependants are notified with CODE::\tempo:: and the new tempo.
 
-PRIVATE:: prAddKeySet, prReleaseSoundingNotes, prTrackMidiEvent
+PRIVATE:: prAddKeySet, prAt, prBindDocument, prCloseWithDocument, prGuiClosed, prReleaseSoundingNotes, prTrackMidiEvent
 
 EXAMPLES::
 
 CODE::
 (
-~seq = Sequencer();
-~seq.addMidiSequence(\arp,\jx03,Pbind(
+Seq().addMidiSequence(\arp,\jx03,Pbind(
 	\midinote, Pseq([51,63,70,82]),
 	\amp, 1,
 	\dur, 0.25,
 	\legato, 0.5
 ));
-~seq.play(\arp,true);
-~seq.stop;
+Seq().play(\arp,true);
+Seq().stop;
 ::

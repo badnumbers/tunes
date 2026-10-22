@@ -20,8 +20,11 @@ SequencerGui {
 		Validator.validateMethodParameterType(sequencer, Sequencer, "sequencer", "SequencerGui", "init");
 		prSequencer = sequencer;
 
-		//prDocument = Document.open(thisProcess.nowExecutingPath);
-		prDocument = SequencerDocument(Document.current);
+		if (prSequencer.document.notNil, {
+			prDocument = SequencerDocument(prSequencer.document);
+		}, {
+			prDocument = nil;
+		});
 
 		prPalette = GuiPalette.default;
 		prKeyRouter = SequencerKeyRouter.new;
@@ -154,6 +157,7 @@ SequencerGui {
 
 		// Tidy up when the window is closed
 		prWindow.onClose_({
+			prSequencer.prGuiClosed(this);
 			recordPage.stopAll;
 			drumProgrammer.stop;
 			prSequencer.stop;
@@ -162,6 +166,19 @@ SequencerGui {
 				|msgType|
 				MIDIdef(format("%_%", \monitorMidi, msgType).asSymbol).free;
 			});
+		});
+		^this;
+	}
+
+	close {
+		if (prWindow.notNil, {
+			prWindow.close;
+		});
+	}
+
+	front {
+		if (prWindow.notNil, {
+			prWindow.front;
 		});
 	}
 

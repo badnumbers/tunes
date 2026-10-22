@@ -3,8 +3,7 @@ SynthDesk()
 TempoClock.tempo_(1.5)
 Setup.midi
 (
- ~seq = Sequencer();
-~seq.showGui;
+Seq().showGui;
 )
 Synths(\jx03).showGui
 Metronome.play(1)

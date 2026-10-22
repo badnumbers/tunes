@@ -1,5 +1,5 @@
 SequencerDocument {
-	classvar prAddMidiSequenceRegexp = "~seq\\.addMidiSequence";
+	classvar prAddMidiSequenceRegexp = "Seq\\(\\)\\.addMidiSequence";
 
 	var prDocument;
 
@@ -40,7 +40,7 @@ SequencerDocument {
 			^text.size;
 		});
 
-		index = matches.last[0];
+		index = matches.last[0] + matches.last[1].size;
 		lastIndex = text.size - 1;
 		bracketIndent = 0;
 		inSingleLineComment = false;

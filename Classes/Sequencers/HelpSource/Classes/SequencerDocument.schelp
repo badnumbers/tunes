@@ -14,7 +14,7 @@ METHOD:: new
 Creates a TELETYPE::SequencerDocument:: wrapping the given LINK::Classes/Document::.
 
 ARGUMENT:: document
-The LINK::Classes/Document:: that holds sequencer source (typically LINK::Classes/Document#*current:: when the GUI opens).
+The LINK::Classes/Document:: that holds sequencer source. LINK::Classes/SequencerGui:: passes the LINK::Classes/Sequencer::'s document.
 
 RETURNS::
 A new TELETYPE::SequencerDocument:: instance.

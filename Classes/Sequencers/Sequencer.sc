@@ -1,4 +1,6 @@
 Sequencer {
+	classvar prByDocument;
+
 	var prDevMode;
 	var prEventStreamPlayer;
 	var prPreKeySets;
@@ -12,6 +14,9 @@ Sequencer {
 	var prSoundingNotes;
 	var prNoteOffGeneration = 0;
 	var prPatternFinished = false;
+	var prDocument;
+	var prGui;
+	var prPreviousOnClose;
 
 	addGlobalPreKeys {
 		|keysArray|
@@ -172,10 +177,34 @@ Sequencer {
 		};
 	}
 
+	*initClass {
+		prByDocument = IdentityDictionary.new;
+	}
+
 	*new {
-		|devMode=false|
-		Validator.validateMethodParameterType(devMode,Boolean,"devMode","Sequencer","new");
-		^super.new.init(devMode);
+		|document, devMode=false|
+		var existing;
+		Validator.validateMethodParameterType(document, Document, "document", "Sequencer", "new", allowNil: true);
+		Validator.validateMethodParameterType(devMode, Boolean, "devMode", "Sequencer", "new");
+		if (document.isNil, {
+			^super.new.init(devMode);
+		});
+		if (prByDocument.isNil, {
+			prByDocument = IdentityDictionary.new;
+		});
+		existing = prByDocument[document];
+		if (existing.notNil, {
+			^existing;
+		});
+		existing = super.new.init(devMode);
+		existing.prBindDocument(document);
+		^existing;
+	}
+
+	*prAt {
+		|document|
+		if (prByDocument.isNil, { ^nil });
+		^prByDocument[document];
 	}
 
 	play {
@@ -207,6 +236,49 @@ Sequencer {
 		).play(acquired.clock);
 	}
 
+	prBindDocument {
+		|document|
+		var previous;
+		previous = document.onClose;
+		prPreviousOnClose = previous;
+		prDocument = document;
+		if (prByDocument.isNil, {
+			prByDocument = IdentityDictionary.new;
+		});
+		prByDocument[document] = this;
+		document.onClose_({ |doc|
+			this.prCloseWithDocument;
+			previous.value(doc);
+		});
+	}
+
+	prCloseWithDocument {
+		var document, gui, previous;
+		previous = prPreviousOnClose;
+		prPreviousOnClose = nil;
+		document = prDocument;
+		prDocument = nil;
+		if (document.notNil, {
+			document.onClose_(previous);
+			if (prByDocument.notNil and: { prByDocument.includesKey(document) }, {
+				prByDocument.removeAt(document);
+			});
+		});
+		this.stop;
+		gui = prGui;
+		prGui = nil;
+		if (gui.notNil, {
+			{ gui.close }.defer;
+		});
+	}
+
+	prGuiClosed {
+		|gui|
+		if (prGui === gui, {
+			prGui = nil;
+		});
+	}
+
 	prAddKeySet {
 		|existingkeysets,newkeyset|
 		existingkeysets.do({
@@ -234,12 +306,21 @@ Sequencer {
 		});
 	}
 
+	document {
+		^prDocument;
+	}
+
 	sequenceIds {
 		^prSequences.keys.asArray;
 	}
 
 	showGui {
-		SequencerGui.new(this,prDevMode);
+		if (prGui.notNil, {
+			prGui.front;
+			^this;
+		});
+		prGui = SequencerGui(this, prDevMode);
+		^this;
 	}
 
 	stop {
