@@ -61,7 +61,7 @@ SequencerUnitTests : BNUnitTest {
 		this.assertEquals(clock.isRunning, false, "stopping pattern playback releases the clock");
 	}
 
-	test_play_sharesClockWithSequencePlayerUntilLastStops {
+	test_play_sharesClockWithRealTimePlayerUntilLastStops {
 		var clock, player, probe, seen, sequencer;
 		sequencer = Sequencer();
 		probe = ();
@@ -71,7 +71,7 @@ SequencerUnitTests : BNUnitTest {
 		// The pattern is scheduled immediately. Move it into the future so this test can stop it before the sequence is read.
 		clock.beats_(clock.beats - 100000);
 		sequencer.releasePlaybackClock(probe);
-		player = SequencePlayer(midiOut: (), sequencer: sequencer);
+		player = RealTimePlayer(midiOut: (), sequencer: sequencer);
 		player.sequence_([]);
 		player.play(startNow: true);
 		seen = sequencer.acquirePlaybackClock(probe);
@@ -86,6 +86,42 @@ SequencerUnitTests : BNUnitTest {
 		player.stop;
 		0.25.wait;
 		this.assertEquals(clock.isRunning, false, "the clock stops when the player releases it");
+	}
+
+	test_stop_noteOffsSoundingMidiNotes {
+		var log, sequencer;
+		log = SequencerNoteOffLog();
+		sequencer = Sequencer();
+		sequencer.prTrackMidiEvent((
+			midicmd: \noteOn,
+			midiout: log,
+			chan: 2,
+			midinote: [60, 64],
+			amp: 1,
+			sustain: 10,
+			dur: 1
+		));
+		sequencer.stop;
+		this.assertEquals(log.messages.size, 2, "stop sends a note-off for each sounding note");
+		this.assertEquals(log.messages[0], [2, 60, 127], "the first note-off matches the first sounding note");
+		this.assertEquals(log.messages[1], [2, 64, 127], "the second note-off matches the second sounding note");
+	}
+}
+
+SequencerNoteOffLog {
+	var <messages;
+
+	init {
+		messages = List();
+	}
+
+	*new {
+		^super.new.init;
+	}
+
+	noteOff {
+		|chan, note, veloc|
+		messages.add([chan, note, veloc]);
 	}
 }
 

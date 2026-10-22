@@ -17,7 +17,7 @@ DrumProgrammer : SCViewHolder {
 	var prRowSteps;
 	var prRowViews;
 	var prSelectedRow;
-	var prSequencePlayer;
+	var prRealTimePlayer;
 	var prSequencer;
 	var prSyncTo = 4;
 	var prSquareSize = 48;
@@ -35,9 +35,9 @@ DrumProgrammer : SCViewHolder {
 		prRowNoteNumbers = Array.new;
 		prRowSteps = Array.new;
 		prRowViews = Array.new;
-		prSequencePlayer = SequencePlayer(TempoClock.default, Setup.midi, prSequencer);
-		prSequencePlayer.midiChannel_(9);
-		prSequencePlayer.onPlayheadMove_({
+		prRealTimePlayer = RealTimePlayer(TempoClock.default, Setup.midi, prSequencer);
+		prRealTimePlayer.midiChannel_(9);
+		prRealTimePlayer.onPlayheadMove_({
 			|beat|
 			AppClock.sched(0.0, {
 				this.prHighlightColumn(beat);
@@ -232,7 +232,7 @@ DrumProgrammer : SCViewHolder {
 			this.prClearColumnHighlight;
 			^this;
 		});
-		columnIndex = (beat.round(prSequencePlayer.delta) / prStepBeats).floor.asInteger;
+		columnIndex = (beat.round(prRealTimePlayer.delta) / prStepBeats).floor.asInteger;
 		if (columnIndex == prHighlightedColumn, { ^this });
 		this.prClearColumnHighlight;
 		if ((columnIndex < 0) || (columnIndex >= prStepCount), { ^this });
@@ -384,24 +384,24 @@ DrumProgrammer : SCViewHolder {
 		var midi;
 		if (noteNumber.isNil, { ^this });
 		midi = Setup.midi;
-		midi.noteOn(chan: prSequencePlayer.midiChannel, note: noteNumber, veloc: 100);
+		midi.noteOn(chan: prRealTimePlayer.midiChannel, note: noteNumber, veloc: 100);
 		TempoClock.default.sched(prHitDuration, {
-			midi.noteOff(chan: prSequencePlayer.midiChannel, note: noteNumber, veloc: 100);
+			midi.noteOff(chan: prRealTimePlayer.midiChannel, note: noteNumber, veloc: 100);
 			nil
 		});
 	}
 
 	prPlay {
 		if (prIsPlaying, { ^this });
-		prSequencePlayer.sequence_(prNotes);
+		prRealTimePlayer.sequence_(prNotes);
 		if (prSequencer.notNil, {
-			prSequencePlayer.play(
+			prRealTimePlayer.play(
 				startNow: true,
 				syncTo: prSyncTo
 			);
 		}, {
-			prSequencePlayer.playheadTime_(0);
-			prSequencePlayer.play();
+			prRealTimePlayer.playheadTime_(0);
+			prRealTimePlayer.play();
 		});
 		prIsPlaying = true;
 	}
@@ -514,7 +514,7 @@ DrumProgrammer : SCViewHolder {
 
 	prStop {
 		if (prIsPlaying.not, { ^this });
-		prSequencePlayer.stop;
+		prRealTimePlayer.stop;
 		prIsPlaying = false;
 		this.prClearColumnHighlight;
 	}
@@ -541,7 +541,7 @@ DrumProgrammer : SCViewHolder {
 	}
 
 	prSyncSequence {
-		prSequencePlayer.sequence_(prNotes);
+		prRealTimePlayer.sequence_(prNotes);
 	}
 
 	prSyncSquareBorder {
@@ -566,6 +566,6 @@ DrumProgrammer : SCViewHolder {
 			^this;
 		});
 		end = prStepCount * prStepBeats;
-		prSequencePlayer.loopEnd_(end);
+		prRealTimePlayer.loopEnd_(end);
 	}
 }

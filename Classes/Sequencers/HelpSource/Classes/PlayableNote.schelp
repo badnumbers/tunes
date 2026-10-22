@@ -1,10 +1,10 @@
 TITLE:: PlayableNote
 SUMMARY:: A timed MIDI note used for sequencer playback.
 CATEGORIES:: Streams-Patterns-Events
-RELATED:: Classes/PianoRollNote, Classes/PianoRoll, Classes/SequencePlayer, Classes/Sequencer, Classes/LegatoCommand
+RELATED:: Classes/PianoRollNote, Classes/PianoRoll, Classes/RealTimePlayer, Classes/Sequencer, Classes/LegatoCommand
 
 DESCRIPTION::
-TELETYPE::PlayableNote:: holds the timing and MIDI data for a single note: when it starts, when it stops, which key to play, and how hard. Times are expressed in beats on the LINK::Classes/TempoClock:: (the same unit used by LINK::Classes/SequencePlayer:: and the piano roll).
+TELETYPE::PlayableNote:: holds the timing and MIDI data for a single note: when it starts, when it stops, which key to play, and how hard. Times are expressed in beats on the LINK::Classes/TempoClock:: (the same unit used by LINK::Classes/RealTimePlayer:: and the piano roll).
 
 A note is STRONG::playable:: only after TELETYPE::stopTime_:: has been set. Until then, TELETYPE::isPlayable:: is false and the slice and playhead query methods all return false. LINK::Classes/PianoRollNote:: creates a TELETYPE::PlayableNote:: internally and keeps its start and stop times in sync when the note is moved or resized on the roll.
 
@@ -74,7 +74,7 @@ CODE::true:: or CODE::false::.
 METHOD:: startsInSlice
 Whether the note's start time falls within a scheduling slice.
 
-Returns false if the note is not playable. Otherwise returns true when TELETYPE::sliceStartTime <= startTime < sliceStopTime::. LINK::Classes/SequencePlayer:: uses this to decide when to send note-on events for a slice.
+Returns false if the note is not playable. Otherwise returns true when TELETYPE::sliceStartTime <= startTime < sliceStopTime::. LINK::Classes/RealTimePlayer:: uses this to decide when to send note-on events for a slice.
 
 ARGUMENT:: sliceStartTime
 The start of the slice, in beats (inclusive).
@@ -97,7 +97,7 @@ A LINK::Classes/SimpleNumber::.
 METHOD:: stopsInSlice
 Whether the note's stop time falls within a scheduling slice.
 
-Returns false if the note is not playable. Otherwise returns true when TELETYPE::sliceStartTime < stopTime <= sliceStopTime::. A stop time equal to TELETYPE::sliceStartTime:: is excluded; a stop time equal to TELETYPE::sliceStopTime:: is included. LINK::Classes/SequencePlayer:: uses this to decide when to send note-off events for a slice.
+Returns false if the note is not playable. Otherwise returns true when TELETYPE::sliceStartTime < stopTime <= sliceStopTime::. A stop time equal to TELETYPE::sliceStartTime:: is excluded; a stop time equal to TELETYPE::sliceStopTime:: is included. LINK::Classes/RealTimePlayer:: uses this to decide when to send note-off events for a slice.
 
 ARGUMENT:: sliceStartTime
 The start of the slice, in beats (exclusive for the stop time).
@@ -147,7 +147,7 @@ note.isPlayable;           // true
 note.shouldBePlaying(5);   // true  — playhead inside [4, 8)
 note.shouldBePlaying(8);   // false — stop time is exclusive
 
-// Slice [4, 4.25) — one sixteenth note at default SequencePlayer delta
+// Slice [4, 4.25) — one sixteenth note at default RealTimePlayer delta
 note.startsInSlice(4, 4.25);  // true  — note-on in this slice
 note.stopsInSlice(4, 4.25);   // false — note-off is later
 
@@ -155,7 +155,7 @@ note.stopsInSlice(8, 8.25);      // false — stop at slice start is excluded
 note.stopsInSlice(7.75, 8.25);   // true  — note-off in this slice
 note.stopsInSlice(7.75, 8);      // true  — stop at slice end is included
 
-// Build a sequence for SequencePlayer (see LINK::Classes/SequencePlayer::)
+// Build a sequence for RealTimePlayer (see LINK::Classes/RealTimePlayer::)
 [
     PlayableNote(0, 60, 100).stopTime_(4),
     PlayableNote(4, 64, 90).stopTime_(8)

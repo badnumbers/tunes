@@ -9,6 +9,9 @@ Sequencer {
 	var prHolders;
 	var prTempo = 2;
 	var prPatternHolder;
+	var prSoundingNotes;
+	var prNoteOffGeneration = 0;
+	var prPatternFinished = false;
 
 	addGlobalPreKeys {
 		|keysArray|
@@ -70,6 +73,9 @@ Sequencer {
 		prPlaybackClock = nil;
 		prTempo = 2;
 		prPatternHolder = Object.new;
+		prSoundingNotes = IdentitySet.new;
+		prNoteOffGeneration = 0;
+		prPatternFinished = false;
 
 		prSequenceWrapper = {
 			|sequence|
@@ -91,7 +97,16 @@ Sequencer {
 					preKeys.add(element);
 				});
 				[
-					\amp,Pfunc({|e|if ((e.velocity.isNil) || e.velocity.isMemberOf(Symbol), {e.amp}, {e.velocity.linlin(0,127,0,1)})})
+					\amp,Pfunc({|e|if ((e.velocity.isNil) || e.velocity.isMemberOf(Symbol), {e.amp}, {e.velocity.linlin(0,127,0,1)})}),
+					\hasGate, false,
+					\callback, Pfunc({ |event|
+						var previous;
+						previous = event.callback;
+						{ |played|
+							this.prTrackMidiEvent(played);
+							if (previous.notNil, { previous.value(played) });
+						}
+					})
 				].do({
 					|element|
 					postKeys.add(element);
@@ -173,6 +188,7 @@ Sequencer {
 		});
 		Validator.validateMethodParameterType(sequenceId, Symbol, "sequenceId", "Sequencer", "play");
 		this.stop;
+		prPatternFinished = false;
 		acquired = this.acquirePlaybackClock(prPatternHolder);
 		prEventStreamPlayer = Pfset(
 			{},
@@ -182,7 +198,12 @@ Sequencer {
 					sp.seq(prSequenceWrapper.value(prSequences[sequenceId]));
 				});
 			}),
-			{ this.releasePlaybackClock(prPatternHolder) }
+			{
+				prPatternFinished = true;
+				if (prSoundingNotes.isEmpty, {
+					this.releasePlaybackClock(prPatternHolder);
+				});
+			}
 		).play(acquired.clock);
 	}
 
@@ -222,6 +243,7 @@ Sequencer {
 	}
 
 	stop {
+		this.prReleaseSoundingNotes;
 		if (prEventStreamPlayer.isMemberOf(EventStreamPlayer), {
 			prEventStreamPlayer.stop;
 			prEventStreamPlayer = nil;
@@ -244,5 +266,49 @@ Sequencer {
 			prPlaybackClock.tempo_(prTempo);
 		});
 		this.changed(\tempo, prTempo);
+	}
+
+	prReleaseSoundingNotes {
+		var notes;
+		prNoteOffGeneration = prNoteOffGeneration + 1;
+		notes = prSoundingNotes.asArray;
+		prSoundingNotes.clear;
+		notes.do({ |note|
+			note.midiout.noteOff(note.chan, note.midinote, note.veloc);
+		});
+	}
+
+	prTrackMidiEvent {
+		|event|
+		var amps, chan, clock, generation, lag, midiout, notes, sustain;
+		if (event.isRest, { ^nil });
+		if ((event.midicmd ? \noteOn) != \noteOn, { ^nil });
+		midiout = event.midiout;
+		chan = event.chan ? 0;
+		notes = event.midinote.asArray;
+		amps = event.amp.asArray;
+		sustain = event.sustain ? 0;
+		lag = event.lag;
+		generation = prNoteOffGeneration;
+		clock = thisThread.clock;
+		notes.do({ |midinote, index|
+			var amp, noteSustain, sounding, veloc;
+			amp = if (amps.size == 1, { amps[0] }, { amps.wrapAt(index) });
+			veloc = (amp * 127).clip(0, 127).asInteger;
+			noteSustain = if (sustain.isSequenceableCollection, { sustain.wrapAt(index) }, { sustain });
+			if (lag.isNumber, { noteSustain = noteSustain + lag });
+			sounding = (midiout: midiout, chan: chan, midinote: midinote, veloc: veloc);
+			prSoundingNotes.add(sounding);
+			clock.sched(noteSustain, {
+				if (generation == prNoteOffGeneration, {
+					midiout.noteOff(chan, midinote, veloc);
+					prSoundingNotes.remove(sounding);
+					if (prPatternFinished and: { prSoundingNotes.isEmpty }, {
+						this.releasePlaybackClock(prPatternHolder);
+					});
+				});
+				nil
+			});
+		});
 	}
 }

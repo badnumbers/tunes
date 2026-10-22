@@ -1,31 +1,31 @@
-SequencePlayerUnitTests : BNUnitTest {
+RealTimePlayerUnitTests : BNUnitTest {
 	test_initialise_loopStartAndLoopEndSetCorrectly {
 		// Arrange, act
 		var mockMidiOut = MockMIDIOut();
 		var mockTempoClock = MockTempoClock(mockMidiOut);
-		var sequencePlayer = SequencePlayer(tempoClock:mockTempoClock,midiOut:mockMidiOut);
-		sequencePlayer.loopStart = 10;
-		sequencePlayer.loopEnd = 12;
-		sequencePlayer.midiChannel = 15;
+		var realTimePlayer = RealTimePlayer(tempoClock:mockTempoClock,midiOut:mockMidiOut);
+		realTimePlayer.loopStart = 10;
+		realTimePlayer.loopEnd = 12;
+		realTimePlayer.midiChannel = 15;
 		// Assert
-		this.assertEquals(sequencePlayer.loopStart,10);
-		this.assertEquals(sequencePlayer.loopEnd,12);
+		this.assertEquals(realTimePlayer.loopStart,10);
+		this.assertEquals(realTimePlayer.loopEnd,12);
     }
 
 	test_setLoopStart_ValueNotChanged_NothingChanges {
 		// Arrange
 		var mockMidiOut = MockMIDIOut();
 		var mockTempoClock = MockTempoClock(mockMidiOut);
-		var sequencePlayer = SequencePlayer(tempoClock:mockTempoClock,midiOut:mockMidiOut);
+		var realTimePlayer = RealTimePlayer(tempoClock:mockTempoClock,midiOut:mockMidiOut);
 		var loopLength;
-		sequencePlayer.loopStart = 10;
-		sequencePlayer.loopEnd = 12;
-		sequencePlayer.midiChannel = 15;
+		realTimePlayer.loopStart = 10;
+		realTimePlayer.loopEnd = 12;
+		realTimePlayer.midiChannel = 15;
 		// Act
-		loopLength = sequencePlayer.loopStart = 10;
+		loopLength = realTimePlayer.loopStart = 10;
 		// Assert
-		this.assertEquals(sequencePlayer.loopStart,10);
-		this.assertEquals(sequencePlayer.loopEnd,12);
+		this.assertEquals(realTimePlayer.loopStart,10);
+		this.assertEquals(realTimePlayer.loopEnd,12);
 		this.assertEquals(loopLength,2);
 	}
 
@@ -33,16 +33,16 @@ SequencePlayerUnitTests : BNUnitTest {
 		// Arrange
 		var mockMidiOut = MockMIDIOut();
 		var mockTempoClock = MockTempoClock(mockMidiOut);
-		var sequencePlayer = SequencePlayer(tempoClock:mockTempoClock,midiOut:mockMidiOut);
+		var realTimePlayer = RealTimePlayer(tempoClock:mockTempoClock,midiOut:mockMidiOut);
 		var loopLength;
-		sequencePlayer.loopStart = 10;
-		sequencePlayer.loopEnd = 12;
-		sequencePlayer.midiChannel = 15;
+		realTimePlayer.loopStart = 10;
+		realTimePlayer.loopEnd = 12;
+		realTimePlayer.midiChannel = 15;
 		// Act
-		loopLength = sequencePlayer.loopEnd = 12;
+		loopLength = realTimePlayer.loopEnd = 12;
 		// Assert
-		this.assertEquals(sequencePlayer.loopStart,10);
-		this.assertEquals(sequencePlayer.loopEnd,12);
+		this.assertEquals(realTimePlayer.loopStart,10);
+		this.assertEquals(realTimePlayer.loopEnd,12);
 		this.assertEquals(loopLength,2);
 	}
 
@@ -50,64 +50,64 @@ SequencePlayerUnitTests : BNUnitTest {
 		// Arrange
 		var mockMidiOut = MockMIDIOut();
 		var mockTempoClock = MockTempoClock(mockMidiOut);
-		var sequencePlayer = SequencePlayer(tempoClock:mockTempoClock,midiOut:mockMidiOut);
-		sequencePlayer.loopStart = 10;
-		sequencePlayer.loopEnd = 12;
-		sequencePlayer.midiChannel = 15;
+		var realTimePlayer = RealTimePlayer(tempoClock:mockTempoClock,midiOut:mockMidiOut);
+		realTimePlayer.loopStart = 10;
+		realTimePlayer.loopEnd = 12;
+		realTimePlayer.midiChannel = 15;
 		// Act, Assert
-		this.assertException({sequencePlayer.loopStart = 12;}, Error);
+		this.assertException({realTimePlayer.loopStart = 12;}, Error);
 	}
 
 	test_setLoopStart_AfterLoopEnd_Error {
 		// Arrange
 		var mockMidiOut = MockMIDIOut();
 		var mockTempoClock = MockTempoClock(mockMidiOut);
-		var sequencePlayer = SequencePlayer(tempoClock:mockTempoClock,midiOut:mockMidiOut);
-		sequencePlayer.loopStart = 10;
-		sequencePlayer.loopEnd = 12;
-		sequencePlayer.midiChannel = 15;
+		var realTimePlayer = RealTimePlayer(tempoClock:mockTempoClock,midiOut:mockMidiOut);
+		realTimePlayer.loopStart = 10;
+		realTimePlayer.loopEnd = 12;
+		realTimePlayer.midiChannel = 15;
 		// Act, Assert
-		this.assertException({sequencePlayer.loopStart = 13;}, Error);
+		this.assertException({realTimePlayer.loopStart = 13;}, Error);
 	}
 
 	test_setLoopEnd_EqualToLoopStart_Error {
 		// Arrange
 		var mockMidiOut = MockMIDIOut();
 		var mockTempoClock = MockTempoClock(mockMidiOut);
-		var sequencePlayer = SequencePlayer(tempoClock:mockTempoClock,midiOut:mockMidiOut);
-		sequencePlayer.loopStart = 10;
-		sequencePlayer.loopEnd = 12;
-		sequencePlayer.midiChannel = 15;
+		var realTimePlayer = RealTimePlayer(tempoClock:mockTempoClock,midiOut:mockMidiOut);
+		realTimePlayer.loopStart = 10;
+		realTimePlayer.loopEnd = 12;
+		realTimePlayer.midiChannel = 15;
 		// Act, Assert
-		this.assertException({sequencePlayer.loopEnd = 10;}, Error);
+		this.assertException({realTimePlayer.loopEnd = 10;}, Error);
 	}
 
 	test_setLoopEnd_BeforeLoopStart_Error {
 		// Arrange
 		var mockMidiOut = MockMIDIOut();
 		var mockTempoClock = MockTempoClock(mockMidiOut);
-		var sequencePlayer = SequencePlayer(tempoClock:mockTempoClock,midiOut:mockMidiOut);
-		sequencePlayer.loopStart = 10;
-		sequencePlayer.loopEnd = 12;
-		sequencePlayer.midiChannel = 15;
+		var realTimePlayer = RealTimePlayer(tempoClock:mockTempoClock,midiOut:mockMidiOut);
+		realTimePlayer.loopStart = 10;
+		realTimePlayer.loopEnd = 12;
+		realTimePlayer.midiChannel = 15;
 		// Act, Assert
-		this.assertException({sequencePlayer.loopEnd = 9;}, Error);
+		this.assertException({realTimePlayer.loopEnd = 9;}, Error);
 	}
 
 	test_setLoopStart_ValidValue_LoopStartUpdated {
 		// Arrange
 		var mockMidiOut = MockMIDIOut();
 		var mockTempoClock = MockTempoClock(mockMidiOut);
-		var sequencePlayer = SequencePlayer(tempoClock:mockTempoClock,midiOut:mockMidiOut);
+		var realTimePlayer = RealTimePlayer(tempoClock:mockTempoClock,midiOut:mockMidiOut);
 		var loopLength;
-		sequencePlayer.loopStart = 10;
-		sequencePlayer.loopEnd = 12;
-		sequencePlayer.midiChannel = 15;
+		realTimePlayer.loopStart = 10;
+		realTimePlayer.loopEnd = 12;
+		realTimePlayer.midiChannel = 15;
 		// Act
-		loopLength = sequencePlayer.loopStart = 11;
+		loopLength = realTimePlayer.loopStart = 11;
 		// Assert
-		this.assertEquals(sequencePlayer.loopStart,11);
-		this.assertEquals(sequencePlayer.loopEnd,12);
+		this.assertEquals(realTimePlayer.loopStart,11);
+		this.assertEquals(realTimePlayer.loopEnd,12);
 		this.assertEquals(loopLength,1);
 	}
 
@@ -115,16 +115,16 @@ SequencePlayerUnitTests : BNUnitTest {
 		// Arrange
 		var mockMidiOut = MockMIDIOut();
 		var mockTempoClock = MockTempoClock(mockMidiOut);
-		var sequencePlayer = SequencePlayer(tempoClock:mockTempoClock,midiOut:mockMidiOut);
+		var realTimePlayer = RealTimePlayer(tempoClock:mockTempoClock,midiOut:mockMidiOut);
 		var loopLength;
-		sequencePlayer.loopStart = 10;
-		sequencePlayer.loopEnd = 12;
-		sequencePlayer.midiChannel = 15;
+		realTimePlayer.loopStart = 10;
+		realTimePlayer.loopEnd = 12;
+		realTimePlayer.midiChannel = 15;
 		// Act
-		loopLength = sequencePlayer.loopEnd = 11;
+		loopLength = realTimePlayer.loopEnd = 11;
 		// Assert
-		this.assertEquals(sequencePlayer.loopStart,10);
-		this.assertEquals(sequencePlayer.loopEnd,11);
+		this.assertEquals(realTimePlayer.loopStart,10);
+		this.assertEquals(realTimePlayer.loopEnd,11);
 		this.assertEquals(loopLength,1);
 	}
 
@@ -132,16 +132,16 @@ SequencePlayerUnitTests : BNUnitTest {
 		// Arrange
 		var mockMidiOut = MockMIDIOut();
 		var mockTempoClock = MockTempoClock(mockMidiOut);
-		var sequencePlayer = SequencePlayer(tempoClock:mockTempoClock,midiOut:mockMidiOut);
+		var realTimePlayer = RealTimePlayer(tempoClock:mockTempoClock,midiOut:mockMidiOut);
 		var loopLength;
-		sequencePlayer.loopStart = 10;
-		sequencePlayer.loopEnd = 12;
-		sequencePlayer.midiChannel = 15;
+		realTimePlayer.loopStart = 10;
+		realTimePlayer.loopEnd = 12;
+		realTimePlayer.midiChannel = 15;
 		// Act
-		loopLength = sequencePlayer.loopStart = 9.8;
+		loopLength = realTimePlayer.loopStart = 9.8;
 		// Assert
-		this.assertEquals(sequencePlayer.loopStart,9.75);
-		this.assertEquals(sequencePlayer.loopEnd,12);
+		this.assertEquals(realTimePlayer.loopStart,9.75);
+		this.assertEquals(realTimePlayer.loopEnd,12);
 		this.assertEquals(loopLength,2.25);
 	}
 
@@ -149,16 +149,16 @@ SequencePlayerUnitTests : BNUnitTest {
 		// Arrange
 		var mockMidiOut = MockMIDIOut();
 		var mockTempoClock = MockTempoClock(mockMidiOut);
-		var sequencePlayer = SequencePlayer(tempoClock:mockTempoClock,midiOut:mockMidiOut);
+		var realTimePlayer = RealTimePlayer(tempoClock:mockTempoClock,midiOut:mockMidiOut);
 		var loopLength;
-		sequencePlayer.loopStart = 10;
-		sequencePlayer.loopEnd = 12;
-		sequencePlayer.midiChannel = 15;
+		realTimePlayer.loopStart = 10;
+		realTimePlayer.loopEnd = 12;
+		realTimePlayer.midiChannel = 15;
 		// Act
-		loopLength = sequencePlayer.loopEnd = 12.2;
+		loopLength = realTimePlayer.loopEnd = 12.2;
 		// Assert
-		this.assertEquals(sequencePlayer.loopStart,10);
-		this.assertEquals(sequencePlayer.loopEnd,12.25);
+		this.assertEquals(realTimePlayer.loopStart,10);
+		this.assertEquals(realTimePlayer.loopEnd,12.25);
 		this.assertEquals(loopLength,2.25);
 	}
 
@@ -172,19 +172,19 @@ SequencePlayerUnitTests : BNUnitTest {
 		];
 		var mockMidiOut = MockMIDIOut();
 		var mockTempoClock = MockTempoClock(mockMidiOut);
-		var sequencePlayer = SequencePlayer(tempoClock:mockTempoClock,midiOut:mockMidiOut);
-		sequencePlayer.sequence = sequence;
-		sequencePlayer.loopStart = 13;
-		sequencePlayer.loopEnd = 15;
-		sequencePlayer.midiChannel = 15;
-		sequencePlayer.playheadTime_(13);
-		latency = sequencePlayer.latency;
-		delta = sequencePlayer.delta;
+		var realTimePlayer = RealTimePlayer(tempoClock:mockTempoClock,midiOut:mockMidiOut);
+		realTimePlayer.sequence = sequence;
+		realTimePlayer.loopStart = 13;
+		realTimePlayer.loopEnd = 15;
+		realTimePlayer.midiChannel = 15;
+		realTimePlayer.playheadTime_(13);
+		latency = realTimePlayer.latency;
+		delta = realTimePlayer.delta;
 
 		// Act
-		mockTempoClock.schedAbs(0,{sequencePlayer.play();"Starting sequence";});
+		mockTempoClock.schedAbs(0,{realTimePlayer.play();"Starting sequence";});
 		mockTempoClock.schedAbs(0.15,{sequence.remove(noteInLoop);"Removing note";});
-		mockTempoClock.schedAbs(1.0,{sequencePlayer.stop();"Stopping sequence"});
+		mockTempoClock.schedAbs(1.0,{realTimePlayer.stop();"Stopping sequence"});
 		mockTempoClock.play();
 		mockMidiOut.sentMidiEvents.do({|item|item.postln;});
 
@@ -208,18 +208,18 @@ SequencePlayerUnitTests : BNUnitTest {
 		];
 		var mockMidiOut = MockMIDIOut();
 		var mockTempoClock = MockTempoClock(mockMidiOut);
-		var sequencePlayer = SequencePlayer(tempoClock:mockTempoClock,midiOut:mockMidiOut);
-		sequencePlayer.sequence = sequence;
-		sequencePlayer.loopStart = 13;
-		sequencePlayer.loopEnd = 15;
-		sequencePlayer.midiChannel = 15;
-		sequencePlayer.playheadTime_(13);
-		latency = sequencePlayer.latency;
-		delta = sequencePlayer.delta;
+		var realTimePlayer = RealTimePlayer(tempoClock:mockTempoClock,midiOut:mockMidiOut);
+		realTimePlayer.sequence = sequence;
+		realTimePlayer.loopStart = 13;
+		realTimePlayer.loopEnd = 15;
+		realTimePlayer.midiChannel = 15;
+		realTimePlayer.playheadTime_(13);
+		latency = realTimePlayer.latency;
+		delta = realTimePlayer.delta;
 
 		// Act
-		mockTempoClock.schedAbs(0,{sequencePlayer.play()});
-		mockTempoClock.schedAbs(4.5,{sequencePlayer.stop()});
+		mockTempoClock.schedAbs(0,{realTimePlayer.play()});
+		mockTempoClock.schedAbs(4.5,{realTimePlayer.stop()});
 		mockTempoClock.play();
 		//mockMidiOut.sentMidiEvents.do({|item|item.postln;});
 
@@ -249,19 +249,19 @@ SequencePlayerUnitTests : BNUnitTest {
 		];
 		var mockMidiOut = MockMIDIOut();
 		var mockTempoClock = MockTempoClock(mockMidiOut);
-		var sequencePlayer = SequencePlayer(tempoClock:mockTempoClock,midiOut:mockMidiOut);
-		sequencePlayer.sequence = sequence;
-		sequencePlayer.loopStart = 13;
-		sequencePlayer.loopEnd = 15;
-		sequencePlayer.midiChannel = 15;
-		sequencePlayer.playheadTime_(13);
-		latency = sequencePlayer.latency;
-		delta = sequencePlayer.delta;
+		var realTimePlayer = RealTimePlayer(tempoClock:mockTempoClock,midiOut:mockMidiOut);
+		realTimePlayer.sequence = sequence;
+		realTimePlayer.loopStart = 13;
+		realTimePlayer.loopEnd = 15;
+		realTimePlayer.midiChannel = 15;
+		realTimePlayer.playheadTime_(13);
+		latency = realTimePlayer.latency;
+		delta = realTimePlayer.delta;
 
 		// Act
-		mockTempoClock.schedAbs(0,{sequencePlayer.play();});
-		mockTempoClock.schedAbs(0.1,{sequencePlayer.playheadTime_(14);"Moving playhead";});
-		mockTempoClock.schedAbs(1.0,{sequencePlayer.stop();"Stopping sequence"});
+		mockTempoClock.schedAbs(0,{realTimePlayer.play();});
+		mockTempoClock.schedAbs(0.1,{realTimePlayer.playheadTime_(14);"Moving playhead";});
+		mockTempoClock.schedAbs(1.0,{realTimePlayer.stop();"Stopping sequence"});
 		mockTempoClock.play();
 		mockMidiOut.sentMidiEvents.do({|item|item.postln;});
 
@@ -275,17 +275,17 @@ SequencePlayerUnitTests : BNUnitTest {
 	}
 
 	test_play_offBeat_startsAtNextWholeBeat {
-		var latency, mockMidiOut, mockTempoClock, sequencePlayer;
+		var latency, mockMidiOut, mockTempoClock, realTimePlayer;
 		mockMidiOut = MockMIDIOut();
 		mockTempoClock = MockTempoClock(mockMidiOut);
-		sequencePlayer = SequencePlayer(tempoClock: mockTempoClock, midiOut: mockMidiOut);
-		sequencePlayer.sequence = [PlayableNote(startTime: 0, noteNumber: 60, velocity: 100).stopTime_(0.0625)];
-		sequencePlayer.loopStart = 0;
-		sequencePlayer.loopEnd = 1;
-		sequencePlayer.playheadTime_(0);
-		latency = sequencePlayer.latency;
-		mockTempoClock.schedAbs(0.25, { sequencePlayer.play(); });
-		mockTempoClock.schedAbs(1.05, { sequencePlayer.stop(); });
+		realTimePlayer = RealTimePlayer(tempoClock: mockTempoClock, midiOut: mockMidiOut);
+		realTimePlayer.sequence = [PlayableNote(startTime: 0, noteNumber: 60, velocity: 100).stopTime_(0.0625)];
+		realTimePlayer.loopStart = 0;
+		realTimePlayer.loopEnd = 1;
+		realTimePlayer.playheadTime_(0);
+		latency = realTimePlayer.latency;
+		mockTempoClock.schedAbs(0.25, { realTimePlayer.play(); });
+		mockTempoClock.schedAbs(1.05, { realTimePlayer.stop(); });
 		mockTempoClock.play();
 		this.assert(mockMidiOut.sentMidiEvents.size > 0, "a note should play once the next beat arrives", true);
 		this.assertEquals(mockMidiOut.sentMidiEvents[0].scheduledTime, 1.0 + latency);
@@ -345,48 +345,48 @@ SequencePlayerUnitTests : BNUnitTest {
 	}
 
 	test_alignPlayhead_phaseWithinBar_snapsToNearestLanding {
-		var sequencePlayer;
-		sequencePlayer = SequencePlayer(midiOut: ());
-		sequencePlayer.loopStart = 10;
-		sequencePlayer.loopEnd = 26;
-		sequencePlayer.playheadTime = 19.5;
-		this.assertEquals(sequencePlayer.alignPlayhead(4, 19.125), 21.125);
-		this.assertEquals(sequencePlayer.isPlaying, false);
+		var realTimePlayer;
+		realTimePlayer = RealTimePlayer(midiOut: ());
+		realTimePlayer.loopStart = 10;
+		realTimePlayer.loopEnd = 26;
+		realTimePlayer.playheadTime = 19.5;
+		this.assertEquals(realTimePlayer.alignPlayhead(4, 19.125), 21.125);
+		this.assertEquals(realTimePlayer.isPlaying, false);
 	}
 
 	test_alignPlayhead_nearLoopStart_wrapsToEnd {
-		var sequencePlayer;
-		sequencePlayer = SequencePlayer(midiOut: ());
-		sequencePlayer.loopStart = 0;
-		sequencePlayer.loopEnd = 16;
-		sequencePlayer.playheadTime = 0.5;
-		this.assertEquals(sequencePlayer.alignPlayhead(4, 3.125), 15.125);
+		var realTimePlayer;
+		realTimePlayer = RealTimePlayer(midiOut: ());
+		realTimePlayer.loopStart = 0;
+		realTimePlayer.loopEnd = 16;
+		realTimePlayer.playheadTime = 0.5;
+		this.assertEquals(realTimePlayer.alignPlayhead(4, 3.125), 15.125);
 	}
 
 	test_alignPlayhead_equalDistance_choosesForwardPoint {
-		var sequencePlayer;
-		sequencePlayer = SequencePlayer(midiOut: ());
-		sequencePlayer.loopStart = 0;
-		sequencePlayer.loopEnd = 16;
-		sequencePlayer.playheadTime = 2;
-		this.assertEquals(sequencePlayer.alignPlayhead(4, 0), 4);
+		var realTimePlayer;
+		realTimePlayer = RealTimePlayer(midiOut: ());
+		realTimePlayer.loopStart = 0;
+		realTimePlayer.loopEnd = 16;
+		realTimePlayer.playheadTime = 2;
+		this.assertEquals(realTimePlayer.alignPlayhead(4, 0), 4);
 	}
 
 	test_alignPlayhead_syncLongerThanLoop_usesSingleLanding {
-		var sequencePlayer;
-		sequencePlayer = SequencePlayer(midiOut: ());
-		sequencePlayer.loopStart = 0;
-		sequencePlayer.loopEnd = 4;
-		sequencePlayer.playheadTime = 0;
-		this.assertFloatEquals(sequencePlayer.alignPlayhead(8, 5.2), 1.2);
+		var realTimePlayer;
+		realTimePlayer = RealTimePlayer(midiOut: ());
+		realTimePlayer.loopStart = 0;
+		realTimePlayer.loopEnd = 4;
+		realTimePlayer.playheadTime = 0;
+		this.assertFloatEquals(realTimePlayer.alignPlayhead(8, 5.2), 1.2);
 	}
 
 	test_play_withSequencer_sharesClockUntilLastStop {
 		var clock, first, probe, second, seen, sequencer;
 		sequencer = Sequencer();
 		probe = ();
-		first = SequencePlayer(midiOut: (), sequencer: sequencer);
-		second = SequencePlayer(midiOut: (), sequencer: sequencer);
+		first = RealTimePlayer(midiOut: (), sequencer: sequencer);
+		second = RealTimePlayer(midiOut: (), sequencer: sequencer);
 		first.sequence_([]);
 		second.sequence_([]);
 		first.play(startNow: true);

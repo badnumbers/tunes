@@ -11,10 +11,10 @@ Metronome.play(1)
 Metronome.volume_(1)
 Metronome.stop
 
-SequencePlayerUnitTests
+RealTimePlayerUnitTests
 PipeWire.connectAllToSoundcard
 
-UnitTest.runTest("SequencePlayerUnitTests:test_something")
+UnitTest.runTest("RealTimePlayerUnitTests:test_something")
 
 Tuner()
 

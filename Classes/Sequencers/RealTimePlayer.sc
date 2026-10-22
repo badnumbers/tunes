@@ -1,4 +1,4 @@
-SequencePlayer {
+RealTimePlayer {
 	classvar prDelta = 0.0625;
 
 	var prCurrentlyPlayingNotes;
@@ -144,20 +144,20 @@ SequencePlayer {
 
 	loopEnd_ {
 		|newTime|
-		Validator.validateMethodParameterType(newTime,SimpleNumber,"newTime","SequencePlayer","loopEnd_");
+		Validator.validateMethodParameterType(newTime,SimpleNumber,"newTime","RealTimePlayer","loopEnd_");
 
 		if (newTime < 0, {
-			Error(format("The newTime parameter provided to SequencePlayer.loopEnd_ must not be less than 0. The value % was provided.", newTime)).throw;
+			Error(format("The newTime parameter provided to RealTimePlayer.loopEnd_ must not be less than 0. The value % was provided.", newTime)).throw;
 		});
 
 		if (newTime > prMaximumSequenceLength, {
-			Error(format("The newTime parameter provided to SequencePlayer.loopEnd_ must not be greater than %. The value % was provided.", prMaximumSequenceLength, newTime)).throw;
+			Error(format("The newTime parameter provided to RealTimePlayer.loopEnd_ must not be greater than %. The value % was provided.", prMaximumSequenceLength, newTime)).throw;
 		});
 
 		newTime = newTime.round(0.25);
 
 		if (newTime <= prLoopStart,{
-			Error(format("The newTime parameter provided to SequencePlayer.loopEnd_ must be later than the loop start value of %. The value % was provided.", prLoopStart, newTime)).throw;
+			Error(format("The newTime parameter provided to RealTimePlayer.loopEnd_ must be later than the loop start value of %. The value % was provided.", prLoopStart, newTime)).throw;
 		});
 
 		prLoopEnd = newTime;
@@ -171,20 +171,20 @@ SequencePlayer {
 
 	loopStart_ {
 		|newTime|
-		Validator.validateMethodParameterType(newTime,SimpleNumber,"newTime","SequencePlayer","loopStart_");
+		Validator.validateMethodParameterType(newTime,SimpleNumber,"newTime","RealTimePlayer","loopStart_");
 
 		if (newTime < 0, {
-			Error(format("The newTime parameter provided to SequencePlayer.loopStart_ must not be less than 0. The value % was provided.", newTime)).throw;
+			Error(format("The newTime parameter provided to RealTimePlayer.loopStart_ must not be less than 0. The value % was provided.", newTime)).throw;
 		});
 
 		if (newTime > prMaximumSequenceLength, {
-			Error(format("The newTime parameter provided to SequencePlayer.loopStart_ must not be greater than %. The value % was provided.", prMaximumSequenceLength, newTime)).throw;
+			Error(format("The newTime parameter provided to RealTimePlayer.loopStart_ must not be greater than %. The value % was provided.", prMaximumSequenceLength, newTime)).throw;
 		});
 
 		newTime = newTime.round(0.25);
 
 		if (newTime >= prLoopEnd,{
-			Error(format("The newTime parameter provided to SequencePlayer.loopStart_ must be earlier than the loop end value of %. The value % was provided.", prLoopEnd, newTime)).throw;
+			Error(format("The newTime parameter provided to RealTimePlayer.loopStart_ must be earlier than the loop end value of %. The value % was provided.", prLoopEnd, newTime)).throw;
 		});
 
 		prLoopStart = newTime;
@@ -198,29 +198,29 @@ SequencePlayer {
 
 	midiChannel_ {
 		|newChannel|
-		Validator.validateMethodParameterType(newChannel,SimpleNumber,"newChannel","SequencePlayer","midiChannel_");
+		Validator.validateMethodParameterType(newChannel,SimpleNumber,"newChannel","RealTimePlayer","midiChannel_");
 		prMidiChannel = newChannel;
 	}
 
 	onPlayheadMove_ {
 		|action|
-		Validator.validateMethodParameterType(action,Function,"action","SequencePlayer","onPlayheadMove_");
+		Validator.validateMethodParameterType(action,Function,"action","RealTimePlayer","onPlayheadMove_");
 		prOnPlayheadMove = action;
 	}
 
 	*new {
 		|tempoClock=nil,midiOut=nil,sequencer=nil|
-		Validator.validateMethodParameterType(sequencer, Sequencer, "sequencer", "SequencePlayer", "new", allowNil: true);
+		Validator.validateMethodParameterType(sequencer, Sequencer, "sequencer", "RealTimePlayer", "new", allowNil: true);
 		^super.new.init(tempoClock,midiOut,sequencer);
 	}
 
 	alignPlayhead {
 		|syncTo, beat|
 		var loopLength, phase, local, first, position, bestLocal, bestDistance, bestForward, forward, distance, steps, done;
-		Validator.validateMethodParameterType(syncTo, Integer, "syncTo", "SequencePlayer", "alignPlayhead");
-		Validator.validateMethodParameterType(beat, SimpleNumber, "beat", "SequencePlayer", "alignPlayhead");
+		Validator.validateMethodParameterType(syncTo, Integer, "syncTo", "RealTimePlayer", "alignPlayhead");
+		Validator.validateMethodParameterType(beat, SimpleNumber, "beat", "RealTimePlayer", "alignPlayhead");
 		if (syncTo < 1 or: { syncTo > 16 }, {
-			Error(format("The syncTo parameter provided to SequencePlayer.alignPlayhead must be an integer from 1 to 16. The value % was provided.", syncTo)).throw;
+			Error(format("The syncTo parameter provided to RealTimePlayer.alignPlayhead must be an integer from 1 to 16. The value % was provided.", syncTo)).throw;
 		});
 		loopLength = prLoopEnd - prLoopStart;
 		phase = beat.mod(syncTo);
@@ -258,15 +258,15 @@ SequencePlayer {
 		|tempoClock, startImmediately = false, startNow = false, syncTo|
 		var acquired, startBeat;
 		if (prSequencer.isNil && { tempoClock.notNil }, {
-			Validator.validateMethodParameterType(tempoClock, TempoClock, "tempoClock", "SequencePlayer", "play");
+			Validator.validateMethodParameterType(tempoClock, TempoClock, "tempoClock", "RealTimePlayer", "play");
 			prTempoClock = tempoClock;
 		});
-		Validator.validateMethodParameterType(startImmediately, Boolean, "startImmediately", "SequencePlayer", "play");
-		Validator.validateMethodParameterType(startNow, Boolean, "startNow", "SequencePlayer", "play");
+		Validator.validateMethodParameterType(startImmediately, Boolean, "startImmediately", "RealTimePlayer", "play");
+		Validator.validateMethodParameterType(startNow, Boolean, "startNow", "RealTimePlayer", "play");
 		if (syncTo.notNil, {
-			Validator.validateMethodParameterType(syncTo, Integer, "syncTo", "SequencePlayer", "play");
+			Validator.validateMethodParameterType(syncTo, Integer, "syncTo", "RealTimePlayer", "play");
 			if (syncTo < 1 or: { syncTo > 16 }, {
-				Error(format("The syncTo parameter provided to SequencePlayer.play must be an integer from 1 to 16. The value % was provided.", syncTo)).throw;
+				Error(format("The syncTo parameter provided to RealTimePlayer.play must be an integer from 1 to 16. The value % was provided.", syncTo)).throw;
 			});
 		});
 		if (prSequencer.notNil, {
@@ -325,12 +325,12 @@ SequencePlayer {
 
 	sequence_ {
 		|newSequence|
-		Validator.validateMethodParameterType(newSequence,Array,"newSequence","SequencePlayer","sequence_");
+		Validator.validateMethodParameterType(newSequence,Array,"newSequence","RealTimePlayer","sequence_");
 
 		newSequence.do({
 			|note,index|
 			if (note.isKindOf(PlayableNote).not,{
-				Error(format("Not all elements of the 'sequence' parameter passed into SequencePlayer.sequence_ were instances of PlayableNote. Found an instance of % at index %.", note.class, index)).throw;
+				Error(format("Not all elements of the 'sequence' parameter passed into RealTimePlayer.sequence_ were instances of PlayableNote. Found an instance of % at index %.", note.class, index)).throw;
 			});
 		});
 
@@ -340,7 +340,7 @@ SequencePlayer {
 	stop {
 		|onStopped|
 		if (onStopped.notNil, {
-			Validator.validateMethodParameterType(onStopped, Function, "onStopped", "SequencePlayer", "stop");
+			Validator.validateMethodParameterType(onStopped, Function, "onStopped", "RealTimePlayer", "stop");
 		});
 		prOnStopped = onStopped;
 		prIsPlaying = false;

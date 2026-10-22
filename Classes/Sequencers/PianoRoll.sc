@@ -20,7 +20,7 @@ PianoRoll : SCViewHolder {
 	var prRecordingClock;
 	var prRecordingNow;
 	var prScrollView;
-	var prSequencePlayer;
+	var prRealTimePlayer;
 	var prSequencer;
 	var prSequencerDocument;
 	var prSidebar;
@@ -93,7 +93,7 @@ PianoRoll : SCViewHolder {
 				allNotes: { prRecordedNotes },
 				loopStart: { if (prLoopMarkers.isLoopDefined, { prLoopMarkers.loopStart }, { nil }) },
 				loopEnd: { if (prLoopMarkers.isLoopDefined, { prLoopMarkers.loopEnd }, { nil }) },
-				midiChannel: { prSequencePlayer.midiChannel }
+				midiChannel: { prRealTimePlayer.midiChannel }
 			),
 			overlayParent: prView,
 			onExecute: { this.prRefreshSidebar }
@@ -180,7 +180,7 @@ PianoRoll : SCViewHolder {
 			Setup.server;
 		});
 
-		prSequencePlayer = SequencePlayer(midiOut: Setup.midi, sequencer: prSequencer).onPlayheadMove_({
+		prRealTimePlayer = RealTimePlayer(midiOut: Setup.midi, sequencer: prSequencer).onPlayheadMove_({
 			|newPosition|
 			AppClock.sched(0.0, { prLoopMarkers.playheadTime_(newPosition,snap:false); });
 		});
@@ -367,13 +367,13 @@ PianoRoll : SCViewHolder {
 		};
 
 		prLoopMarkers = PianoRollLoopMarkers(prBackgroundView, prNoteViewScale[\horizontal], prPianoRollHeight, prPalette, prPianoRollWidth / prNoteViewScale[\horizontal])
-			.onLoopStartMove_({|newPosition| prSequencePlayer.loopStart_(newPosition); this.prRefreshSidebar; })
-			.onLoopEndMove_({|newPosition| prSequencePlayer.loopEnd_(newPosition); this.prRefreshSidebar; });
+			.onLoopStartMove_({|newPosition| prRealTimePlayer.loopStart_(newPosition); this.prRefreshSidebar; })
+			.onLoopEndMove_({|newPosition| prRealTimePlayer.loopEnd_(newPosition); this.prRefreshSidebar; });
 		prTimeline = PianoRollTimeline(prScrollView, prPianoRollWidth - 4, prPalette, prNoteViewScale[\horizontal], { |beat, buttonNumber, modifiers|
 			if (buttonNumber == 0, {
 				if (modifiers.isShift, {
 					prLoopMarkers.playheadTime_(beat);
-					prSequencePlayer.playheadTime_(prLoopMarkers.playheadTime);
+					prRealTimePlayer.playheadTime_(prLoopMarkers.playheadTime);
 				}, {
 					prLoopMarkers.loopStart_(beat);
 				});
@@ -397,7 +397,7 @@ PianoRoll : SCViewHolder {
 
 	playLoop {
 		if (prRecordedNotes.size > 0,{
-			prSequencePlayer.play(
+			prRealTimePlayer.play(
 				startNow: true,
 				syncTo: prSyncTo
 			);
@@ -409,7 +409,7 @@ PianoRoll : SCViewHolder {
 	}
 
 	prApplyNoteEdits {
-		prSequencePlayer.sequence_(prRecordedNotes.collect({|note| note.playableNote}));
+		prRealTimePlayer.sequence_(prRecordedNotes.collect({|note| note.playableNote}));
 		this.prRefreshSidebar;
 	}
 
@@ -557,7 +557,7 @@ PianoRoll : SCViewHolder {
 				deleteFunc: prNoteDeleteFunc
 			);
 			prRecordedNotes = prRecordedNotes.add(pianoRollNote);
-			prSequencePlayer.midiChannel_(chan);
+			prRealTimePlayer.midiChannel_(chan);
 			this.prUpdateLoopControls;
 		}, {
 			activeNotesForThisNoteNumber = prRecordedNotes.select({ |note| (note.noteNumber == noteNumber) && (note.stopTime.isNil) });
@@ -618,8 +618,8 @@ PianoRoll : SCViewHolder {
 	}
 
 	stopLoop {
-		if (prSequencePlayer.isPlaying.not, { ^this });
-		prSequencePlayer.stop;
+		if (prRealTimePlayer.isPlaying.not, { ^this });
+		prRealTimePlayer.stop;
 	}
 
 	stopRecording {
@@ -644,10 +644,10 @@ PianoRoll : SCViewHolder {
 			prLoopMarkers.loopStart_(startTime);
 			prLoopMarkers.playheadTime_(startTime);
 			prLoopMarkers.loopEnd_(stopTime);
-			prSequencePlayer.loopStart_(startTime);
-			prSequencePlayer.loopEnd_(stopTime);
-			prSequencePlayer.playheadTime_(startTime);
-			prSequencePlayer.sequence = prRecordedNotes.collect({ |note| note.playableNote });
+			prRealTimePlayer.loopStart_(startTime);
+			prRealTimePlayer.loopEnd_(stopTime);
+			prRealTimePlayer.playheadTime_(startTime);
+			prRealTimePlayer.sequence = prRecordedNotes.collect({ |note| note.playableNote });
 		}, {
 			warn("Nothing has been recorded!")
 		});

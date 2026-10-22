@@ -1,4 +1,4 @@
-TITLE:: SequencePlayer
+TITLE:: RealTimePlayer
 SUMMARY:: Plays a sequence of notes from PianoRoll.
 RELATED:: Classes/PianoRoll, Classes/Sequencer
 
@@ -6,11 +6,11 @@ DESCRIPTION::
 Allows a set of notes displayed in a LINK::Classes/PianoRoll::, for example which has just been recorded from a keyboard, to be played back.
 
 NOTE::
-You can run the unit tests for TELETYPE::Sequencer:: by running:
+You can run the unit tests for TELETYPE::RealTimePlayer:: by running:
 CODE::
 (
 UnitTest.reportPasses_(false);
-SequencePlayerUnitTests.run;
+RealTimePlayerUnitTests.run;
 )
 ::
 ::
@@ -19,7 +19,7 @@ SequencePlayerUnitTests.run;
 CLASSMETHODS::
 
 METHOD:: new
-Creates a new TELETYPE::SequencePlayer::.
+Creates a new TELETYPE::RealTimePlayer::.
 
 ARGUMENT:: tempoClock
 The clock used to schedule playback. Defaults to TempoClock.default.
@@ -30,7 +30,7 @@ The MIDI output device. Defaults to Setup.midi.
 ARGUMENT:: sequencer
 An optional LINK::Classes/Sequencer::. When supplied, LINK::#-play:: and LINK::#-stop:: acquire and release that sequencer's shared playback clock. CODE::nil:: keeps the clock passed as CODE::tempoClock::.
 
-returns:: A new TELETYPE::SequencePlayer:: instance.
+RETURNS:: A new TELETYPE::RealTimePlayer:: instance.
 
 
 INSTANCEMETHODS::
@@ -39,10 +39,10 @@ PRIVATE:: prResetPlayingNotes
 METHOD:: delta
 The beat length of each playback slice (the scheduling grid quant).
 
-returns:: The slice duration in beats (0.0625 by default).
+RETURNS:: The slice duration in beats (0.0625 by default).
 
 METHOD:: init
-Initialises a new TELETYPE::SequencePlayer::.
+Initialises a new TELETYPE::RealTimePlayer::.
 
 ARGUMENT:: tempoClock
 The clock used to schedule playback. Defaults to TempoClock.default.
@@ -53,7 +53,7 @@ The MIDI output device. Defaults to Setup.midi.
 ARGUMENT:: sequencer
 An optional LINK::Classes/Sequencer::. When supplied, LINK::#-play:: and LINK::#-stop:: acquire and release that sequencer's shared playback clock. CODE::nil:: keeps the clock passed as CODE::tempoClock::.
 
-returns:: This instance.
+RETURNS:: This instance.
 
 METHOD:: isPlaying
 CODE::true:: after LINK::#-play:: until LINK::#-stop::. This becomes false as soon as stop is called, before the final slice sends note-offs.
@@ -64,22 +64,22 @@ CODE::true:: while playback is in progress.
 METHOD:: latency
 The scheduling offset applied to MIDI events, in beats.
 
-returns:: The current latency value in beats (0.01 by default).
+RETURNS:: The current latency value in beats (0.01 by default).
 
 METHOD:: loopEnd
 The loop end time in beats.
 
-returns:: The current loop end time.
+RETURNS:: The current loop end time.
 
 METHOD:: loopStart
 The loop start time in beats.
 
-returns:: The current loop start time.
+RETURNS:: The current loop start time.
 
 METHOD:: midiChannel
 The MIDI channel used for note on/off messages.
 
-returns:: The current MIDI channel.
+RETURNS:: The current MIDI channel.
 
 METHOD:: onPlayheadMove_
 Registers a function called each time the playhead advances during playback. The function receives the start beat of the current slice. The callback is scheduled on the tempo clock after LINK::Classes/MIDIOut:: latency so the visible playhead stays aligned with heard MIDI.
@@ -120,12 +120,12 @@ A report string from the first playback slice when playback starts immediately. 
 METHOD:: playheadTime
 The current playback position in beats. Set with TELETYPE::playheadTime_::.
 
-returns:: The current playhead time in beats.
+RETURNS:: The current playhead time in beats.
 
 METHOD:: sequence
 The array of LINK::Classes/PlayableNote:: instances to play.
 
-returns:: The current sequence.
+RETURNS:: The current sequence.
 
 METHOD:: stop
 Stops playback. Note-offs for sounding notes are sent on the next slice. When this player was constructed with a LINK::Classes/Sequencer::, that slice then releases this player's hold on the shared clock. When CODE::onStopped:: is supplied, that function runs once after those note-offs and after the release.
@@ -136,6 +136,6 @@ An optional LINK::Classes/Function::. Called once from the final slice, after no
 
 EXAMPLES::
 
-code::
+CODE::
 (some example code)
 ::
