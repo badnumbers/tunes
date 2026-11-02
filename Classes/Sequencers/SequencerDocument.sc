@@ -21,53 +21,10 @@ SequencerDocument {
 		^this;
 	}
 
-	writeChipOrigins {
-		|origins|
-		var next, text;
-		Validator.validateMethodParameterType(origins, Dictionary, "origins", "SequencerDocument", "writeChipOrigins");
-		text = prDocument.getText ? "";
-		next = this.class.prTextWithChipOrigins(text, origins);
-		if (next != text, {
-			prDocument.selectRange(0, text.size);
-			prDocument.selectedString_(next);
-		});
-		^this;
-	}
-
-	selectPattern {
-		|id|
-		var range, text;
-		Validator.validateMethodParameterType(id, Symbol, "id", "SequencerDocument", "selectPattern");
-		text = prDocument.getText ? "";
-		range = this.class.prPatternCallRange(text, id);
-		if (range.isNil, {
-			warn(this.class.prPatternNotFoundWarning(id));
-		}, {
-			prDocument.selectRange(range[0], range[1] - range[0]);
-		});
-		^this;
-	}
-
 	*new {
 		|document|
 		Validator.validateMethodParameterType(document, Document, "document", "SequencerDocument", "new");
 		^super.new.init(document);
-	}
-
-	*prIndexForInsert {
-		|text|
-		var index, matches;
-
-		if (text.isNil, { ^0 });
-		if (text.size == 0, { ^0 });
-
-		matches = text.findRegexp(prAddMidiSequenceRegexp);
-		if (matches.isNil || { matches.size == 0 }, {
-			^text.size;
-		});
-
-		index = matches.last[0] + matches.last[1].size;
-		^this.prEndOfCall(text, index);
 	}
 
 	*prArrangeCall {
@@ -156,6 +113,22 @@ SequencerDocument {
 			});
 		});
 		^text.size;
+	}
+
+	*prIndexForInsert {
+		|text|
+		var index, matches;
+
+		if (text.isNil, { ^0 });
+		if (text.size == 0, { ^0 });
+
+		matches = text.findRegexp(prAddMidiSequenceRegexp);
+		if (matches.isNil || { matches.size == 0 }, {
+			^text.size;
+		});
+
+		index = matches.last[0] + matches.last[1].size;
+		^this.prEndOfCall(text, index);
 	}
 
 	*prIsIdentChar {
@@ -272,5 +245,32 @@ SequencerDocument {
 			^text ++ this.prArrangeTrailer(call);
 		});
 		^this.prReplaceRange(text, range[0], range[1], call);
+	}
+
+	selectPattern {
+		|id|
+		var range, text;
+		Validator.validateMethodParameterType(id, Symbol, "id", "SequencerDocument", "selectPattern");
+		text = prDocument.getText ? "";
+		range = this.class.prPatternCallRange(text, id);
+		if (range.isNil, {
+			warn(this.class.prPatternNotFoundWarning(id));
+		}, {
+			prDocument.selectRange(range[0], range[1] - range[0]);
+		});
+		^this;
+	}
+
+	writeChipOrigins {
+		|origins|
+		var next, text;
+		Validator.validateMethodParameterType(origins, Dictionary, "origins", "SequencerDocument", "writeChipOrigins");
+		text = prDocument.getText ? "";
+		next = this.class.prTextWithChipOrigins(text, origins);
+		if (next != text, {
+			prDocument.selectRange(0, text.size);
+			prDocument.selectedString_(next);
+		});
+		^this;
 	}
 }

@@ -1,23 +1,41 @@
 Sequencer {
 	classvar prByDocument;
 
+	var prChipOrigins;
 	var prDevMode;
+	var prDocument;
 	var prEventStreamPlayer;
-	var prPreKeySets;
-	var prPostKeySets;
-	var prSequences;
-	var prSequenceWrapper;
-	var prPlaybackClock;
+	var prGui;
 	var prHolders;
-	var prTempo = 2;
-	var prPatternHolder;
-	var prSoundingNotes;
 	var prNoteOffGeneration = 0;
 	var prPatternFinished = false;
-	var prDocument;
-	var prGui;
+	var prPatternHolder;
+	var prPlaybackClock;
+	var prPostKeySets;
+	var prPreKeySets;
 	var prPreviousOnClose;
-	var prChipOrigins;
+	var prSequenceWrapper;
+	var prSequences;
+	var prSoundingNotes;
+	var prTempo = 2;
+
+	acquirePlaybackClock {
+		|holder|
+		var isTransportStart;
+		if (holder.isNil, {
+			Error("The 'holder' parameter of Sequencer.acquirePlaybackClock() must not be nil.").throw;
+		});
+		if (prHolders.includes(holder), {
+			^(clock: prPlaybackClock, isTransportStart: false);
+		});
+		isTransportStart = prPlaybackClock.isNil;
+		if (isTransportStart, {
+			prPlaybackClock = TempoClock.new(prTempo);
+			prPlaybackClock.beats_(0);
+		});
+		prHolders.add(holder);
+		^(clock: prPlaybackClock, isTransportStart: isTransportStart);
+	}
 
 	addGlobalPreKeys {
 		|keysArray|
@@ -51,22 +69,33 @@ Sequencer {
 		this.prAddKeySet(prPostKeySets,AutoKeySet({|sequence|sequence.synthId==synthId},keysArray));
 	}
 
-	acquirePlaybackClock {
-		|holder|
-		var isTransportStart;
-		if (holder.isNil, {
-			Error("The 'holder' parameter of Sequencer.acquirePlaybackClock() must not be nil.").throw;
+	arrange {
+		|origins|
+		var copy;
+		Validator.validateMethodParameterType(origins, Dictionary, "origins", "Sequencer", "arrange");
+		copy = Dictionary.new;
+		origins.keysValuesDo({
+			|key, value|
+			Validator.validateMethodParameterType(key, Symbol, "key", "Sequencer", "arrange");
+			Validator.validateMethodParameterType(value, Point, "value", "Sequencer", "arrange");
+			copy.put(key, value);
 		});
-		if (prHolders.includes(holder), {
-			^(clock: prPlaybackClock, isTransportStart: false);
-		});
-		isTransportStart = prPlaybackClock.isNil;
-		if (isTransportStart, {
-			prPlaybackClock = TempoClock.new(prTempo);
-			prPlaybackClock.beats_(0);
-		});
-		prHolders.add(holder);
-		^(clock: prPlaybackClock, isTransportStart: isTransportStart);
+		prChipOrigins = copy;
+		this.changed(\arrangement, this.chipOrigins);
+	}
+
+	chipOrigin {
+		|id|
+		Validator.validateMethodParameterType(id, Symbol, "id", "Sequencer", "chipOrigin");
+		^prChipOrigins[id];
+	}
+
+	chipOrigins {
+		^prChipOrigins.copy;
+	}
+
+	document {
+		^prDocument;
 	}
 
 	init {
@@ -203,10 +232,14 @@ Sequencer {
 		^existing;
 	}
 
-	*prAt {
-		|document|
-		if (prByDocument.isNil, { ^nil });
-		^prByDocument[document];
+	placeChip {
+		|id, origin|
+		var point;
+		Validator.validateMethodParameterType(id, Symbol, "id", "Sequencer", "placeChip");
+		Validator.validateMethodParameterType(origin, Point, "origin", "Sequencer", "placeChip");
+		point = origin.x.round.asInteger @ origin.y.round.asInteger;
+		prChipOrigins.put(id, point);
+		this.changed(\arrangement, this.chipOrigins);
 	}
 
 	play {
@@ -236,6 +269,25 @@ Sequencer {
 				});
 			}
 		).play(acquired.clock);
+	}
+
+	prAddKeySet {
+		|existingkeysets,newkeyset|
+		existingkeysets.do({
+			|existingkeyset|
+			if (existingkeyset.hash == newkeyset.hash, {
+				warn(postln("A keyset is being replaced."));
+				existingkeysets.remove(existingkeyset);
+			});
+		});
+
+		existingkeysets.add(newkeyset);
+	}
+
+	*prAt {
+		|document|
+		if (prByDocument.isNil, { ^nil });
+		^prByDocument[document];
 	}
 
 	prBindDocument {
@@ -281,111 +333,6 @@ Sequencer {
 		});
 	}
 
-	prAddKeySet {
-		|existingkeysets,newkeyset|
-		existingkeysets.do({
-			|existingkeyset|
-			if (existingkeyset.hash == newkeyset.hash, {
-				warn(postln("A keyset is being replaced."));
-				existingkeysets.remove(existingkeyset);
-			});
-		});
-
-		existingkeysets.add(newkeyset);
-	}
-
-	releasePlaybackClock {
-		|holder|
-		var clock;
-		if (holder.isNil, {
-			Error("The 'holder' parameter of Sequencer.releasePlaybackClock() must not be nil.").throw;
-		});
-		prHolders.remove(holder);
-		if (prHolders.isEmpty && { prPlaybackClock.notNil }, {
-			clock = prPlaybackClock;
-			prPlaybackClock = nil;
-			{ if (clock.isRunning, { clock.stop }); nil }.defer;
-		});
-	}
-
-	arrange {
-		|origins|
-		var copy;
-		Validator.validateMethodParameterType(origins, Dictionary, "origins", "Sequencer", "arrange");
-		copy = Dictionary.new;
-		origins.keysValuesDo({
-			|key, value|
-			Validator.validateMethodParameterType(key, Symbol, "key", "Sequencer", "arrange");
-			Validator.validateMethodParameterType(value, Point, "value", "Sequencer", "arrange");
-			copy.put(key, value);
-		});
-		prChipOrigins = copy;
-		this.changed(\arrangement, this.chipOrigins);
-	}
-
-	chipOrigin {
-		|id|
-		Validator.validateMethodParameterType(id, Symbol, "id", "Sequencer", "chipOrigin");
-		^prChipOrigins[id];
-	}
-
-	chipOrigins {
-		^prChipOrigins.copy;
-	}
-
-	document {
-		^prDocument;
-	}
-
-	placeChip {
-		|id, origin|
-		var point;
-		Validator.validateMethodParameterType(id, Symbol, "id", "Sequencer", "placeChip");
-		Validator.validateMethodParameterType(origin, Point, "origin", "Sequencer", "placeChip");
-		point = origin.x.round.asInteger @ origin.y.round.asInteger;
-		prChipOrigins.put(id, point);
-		this.changed(\arrangement, this.chipOrigins);
-	}
-
-	sequenceIds {
-		^prSequences.keys.asArray;
-	}
-
-	showGui {
-		if (prGui.notNil, {
-			prGui.front;
-			^this;
-		});
-		prGui = SequencerGui(this, prDevMode);
-		^this;
-	}
-
-	stop {
-		this.prReleaseSoundingNotes;
-		if (prEventStreamPlayer.isMemberOf(EventStreamPlayer), {
-			prEventStreamPlayer.stop;
-			prEventStreamPlayer = nil;
-		});
-		this.releasePlaybackClock(prPatternHolder);
-	}
-
-	tempo {
-		^prTempo;
-	}
-
-	tempo_ {
-		|newTempo|
-		Validator.validateMethodParameterType(newTempo, SimpleNumber, "newTempo", "Sequencer", "tempo_");
-		if (newTempo <= 0, {
-			Error(format("The newTempo parameter provided to Sequencer.tempo_ must be greater than 0. The value % was provided.", newTempo)).throw;
-		});
-		prTempo = newTempo;
-		if (prPlaybackClock.notNil, {
-			prPlaybackClock.tempo_(prTempo);
-		});
-		this.changed(\tempo, prTempo);
-	}
-
 	prReleaseSoundingNotes {
 		var notes;
 		prNoteOffGeneration = prNoteOffGeneration + 1;
@@ -428,5 +375,58 @@ Sequencer {
 				nil
 			});
 		});
+	}
+
+	releasePlaybackClock {
+		|holder|
+		var clock;
+		if (holder.isNil, {
+			Error("The 'holder' parameter of Sequencer.releasePlaybackClock() must not be nil.").throw;
+		});
+		prHolders.remove(holder);
+		if (prHolders.isEmpty && { prPlaybackClock.notNil }, {
+			clock = prPlaybackClock;
+			prPlaybackClock = nil;
+			{ if (clock.isRunning, { clock.stop }); nil }.defer;
+		});
+	}
+
+	sequenceIds {
+		^prSequences.keys.asArray;
+	}
+
+	showGui {
+		if (prGui.notNil, {
+			prGui.front;
+			^this;
+		});
+		prGui = SequencerGui(this, prDevMode);
+		^this;
+	}
+
+	stop {
+		this.prReleaseSoundingNotes;
+		if (prEventStreamPlayer.isMemberOf(EventStreamPlayer), {
+			prEventStreamPlayer.stop;
+			prEventStreamPlayer = nil;
+		});
+		this.releasePlaybackClock(prPatternHolder);
+	}
+
+	tempo {
+		^prTempo;
+	}
+
+	tempo_ {
+		|newTempo|
+		Validator.validateMethodParameterType(newTempo, SimpleNumber, "newTempo", "Sequencer", "tempo_");
+		if (newTempo <= 0, {
+			Error(format("The newTempo parameter provided to Sequencer.tempo_ must be greater than 0. The value % was provided.", newTempo)).throw;
+		});
+		prTempo = newTempo;
+		if (prPlaybackClock.notNil, {
+			prPlaybackClock.tempo_(prTempo);
+		});
+		this.changed(\tempo, prTempo);
 	}
 }

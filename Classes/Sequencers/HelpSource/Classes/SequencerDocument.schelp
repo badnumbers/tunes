@@ -30,15 +30,6 @@ The pattern source text to insert.
 RETURNS::
 This instance.
 
-METHOD:: writeChipOrigins
-Replaces the last CODE::Seq().arrange:: call in the document with one built from CODE::origins::. When there is no such call, appends a trailer. The rest of the file is left as it is. Keys are sorted by CODE::asString::. An id whose string contains a space is written in single quotes. The text is not evaluated.
-
-ARGUMENT:: origins
-A LINK::Classes/Dictionary:: of LINK::Classes/Symbol:: to LINK::Classes/Point::.
-
-RETURNS::
-This instance.
-
 METHOD:: selectPattern
 Selects the last CODE::Seq().addMidiSequence:: call whose first argument is CODE::id::. The selection is made in this document and the document is left where it is. When no such call is in the text, posts a warning naming that id.
 
@@ -48,4 +39,13 @@ A LINK::Classes/Symbol::.
 RETURNS::
 This instance.
 
-PRIVATE:: init, prIndexForInsert, prArrangeCall, prArrangeCallRange, prArrangeTrailer, prEndOfCall, prIsIdentChar, prIsWhitespace, prPatternCallRange, prPatternNotFoundWarning, prReadSymbol, prReplaceRange, prSymbolText, prTextWithChipOrigins
+METHOD:: writeChipOrigins
+Replaces the last CODE::Seq().arrange:: call in the document with one built from CODE::origins::. When there is no such call, appends a trailer. The rest of the file is left as it is. Keys are sorted by CODE::asString::. An id whose string contains a space is written in single quotes. The text is not evaluated.
+
+ARGUMENT:: origins
+A LINK::Classes/Dictionary:: of LINK::Classes/Symbol:: to LINK::Classes/Point::.
+
+RETURNS::
+This instance.
+
+PRIVATE:: init, prArrangeCall, prArrangeCallRange, prArrangeTrailer, prEndOfCall, prIndexForInsert, prIsIdentChar, prIsWhitespace, prPatternCallRange, prPatternNotFoundWarning, prReadSymbol, prReplaceRange, prSymbolText, prTextWithChipOrigins

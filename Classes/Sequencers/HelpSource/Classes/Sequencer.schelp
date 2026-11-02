@@ -25,6 +25,15 @@ Closing CODE::document:: stops playback, closes the GUI if it is open, and drops
 
 INSTANCEMETHODS::
 
+METHOD::acquirePlaybackClock
+Returns the shared playback LINK::Classes/TempoClock::, creating it when no holder is using it. A new clock is set to beat 0 before it is returned. A later call while that clock exists returns the same clock and does not reset it.
+
+ARGUMENT::holder
+The object that needs the clock. Must not be CODE::nil::. A playing LINK::Classes/RealTimePlayer:: passes itself. A recording LINK::Classes/PianoRoll:: passes itself, so recording and playback on the same roll can overlap. Passing the same holder again does not create another clock.
+
+RETURNS::
+An LINK::Classes/Event:: with CODE::\clock:: and CODE::\isTransportStart::. CODE::\isTransportStart:: is CODE::true:: only when this call created the clock.
+
 METHOD::addGlobalPreKeys
 Adds a set of pattern keys which are added EMPHASIS::before:: a pattern. This is generally done to provide defaults which can be overridden in the patterns provided by LINK::#-addMidiSequence::.
 
@@ -81,30 +90,6 @@ CODE::
 ]);
 ::
 
-METHOD::acquirePlaybackClock
-Returns the shared playback LINK::Classes/TempoClock::, creating it when no holder is using it. A new clock is set to beat 0 before it is returned. A later call while that clock exists returns the same clock and does not reset it.
-
-ARGUMENT::holder
-The object that needs the clock. Must not be CODE::nil::. A playing LINK::Classes/RealTimePlayer:: passes itself. A recording LINK::Classes/PianoRoll:: passes itself, so recording and playback on the same roll can overlap. Passing the same holder again does not create another clock.
-
-RETURNS::
-An LINK::Classes/Event:: with CODE::\clock:: and CODE::\isTransportStart::. CODE::\isTransportStart:: is CODE::true:: only when this call created the clock.
-
-METHOD::play
-Plays the specified sequence on the shared playback clock. When this play creates the clock, that clock is at beat 0. When another holder already has the clock, this play joins it. The pattern's hold is released when playback stops. When a pattern ends on its own, the hold lasts until its sounding notes have received their note-offs. CODE::TempoClock.default:: is not used.
-
-ARGUMENT::sequenceId
-A LINK::Classes/Symbol:: which is the ID of the sequence to play (see (see LINK::#-addMidiSequence::).
-
-ARGUMENT::loop
-Whether or not the sequence should be looped indefinitely.
-
-METHOD::releasePlaybackClock
-Removes a holder from the shared playback clock. When the last holder releases, the clock is stopped and discarded. CODE::TempoClock.default:: is not stopped.
-
-ARGUMENT::holder
-The same object passed to LINK::#-acquirePlaybackClock::. Must not be CODE::nil::. Releasing a holder that is not currently acquired leaves an existing clock running.
-
 METHOD::arrange
 Replaces the chip-origin map. Playback ignores this map. Dependants are notified with CODE::\arrangement:: and a copy of the map. Ids that have no sequence are kept.
 
@@ -140,6 +125,21 @@ A LINK::Classes/Symbol::.
 
 ARGUMENT::origin
 A LINK::Classes/Point::, the parent-relative top-left.
+
+METHOD::play
+Plays the specified sequence on the shared playback clock. When this play creates the clock, that clock is at beat 0. When another holder already has the clock, this play joins it. The pattern's hold is released when playback stops. When a pattern ends on its own, the hold lasts until its sounding notes have received their note-offs. CODE::TempoClock.default:: is not used.
+
+ARGUMENT::sequenceId
+A LINK::Classes/Symbol:: which is the ID of the sequence to play (see (see LINK::#-addMidiSequence::).
+
+ARGUMENT::loop
+Whether or not the sequence should be looped indefinitely.
+
+METHOD::releasePlaybackClock
+Removes a holder from the shared playback clock. When the last holder releases, the clock is stopped and discarded. CODE::TempoClock.default:: is not stopped.
+
+ARGUMENT::holder
+The same object passed to LINK::#-acquirePlaybackClock::. Must not be CODE::nil::. Releasing a holder that is not currently acquired leaves an existing clock running.
 
 METHOD::sequenceIds
 The ids of sequences stored by LINK::#-addMidiSequence::.

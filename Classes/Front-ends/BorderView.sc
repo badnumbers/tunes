@@ -1,7 +1,7 @@
 BorderView : SCViewHolder {
 	var backgroundColour;
-	var prBorderColour;
 	var <>borderRadius = 0;
+	var prBorderColour;
 	var prBorderWidth = 0;
 	var prDrawView;
 	var prView;

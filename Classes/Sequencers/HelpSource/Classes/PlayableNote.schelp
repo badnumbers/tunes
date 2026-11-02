@@ -45,6 +45,15 @@ Clips CODE::value:: to CODE::0::–CODE::1:: and stores the MIDI velocity CODE::
 ARGUMENT:: value
 A LINK::Classes/SimpleNumber:: amplitude. Values outside CODE::0:: to CODE::1:: are clipped silently.
 
+METHOD:: applyLegato
+Sets CODE::stopTime:: to CODE::startTime + (nextOnsetTime - startTime) * legato::. CODE::legato:: must be greater than CODE::0::; values greater than CODE::1:: are allowed and make the note overlap the next onset. CODE::nextOnsetTime:: must be later than CODE::startTime::.
+
+ARGUMENT:: legato
+A LINK::Classes/SimpleNumber:: proportion of the interval from this note's start to CODE::nextOnsetTime::.
+
+ARGUMENT:: nextOnsetTime
+The beat of the next distinct onset, or the loop end when this is the last note group.
+
 METHOD:: isPlayable
 Whether this note has a stop time and can take part in playback queries.
 
@@ -80,6 +89,15 @@ The current position of the playhead, in beats.
 RETURNS::
 CODE::true:: or CODE::false::.
 
+METHOD:: startTime
+The beat at which the note starts. Setting replaces the stored start time.
+
+ARGUMENT:: value
+When setting, the start time in beats.
+
+RETURNS::
+A LINK::Classes/SimpleNumber::.
+
 METHOD:: startsInSlice
 Whether the note's start time falls within a scheduling slice.
 
@@ -94,14 +112,14 @@ The end of the slice, in beats (exclusive).
 RETURNS::
 CODE::true:: or CODE::false::.
 
-METHOD:: startTime
-The beat at which the note starts. Setting replaces the stored start time.
+METHOD:: stopTime
+The beat at which the note stops. Setting replaces the stored stop time and makes the note playable.
 
 ARGUMENT:: value
-When setting, the start time in beats.
+When setting, the stop time in beats.
 
 RETURNS::
-A LINK::Classes/SimpleNumber::.
+A LINK::Classes/SimpleNumber::, or CODE::nil:: if not yet set.
 
 METHOD:: stopsInSlice
 Whether the note's stop time falls within a scheduling slice.
@@ -117,15 +135,6 @@ The end of the slice, in beats (inclusive for the stop time).
 RETURNS::
 CODE::true:: or CODE::false::.
 
-METHOD:: stopTime
-The beat at which the note stops. Setting replaces the stored stop time and makes the note playable.
-
-ARGUMENT:: value
-When setting, the stop time in beats.
-
-RETURNS::
-A LINK::Classes/SimpleNumber::, or CODE::nil:: if not yet set.
-
 METHOD:: velocity
 The MIDI velocity. Setting replaces the stored velocity.
 
@@ -134,15 +143,6 @@ When setting, an LINK::Classes/Integer:: MIDI velocity.
 
 RETURNS::
 An LINK::Classes/Integer::.
-
-METHOD:: applyLegato
-Sets CODE::stopTime:: to CODE::startTime + (nextOnsetTime - startTime) * legato::. CODE::legato:: must be greater than CODE::0::; values greater than CODE::1:: are allowed and make the note overlap the next onset. CODE::nextOnsetTime:: must be later than CODE::startTime::.
-
-ARGUMENT:: legato
-A LINK::Classes/SimpleNumber:: proportion of the interval from this note's start to CODE::nextOnsetTime::.
-
-ARGUMENT:: nextOnsetTime
-The beat of the next distinct onset, or the loop end when this is the last note group.
 
 PRIVATE:: init
 

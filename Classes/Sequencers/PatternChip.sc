@@ -1,14 +1,32 @@
 PatternChip : BorderView {
 	classvar prPlayingChip;
 
-	var prSequenceId;
-	var prSequencer;
+	var prArmClick = false;
+	var prClickAction;
+	var prDownParent;
 	var prDragAction;
 	var prDragging = false;
 	var prGrab;
-	var prDownParent;
-	var prArmClick = false;
-	var prClickAction;
+	var prSequenceId;
+	var prSequencer;
+
+	clickAction_ {
+		|action|
+		Validator.validateMethodParameterType(action, Function, "action", "PatternChip", "clickAction_", allowNil: true);
+		prClickAction = action;
+	}
+
+	dragAction_ {
+		|action|
+		Validator.validateMethodParameterType(action, Function, "action", "PatternChip", "dragAction_", allowNil: true);
+		prDragAction = action;
+	}
+
+	moveTo {
+		|origin|
+		Validator.validateMethodParameterType(origin, Point, "origin", "PatternChip", "moveTo");
+		this.view.bounds = this.view.bounds.moveTo(origin.x, origin.y);
+	}
 
 	*new {
 		|parent, sequencer, sequenceId|
@@ -108,23 +126,5 @@ PatternChip : BorderView {
 			this.borderWidth_(1);
 			prPlayingChip = this;
 		});
-	}
-
-	clickAction_ {
-		|action|
-		Validator.validateMethodParameterType(action, Function, "action", "PatternChip", "clickAction_", allowNil: true);
-		prClickAction = action;
-	}
-
-	dragAction_ {
-		|action|
-		Validator.validateMethodParameterType(action, Function, "action", "PatternChip", "dragAction_", allowNil: true);
-		prDragAction = action;
-	}
-
-	moveTo {
-		|origin|
-		Validator.validateMethodParameterType(origin, Point, "origin", "PatternChip", "moveTo");
-		this.view.bounds = this.view.bounds.moveTo(origin.x, origin.y);
 	}
 }

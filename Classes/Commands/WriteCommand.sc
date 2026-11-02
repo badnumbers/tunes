@@ -1,6 +1,6 @@
 WriteCommand : Command {
-	var prSequencerDocument;
 	var prSequencer;
+	var prSequencerDocument;
 
 	execute {
 		|args|

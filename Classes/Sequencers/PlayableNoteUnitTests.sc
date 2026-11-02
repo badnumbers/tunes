@@ -1,16 +1,41 @@
 PlayableNoteUnitTests : UnitTest {
-	test_shouldBePlaying_playHeadBeforeStartTime_false {
-		// Arrange
-		var playableNote, shouldBePlaying;
-		playableNote = PlayableNote(4,64,64);
-		playableNote.stopTime_(5);
+	test_applyLegato_greaterThanOne_overlapsNextOnset {
+		var playableNote;
+		playableNote = PlayableNote(1, 64, 64);
+		playableNote.applyLegato(1.5, 3);
+		this.assertEquals(playableNote.stopTime, 4);
+	}
 
-		// Act
-		shouldBePlaying = playableNote.shouldBePlaying(3.9);
+	test_applyLegato_rejectsNextOnsetNotAfterStart {
+		var playableNote;
+		playableNote = PlayableNote(4, 64, 64);
+		this.assertException({
+			playableNote.applyLegato(0.5, 4);
+		}, Error);
+	}
 
-		// Assert
-		this.assertEquals(shouldBePlaying,false);
-    }
+	test_applyLegato_rejectsNonPositiveLegato {
+		var playableNote;
+		playableNote = PlayableNote(0, 64, 64);
+		this.assertException({
+			playableNote.applyLegato(0, 1);
+		}, Error);
+	}
+
+	test_applyLegato_setsStopTimeFromIntervalTimesLegato {
+		var playableNote;
+		playableNote = PlayableNote(0, 64, 64);
+		playableNote.applyLegato(0.5, 2);
+		this.assertEquals(playableNote.stopTime, 1);
+	}
+
+	test_partNumber_defaultsToOneAndStoresAnInteger {
+		var playableNote;
+		playableNote = PlayableNote(0, 36, 100);
+		this.assertEquals(playableNote.partNumber, 1, "a new note is part 1");
+		playableNote.partNumber_(36);
+		this.assertEquals(playableNote.partNumber, 36, "the part can be the MIDI note number");
+	}
 
 	test_shouldBePlaying_noteNotPlayable_false {
 		// Arrange
@@ -19,45 +44,6 @@ PlayableNoteUnitTests : UnitTest {
 
 		// Act
 		shouldBePlaying = playableNote.shouldBePlaying(4.5);
-
-		// Assert
-		this.assertEquals(shouldBePlaying,false);
-    }
-
-	test_shouldBePlaying_playHeadAtStartTime_true {
-		// Arrange
-		var playableNote, shouldBePlaying;
-		playableNote = PlayableNote(4,64,64);
-		playableNote.stopTime_(5);
-
-		// Act
-		shouldBePlaying = playableNote.shouldBePlaying(4);
-
-		// Assert
-		this.assertEquals(shouldBePlaying,true);
-    }
-
-	test_shouldBePlaying_playHeadBetweenStartAndStopTime_true {
-		// Arrange
-		var playableNote, shouldBePlaying;
-		playableNote = PlayableNote(4,64,64);
-		playableNote.stopTime_(5);
-
-		// Act
-		shouldBePlaying = playableNote.shouldBePlaying(4.5);
-
-		// Assert
-		this.assertEquals(shouldBePlaying,true);
-    }
-
-	test_shouldBePlaying_playHeadAtStopTime_false {
-		// Arrange
-		var playableNote, shouldBePlaying;
-		playableNote = PlayableNote(4,64,64);
-		playableNote.stopTime_(5);
-
-		// Act
-		shouldBePlaying = playableNote.shouldBePlaying(5);
 
 		// Assert
 		this.assertEquals(shouldBePlaying,false);
@@ -76,62 +62,62 @@ PlayableNoteUnitTests : UnitTest {
 		this.assertEquals(shouldBePlaying,false);
     }
 
+	test_shouldBePlaying_playHeadAtStartTime_true {
+		// Arrange
+		var playableNote, shouldBePlaying;
+		playableNote = PlayableNote(4,64,64);
+		playableNote.stopTime_(5);
+
+		// Act
+		shouldBePlaying = playableNote.shouldBePlaying(4);
+
+		// Assert
+		this.assertEquals(shouldBePlaying,true);
+    }
+
+	test_shouldBePlaying_playHeadAtStopTime_false {
+		// Arrange
+		var playableNote, shouldBePlaying;
+		playableNote = PlayableNote(4,64,64);
+		playableNote.stopTime_(5);
+
+		// Act
+		shouldBePlaying = playableNote.shouldBePlaying(5);
+
+		// Assert
+		this.assertEquals(shouldBePlaying,false);
+    }
+
+	test_shouldBePlaying_playHeadBeforeStartTime_false {
+		// Arrange
+		var playableNote, shouldBePlaying;
+		playableNote = PlayableNote(4,64,64);
+		playableNote.stopTime_(5);
+
+		// Act
+		shouldBePlaying = playableNote.shouldBePlaying(3.9);
+
+		// Assert
+		this.assertEquals(shouldBePlaying,false);
+    }
+
+	test_shouldBePlaying_playHeadBetweenStartAndStopTime_true {
+		// Arrange
+		var playableNote, shouldBePlaying;
+		playableNote = PlayableNote(4,64,64);
+		playableNote.stopTime_(5);
+
+		// Act
+		shouldBePlaying = playableNote.shouldBePlaying(4.5);
+
+		// Assert
+		this.assertEquals(shouldBePlaying,true);
+    }
+
 	test_startsInSlice_noteNotPlayable_false {
 		// Arrange
 		var playableNote, startsInSlice;
 		playableNote = PlayableNote(4,64,64);
-
-		// Act
-		startsInSlice = playableNote.startsInSlice(4, 5);
-
-		// Assert
-		this.assertEquals(startsInSlice,false);
-    }
-
-	test_startsInSlice_startTimeBeforeSlice_false {
-		// Arrange
-		var playableNote, startsInSlice;
-		playableNote = PlayableNote(4,64,64);
-		playableNote.stopTime_(5);
-
-		// Act
-		startsInSlice = playableNote.startsInSlice(5, 6);
-
-		// Assert
-		this.assertEquals(startsInSlice,false);
-    }
-
-	test_startsInSlice_startTimeAtSliceStart_true {
-		// Arrange
-		var playableNote, startsInSlice;
-		playableNote = PlayableNote(4,64,64);
-		playableNote.stopTime_(5);
-
-		// Act
-		startsInSlice = playableNote.startsInSlice(4, 5);
-
-		// Assert
-		this.assertEquals(startsInSlice,true);
-    }
-
-	test_startsInSlice_startTimeInsideSlice_true {
-		// Arrange
-		var playableNote, startsInSlice;
-		playableNote = PlayableNote(4,64,64);
-		playableNote.stopTime_(5);
-
-		// Act
-		startsInSlice = playableNote.startsInSlice(3, 6);
-
-		// Assert
-		this.assertEquals(startsInSlice,true);
-    }
-
-	test_startsInSlice_startTimeAtSliceStop_false {
-		// Arrange
-		var playableNote, startsInSlice;
-		playableNote = PlayableNote(5,64,64);
-		playableNote.stopTime_(6);
 
 		// Act
 		startsInSlice = playableNote.startsInSlice(4, 5);
@@ -153,6 +139,58 @@ PlayableNoteUnitTests : UnitTest {
 		this.assertEquals(startsInSlice,false);
     }
 
+	test_startsInSlice_startTimeAtSliceStart_true {
+		// Arrange
+		var playableNote, startsInSlice;
+		playableNote = PlayableNote(4,64,64);
+		playableNote.stopTime_(5);
+
+		// Act
+		startsInSlice = playableNote.startsInSlice(4, 5);
+
+		// Assert
+		this.assertEquals(startsInSlice,true);
+    }
+
+	test_startsInSlice_startTimeAtSliceStop_false {
+		// Arrange
+		var playableNote, startsInSlice;
+		playableNote = PlayableNote(5,64,64);
+		playableNote.stopTime_(6);
+
+		// Act
+		startsInSlice = playableNote.startsInSlice(4, 5);
+
+		// Assert
+		this.assertEquals(startsInSlice,false);
+    }
+
+	test_startsInSlice_startTimeBeforeSlice_false {
+		// Arrange
+		var playableNote, startsInSlice;
+		playableNote = PlayableNote(4,64,64);
+		playableNote.stopTime_(5);
+
+		// Act
+		startsInSlice = playableNote.startsInSlice(5, 6);
+
+		// Assert
+		this.assertEquals(startsInSlice,false);
+    }
+
+	test_startsInSlice_startTimeInsideSlice_true {
+		// Arrange
+		var playableNote, startsInSlice;
+		playableNote = PlayableNote(4,64,64);
+		playableNote.stopTime_(5);
+
+		// Act
+		startsInSlice = playableNote.startsInSlice(3, 6);
+
+		// Assert
+		this.assertEquals(startsInSlice,true);
+    }
+
 	test_stopsInSlice_noteNotPlayable_false {
 		// Arrange
 		var playableNote, stopsInSlice;
@@ -165,14 +203,14 @@ PlayableNoteUnitTests : UnitTest {
 		this.assertEquals(stopsInSlice,false);
     }
 
-	test_stopsInSlice_stopTimeBeforeSlice_false {
+	test_stopsInSlice_stopTimeAfterSlice_false {
 		// Arrange
 		var playableNote, stopsInSlice;
-		playableNote = PlayableNote(3,64,64);
-		playableNote.stopTime_(4);
+		playableNote = PlayableNote(4,64,64);
+		playableNote.stopTime_(6);
 
 		// Act
-		stopsInSlice = playableNote.stopsInSlice(5, 6);
+		stopsInSlice = playableNote.stopsInSlice(4, 5);
 
 		// Assert
 		this.assertEquals(stopsInSlice,false);
@@ -191,19 +229,6 @@ PlayableNoteUnitTests : UnitTest {
 		this.assertEquals(stopsInSlice,false);
     }
 
-	test_stopsInSlice_stopTimeInsideSlice_true {
-		// Arrange
-		var playableNote, stopsInSlice;
-		playableNote = PlayableNote(4,64,64);
-		playableNote.stopTime_(5);
-
-		// Act
-		stopsInSlice = playableNote.stopsInSlice(4, 6);
-
-		// Assert
-		this.assertEquals(stopsInSlice,true);
-    }
-
 	test_stopsInSlice_stopTimeAtSliceStop_true {
 		// Arrange
 		var playableNote, stopsInSlice;
@@ -217,17 +242,30 @@ PlayableNoteUnitTests : UnitTest {
 		this.assertEquals(stopsInSlice,true);
     }
 
-	test_stopsInSlice_stopTimeAfterSlice_false {
+	test_stopsInSlice_stopTimeBeforeSlice_false {
 		// Arrange
 		var playableNote, stopsInSlice;
-		playableNote = PlayableNote(4,64,64);
-		playableNote.stopTime_(6);
+		playableNote = PlayableNote(3,64,64);
+		playableNote.stopTime_(4);
 
 		// Act
-		stopsInSlice = playableNote.stopsInSlice(4, 5);
+		stopsInSlice = playableNote.stopsInSlice(5, 6);
 
 		// Assert
 		this.assertEquals(stopsInSlice,false);
+    }
+
+	test_stopsInSlice_stopTimeInsideSlice_true {
+		// Arrange
+		var playableNote, stopsInSlice;
+		playableNote = PlayableNote(4,64,64);
+		playableNote.stopTime_(5);
+
+		// Act
+		stopsInSlice = playableNote.stopsInSlice(4, 6);
+
+		// Assert
+		this.assertEquals(stopsInSlice,true);
     }
 
 	test_velocity_storesInteger {
@@ -235,43 +273,5 @@ PlayableNoteUnitTests : UnitTest {
 		playableNote = PlayableNote(4, 64, 64);
 		playableNote.velocity_(100);
 		this.assertEquals(playableNote.velocity, 100);
-	}
-
-	test_applyLegato_setsStopTimeFromIntervalTimesLegato {
-		var playableNote;
-		playableNote = PlayableNote(0, 64, 64);
-		playableNote.applyLegato(0.5, 2);
-		this.assertEquals(playableNote.stopTime, 1);
-	}
-
-	test_applyLegato_greaterThanOne_overlapsNextOnset {
-		var playableNote;
-		playableNote = PlayableNote(1, 64, 64);
-		playableNote.applyLegato(1.5, 3);
-		this.assertEquals(playableNote.stopTime, 4);
-	}
-
-	test_applyLegato_rejectsNonPositiveLegato {
-		var playableNote;
-		playableNote = PlayableNote(0, 64, 64);
-		this.assertException({
-			playableNote.applyLegato(0, 1);
-		}, Error);
-	}
-
-	test_applyLegato_rejectsNextOnsetNotAfterStart {
-		var playableNote;
-		playableNote = PlayableNote(4, 64, 64);
-		this.assertException({
-			playableNote.applyLegato(0.5, 4);
-		}, Error);
-	}
-
-	test_partNumber_defaultsToOneAndStoresAnInteger {
-		var playableNote;
-		playableNote = PlayableNote(0, 36, 100);
-		this.assertEquals(playableNote.partNumber, 1, "a new note is part 1");
-		playableNote.partNumber_(36);
-		this.assertEquals(playableNote.partNumber, 36, "the part can be the MIDI note number");
 	}
 }

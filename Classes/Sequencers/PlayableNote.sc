@@ -1,9 +1,9 @@
 PlayableNote {
 	var prNoteNumber;
+	var prPartNumber = 1;
 	var prStartTime;
 	var prStopTime;
 	var prVelocity;
-	var prPartNumber = 1;
 
 	amp_ {
 		|value|
@@ -11,6 +11,19 @@ PlayableNote {
 		Validator.validateMethodParameterType(value, SimpleNumber, "value", "PlayableNote", "amp_");
 		clipped = value.clip(0, 1);
 		this.velocity_(clipped.linlin(0, 1, 0, 127).round.asInteger);
+	}
+
+	applyLegato {
+		|legato, nextOnsetTime|
+		Validator.validateMethodParameterType(legato, SimpleNumber, "legato", "PlayableNote", "applyLegato");
+		Validator.validateMethodParameterType(nextOnsetTime, SimpleNumber, "nextOnsetTime", "PlayableNote", "applyLegato");
+		if (legato <= 0, {
+			Error(format("The legato parameter provided to PlayableNote.applyLegato must be greater than 0. The value % was provided.", legato)).throw;
+		});
+		if (nextOnsetTime <= prStartTime, {
+			Error(format("The nextOnsetTime parameter provided to PlayableNote.applyLegato must be later than startTime (%). The value % was provided.", prStartTime, nextOnsetTime)).throw;
+		});
+		prStopTime = prStartTime + ((nextOnsetTime - prStartTime) * legato);
 	}
 
 	init {
@@ -61,15 +74,6 @@ PlayableNote {
 		});
 	}
 
-	startsInSlice {
-		|sliceStartTime, sliceStopTime|
-		if (this.isPlayable,{
-			if ((prStartTime >= sliceStartTime) && (prStartTime < sliceStopTime), {^true}, {^false});
-		},{
-			^false
-		});
-	}
-
 	startTime {
 		^prStartTime;
 	}
@@ -79,10 +83,10 @@ PlayableNote {
 		prStartTime = value;
 	}
 
-	stopsInSlice {
+	startsInSlice {
 		|sliceStartTime, sliceStopTime|
 		if (this.isPlayable,{
-			if ((prStopTime > sliceStartTime) && (prStopTime <= sliceStopTime), {^true}, {^false});
+			if ((prStartTime >= sliceStartTime) && (prStartTime < sliceStopTime), {^true}, {^false});
 		},{
 			^false
 		});
@@ -97,6 +101,15 @@ PlayableNote {
 		prStopTime = value;
 	}
 
+	stopsInSlice {
+		|sliceStartTime, sliceStopTime|
+		if (this.isPlayable,{
+			if ((prStopTime > sliceStartTime) && (prStopTime <= sliceStopTime), {^true}, {^false});
+		},{
+			^false
+		});
+	}
+
 	velocity {
 		^prVelocity;
 	}
@@ -105,18 +118,5 @@ PlayableNote {
 		|value|
 		Validator.validateMethodParameterType(value, Integer, "value", "PlayableNote", "velocity_");
 		prVelocity = value;
-	}
-
-	applyLegato {
-		|legato, nextOnsetTime|
-		Validator.validateMethodParameterType(legato, SimpleNumber, "legato", "PlayableNote", "applyLegato");
-		Validator.validateMethodParameterType(nextOnsetTime, SimpleNumber, "nextOnsetTime", "PlayableNote", "applyLegato");
-		if (legato <= 0, {
-			Error(format("The legato parameter provided to PlayableNote.applyLegato must be greater than 0. The value % was provided.", legato)).throw;
-		});
-		if (nextOnsetTime <= prStartTime, {
-			Error(format("The nextOnsetTime parameter provided to PlayableNote.applyLegato must be later than startTime (%). The value % was provided.", prStartTime, nextOnsetTime)).throw;
-		});
-		prStopTime = prStartTime + ((nextOnsetTime - prStartTime) * legato);
 	}
 }

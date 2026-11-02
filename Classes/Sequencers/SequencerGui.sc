@@ -10,6 +10,18 @@ SequencerGui {
 	var prSynthDesk;
 	var prWindow;
 
+	close {
+		if (prWindow.notNil, {
+			prWindow.close;
+		});
+	}
+
+	front {
+		if (prWindow.notNil, {
+			prWindow.front;
+		});
+	}
+
 	init {
 		|sequencer,devMode|
 		var window, stackLayout, midiIndicator, synthsButton, drumsButton, settingsButton, arrangeButton, recordButton, recordPage, drumProgrammer;
@@ -168,18 +180,6 @@ SequencerGui {
 			});
 		});
 		^this;
-	}
-
-	close {
-		if (prWindow.notNil, {
-			prWindow.close;
-		});
-	}
-
-	front {
-		if (prWindow.notNil, {
-			prWindow.front;
-		});
 	}
 
 	*new {

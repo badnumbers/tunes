@@ -1,8 +1,8 @@
 Arranger : SCViewHolder {
-	var prSequenceNames;
-	var prSequencer;
 	var prChips;
 	var prPinned;
+	var prSequenceNames;
+	var prSequencer;
 	var prSequencerDocument;
 
 	addSequence {
@@ -145,5 +145,4 @@ Arranger : SCViewHolder {
 	prViewReady {
 		^(this.view.bounds.width > 0 and: { this.view.bounds.height > 0 });
 	}
-
 }

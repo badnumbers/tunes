@@ -9,6 +9,7 @@ DrumProgrammer : SCViewHolder {
 	var prLabelFont;
 	var prNotes;
 	var prPalette;
+	var prRealTimePlayer;
 	var prRemoveDrumSoundButton;
 	var prRemoveDrumSoundEnabled = true;
 	var prRemoveStepButton;
@@ -17,14 +18,13 @@ DrumProgrammer : SCViewHolder {
 	var prRowSteps;
 	var prRowViews;
 	var prSelectedRow;
-	var prRealTimePlayer;
 	var prSequencer;
-	var prSyncTo = 4;
+	var prSequencerDocument;
 	var prSquareSize = 48;
 	var prStepBeats = 0.25;
 	var prStepCount;
+	var prSyncTo = 4;
 	var prVelocity = 100;
-	var prSequencerDocument;
 
 	init {
 		|sequencer, sequencerDocument|
@@ -392,18 +392,6 @@ DrumProgrammer : SCViewHolder {
 		^(columnIndex * prStepBeats);
 	}
 
-	prPreviewDrum {
-		|noteNumber|
-		var midi;
-		if (noteNumber.isNil, { ^this });
-		midi = Setup.midi;
-		midi.noteOn(chan: prRealTimePlayer.midiChannel, note: noteNumber, veloc: 100);
-		TempoClock.default.sched(prHitDuration, {
-			midi.noteOff(chan: prRealTimePlayer.midiChannel, note: noteNumber, veloc: 100);
-			nil
-		});
-	}
-
 	prPlay {
 		if (prIsPlaying, { ^this });
 		prRealTimePlayer.sequence_(prNotes);
@@ -417,6 +405,18 @@ DrumProgrammer : SCViewHolder {
 			prRealTimePlayer.play();
 		});
 		prIsPlaying = true;
+	}
+
+	prPreviewDrum {
+		|noteNumber|
+		var midi;
+		if (noteNumber.isNil, { ^this });
+		midi = Setup.midi;
+		midi.noteOn(chan: prRealTimePlayer.midiChannel, note: noteNumber, veloc: 100);
+		TempoClock.default.sched(prHitDuration, {
+			midi.noteOff(chan: prRealTimePlayer.midiChannel, note: noteNumber, veloc: 100);
+			nil
+		});
 	}
 
 	prRefreshRemoveButtons {
@@ -466,15 +466,6 @@ DrumProgrammer : SCViewHolder {
 		this.prRefreshRemoveButtons;
 	}
 
-	prSetLabelPressed {
-		|label, isPressed|
-		if (isPressed, {
-			label.background_(prPalette.colour3);
-		}, {
-			label.background_(prPalette.colour1);
-		});
-	}
-
 	prSelectRow {
 		|rowView|
 		var previous, wasSelected;
@@ -514,15 +505,20 @@ DrumProgrammer : SCViewHolder {
 		^isEnabled;
 	}
 
+	prSetLabelPressed {
+		|label, isPressed|
+		if (isPressed, {
+			label.background_(prPalette.colour3);
+		}, {
+			label.background_(prPalette.colour1);
+		});
+	}
+
 	prSortedDrumSoundNames {
 		^prDrumSounds.keys.asArray.sort({
 			|a, b|
 			prDrumSounds[a] < prDrumSounds[b]
 		});
-	}
-
-	stop {
-		this.prStop;
 	}
 
 	prStop {
@@ -580,5 +576,9 @@ DrumProgrammer : SCViewHolder {
 		});
 		end = prStepCount * prStepBeats;
 		prRealTimePlayer.loopEnd_(end);
+	}
+
+	stop {
+		this.prStop;
 	}
 }

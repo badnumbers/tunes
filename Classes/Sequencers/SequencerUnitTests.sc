@@ -1,4 +1,11 @@
 SequencerUnitTests : BNUnitTest {
+	prCloseFixture {
+		|document|
+		if (document.onClose.notNil, {
+			document.onClose.value(document);
+		});
+	}
+
 	test_acquirePlaybackClock_sharesClockUntilLastHolderReleases {
 		var sequencer, player, recording, first, second, kept, fresh;
 		sequencer = Sequencer();
@@ -29,82 +36,47 @@ SequencerUnitTests : BNUnitTest {
 		this.assertEquals(fresh.clock.isRunning, false, "releasing the last holder stops the new clock");
 	}
 
-	test_tempo__notifiesDependants {
+	test_arrange_storesPointAndReplacesMap {
 		var dependant, sequencer;
 		sequencer = Sequencer();
-		dependant = SequencerTempoDependant();
+		dependant = SequencerArrangementDependant();
 		sequencer.addDependant(dependant);
-		sequencer.tempo_(2);
-		this.assertEquals(dependant.receivedWhat, \tempo, "writing the current tempo still notifies");
-		this.assertEquals(dependant.receivedTempo, 2, "the notification carries the current tempo");
-		sequencer.tempo_(3);
-		this.assertEquals(dependant.receivedWhat, \tempo, "a changed tempo notifies");
-		this.assertEquals(dependant.receivedTempo, 3, "the notification carries the new tempo");
-		this.assertEquals(sequencer.tempo, 3, "the sequencer stores the new tempo");
+		sequencer.arrange((\missing: 40@30));
+		this.assertEquals(sequencer.chipOrigin(\missing), 40@30, "arrange stores a point for an id with no sequence");
+		this.assertEquals(dependant.receivedWhat, \arrangement, "arrange notifies dependants");
+		this.assertEquals(dependant.receivedOrigins[\missing], 40@30, "the notification carries the stored point");
+		sequencer.arrange((\other: 1@2));
+		this.assertEquals(sequencer.chipOrigin(\missing), nil, "a later arrange drops ids that are not in the new map");
+		this.assertEquals(sequencer.chipOrigin(\other), 1@2, "a later arrange stores the new map");
 		sequencer.removeDependant(dependant);
 	}
 
-	test_play_stop_releasesSharedClock {
-		var clock, probe, seen, sequencer;
+	test_chipOrigins_copyDoesNotMutateSequencer {
+		var copy, sequencer;
 		sequencer = Sequencer();
-		probe = ();
-		sequencer.play(\arp);
-		seen = sequencer.acquirePlaybackClock(probe);
-		clock = seen.clock;
-		// The pattern is scheduled immediately. Move it into the future so this test can stop it before the sequence is read.
-		clock.beats_(clock.beats - 100000);
-		this.assertEquals(seen.isTransportStart, false, "pattern playback creates the shared clock");
-		this.assert(clock.isKindOf(TempoClock), "pattern playback uses a TempoClock");
-		sequencer.releasePlaybackClock(probe);
-		sequencer.stop;
-		0.05.wait;
-		this.assertEquals(clock.isRunning, false, "stopping pattern playback releases the clock");
+		sequencer.placeChip(\arp, 10@20);
+		copy = sequencer.chipOrigins;
+		copy.put(\verse, 1@1);
+		this.assertEquals(sequencer.chipOrigin(\verse), nil, "changing the returned dictionary does not change the sequencer");
+		this.assertEquals(sequencer.chipOrigin(\arp), 10@20, "the stored point stays in place");
 	}
 
-	test_play_sharesClockWithRealTimePlayerUntilLastStops {
-		var clock, player, probe, seen, sequencer;
-		sequencer = Sequencer();
-		probe = ();
-		sequencer.play(\arp);
-		seen = sequencer.acquirePlaybackClock(probe);
-		clock = seen.clock;
-		// The pattern is scheduled immediately. Move it into the future so this test can stop it before the sequence is read.
-		clock.beats_(clock.beats - 100000);
-		sequencer.releasePlaybackClock(probe);
-		player = RealTimePlayer(midiOut: (), sequencer: sequencer);
-		player.sequence_([]);
-		player.play(startNow: true);
-		seen = sequencer.acquirePlaybackClock(probe);
-		this.assert(seen.clock === clock, "pattern playback and the player share one clock");
-		this.assertEquals(seen.isTransportStart, false, "the player joins the pattern clock");
-		sequencer.releasePlaybackClock(probe);
-		sequencer.stop;
-		seen = sequencer.acquirePlaybackClock(probe);
-		this.assert(seen.clock === clock, "stopping the pattern keeps the clock while the player holds it");
-		this.assertEquals(clock.isRunning, true, "the clock keeps running after the pattern stops");
-		sequencer.releasePlaybackClock(probe);
-		player.stop;
-		0.25.wait;
-		this.assertEquals(clock.isRunning, false, "the clock stops when the player releases it");
-	}
-
-	test_stop_noteOffsSoundingMidiNotes {
-		var log, sequencer;
-		log = SequencerNoteOffLog();
-		sequencer = Sequencer();
-		sequencer.prTrackMidiEvent((
-			midicmd: \noteOn,
-			midiout: log,
-			chan: 2,
-			midinote: [60, 64],
-			amp: 1,
-			sustain: 10,
-			dur: 1
-		));
-		sequencer.stop;
-		this.assertEquals(log.messages.size, 2, "stop sends a note-off for each sounding note");
-		this.assertEquals(log.messages[0], [2, 60, 127], "the first note-off matches the first sounding note");
-		this.assertEquals(log.messages[1], [2, 64, 127], "the second note-off matches the second sounding note");
+	test_documentOnClose_removesSequencerAndRunsPreviousHandler {
+		var document, first, previousRan, second;
+		document = SequencerDocumentFixture.new;
+		previousRan = false;
+		document.onClose_({ previousRan = true });
+		protect {
+			first = Sequencer.new(document);
+			document.onClose.value(document);
+			this.assertEquals(previousRan, true, "the previous onClose still runs");
+			this.assertEquals(Sequencer.prAt(document), nil, "closing the document drops the sequencer");
+			this.assertEquals(first.document, nil, "the sequencer forgets the closed document");
+			second = Sequencer.new(document);
+			this.assert(second !== first, "a later lookup creates a new sequencer");
+		} {
+			this.prCloseFixture(document);
+		};
 	}
 
 	test_new_sameDocument_returnsSameSequencer {
@@ -143,21 +115,69 @@ SequencerUnitTests : BNUnitTest {
 		this.assertEquals(Sequencer.prAt(document), nil, "Sequencer() is not stored for a document");
 	}
 
-	test_documentOnClose_removesSequencerAndRunsPreviousHandler {
-		var document, first, previousRan, second;
-		document = SequencerDocumentFixture.new;
-		previousRan = false;
-		document.onClose_({ previousRan = true });
+	test_placeChip_roundsAndLeavesOtherIds {
+		var sequencer;
+		sequencer = Sequencer();
+		sequencer.arrange((\arp: 1@2, \verse: 30@40));
+		sequencer.placeChip(\arp, 10.6@20.2);
+		this.assertEquals(sequencer.chipOrigin(\arp), 11@20, "placeChip rounds each coordinate to an integer");
+		this.assertEquals(sequencer.chipOrigin(\verse), 30@40, "placeChip leaves other ids in place");
+	}
+
+	test_play_sharesClockWithRealTimePlayerUntilLastStops {
+		var clock, player, probe, seen, sequencer;
+		sequencer = Sequencer();
+		probe = ();
+		sequencer.play(\arp);
+		seen = sequencer.acquirePlaybackClock(probe);
+		clock = seen.clock;
+		// The pattern is scheduled immediately. Move it into the future so this test can stop it before the sequence is read.
+		clock.beats_(clock.beats - 100000);
+		sequencer.releasePlaybackClock(probe);
+		player = RealTimePlayer(midiOut: (), sequencer: sequencer);
+		player.sequence_([]);
+		player.play(startNow: true);
+		seen = sequencer.acquirePlaybackClock(probe);
+		this.assert(seen.clock === clock, "pattern playback and the player share one clock");
+		this.assertEquals(seen.isTransportStart, false, "the player joins the pattern clock");
+		sequencer.releasePlaybackClock(probe);
+		sequencer.stop;
+		seen = sequencer.acquirePlaybackClock(probe);
+		this.assert(seen.clock === clock, "stopping the pattern keeps the clock while the player holds it");
+		this.assertEquals(clock.isRunning, true, "the clock keeps running after the pattern stops");
+		sequencer.releasePlaybackClock(probe);
+		player.stop;
+		0.25.wait;
+		this.assertEquals(clock.isRunning, false, "the clock stops when the player releases it");
+	}
+
+	test_play_stop_releasesSharedClock {
+		var clock, probe, seen, sequencer;
+		sequencer = Sequencer();
+		probe = ();
+		sequencer.play(\arp);
+		seen = sequencer.acquirePlaybackClock(probe);
+		clock = seen.clock;
+		// The pattern is scheduled immediately. Move it into the future so this test can stop it before the sequence is read.
+		clock.beats_(clock.beats - 100000);
+		this.assertEquals(seen.isTransportStart, false, "pattern playback creates the shared clock");
+		this.assert(clock.isKindOf(TempoClock), "pattern playback uses a TempoClock");
+		sequencer.releasePlaybackClock(probe);
+		sequencer.stop;
+		0.05.wait;
+		this.assertEquals(clock.isRunning, false, "stopping pattern playback releases the clock");
+	}
+
+	test_seq_new_nilDocumentCurrent_throws {
+		var previous;
+		previous = Document.current;
 		protect {
-			first = Sequencer.new(document);
-			document.onClose.value(document);
-			this.assertEquals(previousRan, true, "the previous onClose still runs");
-			this.assertEquals(Sequencer.prAt(document), nil, "closing the document drops the sequencer");
-			this.assertEquals(first.document, nil, "the sequencer forgets the closed document");
-			second = Sequencer.new(document);
-			this.assert(second !== first, "a later lookup creates a new sequencer");
+			Document.current = nil;
+			this.assertException({
+				Seq();
+			}, Error);
 		} {
-			this.prCloseFixture(document);
+			Document.current = previous;
 		};
 	}
 
@@ -175,58 +195,38 @@ SequencerUnitTests : BNUnitTest {
 		};
 	}
 
-	test_seq_new_nilDocumentCurrent_throws {
-		var previous;
-		previous = Document.current;
-		protect {
-			Document.current = nil;
-			this.assertException({
-				Seq();
-			}, Error);
-		} {
-			Document.current = previous;
-		};
+	test_stop_noteOffsSoundingMidiNotes {
+		var log, sequencer;
+		log = SequencerNoteOffLog();
+		sequencer = Sequencer();
+		sequencer.prTrackMidiEvent((
+			midicmd: \noteOn,
+			midiout: log,
+			chan: 2,
+			midinote: [60, 64],
+			amp: 1,
+			sustain: 10,
+			dur: 1
+		));
+		sequencer.stop;
+		this.assertEquals(log.messages.size, 2, "stop sends a note-off for each sounding note");
+		this.assertEquals(log.messages[0], [2, 60, 127], "the first note-off matches the first sounding note");
+		this.assertEquals(log.messages[1], [2, 64, 127], "the second note-off matches the second sounding note");
 	}
 
-	test_arrange_storesPointAndReplacesMap {
+	test_tempo__notifiesDependants {
 		var dependant, sequencer;
 		sequencer = Sequencer();
-		dependant = SequencerArrangementDependant();
+		dependant = SequencerTempoDependant();
 		sequencer.addDependant(dependant);
-		sequencer.arrange((\missing: 40@30));
-		this.assertEquals(sequencer.chipOrigin(\missing), 40@30, "arrange stores a point for an id with no sequence");
-		this.assertEquals(dependant.receivedWhat, \arrangement, "arrange notifies dependants");
-		this.assertEquals(dependant.receivedOrigins[\missing], 40@30, "the notification carries the stored point");
-		sequencer.arrange((\other: 1@2));
-		this.assertEquals(sequencer.chipOrigin(\missing), nil, "a later arrange drops ids that are not in the new map");
-		this.assertEquals(sequencer.chipOrigin(\other), 1@2, "a later arrange stores the new map");
+		sequencer.tempo_(2);
+		this.assertEquals(dependant.receivedWhat, \tempo, "writing the current tempo still notifies");
+		this.assertEquals(dependant.receivedTempo, 2, "the notification carries the current tempo");
+		sequencer.tempo_(3);
+		this.assertEquals(dependant.receivedWhat, \tempo, "a changed tempo notifies");
+		this.assertEquals(dependant.receivedTempo, 3, "the notification carries the new tempo");
+		this.assertEquals(sequencer.tempo, 3, "the sequencer stores the new tempo");
 		sequencer.removeDependant(dependant);
-	}
-
-	test_placeChip_roundsAndLeavesOtherIds {
-		var sequencer;
-		sequencer = Sequencer();
-		sequencer.arrange((\arp: 1@2, \verse: 30@40));
-		sequencer.placeChip(\arp, 10.6@20.2);
-		this.assertEquals(sequencer.chipOrigin(\arp), 11@20, "placeChip rounds each coordinate to an integer");
-		this.assertEquals(sequencer.chipOrigin(\verse), 30@40, "placeChip leaves other ids in place");
-	}
-
-	test_chipOrigins_copyDoesNotMutateSequencer {
-		var copy, sequencer;
-		sequencer = Sequencer();
-		sequencer.placeChip(\arp, 10@20);
-		copy = sequencer.chipOrigins;
-		copy.put(\verse, 1@1);
-		this.assertEquals(sequencer.chipOrigin(\verse), nil, "changing the returned dictionary does not change the sequencer");
-		this.assertEquals(sequencer.chipOrigin(\arp), 10@20, "the stored point stays in place");
-	}
-
-	prCloseFixture {
-		|document|
-		if (document.onClose.notNil, {
-			document.onClose.value(document);
-		});
 	}
 }
 
