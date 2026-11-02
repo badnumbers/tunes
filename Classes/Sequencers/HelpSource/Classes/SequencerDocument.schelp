@@ -4,7 +4,7 @@ CATEGORIES:: Streams-Patterns-Events
 RELATED:: Classes/Document, Classes/PianoRoll, Classes/SequencerGui, Classes/WriteCommand, Classes/PatternText
 
 DESCRIPTION::
-TELETYPE::SequencerDocument:: composes a LINK::Classes/Document:: and is the place that knows how sequencer source is laid out: how to find MIDI parts, where to write new pattern text, and (later) how to parse or replace existing sequences.
+TELETYPE::SequencerDocument:: composes a LINK::Classes/Document:: and is the place that knows how sequencer source is laid out: how to find MIDI parts, where to write new pattern text, and where to write the arranger's CODE::Seq().arrange:: call.
 
 LINK::Classes/PianoRoll::, LINK::Classes/SequencerGui::, and LINK::Classes/WriteCommand:: talk to this class rather than to LINK::Classes/Document:: directly. Callers of LINK::#-insertPattern:: do not choose the insertion point; TELETYPE::SequencerDocument:: owns that policy.
 
@@ -30,4 +30,13 @@ The pattern source text to insert.
 RETURNS::
 This instance.
 
-PRIVATE:: init, prIndexForInsert, prIsWhitespace
+METHOD:: writeChipOrigins
+Replaces the last CODE::Seq().arrange:: call in the document with one built from CODE::origins::. When there is no such call, appends a trailer. The rest of the file is left as it is. Keys are sorted by CODE::asString::. An id whose string contains a space is written in single quotes. The text is not evaluated.
+
+ARGUMENT:: origins
+A LINK::Classes/Dictionary:: of LINK::Classes/Symbol:: to LINK::Classes/Point::.
+
+RETURNS::
+This instance.
+
+PRIVATE:: init, prIndexForInsert, prArrangeCall, prArrangeCallRange, prArrangeTrailer, prEndOfCall, prIsWhitespace, prReplaceRange, prSymbolText, prTextWithChipOrigins

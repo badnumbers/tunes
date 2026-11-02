@@ -105,11 +105,41 @@ Removes a holder from the shared playback clock. When the last holder releases, 
 ARGUMENT::holder
 The same object passed to LINK::#-acquirePlaybackClock::. Must not be CODE::nil::. Releasing a holder that is not currently acquired leaves an existing clock running.
 
+METHOD::arrange
+Replaces the chip-origin map. Playback ignores this map. Dependants are notified with CODE::\arrangement:: and a copy of the map. Ids that have no sequence are kept.
+
+ARGUMENT::origins
+A LINK::Classes/Dictionary::, including an LINK::Classes/Event::. Keys are LINK::Classes/Symbol:: ids. Values are LINK::Classes/Point::s, the parent-relative top-left of each chip.
+
+METHOD::chipOrigin
+The stored origin for one id.
+
+ARGUMENT::id
+A LINK::Classes/Symbol::.
+
+RETURNS::
+A LINK::Classes/Point::, or CODE::nil:: when that id has no stored origin.
+
+METHOD::chipOrigins
+A copy of the chip-origin map. Changing the copy does not change the sequencer.
+
+RETURNS::
+A LINK::Classes/Dictionary:: of LINK::Classes/Symbol:: to LINK::Classes/Point::.
+
 METHOD::document
 The LINK::Classes/Document:: this sequencer is bound to, or CODE::nil:: when it was created with no document. CODE::nil:: after that document has closed.
 
 RETURNS::
 A LINK::Classes/Document:: or CODE::nil::.
+
+METHOD::placeChip
+Stores one chip origin and leaves every other id in place. Each coordinate is rounded to an integer. Dependants are notified with CODE::\arrangement:: and a copy of the map.
+
+ARGUMENT::id
+A LINK::Classes/Symbol::.
+
+ARGUMENT::origin
+A LINK::Classes/Point::, the parent-relative top-left.
 
 METHOD::sequenceIds
 The ids of sequences stored by LINK::#-addMidiSequence::.

@@ -17,6 +17,7 @@ Sequencer {
 	var prDocument;
 	var prGui;
 	var prPreviousOnClose;
+	var prChipOrigins;
 
 	addGlobalPreKeys {
 		|keysArray|
@@ -78,9 +79,10 @@ Sequencer {
 		prPlaybackClock = nil;
 		prTempo = 2;
 		prPatternHolder = Object.new;
-		prSoundingNotes = IdentitySet.new;
+		prSoundingNotes = OrderedIdentitySet.new;
 		prNoteOffGeneration = 0;
 		prPatternFinished = false;
+		prChipOrigins = Dictionary.new;
 
 		prSequenceWrapper = {
 			|sequence|
@@ -306,8 +308,43 @@ Sequencer {
 		});
 	}
 
+	arrange {
+		|origins|
+		var copy;
+		Validator.validateMethodParameterType(origins, Dictionary, "origins", "Sequencer", "arrange");
+		copy = Dictionary.new;
+		origins.keysValuesDo({
+			|key, value|
+			Validator.validateMethodParameterType(key, Symbol, "key", "Sequencer", "arrange");
+			Validator.validateMethodParameterType(value, Point, "value", "Sequencer", "arrange");
+			copy.put(key, value);
+		});
+		prChipOrigins = copy;
+		this.changed(\arrangement, this.chipOrigins);
+	}
+
+	chipOrigin {
+		|id|
+		Validator.validateMethodParameterType(id, Symbol, "id", "Sequencer", "chipOrigin");
+		^prChipOrigins[id];
+	}
+
+	chipOrigins {
+		^prChipOrigins.copy;
+	}
+
 	document {
 		^prDocument;
+	}
+
+	placeChip {
+		|id, origin|
+		var point;
+		Validator.validateMethodParameterType(id, Symbol, "id", "Sequencer", "placeChip");
+		Validator.validateMethodParameterType(origin, Point, "origin", "Sequencer", "placeChip");
+		point = origin.x.round.asInteger @ origin.y.round.asInteger;
+		prChipOrigins.put(id, point);
+		this.changed(\arrangement, this.chipOrigins);
 	}
 
 	sequenceIds {

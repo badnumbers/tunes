@@ -1,10 +1,10 @@
 TITLE:: Arranger
-SUMMARY:: Flow of sequence-name labels for the SequencerGui Arrange page.
+SUMMARY:: Absolute layout of sequence chips for the SequencerGui Arrange page.
 CATEGORIES:: Streams-Patterns-Events
-RELATED:: Classes/PatternChip, Classes/SCViewHolder, Classes/Sequencer, Classes/SequencerGui
+RELATED:: Classes/PatternChip, Classes/SCViewHolder, Classes/Sequencer, Classes/SequencerDocument, Classes/SequencerGui
 
 DESCRIPTION::
-TELETYPE::Arranger:: is a LINK::Classes/SCViewHolder:: that LINK::Classes/SequencerGui:: shows when the Arrange button is pressed. Its view uses a LINK::Classes/FlowLayout:: decorator. Each sequence name is a LINK::Classes/PatternChip:: placed beside the previous label. The chip stores that sequence's id and plays it on the arranger's LINK::Classes/Sequencer::.
+TELETYPE::Arranger:: is a LINK::Classes/SCViewHolder:: that LINK::Classes/SequencerGui:: shows when the Arrange button is pressed. Its view has no layout decorator, so each LINK::Classes/PatternChip:: keeps the bounds it is given. A chip whose id has a stored origin is pinned there. The other chips pack in LINK::Classes/Sequencer#-sequenceIds:: order, with a margin of 10 and a gap of 10, wrapping to the arranger's width. Resizing packs only the unpinned chips and clamps pinned chips into the view for display. That clamp is not written. Dropping a dragged chip stores the clamped integer origin and, when a LINK::Classes/SequencerDocument:: was given, writes the origin map. A CODE::nil:: document skips the write.
 
 CLASSMETHODS::
 
@@ -14,15 +14,21 @@ Creates an instance of TELETYPE::Arranger::.
 ARGUMENT:: sequencer
 The LINK::Classes/Sequencer:: whose sequences this arranger lists and plays.
 
+ARGUMENT:: sequencerDocument
+The LINK::Classes/SequencerDocument:: that receives chip origins on drop, or CODE::nil:: when there is nothing to write.
+
 RETURNS::
 A new TELETYPE::Arranger:: instance.
 
 INSTANCEMETHODS::
 
 METHOD:: addSequence
-Adds a label for CODE::name::. A name that is already shown is left as it is.
+Adds a chip for CODE::name::. A name that is already shown is left as it is. A stored origin pins the chip. Otherwise the chip is packed with the other unpinned chips.
 
 ARGUMENT:: name
 A LINK::Classes/Symbol::, displayed with CODE::asString::.
 
-PRIVATE:: init
+METHOD:: applyOrigins
+Moves each shown chip to its stored origin and pins it. A chip with no stored origin becomes unpinned and is packed again. This does not write the document.
+
+PRIVATE:: init, prClamp, prClampPinned, prCommitDrag, prPackUnpinned, prPlaceChip, prViewReady

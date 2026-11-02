@@ -3,6 +3,10 @@ PatternChip : BorderView {
 
 	var prSequenceId;
 	var prSequencer;
+	var prDragAction;
+	var prDragging = false;
+	var prGrab;
+	var prDownParent;
 
 	*new {
 		|parent, sequencer, sequenceId|
@@ -36,9 +40,44 @@ PatternChip : BorderView {
 			.acceptsMouse_(false);
 		this.view.mouseDownAction_({
 			|view, x, y, modifiers, buttonNumber, clickCount|
-			if ((buttonNumber == 0) && { clickCount == 2 }, {
-				this.prTogglePlay;
+			if (buttonNumber == 0, {
+				if (clickCount == 2, {
+					this.prTogglePlay;
+				});
+				prGrab = x@y;
+				prDownParent = view.bounds.origin + prGrab;
+				prDragging = false;
 			});
+			nil
+		});
+		this.view.mouseMoveAction_({
+			|view, x, y|
+			var maxX, maxY, newOrigin, parentPoint;
+			if (prGrab.notNil, {
+				parentPoint = view.bounds.origin + (x@y);
+				if (prDragging.not && { parentPoint.dist(prDownParent) > 4 }, {
+					prDragging = true;
+					view.front;
+				});
+				if (prDragging, {
+					newOrigin = parentPoint - prGrab;
+					if (view.parent.notNil, {
+						maxX = (view.parent.bounds.width - view.bounds.width).max(0);
+						maxY = (view.parent.bounds.height - view.bounds.height).max(0);
+						newOrigin = newOrigin.x.clip(0, maxX).round.asInteger @ newOrigin.y.clip(0, maxY).round.asInteger;
+					});
+					view.bounds = view.bounds.moveTo(newOrigin.x, newOrigin.y);
+				});
+			});
+			nil
+		});
+		this.view.mouseUpAction_({
+			|view|
+			if (prDragging && { prDragAction.notNil }, {
+				prDragAction.value(view.bounds.origin);
+			});
+			prDragging = false;
+			prGrab = nil;
 			nil
 		});
 		^this;
@@ -60,5 +99,17 @@ PatternChip : BorderView {
 			this.borderWidth_(1);
 			prPlayingChip = this;
 		});
+	}
+
+	dragAction_ {
+		|action|
+		Validator.validateMethodParameterType(action, Function, "action", "PatternChip", "dragAction_", allowNil: true);
+		prDragAction = action;
+	}
+
+	moveTo {
+		|origin|
+		Validator.validateMethodParameterType(origin, Point, "origin", "PatternChip", "moveTo");
+		this.view.bounds = this.view.bounds.moveTo(origin.x, origin.y);
 	}
 }

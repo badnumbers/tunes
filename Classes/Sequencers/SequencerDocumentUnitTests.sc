@@ -36,4 +36,40 @@ SequencerDocumentUnitTests : BNUnitTest {
 		var text = "Seq().addMidiSequence(\\main1, ~rev2, Pbind(\n\t\\dur, 1 // (comment)\n));\nextra";
 		this.assertEquals(SequencerDocument.prIndexForInsert(text), text.find(";") + 1);
 	}
+
+	test_prTextWithChipOrigins_appendsTrailer {
+		var call, result, text, trailer;
+		call = "Seq().arrange((\n\t\\arp: 40@30,\n\t\\verse: 180@90\n));";
+		trailer = "// arranger layout\n(\n" ++ call ++ "\n)\n";
+		text = "Seq().addMidiSequence(\\verse, ~rev, Pbind(\\dur, 1));\n";
+		result = SequencerDocument.prTextWithChipOrigins(text, (\verse: 180@90, \arp: 40@30));
+		this.assertEquals(result, text ++ trailer, "a file that already ends in a newline gets the trailer after it");
+		this.assert(result.contains("\\arp: 40@30,\n\t\\verse:"), "keys are sorted by their string");
+		text = "Seq().addMidiSequence(\\verse, ~rev, Pbind(\\dur, 1));";
+		result = SequencerDocument.prTextWithChipOrigins(text, (\arp: 40@30, \verse: 180@90));
+		this.assertEquals(result, text ++ "\n" ++ trailer, "a file that does not end in a newline gets one before the trailer");
+		result = SequencerDocument.prTextWithChipOrigins(nil, (\arp: 40@30, \verse: 180@90));
+		this.assertEquals(result, trailer, "nil text becomes the trailer with no leading newline");
+	}
+
+	test_prTextWithChipOrigins_replacesExistingCall {
+		var call, old, pattern, result, text;
+		pattern = "Seq().addMidiSequence(\\verse, ~rev, Pbind(\\dur, 1));\n";
+		old = "Seq().arrange((\n\t\\old: 1@1\n));";
+		call = "Seq().arrange((\n\t\\arp: 40@30,\n\t\\verse: 180@90\n));";
+		text = pattern ++ "\n" ++ old ++ "\n// keep\n";
+		result = SequencerDocument.prTextWithChipOrigins(text, (\verse: 180@90, \arp: 40@30));
+		this.assertEquals(result, pattern ++ "\n" ++ call ++ "\n// keep\n", "only the arrange call is replaced");
+		this.assert(result.beginsWith(pattern), "pattern text in front is unchanged");
+	}
+
+	test_prTextWithChipOrigins_quotesIdWithSpace {
+		var result;
+		result = SequencerDocument.prTextWithChipOrigins("", ('my verse': 10@20));
+		this.assertEquals(
+			result,
+			"// arranger layout\n(\nSeq().arrange((\n\t'my verse': 10@20\n));\n)\n",
+			"an id with a space is written in single quotes"
+		);
+	}
 }

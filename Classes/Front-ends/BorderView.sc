@@ -68,6 +68,7 @@ BorderView : SCViewHolder {
 		};
 
 		prView.drawFunc_(prDrawView);
+		^this;
 	}
 
 	*new {

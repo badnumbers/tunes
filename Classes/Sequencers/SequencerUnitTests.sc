@@ -188,6 +188,40 @@ SequencerUnitTests : BNUnitTest {
 		};
 	}
 
+	test_arrange_storesPointAndReplacesMap {
+		var dependant, sequencer;
+		sequencer = Sequencer();
+		dependant = SequencerArrangementDependant();
+		sequencer.addDependant(dependant);
+		sequencer.arrange((\missing: 40@30));
+		this.assertEquals(sequencer.chipOrigin(\missing), 40@30, "arrange stores a point for an id with no sequence");
+		this.assertEquals(dependant.receivedWhat, \arrangement, "arrange notifies dependants");
+		this.assertEquals(dependant.receivedOrigins[\missing], 40@30, "the notification carries the stored point");
+		sequencer.arrange((\other: 1@2));
+		this.assertEquals(sequencer.chipOrigin(\missing), nil, "a later arrange drops ids that are not in the new map");
+		this.assertEquals(sequencer.chipOrigin(\other), 1@2, "a later arrange stores the new map");
+		sequencer.removeDependant(dependant);
+	}
+
+	test_placeChip_roundsAndLeavesOtherIds {
+		var sequencer;
+		sequencer = Sequencer();
+		sequencer.arrange((\arp: 1@2, \verse: 30@40));
+		sequencer.placeChip(\arp, 10.6@20.2);
+		this.assertEquals(sequencer.chipOrigin(\arp), 11@20, "placeChip rounds each coordinate to an integer");
+		this.assertEquals(sequencer.chipOrigin(\verse), 30@40, "placeChip leaves other ids in place");
+	}
+
+	test_chipOrigins_copyDoesNotMutateSequencer {
+		var copy, sequencer;
+		sequencer = Sequencer();
+		sequencer.placeChip(\arp, 10@20);
+		copy = sequencer.chipOrigins;
+		copy.put(\verse, 1@1);
+		this.assertEquals(sequencer.chipOrigin(\verse), nil, "changing the returned dictionary does not change the sequencer");
+		this.assertEquals(sequencer.chipOrigin(\arp), 10@20, "the stored point stays in place");
+	}
+
 	prCloseFixture {
 		|document|
 		if (document.onClose.notNil, {
@@ -221,6 +255,17 @@ SequencerTempoDependant {
 		|theChanged, what, tempo|
 		receivedWhat = what;
 		receivedTempo = tempo;
+	}
+}
+
+SequencerArrangementDependant {
+	var <receivedOrigins;
+	var <receivedWhat;
+
+	update {
+		|theChanged, what, origins|
+		receivedWhat = what;
+		receivedOrigins = origins;
 	}
 }
 

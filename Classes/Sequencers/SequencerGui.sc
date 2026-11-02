@@ -36,7 +36,7 @@ SequencerGui {
 			EnhancedButton().background_(prPalette.colour3).borderRadius_(3).borderWidth_(2).minSize_(size).maxSize_(size).font_(Font(size:16)).string_(text).stringColor_(prPalette.colour5).align_(\center).mouseEnterBorderColour_(prPalette.extreme2).mouseEnterStringColour_(prPalette.extreme2).mouseDownBackgroundColour_(prPalette.colour2);
 		};
 
-		prArranger = Arranger(prSequencer);
+		prArranger = Arranger(prSequencer, prDocument);
 		prSequencer.addDependant(this);
 		prSequencer.sequenceIds.do({
 			|id|
@@ -193,6 +193,9 @@ SequencerGui {
 		|theChanged, what, id|
 		if (what == \midiSequenceAdded, {
 			prArranger.addSequence(id);
+		});
+		if (what == \arrangement, {
+			prArranger.applyOrigins;
 		});
 		if (what == \tempo, {
 			prSynthDesk.tempo_(id);

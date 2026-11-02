@@ -1,5 +1,6 @@
 SequencerDocument {
 	classvar prAddMidiSequenceRegexp = "Seq\\(\\)\\.addMidiSequence";
+	classvar prArrangeRegexp = "Seq\\(\\)\\.arrange";
 
 	var prDocument;
 
@@ -20,6 +21,19 @@ SequencerDocument {
 		^this;
 	}
 
+	writeChipOrigins {
+		|origins|
+		var next, text;
+		Validator.validateMethodParameterType(origins, Dictionary, "origins", "SequencerDocument", "writeChipOrigins");
+		text = prDocument.getText ? "";
+		next = this.class.prTextWithChipOrigins(text, origins);
+		if (next != text, {
+			prDocument.selectRange(0, text.size);
+			prDocument.selectedString_(next);
+		});
+		^this;
+	}
+
 	*new {
 		|document|
 		Validator.validateMethodParameterType(document, Document, "document", "SequencerDocument", "new");
@@ -28,9 +42,7 @@ SequencerDocument {
 
 	*prIndexForInsert {
 		|text|
-		var matches, index, lastIndex, bracketIndent;
-		var inSingleLineComment, inMultiLineComment;
-		var ch, prev, inComment;
+		var index, matches;
 
 		if (text.isNil, { ^0 });
 		if (text.size == 0, { ^0 });
@@ -41,6 +53,47 @@ SequencerDocument {
 		});
 
 		index = matches.last[0] + matches.last[1].size;
+		^this.prEndOfCall(text, index);
+	}
+
+	*prArrangeCall {
+		|origins|
+		var keys, lines;
+		keys = origins.keys.asArray.sort({
+			|a, b|
+			a.asString < b.asString
+		});
+		if (keys.size == 0, {
+			^"Seq().arrange(());";
+		});
+		lines = keys.collect({
+			|key|
+			var point;
+			point = origins[key];
+			"\t" ++ this.prSymbolText(key) ++ ": " ++ point.x.asInteger ++ "@" ++ point.y.asInteger
+		});
+		^"Seq().arrange((\n" ++ lines.join(",\n") ++ "\n));";
+	}
+
+	*prArrangeCallRange {
+		|text|
+		var end, matches, start;
+		if (text.isNil || { text.size == 0 }, { ^nil });
+		matches = text.findRegexp(prArrangeRegexp);
+		if (matches.isNil || { matches.size == 0 }, { ^nil });
+		start = matches.last[0];
+		end = this.prEndOfCall(text, start + matches.last[1].size);
+		^[start, end];
+	}
+
+	*prArrangeTrailer {
+		|call|
+		^"// arranger layout\n(\n" ++ call ++ "\n)\n";
+	}
+
+	*prEndOfCall {
+		|text, index|
+		var bracketIndent, ch, inComment, inMultiLineComment, inSingleLineComment, lastIndex, prev;
 		lastIndex = text.size - 1;
 		bracketIndent = 0;
 		inSingleLineComment = false;
@@ -94,5 +147,38 @@ SequencerDocument {
 	*prIsWhitespace {
 		|ch|
 		^((ch == $ ) || (ch == $\t) || (ch == $\n) || (ch == $\r));
+	}
+
+	*prReplaceRange {
+		|text, start, end, insert|
+		var prefix, suffix;
+		prefix = if (start <= 0, { "" }, { text.copyRange(0, start - 1) });
+		suffix = if (end >= text.size, { "" }, { text.copyRange(end, text.size - 1) });
+		^prefix ++ insert ++ suffix;
+	}
+
+	*prSymbolText {
+		|value|
+		var text;
+		text = value.asString;
+		if (text.includes($ ), {
+			^"'" ++ text ++ "'";
+		});
+		^"\\" ++ text;
+	}
+
+	*prTextWithChipOrigins {
+		|text, origins|
+		var call, range;
+		if (text.isNil, { text = "" });
+		call = this.prArrangeCall(origins);
+		range = this.prArrangeCallRange(text);
+		if (range.isNil, {
+			if (text.size > 0 and: { text.last != $\n }, {
+				text = text ++ "\n";
+			});
+			^text ++ this.prArrangeTrailer(call);
+		});
+		^this.prReplaceRange(text, range[0], range[1], call);
 	}
 }
