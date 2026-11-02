@@ -34,6 +34,20 @@ SequencerDocument {
 		^this;
 	}
 
+	selectPattern {
+		|id|
+		var range, text;
+		Validator.validateMethodParameterType(id, Symbol, "id", "SequencerDocument", "selectPattern");
+		text = prDocument.getText ? "";
+		range = this.class.prPatternCallRange(text, id);
+		if (range.isNil, {
+			warn(this.class.prPatternNotFoundWarning(id));
+		}, {
+			prDocument.selectRange(range[0], range[1] - range[0]);
+		});
+		^this;
+	}
+
 	*new {
 		|document|
 		Validator.validateMethodParameterType(document, Document, "document", "SequencerDocument", "new");
@@ -144,9 +158,87 @@ SequencerDocument {
 		^text.size;
 	}
 
+	*prIsIdentChar {
+		|ch|
+		^(ch.isAlphaNum or: { ch == $_ });
+	}
+
 	*prIsWhitespace {
 		|ch|
 		^((ch == $ ) || (ch == $\t) || (ch == $\n) || (ch == $\r));
+	}
+
+	*prPatternCallRange {
+		|text, id|
+		var matches, range;
+		if (text.isNil or: { text.size == 0 }, { ^nil });
+		matches = text.findRegexp(prAddMidiSequenceRegexp);
+		if (matches.isNil or: { matches.size == 0 }, { ^nil });
+		range = nil;
+		matches.do({
+			|match|
+			var end, idAt, open, read;
+			open = match[0] + match[1].size;
+			while ({
+				(open < text.size) and: { this.prIsWhitespace(text[open]) }
+			}, {
+				open = open + 1;
+			});
+			if ((open < text.size) and: { text[open] == $( }, {
+				idAt = open + 1;
+				while ({
+					(idAt < text.size) and: { this.prIsWhitespace(text[idAt]) }
+				}, {
+					idAt = idAt + 1;
+				});
+				read = this.prReadSymbol(text, idAt);
+				if (read.notNil and: { read[0] == id }, {
+					end = this.prEndOfCall(text, open);
+					range = [match[0], end];
+				});
+			});
+		});
+		^range;
+	}
+
+	*prPatternNotFoundWarning {
+		|id|
+		^format("The pattern with ID % was not found in the sequencer's document.", id);
+	}
+
+	*prReadSymbol {
+		|text, start|
+		var body, ch, index;
+		if (start >= text.size, { ^nil });
+		ch = text[start];
+		if (ch == $\\, {
+			index = start + 1;
+			if (index >= text.size, { ^nil });
+			if (this.prIsIdentChar(text[index]), {
+				while ({
+					(index < text.size) and: { this.prIsIdentChar(text[index]) }
+				}, {
+					index = index + 1;
+				});
+			}, {
+				index = index + 1;
+			});
+			body = text.copyRange(start + 1, index - 1);
+			^[body.asSymbol, index];
+		});
+		if (ch == $', {
+			index = start + 1;
+			body = "";
+			while ({
+				(index < text.size) and: { text[index] != $' }
+			}, {
+				body = body ++ text[index];
+				index = index + 1;
+			});
+			if (index >= text.size, { ^nil });
+			^[body.asSymbol, index + 1];
+		});
+		^nil;
 	}
 
 	*prReplaceRange {

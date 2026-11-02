@@ -7,6 +7,8 @@ PatternChip : BorderView {
 	var prDragging = false;
 	var prGrab;
 	var prDownParent;
+	var prArmClick = false;
+	var prClickAction;
 
 	*new {
 		|parent, sequencer, sequenceId|
@@ -47,6 +49,7 @@ PatternChip : BorderView {
 				prGrab = x@y;
 				prDownParent = view.bounds.origin + prGrab;
 				prDragging = false;
+				prArmClick = true;
 			});
 			nil
 		});
@@ -57,6 +60,7 @@ PatternChip : BorderView {
 				parentPoint = view.bounds.origin + (x@y);
 				if (prDragging.not && { parentPoint.dist(prDownParent) > 4 }, {
 					prDragging = true;
+					prArmClick = false;
 					view.front;
 				});
 				if (prDragging, {
@@ -75,7 +79,12 @@ PatternChip : BorderView {
 			|view|
 			if (prDragging && { prDragAction.notNil }, {
 				prDragAction.value(view.bounds.origin);
+			}, {
+				if (prArmClick && { prClickAction.notNil }, {
+					prClickAction.value;
+				});
 			});
+			prArmClick = false;
 			prDragging = false;
 			prGrab = nil;
 			nil
@@ -99,6 +108,12 @@ PatternChip : BorderView {
 			this.borderWidth_(1);
 			prPlayingChip = this;
 		});
+	}
+
+	clickAction_ {
+		|action|
+		Validator.validateMethodParameterType(action, Function, "action", "PatternChip", "clickAction_", allowNil: true);
+		prClickAction = action;
 	}
 
 	dragAction_ {

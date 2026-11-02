@@ -14,6 +14,9 @@ Arranger : SCViewHolder {
 		prSequenceNames.add(text);
 		chip = PatternChip(this.view, prSequencer, name);
 		prChips[name] = chip;
+		chip.clickAction_({
+			this.prSelectPattern(name);
+		});
 		chip.dragAction_({
 			|origin|
 			this.prCommitDrag(name, origin);
@@ -127,6 +130,15 @@ Arranger : SCViewHolder {
 			chip.moveTo(this.prClamp(chip, origin));
 		}, {
 			chip.moveTo(origin);
+		});
+	}
+
+	prSelectPattern {
+		|id|
+		if (prSequencerDocument.isNil, {
+			warn(SequencerDocument.prPatternNotFoundWarning(id));
+		}, {
+			prSequencerDocument.selectPattern(id);
 		});
 	}
 

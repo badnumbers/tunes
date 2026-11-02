@@ -4,7 +4,7 @@ CATEGORIES:: Streams-Patterns-Events
 RELATED:: Classes/PatternChip, Classes/SCViewHolder, Classes/Sequencer, Classes/SequencerDocument, Classes/SequencerGui
 
 DESCRIPTION::
-TELETYPE::Arranger:: is a LINK::Classes/SCViewHolder:: that LINK::Classes/SequencerGui:: shows when the Arrange button is pressed. Its view has no layout decorator, so each LINK::Classes/PatternChip:: keeps the bounds it is given. A chip whose id has a stored origin is pinned there. The other chips pack in LINK::Classes/Sequencer#-sequenceIds:: order, with a margin of 10 and a gap of 10, wrapping to the arranger's width. Resizing packs only the unpinned chips and clamps pinned chips into the view for display. That clamp is not written. Dropping a dragged chip stores the clamped integer origin and, when a LINK::Classes/SequencerDocument:: was given, writes the origin map. A CODE::nil:: document skips the write.
+TELETYPE::Arranger:: is a LINK::Classes/SCViewHolder:: that LINK::Classes/SequencerGui:: shows when the Arrange button is pressed. Its view has no layout decorator, so each LINK::Classes/PatternChip:: keeps the bounds it is given. A chip whose id has a stored origin is pinned there. The other chips pack in LINK::Classes/Sequencer#-sequenceIds:: order, with a margin of 10 and a gap of 10, wrapping to the arranger's width. Resizing packs only the unpinned chips and clamps pinned chips into the view for display. That clamp is not written. Dropping a dragged chip stores the clamped integer origin and, when a LINK::Classes/SequencerDocument:: was given, writes the origin map. A single click selects that pattern's CODE::Seq().addMidiSequence:: call in the sequencer document and leaves the document where it is. When that call is missing, or no document was given, a warning is posted. A CODE::nil:: document skips the write.
 
 CLASSMETHODS::
 
@@ -31,4 +31,4 @@ A LINK::Classes/Symbol::, displayed with CODE::asString::.
 METHOD:: applyOrigins
 Moves each shown chip to its stored origin and pins it. A chip with no stored origin becomes unpinned and is packed again. This does not write the document.
 
-PRIVATE:: init, prClamp, prClampPinned, prCommitDrag, prPackUnpinned, prPlaceChip, prViewReady
+PRIVATE:: init, prClamp, prClampPinned, prCommitDrag, prPackUnpinned, prPlaceChip, prSelectPattern, prViewReady

@@ -72,4 +72,38 @@ SequencerDocumentUnitTests : BNUnitTest {
 			"an id with a space is written in single quotes"
 		);
 	}
+
+	test_prPatternCallRange_selectsMatchingCall {
+		var first, range, second, text;
+		first = "Seq().addMidiSequence(\\arp, ~x, Pbind(\\dur, 1));";
+		second = "Seq().addMidiSequence(\\verse, ~y, Ppar([\n\tPbind(\\dur, 2)\n]));";
+		text = first ++ "\n" ++ second ++ "\n// keep";
+		range = SequencerDocument.prPatternCallRange(text, \verse);
+		this.assertEquals(range, [first.size + 1, first.size + 1 + second.size], "the range covers that call, including its semicolon");
+		this.assertEquals(SequencerDocument.prPatternCallRange(text, \missing), nil, "an unknown id has no range");
+	}
+
+	test_prPatternCallRange_lastCallWinsAndQuotedIdMatches {
+		var first, range, second, text;
+		first = "Seq().addMidiSequence(\\arp, ~x, Pbind(\\dur, 1));";
+		second = "Seq().addMidiSequence('arp', ~y, Pbind(\\dur, 2));";
+		text = first ++ "\n" ++ second;
+		range = SequencerDocument.prPatternCallRange(text, \arp);
+		this.assertEquals(range, [first.size + 1, text.size], "the later call for that id is the one selected");
+		text = "Seq().addMidiSequence('my verse', ~x, Pbind(\\dur, 1));";
+		this.assertEquals(SequencerDocument.prPatternCallRange(text, 'my verse'), [0, text.size], "a quoted id matches the symbol");
+		text = "Seq().addMidiSequence(\\arpeggio, ~x, Pbind(\\dur, 1));";
+		this.assertEquals(SequencerDocument.prPatternCallRange(text, \arp), nil, "a longer id is not a match");
+	}
+
+	test_prPatternNotFoundWarning_namesTheId {
+		this.assertEquals(
+			SequencerDocument.prPatternNotFoundWarning(\verse),
+			"The pattern with ID verse was not found in the sequencer's document."
+		);
+		this.assertEquals(
+			SequencerDocument.prPatternNotFoundWarning('my verse'),
+			"The pattern with ID my verse was not found in the sequencer's document."
+		);
+	}
 }
