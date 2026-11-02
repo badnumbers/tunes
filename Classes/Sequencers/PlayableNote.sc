@@ -3,6 +3,7 @@ PlayableNote {
 	var prStartTime;
 	var prStopTime;
 	var prVelocity;
+	var prPartNumber = 1;
 
 	amp_ {
 		|value|
@@ -39,6 +40,16 @@ PlayableNote {
 		|value|
 		Validator.validateMethodParameterType(value, Integer, "value", "PlayableNote", "noteNumber_");
 		prNoteNumber = value;
+	}
+
+	partNumber {
+		^prPartNumber;
+	}
+
+	partNumber_ {
+		|value|
+		Validator.validateMethodParameterType(value, Integer, "value", "PlayableNote", "partNumber_");
+		prPartNumber = value;
 	}
 
 	shouldBePlaying {

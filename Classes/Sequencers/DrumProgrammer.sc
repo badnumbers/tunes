@@ -24,11 +24,13 @@ DrumProgrammer : SCViewHolder {
 	var prStepBeats = 0.25;
 	var prStepCount;
 	var prVelocity = 100;
+	var prSequencerDocument;
 
 	init {
-		|sequencer|
+		|sequencer, sequencerDocument|
 		var addDrumSoundButton, addStepButton, canvas, content, playButton, prompt, root, scroll, stopButton, strip, syncMenu;
 		prSequencer = sequencer;
+		prSequencerDocument = sequencerDocument;
 		prPalette = GuiPalette.default;
 		prStepCount = 16;
 		prNotes = Array.new;
@@ -84,9 +86,18 @@ DrumProgrammer : SCViewHolder {
 		prompt = CommandPrompt(
 			parent: nil,
 			bounds: nil,
-			commands: [AmpCommand.new],
+			commands: [
+				AmpCommand.new,
+				WriteCommand(prSequencerDocument, prSequencer)
+			],
 			palette: prPalette,
-			ambientParameters: (selectedNotes: { this.prSelectedNotes }),
+			ambientParameters: (
+				selectedNotes: { this.prSelectedNotes },
+				allNotes: { prNotes },
+				midiChannel: { prRealTimePlayer.midiChannel },
+				loopStart: { if (prStepCount > 0, { 0 }, { nil }) },
+				loopEnd: { if (prStepCount > 0, { prStepCount * prStepBeats }, { nil }) }
+			),
 			overlayParent: root,
 			onExecute: nil
 		);
@@ -133,9 +144,10 @@ DrumProgrammer : SCViewHolder {
 	}
 
 	*new {
-		|sequencer|
+		|sequencer, sequencerDocument|
 		Validator.validateMethodParameterType(sequencer, Sequencer, "sequencer", "DrumProgrammer", "new", allowNil: true);
-		^super.new.init(sequencer);
+		Validator.validateMethodParameterType(sequencerDocument, SequencerDocument, "sequencerDocument", "DrumProgrammer", "new", allowNil: true);
+		^super.new.init(sequencer, sequencerDocument);
 	}
 
 	prAddDrumSound {
@@ -150,6 +162,7 @@ DrumProgrammer : SCViewHolder {
 
 	prAddNote {
 		|note|
+		note.partNumber_(note.noteNumber);
 		prNotes = prNotes.add(note);
 		this.prSyncSequence;
 	}

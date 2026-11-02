@@ -173,6 +173,14 @@ WriteCommand : Command {
 		^groups;
 	}
 
+	prPartNumber {
+		|note|
+		var part;
+		part = note.partNumber;
+		if (part.isNil, { ^1 });
+		^part;
+	}
+
 	prPatternText {
 		|allNotes, loopStart, loopEnd|
 		var notes, partCount;
@@ -180,7 +188,7 @@ WriteCommand : Command {
 			|note|
 			note.startTime.notNil && { note.stopTime.notNil } && { note.startTime >= loopStart } && { note.stopTime <= loopEnd };
 		});
-		partCount = notes.collect({ |note| note.partNumber }).as(Set).size;
+		partCount = notes.collect({ |note| this.prPartNumber(note) }).as(Set).size;
 		if (partCount > 1, {
 			^this.prPparText(notes, loopStart, loopEnd);
 		});
@@ -210,11 +218,11 @@ WriteCommand : Command {
 	prPparText {
 		|notes, loopStart, loopEnd|
 		var blocks, partNumbers;
-		partNumbers = notes.collect({ |note| note.partNumber }).as(Set).asArray.sort;
+		partNumbers = notes.collect({ |note| this.prPartNumber(note) }).as(Set).asArray.sort;
 		blocks = partNumbers.collect({
 			|partNumber|
 			var partNotes;
-			partNotes = notes.select({ |note| note.partNumber == partNumber });
+			partNotes = notes.select({ |note| this.prPartNumber(note) == partNumber });
 			this.prPbindText(partNotes, loopEnd, "\t", "\t\t", loopStart);
 		});
 		^"Ppar([\n" ++ blocks.join(",\n") ++ "\n])\n";

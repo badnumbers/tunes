@@ -266,4 +266,12 @@ PlayableNoteUnitTests : UnitTest {
 			playableNote.applyLegato(0.5, 4);
 		}, Error);
 	}
+
+	test_partNumber_defaultsToOneAndStoresAnInteger {
+		var playableNote;
+		playableNote = PlayableNote(0, 36, 100);
+		this.assertEquals(playableNote.partNumber, 1, "a new note is part 1");
+		playableNote.partNumber_(36);
+		this.assertEquals(playableNote.partNumber, 36, "the part can be the MIDI note number");
+	}
 }

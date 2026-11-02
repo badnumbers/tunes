@@ -114,7 +114,7 @@ ARGUMENT:: resolution
 Grid spacing in beats.
 
 METHOD:: partNumber
-The part index stored for this note, from 1 to 4. New notes are part 1. LINK::#-setPartIfSelected:: changes it when the note is selected.
+The part stored on the wrapped LINK::Classes/PlayableNote::. New notes are part 1. LINK::#-setPartIfSelected:: changes it, from 1 to 4, when the note is selected. The roll uses that number for the note colour, and LINK::Classes/WriteCommand:: uses it to group the pattern.
 
 RETURNS::
 An LINK::Classes/Integer::.

@@ -4,7 +4,7 @@ CATEGORIES:: Streams-Patterns-Events
 RELATED:: Classes/PianoRollNote, Classes/PianoRoll, Classes/RealTimePlayer, Classes/Sequencer, Classes/LegatoCommand
 
 DESCRIPTION::
-TELETYPE::PlayableNote:: holds the timing and MIDI data for a single note: when it starts, when it stops, which key to play, and how hard. Times are expressed in beats on the LINK::Classes/TempoClock:: (the same unit used by LINK::Classes/RealTimePlayer:: and the piano roll).
+TELETYPE::PlayableNote:: holds the timing and MIDI data for a single note: when it starts, when it stops, which key to play, how hard, and which part it belongs to when a pattern is written. A new note is part 1. Times are expressed in beats on the LINK::Classes/TempoClock:: (the same unit used by LINK::Classes/RealTimePlayer:: and the piano roll).
 
 A note is STRONG::playable:: only after TELETYPE::stopTime_:: has been set. Until then, TELETYPE::isPlayable:: is false and the slice and playhead query methods all return false. LINK::Classes/PianoRollNote:: creates a TELETYPE::PlayableNote:: internally and keeps its start and stop times in sync when the note is moved or resized on the roll.
 
@@ -56,6 +56,15 @@ The MIDI note number. Setting replaces it with an LINK::Classes/Integer::.
 
 ARGUMENT:: value
 When setting, the new MIDI note number.
+
+RETURNS::
+An LINK::Classes/Integer::.
+
+METHOD:: partNumber
+The part used when this note is written into a pattern. A new note is part 1. Setting replaces it with an LINK::Classes/Integer::. LINK::Classes/PianoRollNote:: keeps piano-roll parts in the range 1 to 4. LINK::Classes/DrumProgrammer:: sets a hit's part to its MIDI note number.
+
+ARGUMENT:: value
+When setting, the new part number.
 
 RETURNS::
 An LINK::Classes/Integer::.

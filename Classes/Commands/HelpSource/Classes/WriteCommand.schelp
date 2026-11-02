@@ -1,10 +1,10 @@
 TITLE:: WriteCommand
 SUMMARY:: Command that writes the piano-roll pattern to the sequencer document.
 CATEGORIES:: Commands
-RELATED:: Classes/Command, Classes/CommandPrompt, Classes/PianoRoll, Classes/Sequencer, Classes/SequencerDocument, Classes/HardwareSynthesizerConfig
+RELATED:: Classes/Command, Classes/CommandPrompt, Classes/DrumProgrammer, Classes/PianoRoll, Classes/Sequencer, Classes/SequencerDocument, Classes/HardwareSynthesizerConfig
 
 DESCRIPTION::
-TELETYPE::WriteCommand:: is a LINK::Classes/Command:: that inserts a CODE::Seq().addMidiSequence:: call through LINK::Classes/SequencerDocument#-insertPattern::. It is constructed with an optional LINK::Classes/SequencerDocument:: and an optional LINK::Classes/Sequencer:: (CODE::nil:: is allowed for scratchpad use). The user types a non-empty CODE::name::. LINK::Classes/PianoRoll:: supplies CODE::allNotes::, CODE::midiChannel::, CODE::loopStart::, and CODE::loopEnd:: through LINK::Classes/CommandPrompt#-ambientParameters::. CODE::midiChannel:: is the roll's LINK::Classes/RealTimePlayer#-midiChannel::. CODE::loopStart:: and CODE::loopEnd:: are nil until both loop markers have been set. After the CODE::write:: chip is committed, the prompt asks for CODE::name::. Press Return to execute.
+TELETYPE::WriteCommand:: is a LINK::Classes/Command:: that inserts a CODE::Seq().addMidiSequence:: call through LINK::Classes/SequencerDocument#-insertPattern::. It is constructed with an optional LINK::Classes/SequencerDocument:: and an optional LINK::Classes/Sequencer:: (CODE::nil:: is allowed for scratchpad use). The user types a non-empty CODE::name::. LINK::Classes/PianoRoll:: and LINK::Classes/DrumProgrammer:: supply CODE::allNotes::, CODE::midiChannel::, CODE::loopStart::, and CODE::loopEnd:: through LINK::Classes/CommandPrompt#-ambientParameters::. On a piano roll, CODE::midiChannel:: is the roll's LINK::Classes/RealTimePlayer#-midiChannel::, and CODE::loopStart:: and CODE::loopEnd:: are nil until both loop markers have been set. On the drum programmer, the channel is that player's channel and the loop is the whole grid, from beat 0 through the last step, or nil when the grid has no steps. Each note's CODE::partNumber:: comes from its LINK::Classes/PlayableNote::. Piano-roll notes stay in parts 1 to 4. A drum hit's part is its MIDI note number, so each drum sound is written as its own part. A nil part is treated as part 1. After the CODE::write:: chip is committed, the prompt asks for CODE::name::. Press Return to execute.
 
 The inserted text names the sequence and the synthesizer as leading-slash symbols when those names contain no spaces, and as quoted symbols when they contain a space. The synthesizer is the first LINK::Classes/HardwareSynthesizerConfig:: in LINK::Classes/Config#*hardwareSynthesizers:: whose first MIDI channel equals CODE::midiChannel::.
 
@@ -43,4 +43,4 @@ The same dictionary LINK::#-execute:: receives.
 RETURNS::
 A LINK::Classes/Boolean::.
 
-PRIVATE:: prDurs, prFormatNumber, prKeyLine, prMatchingSynthesizer, prOnsets, prPatternText, prPbindText, prPparText, prSetSequencer, prSetSequencerDocument, prSymbolText
+PRIVATE:: prDurs, prFormatNumber, prKeyLine, prMatchingSynthesizer, prOnsets, prPartNumber, prPatternText, prPbindText, prPparText, prSetSequencer, prSetSequencerDocument, prSymbolText

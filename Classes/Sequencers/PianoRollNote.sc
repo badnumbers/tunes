@@ -9,7 +9,6 @@ PianoRollNote {
 	var prOriginalBounds;
 	var prOriginalStartTime;
 	var prOriginalStopTime;
-	var prPartNumber = 1;
 	var prPlayableNote;
 	var prSelectFunc;
 	var prSelected = false;
@@ -168,7 +167,7 @@ PianoRollNote {
 	}
 
 	partNumber {
-		^prPartNumber;
+		^prPlayableNote.partNumber;
 	}
 
 	playableNote {
@@ -177,7 +176,7 @@ PianoRollNote {
 
 	prApplyPartColour {
 		if (prView.isNil, { ^this });
-		switch (prPartNumber,
+		switch (this.partNumber,
 			1, { prSetPart1Func.value(prView); },
 			2, { prSetPart2Func.value(prView); },
 			3, { prSetPart3Func.value(prView); },
@@ -241,7 +240,7 @@ PianoRollNote {
 			Error("The 'partNumber' parameter of SequencerNote.setPartIfSelected must be an Integer between 1 and 4. The value % was provided.", partNumber).throw;
 		});
 		if (prSelected,{
-			prPartNumber = partNumber;
+			prPlayableNote.partNumber_(partNumber);
 			this.prApplyPartColour;
 		});
 	}

@@ -94,7 +94,7 @@ SequencerGui {
 					).margins_(25).spacing_(25)
 				),
 				prSynthDesk = SynthDesk(),
-				drumProgrammer = DrumProgrammer(prSequencer)
+				drumProgrammer = DrumProgrammer(prSequencer, prDocument)
 		)).margins_(20).spacing_(20);
 
 		// Draw buttons in main header
