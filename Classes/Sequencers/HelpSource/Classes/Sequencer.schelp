@@ -59,7 +59,7 @@ ARGUMENT::synthId
 A LINK::Classes/Symbol:: which is the ID of synthesizer this MIDI sequence should be sent to. The MIDI channel is determined by configuration: see LINK::Classes/Config::.
 
 ARGUMENT::pattern
-A pattern (generally a LINK::Classes/Pbind::, LINK::Classes/Pseq:: or LINK::Classes/Ppar::) to be played on the synthesizer identified by the TELETYPE::synthId:: parameter. This pattern does not need certain keys such as TELETYPE::\type:: or TELETYPE::\midicmd:: since these will be filled in automatically.
+A pattern (generally a LINK::Classes/Pbind::, LINK::Classes/Pseq:: or LINK::Classes/Ppar::) to be played on the synthesizer identified by the TELETYPE::synthId:: parameter. This pattern does not need certain keys such as TELETYPE::\type:: or TELETYPE::\midicmd:: since these will be filled in automatically. CODE::\timingOffset:: delays each note by that many beats. Playback copies it into CODE::\lag:: after synthesizer post keys, and the MIDI event type schedules CODE::\lag:: on the playback clock.
 
 DISCUSSION::
 CODE::
@@ -74,7 +74,7 @@ Seq().addMidiSequence(\arp,\jx03,Pbind(
 ::
 
 METHOD::addSynthesizerPostKeys
-Adds a set of pattern keys which are added EMPHASIS::after:: every section for the specified LINK::Classes/Synthesizer::. These post-keys are generally patterns which use LINK::Classes/Pkey:: to access keys defined previously, for example by LINK::#-addMidiSequence::, and modify them in some way.
+Adds a set of pattern keys which are added EMPHASIS::after:: every section for the specified LINK::Classes/Synthesizer::. These post-keys are generally patterns which use LINK::Classes/Pkey:: to access keys defined previously, for example by LINK::#-addMidiSequence::, and modify them in some way. A post key that changes CODE::\timingOffset:: still changes the MIDI delay, because the copy into CODE::\lag:: happens after these keys. A post key that sets CODE::\lag:: itself is replaced by that copy.
 
 ARGUMENT::synthId
 The ID of the LINK::Classes/Synthesizer:: that these post-keys will be applied to.
@@ -88,6 +88,11 @@ CODE::
 ~mysequencer.addSynthesizerPostKeys(~rev2, [
 	\amp, (Pkey(\amp) * Pbrown(0.8,1.2,0.1)).clip(0,1)
 ]);
+::
+
+CODE::
+// Add swing to a sequence for the Unodrum
+~mysequencer.addSynthesizerPostKeys(\unodrum, [\timingOffset, Pseg([0,0.08,0],[0.5,0.5],\lin,inf)]);
 ::
 
 METHOD::arrange

@@ -133,7 +133,6 @@ Sequencer {
 					preKeys.add(element);
 				});
 				[
-					\amp,Pfunc({|e|if ((e.velocity.isNil) || e.velocity.isMemberOf(Symbol), {e.amp}, {e.velocity.linlin(0,127,0,1)})}),
 					\hasGate, false,
 					\callback, Pfunc({ |event|
 						var previous;
@@ -196,6 +195,15 @@ Sequencer {
 						});
 						postKeys.add(newKey);
 					});
+				});
+			});
+
+			if (sequence.type == \midi, {
+				[
+					\lag, Pkey(\timingOffset)
+				].do({
+					|element|
+					postKeys.add(element);
 				});
 			});
 
