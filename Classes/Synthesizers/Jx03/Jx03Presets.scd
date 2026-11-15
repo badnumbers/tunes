@@ -395,3 +395,10 @@ patch.name = "20260925";
 patch.kvps[1304]=0;patch.kvps[1314]=224;patch.kvps[1402]=255;patch.kvps[1102]=76;patch.kvps[1206]=0;patch.kvps[1306]=0;patch.kvps[1702]=128;patch.kvps[1204]=1;patch.kvps[1200]=3;patch.kvps[1504]=166;patch.kvps[1500]=250;patch.kvps[1210]=2;patch.kvps[1606]=9;patch.kvps[1220]=0;patch.kvps[1708]=12;patch.kvps[1700]=0;patch.kvps[1216]=0;patch.kvps[1308]=110;patch.kvps[1100]=0;patch.kvps[1600]=0;patch.kvps[1502]=186;patch.kvps[1602]=11;patch.kvps[1226]=1;patch.kvps[1706]=0;patch.kvps[1506]=164;patch.kvps[1104]=0;patch.kvps[1300]=128;patch.kvps[1222]=14;patch.kvps[1302]=0;patch.kvps[1310]=1;patch.kvps[1214]=128;patch.kvps[1218]=1;patch.kvps[1224]=0;patch.kvps[1202]=2;patch.kvps[1312]=22;patch.kvps[1604]=11;patch.kvps[1400]=0;patch.kvps[1212]=128;patch.kvps[1208]=3;
 Synths(\jx03).setWorkingPatch(patch);
 )
+
+(
+var patch = Jx03Patch();
+patch.name = "Guitar?"; // Uses sync, with DCO-1 twice as deep as DCO-2. Interestingly, changing these values but keeping the ratio does not result in the same sound - each one is a little different, with the deeper ones sounding more distorted
+patch.kvps[1304]=255;patch.kvps[1314]=224;patch.kvps[1402]=128;patch.kvps[1102]=38;patch.kvps[1206]=0;patch.kvps[1306]=0;patch.kvps[1702]=128;patch.kvps[1204]=0;patch.kvps[1200]=2;patch.kvps[1504]=128;patch.kvps[1500]=0;patch.kvps[1210]=2;patch.kvps[1606]=0;patch.kvps[1220]=0;patch.kvps[1708]=12;patch.kvps[1700]=0;patch.kvps[1216]=1;patch.kvps[1308]=0;patch.kvps[1100]=2;patch.kvps[1600]=0;patch.kvps[1502]=128;patch.kvps[1602]=0;patch.kvps[1226]=1;patch.kvps[1706]=0;patch.kvps[1506]=128;patch.kvps[1104]=52;patch.kvps[1300]=128;patch.kvps[1222]=223;patch.kvps[1302]=0;patch.kvps[1310]=1;patch.kvps[1214]=128;patch.kvps[1218]=1;patch.kvps[1224]=0;patch.kvps[1202]=2;patch.kvps[1312]=0;patch.kvps[1604]=0;patch.kvps[1400]=1;patch.kvps[1212]=166;patch.kvps[1208]=3;
+Synths(\jx03).setWorkingPatch(patch);
+)

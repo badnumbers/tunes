@@ -134,3 +134,10 @@ patch.name = "Fake synth";
 patch.kvps[22]=2;patch.kvps[72]=29;patch.kvps[71]=74;patch.kvps[79]=0;patch.kvps[28]=0;patch.kvps[27]=60;patch.kvps[75]=67;patch.kvps[29]=1;patch.kvps[17]=10;patch.kvps[74]=86;patch.kvps[13]=3;patch.kvps[24]=17;patch.kvps[80]=0;patch.kvps[12]=2;patch.kvps[25]=0;patch.kvps[14]=4;patch.kvps[20]=0;patch.kvps[5]=3;patch.kvps[18]=60;patch.kvps[78]=0;patch.kvps[19]=127;patch.kvps[73]=0;patch.kvps[30]=101;patch.kvps[23]=0;patch.kvps[21]=0;patch.kvps[26]=19;patch.kvps[31]=2;patch.kvps[15]=53;patch.kvps[3]=17;patch.kvps[16]=1;
 Synths(\sh01a).setWorkingPatch(patch);
 )
+
+(
+var patch = Sh01aPatch();
+patch.name = "Instant Aphex - just add reverb";
+patch.kvps[22]=2;patch.kvps[72]=0;patch.kvps[71]=29;patch.kvps[79]=0;patch.kvps[28]=1;patch.kvps[27]=60;patch.kvps[75]=50;patch.kvps[29]=1;patch.kvps[17]=10;patch.kvps[74]=36;patch.kvps[13]=3;patch.kvps[24]=75;patch.kvps[80]=2;patch.kvps[12]=4;patch.kvps[25]=0;patch.kvps[14]=3;patch.kvps[20]=121;patch.kvps[5]=0;patch.kvps[18]=60;patch.kvps[78]=0;patch.kvps[19]=81;patch.kvps[73]=0;patch.kvps[30]=16;patch.kvps[23]=0;patch.kvps[21]=0;patch.kvps[26]=127;patch.kvps[31]=2;patch.kvps[15]=64;patch.kvps[3]=41;patch.kvps[16]=1;
+Synths(\sh01a).setWorkingPatch(patch);
+)

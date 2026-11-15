@@ -269,3 +269,17 @@ patch.name = "Upsetting";
 patch.kvps[4102]=9;patch.kvps[4358]=0;patch.kvps[1282]=243;patch.kvps[1286]=139;patch.kvps[268]=3;patch.kvps[770]=0;patch.kvps[1284]=175;patch.kvps[4]=0;patch.kvps[274]=165;patch.kvps[264]=1;patch.kvps[280]=128;patch.kvps[1288]=1;patch.kvps[768]=255;patch.kvps[1032]=1;patch.kvps[260]=0;patch.kvps[278]=1;patch.kvps[522]=1;patch.kvps[524]=0;patch.kvps[4098]=10;patch.kvps[270]=2;patch.kvps[276]=128;patch.kvps[1026]=247;patch.kvps[1024]=177;patch.kvps[272]=1;patch.kvps[4352]=0;patch.kvps[4360]=2;patch.kvps[514]=131;patch.kvps[262]=0;patch.kvps[4100]=14;patch.kvps[258]=141;patch.kvps[1028]=161;patch.kvps[518]=0;patch.kvps[516]=0;patch.kvps[0]=128;patch.kvps[266]=6;patch.kvps[526]=160;patch.kvps[512]=0;patch.kvps[4354]=128;patch.kvps[4096]=0;patch.kvps[520]=145;patch.kvps[1280]=94;patch.kvps[256]=34;patch.kvps[2]=227;patch.kvps[1030]=128;
 Synths(\jp08).setWorkingPatch(patch);
 )
+
+(
+var patch = Jp08Patch();
+patch.name = "Pluck this shit";
+patch.kvps[4102]=128;patch.kvps[4358]=0;patch.kvps[1282]=128;patch.kvps[1286]=128;patch.kvps[268]=3;patch.kvps[770]=0;patch.kvps[1284]=128;patch.kvps[4]=0;patch.kvps[274]=165;patch.kvps[264]=2;patch.kvps[280]=128;patch.kvps[1288]=3;patch.kvps[768]=88;patch.kvps[1032]=1;patch.kvps[260]=1;patch.kvps[278]=2;patch.kvps[522]=1;patch.kvps[524]=0;patch.kvps[4098]=0;patch.kvps[270]=3;patch.kvps[276]=128;patch.kvps[1026]=135;patch.kvps[1024]=0;patch.kvps[272]=0;patch.kvps[4352]=0;patch.kvps[4360]=2;patch.kvps[514]=120;patch.kvps[262]=20;patch.kvps[4100]=128;patch.kvps[258]=0;patch.kvps[1028]=0;patch.kvps[518]=0;patch.kvps[516]=0;patch.kvps[0]=227;patch.kvps[266]=0;patch.kvps[526]=160;patch.kvps[512]=0;patch.kvps[4354]=128;patch.kvps[4096]=0;patch.kvps[520]=157;patch.kvps[1280]=0;patch.kvps[256]=0;patch.kvps[2]=0;patch.kvps[1030]=124;
+Synths(\jp08).setWorkingPatch(patch);
+)
+
+(
+var patch = Jp08Patch();
+patch.name = "Really quite marvellous";
+patch.kvps[4102]=12;patch.kvps[4358]=0;patch.kvps[1282]=0;patch.kvps[1286]=0;patch.kvps[268]=3;patch.kvps[770]=0;patch.kvps[1284]=0;patch.kvps[4]=4;patch.kvps[274]=133;patch.kvps[264]=1;patch.kvps[280]=128;patch.kvps[1288]=3;patch.kvps[768]=255;patch.kvps[1032]=1;patch.kvps[260]=1;patch.kvps[278]=1;patch.kvps[522]=1;patch.kvps[524]=0;patch.kvps[4098]=12;patch.kvps[270]=2;patch.kvps[276]=128;patch.kvps[1026]=0;patch.kvps[1024]=129;patch.kvps[272]=0;patch.kvps[4352]=1;patch.kvps[4360]=2;patch.kvps[514]=114;patch.kvps[262]=0;patch.kvps[4100]=15;patch.kvps[258]=0;patch.kvps[1028]=0;patch.kvps[518]=0;patch.kvps[516]=0;patch.kvps[0]=199;patch.kvps[266]=255;patch.kvps[526]=160;patch.kvps[512]=0;patch.kvps[4354]=255;patch.kvps[4096]=0;patch.kvps[520]=116;patch.kvps[1280]=126;patch.kvps[256]=135;patch.kvps[2]=0;patch.kvps[1030]=128;
+Synths(\jp08).setWorkingPatch(patch);
+)
