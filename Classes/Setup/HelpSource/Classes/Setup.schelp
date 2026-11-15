@@ -1,6 +1,7 @@
 TITLE:: Setup
 SUMMARY:: Utility methods for setting SuperCollider up.
 CATEGORIES:: Core
+RELATED:: Classes/SetupTestMidiOut
 
 DESCRIPTION::
 A set of utility methods for setting SuperCollider up.
@@ -8,16 +9,16 @@ A set of utility methods for setting SuperCollider up.
 CLASSMETHODS::
 
 METHOD:: midi
-The first time this is called, it runs LINK::Classes/MIDIClient#*init:: and returns a LINK::Classes/MIDIOut:: corresponding to the device name and port name returned by LINK::Classes/Config#*midi::. The MIDI output latency is set to match CODE::Server.default.latency::.
+When CODE::testMode:: is CODE::false::, the first call runs LINK::Classes/MIDIClient#*init:: and returns a LINK::Classes/MIDIOut:: for the device name and port name from LINK::Classes/Config#*midi::. The MIDI output latency matches CODE::Server.default.latency::. Later calls return that same LINK::Classes/MIDIOut::.
 
-For subsequent calls the CODE::MidiOut:: created the first time is returned.
+When CODE::testMode:: is CODE::true::, this returns one LINK::Classes/SetupTestMidiOut:: and does not call LINK::Classes/MIDIClient#*init::. Messages such as CODE::noteOn::, CODE::noteOff::, and CODE::control:: are ignored. Every call returns that same LINK::Classes/SetupTestMidiOut::.
 
 NOTE::
-If LINK::Classes/Config#*midi:: does not return MIDI configuration, because the STRONG::Configuration File:: is missing or does not contain a valid STRONG::MIDI:: section, then this method will throw an error.
+If CODE::testMode:: is CODE::false:: and LINK::Classes/Config#*midi:: does not return MIDI configuration, because the STRONG::Configuration File:: is missing or does not contain a valid STRONG::MIDI:: section, then this method will throw an error.
 ::
 
 RETURNS::
-A LINK::Classes/MIDIOut:: created using LINK::Classes/Config#*midi::.
+A LINK::Classes/MIDIOut::, or a LINK::Classes/SetupTestMidiOut:: when CODE::testMode:: is CODE::true::.
 
 METHOD:: server
 If CODE::Server.default:: is already a running server, frees all nodes. If CODE::Server.default:: is not a running server, it boots it with the number of input and output bus channels as specified in LINK::Classes/Config#*server::.
@@ -28,3 +29,12 @@ If the STRONG::Configuration File:: is missing or does not contain a valid STRON
 
 ARGUMENT:: condition
 An instance of CODE::Condition:: used to synchronise the server boot with other activity. If CODE::nil:: is provided then no synchronisation will occur.
+
+METHOD:: testMode
+When CODE::true::, LINK::#*midi:: returns a stand-in port instead of opening a MIDI device. The default is CODE::false::. CODE::testMode_:: replaces it.
+
+ARGUMENT:: value
+The new value when setting. A LINK::Classes/Boolean::.
+
+RETURNS::
+The current LINK::Classes/Boolean::.

@@ -1,5 +1,6 @@
 Sequencer {
 	classvar prByDocument;
+	classvar prEmbedStacks;
 
 	var prChipOrigins;
 	var prDevMode;
@@ -14,10 +15,10 @@ Sequencer {
 	var prPostKeySets;
 	var prPreKeySets;
 	var prPreviousOnClose;
-	var prSequenceWrapper;
 	var prSequences;
 	var prSoundingNotes;
 	var prTempo = 2;
+	var prPlayingId;
 
 	acquirePlaybackClock {
 		|holder|
@@ -112,112 +113,12 @@ Sequencer {
 		prNoteOffGeneration = 0;
 		prPatternFinished = false;
 		prChipOrigins = Dictionary.new;
-
-		prSequenceWrapper = {
-			|sequence|
-			var preKeys, postKeys;
-
-			preKeys = List.newUsing([
-				\amp,0.5,
-				\timingOffset,0
-			]);
-			postKeys = List();
-
-			if (sequence.type == \midi,{
-				[
-					\type,\midi,
-					\midiout,Synths(sequence.synthId).midiout,
-					\chan,Synths(sequence.synthId).midiChannel,
-				].do({
-					|element|
-					preKeys.add(element);
-				});
-				[
-					\hasGate, false,
-					\callback, Pfunc({ |event|
-						var previous;
-						previous = event.callback;
-						{ |played|
-							this.prTrackMidiEvent(played);
-							if (previous.notNil, { previous.value(played) });
-						}
-					})
-				].do({
-					|element|
-					postKeys.add(element);
-				});
-			});
-
-			// prPreKeys = [{},[key,value,key,value]]
-			// preKeys = [key,value,key,value]
-			prPreKeySets.do({
-				|preKeySet,index|
-				// Decide whether the current set of prekeys should be applied by evaluating its Function
-				if (preKeySet.selectFunc.value(sequence),{
-					preKeySet.keysArray.do({
-						|newKey,newKeyIndex|
-						// Only look at even-numbered elements
-						if (newKeyIndex % 2 == 0,{
-							// Check if the current key matches any existing key and warn if it does
-							preKeys.do({
-								|existingKey,existingIndex|
-								// Only look at even-numbered elements
-								if (index % 2 == 0,{
-									if (newKey == existingKey,{
-										warn(format("The new pre-key % duplicates the existing pre-key % for sequence ID %.", newKey, existingKey, sequence.id));
-									});
-								});
-							});
-						});
-						preKeys.add(newKey);
-					});
-				});
-			});
-
-			prPostKeySets.do({
-				|postKeySet,index|
-				// Decide whether the current set of postkeys should be applied by evaluating its Function
-				if (postKeySet.selectFunc.value(sequence),{
-					postKeySet.keysArray.do({
-						|newKey,newKeyIndex|
-						// Check for duplicates in even-numbered elements
-						if (newKeyIndex % 2 == 0,{
-							// Check if the current key matches any existing key and warn if it does
-							postKeys.do({
-								|existingKey,existingIndex|
-								// Only look at even-numbered elements
-								if (index % 2 == 0,{
-									if (newKey == existingKey,{
-										warn(format("The new post-key % duplicates the existing post-key % for sequence ID %.", newKey, existingKey, sequence.id));
-									});
-								});
-							});
-						});
-						postKeys.add(newKey);
-					});
-				});
-			});
-
-			if (sequence.type == \midi, {
-				[
-					\lag, Pkey(\timingOffset)
-				].do({
-					|element|
-					postKeys.add(element);
-				});
-			});
-
-			Pchain(
-				//Pbind(\debug,Pfunc({|ev|ev.postln;})),
-				Pbind(*postKeys), // The asterisk converts the array into a set of parameters
-				sequence.pattern,
-				Pbind(*preKeys)
-			)
-		};
+		prPlayingId = nil;
 	}
 
 	*initClass {
 		prByDocument = IdentityDictionary.new;
+		prEmbedStacks = IdentityDictionary.new;
 	}
 
 	*new {
@@ -252,7 +153,7 @@ Sequencer {
 
 	play {
 		|sequenceId,loop=false|
-		var acquired, repeats;
+		var acquired, repeats, sequencer;
 		if (loop == true, {
 			repeats = inf;
 		}, {
@@ -261,19 +162,22 @@ Sequencer {
 		Validator.validateMethodParameterType(sequenceId, Symbol, "sequenceId", "Sequencer", "play");
 		this.stop;
 		prPatternFinished = false;
+		prPlayingId = sequenceId;
+		this.changed(\playing, sequenceId);
+		sequencer = this;
 		acquired = this.acquirePlaybackClock(prPatternHolder);
 		prEventStreamPlayer = Pfset(
 			{},
 			Pspawner({
 				|sp|
 				repeats.do({
-					sp.seq(prSequenceWrapper.value(prSequences[sequenceId]));
+					sp.seq(sequencer.pat(sequenceId));
 				});
 			}),
 			{
 				prPatternFinished = true;
 				if (prSoundingNotes.isEmpty, {
-					this.releasePlaybackClock(prPatternHolder);
+					sequencer.releasePlaybackClock(prPatternHolder);
 				});
 			}
 		).play(acquired.clock);
@@ -413,12 +317,18 @@ Sequencer {
 	}
 
 	stop {
+		var wasPlaying;
+		wasPlaying = prPlayingId.notNil;
 		this.prReleaseSoundingNotes;
 		if (prEventStreamPlayer.isMemberOf(EventStreamPlayer), {
 			prEventStreamPlayer.stop;
 			prEventStreamPlayer = nil;
 		});
 		this.releasePlaybackClock(prPatternHolder);
+		prPlayingId = nil;
+		if (wasPlaying, {
+			this.changed(\playing, nil);
+		});
 	}
 
 	tempo {
@@ -436,5 +346,166 @@ Sequencer {
 			prPlaybackClock.tempo_(prTempo);
 		});
 		this.changed(\tempo, prTempo);
+	}
+
+	compose {
+		|id, pattern|
+		Validator.validateMethodParameterType(id, Symbol, "id", "Sequencer", "compose");
+		Validator.validateMethodParameterType(pattern, Pattern, "pattern", "Sequencer", "compose");
+		if (prSequences.includesKey(id), {
+			warn(format("Overwrote sequence %.", id));
+		});
+		prSequences.put(id, Sequence(id, pattern, \composition, nil));
+		this.changed(\midiSequenceAdded, id);
+	}
+
+	pat {
+		|id|
+		Validator.validateMethodParameterType(id, Symbol, "id", "Sequencer", "pat");
+		^SeqPat(this, id);
+	}
+
+	patternStructure {
+		|id|
+		var sequence;
+		Validator.validateMethodParameterType(id, Symbol, "id", "Sequencer", "patternStructure");
+		sequence = prSequences[id];
+		if (sequence.isNil or: { sequence.type != \composition }, {
+			^nil;
+		});
+		^(PatternStructure.from(sequence.pattern, this, id));
+	}
+
+	playingId {
+		^prPlayingId;
+	}
+
+	prEmbedNamed {
+		|id, inval|
+		var sequence, stack;
+		if (prEmbedStacks.isNil, {
+			prEmbedStacks = IdentityDictionary.new;
+		});
+		stack = prEmbedStacks[thisThread];
+		if (stack.isNil, {
+			stack = IdentitySet.new;
+			prEmbedStacks[thisThread] = stack;
+		});
+		if (stack.includes(id), {
+			Error(format("The sequence % contains itself.", id)).throw;
+		});
+		sequence = prSequences[id];
+		if (sequence.isNil, {
+			Error(format("The sequence % was not found.", id)).throw;
+		});
+		stack.add(id);
+		protect {
+			if (sequence.type == \composition, {
+				inval = sequence.pattern.embedInStream(inval);
+			}, {
+				inval = this.prWrapSequence(sequence).embedInStream(inval);
+			});
+		} {
+			stack.remove(id);
+			if (stack.isEmpty, {
+				prEmbedStacks.removeAt(thisThread);
+			});
+		};
+		^inval;
+	}
+
+	prSequenceAt {
+		|id|
+		^prSequences[id];
+	}
+
+	prWrapSequence {
+		|sequence|
+		var postKeys, preKeys;
+		preKeys = List.newUsing([
+			\amp, 0.5,
+			\timingOffset, 0
+		]);
+		postKeys = List();
+
+		if (sequence.type == \midi, {
+			[
+				\type, \midi,
+				\midiout, Synths(sequence.synthId).midiout,
+				\chan, Synths(sequence.synthId).midiChannel,
+			].do({
+				|element|
+				preKeys.add(element);
+			});
+			[
+				\hasGate, false,
+				\callback, Pfunc({ |event|
+					var previous;
+					previous = event.callback;
+					{ |played|
+						this.prTrackMidiEvent(played);
+						if (previous.notNil, { previous.value(played) });
+					}
+				})
+			].do({
+				|element|
+				postKeys.add(element);
+			});
+		});
+
+		prPreKeySets.do({
+			|preKeySet, index|
+			if (preKeySet.selectFunc.value(sequence), {
+				preKeySet.keysArray.do({
+					|newKey, newKeyIndex|
+					if (newKeyIndex % 2 == 0, {
+						preKeys.do({
+							|existingKey, existingIndex|
+							if (index % 2 == 0, {
+								if (newKey == existingKey, {
+									warn(format("The new pre-key % duplicates the existing pre-key % for sequence ID %.", newKey, existingKey, sequence.id));
+								});
+							});
+						});
+					});
+					preKeys.add(newKey);
+				});
+			});
+		});
+
+		prPostKeySets.do({
+			|postKeySet, index|
+			if (postKeySet.selectFunc.value(sequence), {
+				postKeySet.keysArray.do({
+					|newKey, newKeyIndex|
+					if (newKeyIndex % 2 == 0, {
+						postKeys.do({
+							|existingKey, existingIndex|
+							if (index % 2 == 0, {
+								if (newKey == existingKey, {
+									warn(format("The new post-key % duplicates the existing post-key % for sequence ID %.", newKey, existingKey, sequence.id));
+								});
+							});
+						});
+					});
+					postKeys.add(newKey);
+				});
+			});
+		});
+
+		if (sequence.type == \midi, {
+			[
+				\lag, Pkey(\timingOffset)
+			].do({
+				|element|
+				postKeys.add(element);
+			});
+		});
+
+		^Pchain(
+			Pbind(*postKeys),
+			sequence.pattern,
+			Pbind(*preKeys)
+		);
 	}
 }

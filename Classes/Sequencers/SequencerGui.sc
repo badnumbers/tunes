@@ -200,5 +200,8 @@ SequencerGui {
 		if (what == \tempo, {
 			prSynthDesk.tempo_(id);
 		});
+		if (what == \playing, {
+			prArranger.applyPlaying(id);
+		});
 	}
 }

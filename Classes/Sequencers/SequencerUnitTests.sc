@@ -1,4 +1,12 @@
 SequencerUnitTests : BNUnitTest {
+	setUp {
+		Setup.testMode = true;
+	}
+
+	tearDown {
+		Setup.testMode = false;
+	}
+
 	prCloseFixture {
 		|document|
 		if (document.onClose.notNil, {
@@ -228,6 +236,109 @@ SequencerUnitTests : BNUnitTest {
 		this.assertEquals(sequencer.tempo, 3, "the sequencer stores the new tempo");
 		sequencer.removeDependant(dependant);
 	}
+
+	test_compose_storesCompositionAndNotifies {
+		var dependant, sequencer;
+		sequencer = Sequencer();
+		dependant = SequencerSequenceDependant();
+		sequencer.addDependant(dependant);
+		sequencer.compose(\song, Pseq([Pbind(\dur, 1)]));
+		this.assert(sequencer.sequenceIds.includes(\song), "compose stores the id");
+		this.assertEquals(dependant.receivedWhat, \midiSequenceAdded, "compose notifies dependants");
+		this.assertEquals(dependant.receivedId, \song, "the notification carries the id");
+		this.assertEquals(sequencer.patternStructure(\missing), nil, "a missing id has no structure");
+		sequencer.removeDependant(dependant);
+	}
+
+	test_pat_cycleThrows {
+		var sequencer;
+		sequencer = Sequencer();
+		sequencer.compose(\song, Pseq([sequencer.pat(\song)]));
+		this.assertException({
+			sequencer.pat(\song).embedInStream(Event.new);
+		}, Error, "a sequence that contains itself throws");
+	}
+
+	test_pat_failedEmbedClearsTheCycleStack {
+		var errorString, event, sequencer;
+		sequencer = Sequencer();
+		sequencer.compose(\song, Pseq([sequencer.pat(\missing)]));
+		errorString = "";
+		try {
+			sequencer.pat(\song).embedInStream(Event.new);
+		} { |error|
+			errorString = error.errorString;
+		};
+		this.assert(errorString.contains("was not found"), "a missing id throws");
+		errorString = "";
+		try {
+			sequencer.pat(\song).embedInStream(Event.new);
+		} { |error|
+			errorString = error.errorString;
+		};
+		this.assert(errorString.contains("was not found"), "the embed stack is clear for the next attempt");
+		this.assert(errorString.contains("contains itself").not, "a cleared stack does not report a cycle");
+		sequencer.compose(\ok, Pbind(\dur, 1, \midinote, 60));
+		event = sequencer.pat(\ok).asStream.next(Event.new);
+		this.assertEquals(event[\midinote], 60, "a composition embeds its pattern");
+		this.assert(event[\type] != \midi, "a composition is not wrapped as MIDI");
+	}
+
+	test_pat_midiLeafAndCompositionShareWrapper {
+		var config, leafEvent, sequencer, songEvent;
+		config = Config.hardwareSynthesizers.detect({
+			|item|
+			item.midiChannels.size > 0
+		});
+		sequencer = Sequencer();
+		sequencer.addGlobalPreKeys([\marker, 7]);
+		sequencer.addSynthesizerPostKeys(config.id, [\swing, 1]);
+		sequencer.addMidiSequence(\drums, config.id, Pbind(\midinote, 60, \dur, 1));
+		sequencer.compose(\song, Pseq([sequencer.pat(\drums)]));
+		leafEvent = sequencer.pat(\drums).asStream.next(Event.new);
+		songEvent = sequencer.pat(\song).asStream.next(Event.new);
+		this.assert(leafEvent[\midiout].isKindOf(SetupTestMidiOut), "a leaf uses the test MIDI port");
+		this.assert(songEvent[\midiout] === leafEvent[\midiout], "a composed leaf uses the same test MIDI port");
+		this.assertEquals(leafEvent[\marker], 7, "a leaf played on its own receives global pre-keys");
+		this.assertEquals(leafEvent[\type], \midi, "a leaf is routed as MIDI");
+		this.assertEquals(leafEvent[\swing], 1, "a leaf receives its synth post-keys");
+		this.assertEquals(leafEvent[\midinote], 60, "a leaf plays its pattern");
+		this.assertEquals(songEvent[\marker], 7, "the same leaf inside a composition receives global pre-keys");
+		this.assertEquals(songEvent[\type], \midi, "a composed leaf is routed as MIDI");
+		this.assertEquals(songEvent[\swing], 1, "a composed leaf receives its synth post-keys");
+		this.assertEquals(songEvent[\midinote], 60, "a composed leaf plays the stored pattern");
+	}
+
+	test_pat_missingIdThrows {
+		var sequencer;
+		sequencer = Sequencer();
+		this.assertException({
+			sequencer.pat(\missing).embedInStream(Event.new);
+		}, Error, "a missing id throws");
+	}
+
+	test_pat_returnsSeqPat {
+		var pat, sequencer;
+		sequencer = Sequencer();
+		pat = sequencer.pat(\drums);
+		this.assert(pat.isKindOf(SeqPat), "pat returns a SeqPat");
+		this.assertEquals(pat.id, \drums, "the SeqPat stores the id");
+	}
+
+	test_play_setsPlayingIdUntilStop {
+		var clock, probe, sequencer;
+		sequencer = Sequencer();
+		sequencer.compose(\song, Pbind(\dur, 1));
+		probe = ();
+		sequencer.play(\song);
+		this.assertEquals(sequencer.playingId, \song, "play records the id");
+		clock = sequencer.acquirePlaybackClock(probe).clock;
+		clock.beats_(clock.beats - 100000);
+		sequencer.releasePlaybackClock(probe);
+		sequencer.stop;
+		this.assertEquals(sequencer.playingId, nil, "stop clears the id");
+		0.05.wait;
+	}
 }
 
 SequencerNoteOffLog {
@@ -255,6 +366,17 @@ SequencerTempoDependant {
 		|theChanged, what, tempo|
 		receivedWhat = what;
 		receivedTempo = tempo;
+	}
+}
+
+SequencerSequenceDependant {
+	var <receivedId;
+	var <receivedWhat;
+
+	update {
+		|theChanged, what, id|
+		receivedWhat = what;
+		receivedId = id;
 	}
 }
 

@@ -37,6 +37,25 @@ SequencerDocumentUnitTests : BNUnitTest {
 		this.assertEquals(SequencerDocument.prIndexForInsert(text), expected);
 	}
 
+	test_prIndexForInsert_ignoresComposeCall {
+		var add, text;
+		add = "Seq().addMidiSequence(\\a, ~x, Pbind(\\dur, 1));";
+		text = add ++ "\nSeq().compose(\\song, Pseq([Seq().pat(\\a)]));";
+		this.assertEquals(SequencerDocument.prIndexForInsert(text), add.size, "insert stays after the MIDI call");
+	}
+
+	test_prPatternCallRange_composeAndAddMidiSequence_laterCallWins {
+		var add, compose, range, text;
+		add = "Seq().addMidiSequence(\\song, ~x, Pbind(\\dur, 1));";
+		compose = "Seq().compose(\\song, Pseq([Seq().pat(\\a)]));";
+		text = add ++ "\n" ++ compose;
+		range = SequencerDocument.prPatternCallRange(text, \song);
+		this.assertEquals(range, [add.size + 1, text.size], "a later compose call wins");
+		text = compose ++ "\n" ++ add;
+		range = SequencerDocument.prPatternCallRange(text, \song);
+		this.assertEquals(range, [compose.size + 1, text.size], "a later addMidiSequence call wins");
+	}
+
 	test_prPatternCallRange_lastCallWinsAndQuotedIdMatches {
 		var first, range, second, text;
 		first = "Seq().addMidiSequence(\\arp, ~x, Pbind(\\dur, 1));";

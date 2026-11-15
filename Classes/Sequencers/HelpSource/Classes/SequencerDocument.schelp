@@ -4,7 +4,7 @@ CATEGORIES:: Streams-Patterns-Events
 RELATED:: Classes/Document, Classes/PianoRoll, Classes/SequencerGui, Classes/WriteCommand, Classes/PatternText
 
 DESCRIPTION::
-TELETYPE::SequencerDocument:: composes a LINK::Classes/Document:: and is the place that knows how sequencer source is laid out: how to find MIDI parts, where to write new pattern text, and where to write the arranger's CODE::Seq().arrange:: call.
+TELETYPE::SequencerDocument:: composes a LINK::Classes/Document:: and is the place that knows how sequencer source is laid out: how to find MIDI parts and CODE::Seq().compose:: calls, where to write new pattern text, and where to write the arranger's CODE::Seq().arrange:: call.
 
 LINK::Classes/PianoRoll::, LINK::Classes/SequencerGui::, and LINK::Classes/WriteCommand:: talk to this class rather than to LINK::Classes/Document:: directly. Callers of LINK::#-insertPattern:: do not choose the insertion point; TELETYPE::SequencerDocument:: owns that policy.
 
@@ -31,7 +31,7 @@ RETURNS::
 This instance.
 
 METHOD:: selectPattern
-Selects the last CODE::Seq().addMidiSequence:: call whose first argument is CODE::id::. The selection is made in this document and the document is left where it is. When no such call is in the text, posts a warning naming that id.
+Selects the last CODE::Seq().addMidiSequence:: or CODE::Seq().compose:: call whose first argument is CODE::id::. When both kinds of call name that id, the later call in the text is selected. The selection is made in this document and the document is left where it is. When no such call is in the text, posts a warning naming that id.
 
 ARGUMENT:: id
 A LINK::Classes/Symbol::.
@@ -48,4 +48,4 @@ A LINK::Classes/Dictionary:: of LINK::Classes/Symbol:: to LINK::Classes/Point::.
 RETURNS::
 This instance.
 
-PRIVATE:: init, prArrangeCall, prArrangeCallRange, prArrangeTrailer, prEndOfCall, prIndexForInsert, prIsIdentChar, prIsWhitespace, prPatternCallRange, prPatternNotFoundWarning, prReadSymbol, prReplaceRange, prSymbolText, prTextWithChipOrigins
+PRIVATE:: init, prArrangeCall, prArrangeCallRange, prArrangeTrailer, prCallMatches, prEndOfCall, prIndexForInsert, prIsIdentChar, prIsWhitespace, prPatternCallRange, prPatternNotFoundWarning, prReadSymbol, prReplaceRange, prSymbolText, prTextWithChipOrigins

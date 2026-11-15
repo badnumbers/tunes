@@ -1,10 +1,10 @@
 TITLE:: Arranger
 SUMMARY:: Absolute layout of sequence chips for the SequencerGui Arrange page.
 CATEGORIES:: Streams-Patterns-Events
-RELATED:: Classes/PatternChip, Classes/SCViewHolder, Classes/Sequencer, Classes/SequencerDocument, Classes/SequencerGui
+RELATED:: Classes/CompositionChip, Classes/PatternChip, Classes/PatternStructure, Classes/SCViewHolder, Classes/Sequencer, Classes/SequencerDocument, Classes/SequencerGui
 
 DESCRIPTION::
-TELETYPE::Arranger:: is a LINK::Classes/SCViewHolder:: that LINK::Classes/SequencerGui:: shows when the Arrange button is pressed. Its view has no layout decorator, so each LINK::Classes/PatternChip:: keeps the bounds it is given. A chip whose id has a stored origin is pinned there. The other chips pack in LINK::Classes/Sequencer#-sequenceIds:: order, with a margin of 10 and a gap of 10, wrapping to the arranger's width. Resizing packs only the unpinned chips and clamps pinned chips into the view for display. That clamp is not written. Dropping a dragged chip stores the clamped integer origin and, when a LINK::Classes/SequencerDocument:: was given, writes the origin map. A single click selects that pattern's CODE::Seq().addMidiSequence:: call in the sequencer document and leaves the document where it is. When that call is missing, or no document was given, a warning is posted. A CODE::nil:: document skips the write.
+TELETYPE::Arranger:: is a LINK::Classes/SCViewHolder:: that LINK::Classes/SequencerGui:: shows when the Arrange button is pressed. Its view has no layout decorator, so each top-level chip keeps the bounds it is given. A MIDI sequence is a LINK::Classes/PatternChip::. A composition is a LINK::Classes/CompositionChip:: whose body is the LINK::Classes/Sequencer#-patternStructure:: for that id. Leaves stay on the canvas as well as inside a composition. Nested chips do not drag, and their positions are not stored. A chip whose id has a stored origin is pinned there. The other chips pack in LINK::Classes/Sequencer#-sequenceIds:: order, with a margin of 10 and a gap of 10, wrapping to the arranger's width. Resizing packs only the unpinned chips and clamps pinned chips into the view for display. That clamp is not written. Dropping a dragged chip stores the clamped integer origin and, when a LINK::Classes/SequencerDocument:: was given, writes the origin map. A single click selects that pattern's CODE::Seq().addMidiSequence:: or CODE::Seq().compose:: call in the sequencer document and leaves the document where it is. When that call is missing, or no document was given, a warning is posted. A CODE::nil:: document skips the write. Replacing a sequence builds that chip again. LINK::#-applyPlaying:: highlights every chip whose id is the one playing.
 
 CLASSMETHODS::
 
@@ -23,12 +23,18 @@ A new TELETYPE::Arranger:: instance.
 INSTANCEMETHODS::
 
 METHOD:: addSequence
-Adds a chip for CODE::name::. A name that is already shown is left as it is. A stored origin pins the chip. Otherwise the chip is packed with the other unpinned chips.
+Adds a chip for CODE::name::. A name that is already shown is built again from the current sequence. A stored origin pins the chip. Otherwise the chip is packed with the other unpinned chips.
 
 ARGUMENT:: name
 A LINK::Classes/Symbol::, displayed with CODE::asString::.
 
+METHOD:: applyPlaying
+Highlights every top-level chip, and every nested chip, whose sequence id is CODE::playingId::. CODE::nil:: clears the highlight.
+
+ARGUMENT:: playingId
+A LINK::Classes/Symbol:: or CODE::nil::.
+
 METHOD:: applyOrigins
 Moves each shown chip to its stored origin and pins it. A chip with no stored origin becomes unpinned and is packed again. This does not write the document.
 
-PRIVATE:: init, prClamp, prClampPinned, prCommitDrag, prPackUnpinned, prPlaceChip, prSelectPattern, prViewReady
+PRIVATE:: init, prClamp, prClampPinned, prCommitDrag, prMakeChip, prPackUnpinned, prPlaceChip, prRebuild, prSelectPattern, prViewReady

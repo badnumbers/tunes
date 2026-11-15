@@ -1,0 +1,40 @@
+TITLE:: SeqPat
+SUMMARY:: A pattern that plays one named sequence from a Sequencer.
+CATEGORIES:: Streams-Patterns-Events
+RELATED:: Classes/Pattern, Classes/Sequencer
+
+DESCRIPTION::
+TELETYPE::SeqPat:: is the LINK::Classes/Pattern:: returned by LINK::Classes/Sequencer#-pat::. It stores that sequencer and a sequence id. LINK::Classes/Pseq::, LINK::Classes/Ppar::, and the other list patterns can embed it. When the pattern plays, it looks the id up on the sequencer. A MIDI sequence is wrapped with that sequence's pre-keys, post-keys, and MIDI route. A composition is embedded as stored, so each nested TELETYPE::SeqPat:: wraps its own leaf. A missing id throws. A cycle throws.
+
+CLASSMETHODS::
+
+METHOD:: new
+Creates a TELETYPE::SeqPat:: for one sequence id.
+
+ARGUMENT:: sequencer
+The LINK::Classes/Sequencer:: that holds the named sequence.
+
+ARGUMENT:: id
+A LINK::Classes/Symbol::. The sequence does not need to exist yet.
+
+RETURNS::
+A new TELETYPE::SeqPat::.
+
+INSTANCEMETHODS::
+
+METHOD:: embedInStream
+Looks CODE::id:: up on the stored sequencer and embeds that sequence.
+
+ARGUMENT:: inval
+The input event, as for any LINK::Classes/Pattern::.
+
+RETURNS::
+The event returned by the embedded sequence.
+
+METHOD:: id
+The sequence LINK::Classes/Symbol:: this pattern names.
+
+RETURNS::
+A LINK::Classes/Symbol::.
+
+PRIVATE:: init

@@ -1,0 +1,81 @@
+TITLE:: PatternStructure
+SUMMARY:: A tree describing how a pattern is drawn in the Arranger.
+CATEGORIES:: Streams-Patterns-Events
+RELATED:: Classes/Pattern, Classes/SeqPat, Classes/Sequencer
+
+DESCRIPTION::
+TELETYPE::PatternStructure:: walks a live LINK::Classes/Pattern::. It does not read source text. LINK::Classes/Ppar:: and LINK::Classes/Ptpar:: are vertical. LINK::Classes/Pchain:: is vertical. Every other LINK::Classes/ListPattern:: is horizontal. A LINK::Classes/FilterPattern:: has one child. A LINK::Classes/Pbind:: is a leaf, and its keys are not opened. A LINK::Classes/SeqPat:: that names a MIDI sequence, or a missing id, is a leaf labeled with that id. A LINK::Classes/SeqPat:: that names a composition expands that composition unless the id is already on the walk path. A repeat count other than 1 is kept when it is a number, including CODE::inf::. A pattern-valued repeat count is omitted.
+
+The direction is CODE::\leaf::, CODE::\horizontal::, CODE::\vertical::, or CODE::\single::.
+
+CLASSMETHODS::
+
+METHOD:: from
+Walks CODE::pattern::. When CODE::rootId:: is given, that id starts on the walk path, so a composition that names itself becomes a leaf.
+
+ARGUMENT:: pattern
+The object to walk. A non-pattern becomes a leaf labeled with a short CODE::asString::.
+
+ARGUMENT:: sequencer
+The LINK::Classes/Sequencer:: used to resolve a LINK::Classes/SeqPat::.
+
+ARGUMENT:: rootId
+A LINK::Classes/Symbol:: already on the walk path, or CODE::nil::.
+
+RETURNS::
+A TELETYPE::PatternStructure::.
+
+METHOD:: new
+Creates one node.
+
+ARGUMENT:: direction
+CODE::\leaf::, CODE::\horizontal::, CODE::\vertical::, or CODE::\single::.
+
+ARGUMENT:: label
+The text drawn on the chip.
+
+ARGUMENT:: children
+An LINK::Classes/Array:: of TELETYPE::PatternStructure:: nodes.
+
+ARGUMENT:: repeats
+A LINK::Classes/SimpleNumber::, including CODE::inf::, or CODE::nil::.
+
+ARGUMENT:: sequenceId
+The named sequence this node selects, or CODE::nil:: for an anonymous pattern.
+
+RETURNS::
+A new TELETYPE::PatternStructure::.
+
+INSTANCEMETHODS::
+
+METHOD:: children
+The child nodes. A leaf has an empty array.
+
+RETURNS::
+An LINK::Classes/Array:: of TELETYPE::PatternStructure::.
+
+METHOD:: direction
+CODE::\leaf::, CODE::\horizontal::, CODE::\vertical::, or CODE::\single::.
+
+RETURNS::
+A LINK::Classes/Symbol::.
+
+METHOD:: label
+The chip text before a repeat count is appended.
+
+RETURNS::
+A LINK::Classes/String::.
+
+METHOD:: repeats
+The repeat count to draw, or CODE::nil:: when the pattern repeats once or the count is not a number.
+
+RETURNS::
+A LINK::Classes/SimpleNumber:: or CODE::nil::.
+
+METHOD:: sequenceId
+The named sequence this node refers to, or CODE::nil::.
+
+RETURNS::
+A LINK::Classes/Symbol:: or CODE::nil::.
+
+PRIVATE:: init, prClassLabel, prContainer, prFrom, prLiteralLabel, prRepeats

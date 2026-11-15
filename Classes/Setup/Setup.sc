@@ -1,7 +1,15 @@
 Setup {
 	classvar prMidiOut;
+	classvar prTestMidiOut;
+	classvar prTestMode = false;
 
 	*midi {
+		if (prTestMode, {
+			if (prTestMidiOut.isNil, {
+				prTestMidiOut = SetupTestMidiOut();
+			});
+			^prTestMidiOut;
+		});
 		if (prMidiOut.isMemberOf(MIDIOut) == false, {
 			MIDIClient.init;
 			prMidiOut = MIDIOut.newByName(Config.midi.deviceName, Config.midi.portName).latency_(Server.default.latency);
@@ -30,5 +38,15 @@ Setup {
 		if (condition.isMemberOf(Condition), {
 			server.sync(condition);
 		});
+	}
+
+	*testMode {
+		^prTestMode;
+	}
+
+	*testMode_ {
+		|value|
+		Validator.validateMethodParameterType(value, Boolean, "value", "Setup", "testMode_");
+		prTestMode = value;
 	}
 }

@@ -1,0 +1,58 @@
+TITLE:: CompositionChip
+SUMMARY:: Nested chip for one composed sequence in the Arranger.
+CATEGORIES:: GUI>Views
+RELATED:: Classes/Arranger, Classes/BorderView, Classes/PatternStructure, Classes/Sequencer
+
+DESCRIPTION::
+TELETYPE::CompositionChip:: is a LINK::Classes/BorderView:: that LINK::Classes/Arranger:: places for a LINK::Classes/Sequencer#-compose:: sequence. The title is the sequence id. The title text passes mouse events to the chip. Dragging the title moves the whole chip and calls LINK::#-dragAction_:: with the chip's origin. A click on the title selects that id. A double-click on the title plays it, or stops it when that id is already playing. The body is laid out from a LINK::Classes/PatternStructure::. LINK::Classes/Ppar:: and LINK::Classes/Pchain:: stack their children. Other list patterns lay children out in a row. A repeat count other than 1 is drawn on the label. Nested chips do not drag. A nested chip with a sequence id selects and plays that id. An anonymous chip selects and plays the nearest sequence that contains it. LINK::#-applyPlaying:: highlights this chip when its id is playing, and highlights each nested chip whose id is playing.
+
+CLASSMETHODS::
+
+METHOD:: new
+Creates a TELETYPE::CompositionChip:: and adds it to CODE::parent::.
+
+ARGUMENT:: parent
+The LINK::Classes/View:: that holds the chip.
+
+ARGUMENT:: sequencer
+The LINK::Classes/Sequencer:: that plays this chip's sequence.
+
+ARGUMENT:: sequenceId
+The LINK::Classes/Symbol:: drawn as the title.
+
+ARGUMENT:: structure
+The LINK::Classes/PatternStructure:: drawn in the body.
+
+ARGUMENT:: selectAction
+A LINK::Classes/Function:: called with the LINK::Classes/Symbol:: to select.
+
+RETURNS::
+A new TELETYPE::CompositionChip:: instance.
+
+INSTANCEMETHODS::
+
+METHOD:: applyPlaying
+Sets this chip's border, and the border of each nested chip, from CODE::playingId::.
+
+ARGUMENT:: playingId
+The LINK::Classes/Symbol:: currently playing, or CODE::nil::.
+
+METHOD:: dragAction_
+Called with the chip's origin when a drag of the title is released. CODE::nil:: clears it.
+
+ARGUMENT:: action
+A LINK::Classes/Function:: or CODE::nil::. The function receives one LINK::Classes/Point::.
+
+METHOD:: moveTo
+Moves the chip so its top-left is CODE::origin::.
+
+ARGUMENT:: origin
+A LINK::Classes/Point::.
+
+METHOD:: sequenceId
+The sequence LINK::Classes/Symbol:: drawn as the title.
+
+RETURNS::
+A LINK::Classes/Symbol::.
+
+PRIVATE:: prBuild, prInit, prLayout, prPlace, prTogglePlay, prWire, prWireFrame

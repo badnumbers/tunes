@@ -1,32 +1,34 @@
 Arranger : SCViewHolder {
 	var prChips;
 	var prPinned;
-	var prSequenceNames;
 	var prSequencer;
 	var prSequencerDocument;
 
 	addSequence {
 		|name|
-		var chip, origin, text;
+		var chip, origin;
 		Validator.validateMethodParameterType(name, Symbol, "name", "Arranger", "addSequence");
-		text = name.asString;
-		if (prSequenceNames.includes(text), { ^this });
-		prSequenceNames.add(text);
-		chip = PatternChip(this.view, prSequencer, name);
+		if (prChips[name].notNil, {
+			this.prRebuild(name);
+			^this;
+		});
+		chip = this.prMakeChip(name);
 		prChips[name] = chip;
-		chip.clickAction_({
-			this.prSelectPattern(name);
-		});
-		chip.dragAction_({
-			|origin|
-			this.prCommitDrag(name, origin);
-		});
 		origin = prSequencer.chipOrigin(name);
 		if (origin.notNil, {
 			prPinned.add(name);
 			this.prPlaceChip(chip, origin);
 		}, {
 			this.prPackUnpinned;
+		});
+		this.applyPlaying(prSequencer.playingId);
+	}
+
+	applyPlaying {
+		|playingId|
+		prChips.do({
+			|chip|
+			chip.applyPlaying(playingId);
 		});
 	}
 
@@ -49,7 +51,6 @@ Arranger : SCViewHolder {
 		|sequencer, sequencerDocument|
 		prSequencer = sequencer;
 		prSequencerDocument = sequencerDocument;
-		prSequenceNames = Set();
 		prChips = Dictionary.new;
 		prPinned = IdentitySet.new;
 		this.view = View().background_(GuiPalette.default.colour2);
@@ -144,5 +145,45 @@ Arranger : SCViewHolder {
 
 	prViewReady {
 		^(this.view.bounds.width > 0 and: { this.view.bounds.height > 0 });
+	}
+
+	prMakeChip {
+		|id|
+		var chip, structure;
+		structure = prSequencer.patternStructure(id);
+		if (structure.isNil, {
+			chip = PatternChip(this.view, prSequencer, id);
+			chip.clickAction_({
+				this.prSelectPattern(id);
+			});
+		}, {
+			chip = CompositionChip(this.view, prSequencer, id, structure, {
+				|selectedId|
+				this.prSelectPattern(selectedId);
+			});
+		});
+		chip.dragAction_({
+			|origin|
+			this.prCommitDrag(id, origin);
+		});
+		^chip;
+	}
+
+	prRebuild {
+		|id|
+		var chip, origin;
+		chip = prChips[id];
+		origin = prSequencer.chipOrigin(id);
+		if (chip.notNil, {
+			chip.view.remove;
+		});
+		chip = this.prMakeChip(id);
+		prChips[id] = chip;
+		if (prPinned.includes(id) and: { origin.notNil }, {
+			this.prPlaceChip(chip, origin);
+		}, {
+			this.prPackUnpinned;
+		});
+		this.applyPlaying(prSequencer.playingId);
 	}
 }

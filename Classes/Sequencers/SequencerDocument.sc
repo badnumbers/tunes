@@ -1,6 +1,7 @@
 SequencerDocument {
 	classvar prAddMidiSequenceRegexp = "Seq\\(\\)\\.addMidiSequence";
 	classvar prArrangeRegexp = "Seq\\(\\)\\.arrange";
+	classvar prComposeRegexp = "Seq\\(\\)\\.compose";
 
 	var prDocument;
 
@@ -141,12 +142,33 @@ SequencerDocument {
 		^((ch == $ ) || (ch == $\t) || (ch == $\n) || (ch == $\r));
 	}
 
+	*prCallMatches {
+		|text|
+		var matches;
+		matches = [];
+		if (text.isNil or: { text.size == 0 }, { ^matches });
+		[prAddMidiSequenceRegexp, prComposeRegexp].do({
+			|regexp|
+			var found;
+			found = text.findRegexp(regexp);
+			if (found.notNil, {
+				found.do({
+					|match|
+					matches = matches.add(match);
+				});
+			});
+		});
+		^matches.sort({
+			|a, b|
+			a[0] < b[0]
+		});
+	}
+
 	*prPatternCallRange {
 		|text, id|
 		var matches, range;
-		if (text.isNil or: { text.size == 0 }, { ^nil });
-		matches = text.findRegexp(prAddMidiSequenceRegexp);
-		if (matches.isNil or: { matches.size == 0 }, { ^nil });
+		matches = this.prCallMatches(text);
+		if (matches.size == 0, { ^nil });
 		range = nil;
 		matches.do({
 			|match|

@@ -1,0 +1,28 @@
+TITLE:: SetupTestMidiOut
+SUMMARY:: Stand-in MIDI port used while Setup is in test mode.
+CATEGORIES:: Core
+RELATED:: Classes/Setup, Classes/MIDIOut
+
+DESCRIPTION::
+TELETYPE::SetupTestMidiOut:: is the object LINK::Classes/Setup#*midi:: returns while LINK::Classes/Setup#*testMode:: is CODE::true::. MIDI messages sent to it are ignored. The same instance is returned on every call.
+
+LINK::#-next:: returns this object. LINK::Classes/Pbind:: sends CODE::next:: to each value, and an LINK::Classes/Event:: would be merged into the note instead of stored as the port.
+
+INSTANCEMETHODS::
+
+METHOD:: next
+Returns this object, so a LINK::Classes/Pbind:: stores the port on the event.
+
+ARGUMENT:: inval
+The input event. It is ignored.
+
+RETURNS::
+This TELETYPE::SetupTestMidiOut::.
+
+METHOD:: uid
+A fixed device id for event code that reads CODE::midiout.uid::.
+
+RETURNS::
+The LINK::Classes/Integer:: 0.
+
+PRIVATE:: doesNotUnderstand

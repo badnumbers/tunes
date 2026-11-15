@@ -1,6 +1,4 @@
 PatternChip : BorderView {
-	classvar prPlayingChip;
-
 	var prArmClick = false;
 	var prClickAction;
 	var prDownParent;
@@ -111,20 +109,23 @@ PatternChip : BorderView {
 	}
 
 	prTogglePlay {
-		if (prPlayingChip === this, {
+		if (prSequencer.playingId == prSequenceId, {
 			prSequencer.stop;
-			this.borderColour_(GuiPalette.default.colour4);
-			this.borderWidth_(1);
-			prPlayingChip = nil;
 		}, {
 			prSequencer.play(prSequenceId, true);
-			if (prPlayingChip.notNil, {
-				prPlayingChip.borderColour_(GuiPalette.default.colour4);
-				prPlayingChip.borderWidth_(1);
-			});
-			this.borderColour_(GuiPalette.default.extreme2);
-			this.borderWidth_(1);
-			prPlayingChip = this;
 		});
+	}
+
+	applyPlaying {
+		|playingId|
+		if (prSequenceId == playingId, {
+			this.borderColour_(GuiPalette.default.extreme2);
+		}, {
+			this.borderColour_(GuiPalette.default.colour4);
+		});
+	}
+
+	sequenceId {
+		^prSequenceId;
 	}
 }

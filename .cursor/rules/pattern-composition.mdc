@@ -1,0 +1,32 @@
+---
+description: How named sequences are composed in SuperCollider pattern code and shown as nested chips in the Arranger. Use when working on SeqPat, PatternStructure, Sequencer compose/pat/play, or Arranger composition chips.
+alwaysApply: false
+---
+
+# Pattern composition
+
+The GUI is a front end for SuperCollider pattern code. It is an enhancement of that code. Composition is ordinary pattern code: `Pseq`, `Ppar`, `Prand`, and the other standard pattern classes.
+
+The document is the saved record. Evaluating it builds the pattern objects. The Arranger follows those objects. Nested chip positions are derived from the pattern and are not written to `Seq().arrange`.
+
+## Referencing a named sequence
+
+`Seq().pat(id)` returns a `SeqPat`. A `Pseq` or `Ppar` can embed that object. A bare symbol cannot: the list pattern would yield the symbol instead of playing the sequence. `SeqPat` stores the sequencer and the id, and looks the sequence up when it embeds, so a later evaluation of the leaf is what plays.
+
+`Seq().compose(id, pattern)` stores a `\composition` sequence with no synth id. `Seq().addMidiSequence` remains the registration for one MIDI part on one synth. Leaves stay on the Arranger canvas as well as inside a composition.
+
+`Seq().play(id)` embeds `pat(id)`. `SeqPat` is the only lookup. A MIDI leaf goes through one wrapper: default `\amp` and `\timingOffset`, the MIDI route and note-off callback, that leaf's pre- and post-key sets, and `\lag` copied from `\timingOffset`. A composition is embedded unwrapped, so each inner `SeqPat` wraps its own MIDI leaf. A missing id throws. A cycle throws.
+
+## Display
+
+`PatternStructure` walks the live pattern. `Ppar` and `Ptpar` stack children vertically. `Pchain` stacks its patterns vertically. Every other `ListPattern` lays children out in a row, and the chip label is the class name. A `FilterPattern` is a chip around one child. A numeric repeat other than 1, including `inf`, is drawn on the label and is not unrolled. `Pbind` is a leaf; its keys are not opened. A `SeqPat` that names a MIDI sequence is a leaf labeled with the id. A `SeqPat` that names a composition expands that composition unless the id is already on the walk path.
+
+Only `\composition` sequences are walked. A MIDI sequence stays a single label chip.
+
+## Out of scope
+
+Do not treat `Seq().pat` as the value of a `Pbind` key. That asks a whole sequence for one event key. This work does not walk inside `Pbind`.
+
+Loading a pattern back into the piano roll or drum grid is a later iteration. Only an atomic pattern, the shape `WriteCommand` writes for one named sequence on one synth, would be editable there. A composition is not.
+
+Drum-grid patterns are ordinary named leaves once `WriteCommand` has stored them. This work does not extend `DrumProgrammer`. `PatternText` and `SequencerGui_Old` stay retired.
