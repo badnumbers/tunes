@@ -46,7 +46,10 @@ ARGUMENT:: moveFunc
 LINK::Classes/Function:: called after timing edits with CODE::func.value(view, startTime, stopTime)::.
 
 ARGUMENT:: deleteFunc
-Optional LINK::Classes/Function:: called from LINK::#-delete:: with the note as its argument. CODE::nil:: is allowed. LINK::Classes/PianoRoll:: uses this callback to drop the note from the roll and update playback.
+Optional LINK::Classes/Function:: called from LINK::#-delete:: with the note as its argument. CODE::nil:: is allowed. The callback is kept, so a restored note can be deleted again. LINK::Classes/PianoRoll:: uses this callback to drop the note from the roll and update playback.
+
+ARGUMENT:: insertFunc
+Optional LINK::Classes/Function:: called with the note when LINK::#-restoreAmplitudeImage:: puts a deleted note back. CODE::nil:: is allowed. LINK::Classes/PianoRoll:: uses this callback to return the note to the roll.
 
 INSTANCEMETHODS::
 
@@ -56,6 +59,21 @@ Clips CODE::value:: to CODE::0::–CODE::1::. A clipped value of CODE::0:: calls
 ARGUMENT:: value
 A LINK::Classes/SimpleNumber:: amplitude. Values outside CODE::0:: to CODE::1:: are clipped silently.
 
+METHOD:: amplitudeImage
+The amplitude undo snapshot: CODE::\amp:: (CODE::nil:: when the event has no amplitude), CODE::\velocity::, and CODE::\deleted::.
+
+RETURNS::
+An LINK::Classes/Event::.
+
+METHOD:: amplitudeImageIfChanged
+The current LINK::#-amplitudeImage:: when CODE::value:: would change this note, or CODE::nil:: when it would not. A clipped value of CODE::0:: changes a note that is still in the roll. A positive value changes a note whose event amplitude or mapped velocity differs. LINK::Classes/AmpCommand:: uses this to skip notes that are already at the target.
+
+ARGUMENT:: value
+A LINK::Classes/SimpleNumber:: amplitude, clipped the same way as LINK::#-amp_::.
+
+RETURNS::
+An LINK::Classes/Event::, or CODE::nil::.
+
 METHOD:: assignPart
 Stores CODE::partNumber:: on the wrapped LINK::Classes/PlayableNote:: and, when the note view exists, calls CODE::paintFunc:: with that view. LINK::Classes/PartCommand:: calls this method.
 
@@ -63,7 +81,7 @@ ARGUMENT:: partNumber
 An LINK::Classes/Integer:: part number.
 
 METHOD:: delete
-Removes the note view, clears selection without running the deselect callback, and calls CODE::deleteFunc:: once with this note. A later LINK::#-stop:: does not recreate the view. A second call does not call CODE::deleteFunc:: again.
+Removes the note view, clears selection without running the deselect callback, and calls CODE::deleteFunc:: once with this note. The callback is kept. A second call while the note is already deleted does nothing. A later LINK::#-stop:: does not recreate the view. LINK::#-restoreAmplitudeImage:: can put the note back.
 
 METHOD:: deselect
 Clears selection and invokes the deselect callback.
@@ -73,6 +91,12 @@ The composed LINK::Classes/Event::, created with no parent so default pattern ke
 
 RETURNS::
 An LINK::Classes/Event::.
+
+METHOD:: isDeleted
+Returns whether LINK::#-delete:: has removed this note and it has not been restored.
+
+RETURNS::
+A LINK::Classes/Boolean::.
 
 METHOD:: isSelected
 Returns whether this note is currently selected.
@@ -122,6 +146,12 @@ Returns the wrapped LINK::Classes/PlayableNote::.
 METHOD:: refreshView
 Repositions the note view from its current start and stop times using the piano roll's current horizontal scale. Does nothing when the view has not been created yet.
 
+METHOD:: restoreAmplitudeImage
+Writes an amplitude snapshot from LINK::#-amplitudeImage:: back onto this note. A snapshot with CODE::\deleted:: true deletes the note. Otherwise a deleted note is put back: CODE::insertFunc:: runs, and the view is created again when one had already existed. CODE::\amp:: is removed when the snapshot's amplitude is CODE::nil::, and the stored velocity is written back.
+
+ARGUMENT:: image
+An LINK::Classes/Event:: with CODE::\amp::, CODE::\velocity::, and CODE::\deleted::, or CODE::nil::.
+
 METHOD:: selectIfEnclosed
 Selects or deselects based on whether this note's view lies inside CODE::possiblyEnclosingView::.
 
@@ -161,4 +191,4 @@ An LINK::Classes/Integer::. Negative values lower the note.
 METHOD:: velocity
 Returns the wrapped note's velocity.
 
-PRIVATE:: init, prApplyPartColour, prApplyTimeDelta, prIsOnGrid
+PRIVATE:: init, prApplyPartColour, prApplyTimeDelta, prIsOnGrid, prUndelete

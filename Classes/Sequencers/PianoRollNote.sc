@@ -5,6 +5,7 @@ PianoRollNote {
 	var prDeleted = false;
 	var prDeselectFunc;
 	var prEvent;
+	var prInsertFunc;
 	var prMoveFunc;
 	var prOriginalBounds;
 	var prOriginalStartTime;
@@ -30,6 +31,29 @@ PianoRollNote {
 		this.prApplyPartColour;
 	}
 
+	amplitudeImage {
+		^(
+			amp: prEvent[\amp],
+			velocity: prPlayableNote.velocity,
+			deleted: prDeleted
+		);
+	}
+
+	amplitudeImageIfChanged {
+		|value|
+		var clipped, mapped;
+		clipped = value.clip(0, 1);
+		if (clipped == 0, {
+			if (prDeleted, { ^nil });
+			^(this.amplitudeImage);
+		});
+		mapped = clipped.linlin(0, 1, 0, 127).round.asInteger;
+		if (prDeleted.not && { prEvent[\amp] == clipped } && { prPlayableNote.velocity == mapped }, {
+			^nil;
+		});
+		^(this.amplitudeImage);
+	}
+
 	assignPart {
 		|partNumber|
 		Validator.validateMethodParameterType(partNumber, Integer, "partNumber", "PianoRollNote", "assignPart");
@@ -38,17 +62,15 @@ PianoRollNote {
 	}
 
 	delete {
-		var deleteFunc;
+		if (prDeleted, { ^this });
 		prDeleted = true;
 		prSelected = false;
 		if (prView.notNil, {
 			prView.remove;
 			prView = nil;
 		});
-		deleteFunc = prDeleteFunc;
-		prDeleteFunc = nil;
-		if (deleteFunc.notNil, {
-			deleteFunc.value(this);
+		if (prDeleteFunc.notNil, {
+			prDeleteFunc.value(this);
 		});
 	}
 
@@ -62,16 +84,21 @@ PianoRollNote {
 	}
 
 	init {
-		|startTime,noteNumber,velocity,viewFunc,selectFunc,deselectFunc,paintFunc,moveFunc,deleteFunc|
+		|startTime,noteNumber,velocity,viewFunc,selectFunc,deselectFunc,paintFunc,moveFunc,deleteFunc,insertFunc|
 		prViewFunc = viewFunc;
 		prSelectFunc = selectFunc;
 		prDeselectFunc = deselectFunc;
 		prPaintFunc = paintFunc;
 		prMoveFunc = moveFunc;
 		prDeleteFunc = deleteFunc;
+		prInsertFunc = insertFunc;
 		prOriginalStartTime = startTime;
 		prPlayableNote = PlayableNote(startTime,noteNumber,velocity);
 		prEvent = Event.new.parent_(nil);
+	}
+
+	isDeleted {
+		^prDeleted;
 	}
 
 	isSelected {
@@ -121,7 +148,7 @@ PianoRollNote {
 	}
 
 	*new {
-		|startTime,noteNumber,velocity,viewFunc,selectFunc,deselectFunc,paintFunc,moveFunc,deleteFunc|
+		|startTime,noteNumber,velocity,viewFunc,selectFunc,deselectFunc,paintFunc,moveFunc,deleteFunc,insertFunc|
 		Validator.validateMethodParameterType(startTime,SimpleNumber,"startTime","SequencerNote","new");
 		Validator.validateMethodParameterType(noteNumber,Integer,"noteNumber","SequencerNote","new");
 		Validator.validateMethodParameterType(velocity,Integer,"velocity","SequencerNote","new");
@@ -131,7 +158,8 @@ PianoRollNote {
 		Validator.validateMethodParameterType(paintFunc,Function,"paintFunc","PianoRollNote","new");
 		Validator.validateMethodParameterType(moveFunc,Function,"moveFunc","SequencerNote","new");
 		Validator.validateMethodParameterType(deleteFunc,Function,"deleteFunc","PianoRollNote","new", allowNil: true);
-		^super.new.init(startTime,noteNumber,velocity,viewFunc,selectFunc,deselectFunc,paintFunc,moveFunc,deleteFunc);
+		Validator.validateMethodParameterType(insertFunc,Function,"insertFunc","PianoRollNote","new", allowNil: true);
+		^super.new.init(startTime,noteNumber,velocity,viewFunc,selectFunc,deselectFunc,paintFunc,moveFunc,deleteFunc,insertFunc);
 	}
 
 	noteNumber {
@@ -203,10 +231,47 @@ PianoRollNote {
 		^ (gridIndex - gridIndex.round).abs < 1e-9;
 	}
 
+	prUndelete {
+		if (prDeleted.not, { ^this });
+		prDeleted = false;
+		if (prInsertFunc.notNil, {
+			prInsertFunc.value(this);
+		});
+		if (prOriginalBounds.notNil && { prView.isNil }, {
+			prView = prViewFunc.value(this);
+			if (prView.notNil, {
+				prOriginalBounds = prView.bounds;
+			});
+		});
+	}
+
 	refreshView {
 		if (prView.notNil, {
 			prMoveFunc.value(prView, this.startTime, this.stopTime);
 		});
+	}
+
+	restoreAmplitudeImage {
+		|image|
+		var amp, velocity;
+		if (image.isNil, { ^this });
+		if (image[\deleted] == true, {
+			this.delete;
+			^this;
+		});
+		if (prDeleted, { this.prUndelete });
+		amp = image[\amp];
+		velocity = image[\velocity];
+		if (prEvent.keys.includes(\amp), {
+			prEvent.removeAt(\amp);
+		});
+		if (amp.notNil, {
+			prEvent[\amp] = amp;
+		});
+		if (velocity.notNil, {
+			prPlayableNote.velocity_(velocity);
+		});
+		this.prApplyPartColour;
 	}
 
 	selectIfEnclosed {

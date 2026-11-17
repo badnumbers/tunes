@@ -141,6 +141,29 @@ SetCommandUnitTests : BNUnitTest {
 		this.assertEquals(note.velocity, 100);
 	}
 
+	test_undoCommand_ampRestoresThroughTheDispatchedCommand {
+		var after, amp, args, before, note, recorded, set;
+		note = this.prMockNote(0, stopTime: 1.0);
+		amp = AmpCommand.new;
+		set = SetCommand([amp]);
+		args = (key: \amp, selectedNotes: [note], values: [0.5]);
+		recorded = set.undoCommand(args);
+		this.assertEquals(recorded === amp, true);
+		before = recorded.beforeImage(args);
+		this.assertEquals(before[note][\amp], nil);
+		this.assertEquals(before[note][\velocity], 100);
+		set.execute(args);
+		this.assertEquals(note.event[\amp], 0.5);
+		this.assertEquals(note.velocity, 64);
+		after = recorded.afterImage(args, before);
+		recorded.restore(before);
+		this.assertEquals(note.event.keys.includes(\amp), false);
+		this.assertEquals(note.velocity, 100);
+		recorded.restore(after);
+		this.assertEquals(note.event[\amp], 0.5);
+		this.assertEquals(note.velocity, 64);
+	}
+
 	test_undoCommand_midinoteRestoresThroughTheDispatchedCommand {
 		var after, args, before, midinote, note, recorded, set;
 		note = this.prMockNote(0, 60);
@@ -178,6 +201,6 @@ SetCommandUnitTests : BNUnitTest {
 		recorded.restore(after);
 		this.assertEquals(note.partNumber, 4);
 		this.assertEquals(set.undoCommand((key: \foo, selectedNotes: [note], values: [0.5])) === set, true);
-		this.assertEquals(set.undoCommand((key: \amp, selectedNotes: [note], values: [0.5])).beforeImage((selectedNotes: [note], values: [0.5])), nil);
+		this.assertEquals(set.beforeImage((key: \foo, selectedNotes: [note], values: [0.5])), nil);
 	}
 }

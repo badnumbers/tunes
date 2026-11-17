@@ -15,6 +15,27 @@ DrumStep {
 		this.prSetAmp(value);
 	}
 
+	amplitudeImage {
+		if (prNote.isNil, {
+			^(hit: nil, velocity: nil);
+		});
+		^(hit: prNote, velocity: prNote.velocity);
+	}
+
+	amplitudeImageIfChanged {
+		|value|
+		var clipped, mapped;
+		if (prNoteNumber.isNil, { ^nil });
+		clipped = value.clip(0, 1);
+		mapped = clipped.linlin(0, 1, 0, 127).round.asInteger;
+		if (mapped == 0, {
+			if (prNote.isNil, { ^nil });
+			^(this.amplitudeImage);
+		});
+		if (prNote.notNil && { prNote.velocity == mapped }, { ^nil });
+		^(this.amplitudeImage);
+	}
+
 	init {
 		|noteNumber, startTime, palette, squareSize, velocity, hitDuration, addFunc, removeFunc, existingNote|
 		prNoteNumber = noteNumber;
@@ -107,6 +128,32 @@ DrumStep {
 			amp = prNote.velocity.linlin(0, 127, 0, 1);
 		});
 		prSquare.value_(amp);
+	}
+
+	restoreAmplitudeImage {
+		|image|
+		var hit, velocity;
+		if (image.isNil, { ^this });
+		hit = image[\hit];
+		velocity = image[\velocity];
+		if (hit.isNil, {
+			this.prClearHit;
+			this.prSyncSlider;
+			^this;
+		});
+		if (velocity.notNil, {
+			hit.velocity_(velocity);
+		});
+		if (prNote === hit, {
+			this.prSyncSlider;
+			^this;
+		});
+		if (prNote.notNil, {
+			this.prClearHit;
+		});
+		prNote = hit;
+		prAddFunc.value(hit);
+		this.prSyncSlider;
 	}
 
 	square {

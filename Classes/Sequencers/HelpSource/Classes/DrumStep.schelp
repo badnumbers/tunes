@@ -49,11 +49,32 @@ Sets the amplitude of this column. CODE::0:: clears the hit. Any other value in 
 ARGUMENT:: value
 A LINK::Classes/SimpleNumber::. Values outside CODE::0:: to CODE::1:: are clipped.
 
+METHOD:: amplitudeImage
+The amplitude undo snapshot. CODE::\hit:: is the LINK::Classes/PlayableNote:: for this column, or CODE::nil:: when the square is empty. CODE::\velocity:: is that note's velocity, or CODE::nil:: when there is no hit.
+
+RETURNS::
+An LINK::Classes/Event::.
+
+METHOD:: amplitudeImageIfChanged
+The current LINK::#-amplitudeImage:: when CODE::value:: would change this step, or CODE::nil:: when it would not. A row with no MIDI note number does not change. A mapped velocity of CODE::0:: changes a step that has a hit. Any other mapped velocity changes a step whose hit is missing or has a different velocity. LINK::Classes/AmpCommand:: uses this to skip steps that are already at the target.
+
+ARGUMENT:: value
+A LINK::Classes/SimpleNumber:: amplitude, clipped and mapped the same way as LINK::#-amp_::.
+
+RETURNS::
+An LINK::Classes/Event::, or CODE::nil::.
+
 METHOD:: playableNote
 The LINK::Classes/PlayableNote:: for this column, or CODE::nil:: when the square is empty.
 
 RETURNS::
 A LINK::Classes/PlayableNote::, or CODE::nil::.
+
+METHOD:: restoreAmplitudeImage
+Writes an amplitude snapshot from LINK::#-amplitudeImage:: back onto this step. A snapshot with no hit clears the column. A snapshot whose hit is already on the step sets that note's velocity and updates the slider. A different hit replaces the current one and runs the add callback.
+
+ARGUMENT:: image
+An LINK::Classes/Event:: with CODE::\hit:: and CODE::\velocity::, or CODE::nil::.
 
 METHOD:: square
 The square for this column.

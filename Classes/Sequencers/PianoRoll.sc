@@ -452,7 +452,7 @@ PianoRoll : SCViewHolder {
 		before = recorded.beforeImage(args);
 		command.execute(args);
 		if (before.notNil && { before.size > 0 }, {
-			prUndoHistory.push(recorded, before, recorded.afterImage(args));
+			prUndoHistory.push(recorded, before, recorded.afterImage(args, before));
 		});
 	}
 
@@ -466,6 +466,15 @@ PianoRoll : SCViewHolder {
 		fill = colour.copy;
 		fill.alpha = amp;
 		^fill;
+	}
+
+	prInsertNote {
+		|note|
+		if (prRecordedNotes.includes(note).not, {
+			prRecordedNotes = prRecordedNotes.add(note);
+			this.prApplyNoteEdits;
+			this.prUpdateLoopControls;
+		});
 	}
 
 	prMakeTransportStrip {
@@ -570,7 +579,8 @@ PianoRoll : SCViewHolder {
 				deselectFunc: prNoteDeselectFunc,
 				paintFunc: { |view| this.prPaintNote(pianoRollNote, view) },
 				moveFunc: { |view, startTime, stopTime| view.bounds_(Rect(startTime * prNoteViewScale[\horizontal], view.bounds.top, (stopTime - startTime) * prNoteViewScale[\horizontal], view.bounds.height)) },
-				deleteFunc: prNoteDeleteFunc
+				deleteFunc: prNoteDeleteFunc,
+				insertFunc: { |note| this.prInsertNote(note) }
 			);
 			prRecordedNotes = prRecordedNotes.add(pianoRollNote);
 			prRealTimePlayer.midiChannel_(chan);
@@ -620,7 +630,8 @@ PianoRoll : SCViewHolder {
 					deselectFunc: prNoteDeselectFunc,
 					paintFunc: { |view| this.prPaintNote(pianoRollNote, view) },
 					moveFunc: { |view, startTime, stopTime| view.bounds_(Rect(startTime * prNoteViewScale[\horizontal], view.bounds.top, (stopTime - startTime) * prNoteViewScale[\horizontal], view.bounds.height)) },
-					deleteFunc: prNoteDeleteFunc
+					deleteFunc: prNoteDeleteFunc,
+				insertFunc: { |note| this.prInsertNote(note) }
 				);
 				pianoRollNote.stop(stop);
 				prRecordedNotes = prRecordedNotes.add(pianoRollNote);

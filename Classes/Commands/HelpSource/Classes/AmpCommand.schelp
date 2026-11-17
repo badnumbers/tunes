@@ -8,6 +8,8 @@ TELETYPE::AmpCommand:: is a LINK::Classes/Command:: named CODE::amp:: that write
 
 CODE::values:: is a space-separated list of LINK::Classes/SimpleNumber::s. Notes are ordered by CODE::startTime:: only. Notes that share a start time take the same array value; the list wraps and advances only when start time changes. Values outside CODE::0:: to CODE::1:: are clipped by the note. A clipped value of CODE::0:: removes a LINK::Classes/PianoRollNote:: and clears a LINK::Classes/DrumStep:: hit. A value above CODE::0:: sets the amplitude, and on a drum step it also turns an empty square into a hit. A LINK::Classes/PianoRollNote:: stores the clipped value in its composed LINK::Classes/Event:: as CODE::\amp::, maps it to MIDI velocity with CODE::linlin(0, 1, 0, 127)::, and sets the note fill opacity to that amplitude. A tiny positive piano-roll amplitude stays a note even when that velocity rounds to CODE::0::.
 
+LINK::#-beforeImage:: records each note or step that would change. A piano-roll note stores its event CODE::\amp::, including CODE::nil:: when that key is absent, its velocity, and whether it is deleted. A drum step stores its hit and that hit's velocity, or CODE::nil:: when the square is empty. LINK::#-restore:: writes that snapshot back. Undo of amplitude CODE::0:: puts the piano-roll note back into the roll and recreates its view, and puts a cleared drum hit back on its step. A note or step that is already at the target is left out, so an edit that changes nothing is not an undo step. LINK::Classes/SetCommand:: records this command for CODE::set key amp:: in both editors.
+
 Example: five notes at beats CODE::0, 1, 1, 2, 3:: with CODE::amp values 1 0.5:: become amps CODE::1, 0.5, 0.5, 1, 0.5::.
 
 CLASSMETHODS::
@@ -20,11 +22,38 @@ A new TELETYPE::AmpCommand:: instance.
 
 INSTANCEMETHODS::
 
+METHOD:: afterImage
+The amplitude snapshot of each note or step in the before-image, after LINK::#-execute::.
+
+ARGUMENT:: args
+The same arguments dictionary passed to LINK::#-execute::.
+
+ARGUMENT:: before
+The LINK::Classes/IdentityDictionary:: returned by LINK::#-beforeImage::.
+
+RETURNS::
+An LINK::Classes/IdentityDictionary:: from note or step to its LINK::Classes/PianoRollNote#-amplitudeImage:: or LINK::Classes/DrumStep#-amplitudeImage::, or CODE::nil:: when CODE::before:: is empty.
+
+METHOD:: beforeImage
+The amplitude snapshot of each selected note or step whose amplitude would change.
+
+ARGUMENT:: args
+The same arguments dictionary about to be passed to LINK::#-execute::.
+
+RETURNS::
+An LINK::Classes/IdentityDictionary::, or CODE::nil:: when every selected note or step is already at its target.
+
 METHOD:: execute
 Applies wrapped, clipped amplitude values to CODE::\selectedNotes:: grouped by start time.
 
 ARGUMENT:: args
 A LINK::Classes/Dictionary:: or LINK::Classes/Event:: with CODE::\selectedNotes:: (an LINK::Classes/Array:: of notes that respond to CODE::amp_::) and CODE::\values:: (a non-empty LINK::Classes/Array:: of LINK::Classes/SimpleNumber::s).
+
+METHOD:: restore
+Writes each snapshot in CODE::image:: back through LINK::Classes/PianoRollNote#-restoreAmplitudeImage:: or LINK::Classes/DrumStep#-restoreAmplitudeImage::.
+
+ARGUMENT:: image
+An LINK::Classes/IdentityDictionary:: from note or step to an amplitude snapshot, or CODE::nil::.
 
 EXAMPLES::
 
@@ -48,3 +77,5 @@ AmpCommand.new.execute((
 ));
 )
 ::
+
+PRIVATE:: prEachTarget

@@ -114,4 +114,4 @@ The new grid size when setting. An integer from 1 to 16.
 METHOD:: undo
 Restores the previous recorded command on this roll. Does nothing when the undo stack is empty. A command records a step only when its LINK::Classes/Command#-beforeImage:: is a non-empty dictionary. Ctrl+Z calls this when the note area is focused.
 
-PRIVATE:: init, prApplyNoteEdits, prColourForPart, prDeleteNote, prExecuteCommand, prFillForNote, prMakeTransportStrip, prPaintNote, prRefreshSidebar, prSelectedNotes, prUpdateLoopControls
+PRIVATE:: init, prApplyNoteEdits, prColourForPart, prDeleteNote, prExecuteCommand, prFillForNote, prInsertNote, prMakeTransportStrip, prPaintNote, prRefreshSidebar, prSelectedNotes, prUpdateLoopControls

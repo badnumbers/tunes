@@ -253,7 +253,7 @@ DrumProgrammer : SCViewHolder {
 		before = recorded.beforeImage(args);
 		command.execute(args);
 		if (before.notNil && { before.size > 0 }, {
-			prUndoHistory.push(recorded, before, recorded.afterImage(args));
+			prUndoHistory.push(recorded, before, recorded.afterImage(args, before));
 		});
 	}
 

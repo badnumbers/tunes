@@ -32,10 +32,13 @@ RETURNS::
 A LINK::Classes/Function:: or CODE::nil::.
 
 METHOD:: afterImage
-Returns the values written by the last LINK::#-execute::, for redo. The default is CODE::nil::. An editor calls this only after LINK::#-beforeImage:: returned a non-empty dictionary.
+Returns the values written by the last LINK::#-execute::, for redo. The default is CODE::nil::. An editor calls this only after LINK::#-beforeImage:: returned a non-empty dictionary, and passes that dictionary as well.
 
 ARGUMENT:: args
 The same arguments dictionary passed to LINK::#-execute::.
+
+ARGUMENT:: before
+The dictionary returned by LINK::#-beforeImage::. A command that can rebuild the after-image from CODE::args:: alone may ignore it.
 
 RETURNS::
 An LINK::Classes/IdentityDictionary::, or CODE::nil::.
@@ -119,7 +122,7 @@ ARGUMENT:: image
 An LINK::Classes/IdentityDictionary::, or CODE::nil::.
 
 METHOD:: undoCommand
-The command whose before-image and after-image should be stored for this execution. The default is this command. LINK::Classes/SetCommand:: returns the dispatched command, so CODE::set key part:: and CODE::set key midinote:: record that command's step.
+The command whose before-image and after-image should be stored for this execution. The default is this command. LINK::Classes/SetCommand:: returns the dispatched command, so CODE::set key amp::, CODE::set key part::, and CODE::set key midinote:: record that command's step.
 
 ARGUMENT:: args
 The arguments dictionary about to be passed to LINK::#-execute::.
