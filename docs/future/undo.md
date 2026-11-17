@@ -24,6 +24,6 @@ Undo walks back through the stack. Those steps stay available for redo. If the u
 
 ## Turning it on
 
-Ctrl+Z undoes. Ctrl+Shift+Z and Ctrl+Y redo. Each piano roll and the drum programmer already own an undo history, and the command prompt plus the part and delete keys run through the editor so a step can be recorded. The keys do nothing until a command's `beforeImage` returns a non-empty dictionary. Backward behaviour is added one command at a time. The prompt runs the command object it was given. `set key part` records a `PartCommand` step, because `SetCommand` returns that dispatched command as the one that owns the images. A key whose command has no before-image still records nothing.
+Ctrl+Z undoes. Ctrl+Shift+Z and Ctrl+Y redo. Each piano roll and the drum programmer already own an undo history, and the command prompt plus the part and delete keys run through the editor so a step can be recorded. The keys do nothing until a command's `beforeImage` returns a non-empty dictionary. Backward behaviour is added one command at a time. The prompt runs the command object it was given. `set key part` and `set key midinote` record that dispatched command's step, because `SetCommand` returns the command it dispatches as the one that owns the images. A key whose command has no before-image still records nothing.
 
 Recording new notes, dragging notes, and moving loop markers do not go through commands yet. They stay outside this history until they do. Direct edits on a drum square are the same.

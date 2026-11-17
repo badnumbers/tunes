@@ -8,6 +8,8 @@ TELETYPE::MidinoteCommand:: is a LINK::Classes/Command:: named CODE::midinote:: 
 
 CODE::values:: is a space-separated list of LINK::Classes/Integer::s from CODE::0:: to CODE::127::. Notes are ordered by CODE::startTime:: only. Notes that share a start time take the same array value; the list wraps and advances only when start time changes. Each note is moved with LINK::Classes/PianoRollNote#-transpose:: by the difference between the target and its current note number, which slides the note view by that many rows. A note that does not respond to CODE::noteNumber:: and CODE::transpose::, such as a LINK::Classes/DrumStep::, is left unchanged.
 
+LINK::#-beforeImage:: records the previous note number of each note whose number will change. LINK::#-restore:: moves those notes back with CODE::transpose::, and moves them forward again from LINK::#-afterImage:: on redo. A note that is already on the target number is left out of the before-image, so an edit that changes nothing is not an undo step.
+
 Example: four notes numbered CODE::60:: at beats CODE::0, 1, 1, 2:: with CODE::midinote values 60 72:: become note numbers CODE::60, 72, 72, 60::.
 
 CLASSMETHODS::
@@ -20,8 +22,34 @@ A new TELETYPE::MidinoteCommand:: instance.
 
 INSTANCEMETHODS::
 
+METHOD:: afterImage
+The note number now stored on each selected note that responds to CODE::noteNumber:: and CODE::transpose::, after LINK::#-execute::.
+
+ARGUMENT:: args
+The same arguments dictionary passed to LINK::#-execute::.
+
+RETURNS::
+An LINK::Classes/IdentityDictionary:: from note to an event with CODE::\noteNumber::, or CODE::nil:: when no such note was selected.
+
+METHOD:: beforeImage
+The note number stored on each selected note whose number differs from the value LINK::#-execute:: would write.
+
+ARGUMENT:: args
+The same arguments dictionary about to be passed to LINK::#-execute::.
+
+RETURNS::
+An LINK::Classes/IdentityDictionary:: from note to an event with CODE::\noteNumber::, or CODE::nil:: when every selected note is already on its target number.
+
 METHOD:: execute
 Applies wrapped MIDI note numbers to CODE::\selectedNotes:: grouped by start time.
 
 ARGUMENT:: args
 A LINK::Classes/Dictionary:: or LINK::Classes/Event:: with CODE::\selectedNotes:: (an LINK::Classes/Array:: of notes that respond to CODE::noteNumber:: and CODE::transpose::) and CODE::\values:: (a non-empty LINK::Classes/Array:: of LINK::Classes/Integer::s from CODE::0:: to CODE::127::).
+
+METHOD:: restore
+Moves each note to the CODE::\noteNumber:: stored in an image from LINK::#-beforeImage:: or LINK::#-afterImage::, using CODE::transpose:: so the note view slides with it.
+
+ARGUMENT:: image
+An LINK::Classes/IdentityDictionary:: from note to an event with CODE::\noteNumber::, or CODE::nil::.
+
+PRIVATE:: prEachTarget

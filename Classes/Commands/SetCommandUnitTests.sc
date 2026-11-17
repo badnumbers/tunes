@@ -141,6 +141,25 @@ SetCommandUnitTests : BNUnitTest {
 		this.assertEquals(note.velocity, 100);
 	}
 
+	test_undoCommand_midinoteRestoresThroughTheDispatchedCommand {
+		var after, args, before, midinote, note, recorded, set;
+		note = this.prMockNote(0, 60);
+		midinote = MidinoteCommand.new;
+		set = SetCommand([AmpCommand.new, midinote]);
+		args = (key: \midinote, selectedNotes: [note], values: [72]);
+		recorded = set.undoCommand(args);
+		this.assertEquals(recorded === midinote, true);
+		before = recorded.beforeImage(args);
+		this.assertEquals(before[note][\noteNumber], 60);
+		set.execute(args);
+		this.assertEquals(note.noteNumber, 72);
+		after = recorded.afterImage(args);
+		recorded.restore(before);
+		this.assertEquals(note.noteNumber, 60);
+		recorded.restore(after);
+		this.assertEquals(note.noteNumber, 72);
+	}
+
 	test_undoCommand_partRestoresThroughTheDispatchedCommand {
 		var after, args, before, note, part, recorded, set;
 		note = this.prMockNote(0);

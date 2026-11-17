@@ -16,9 +16,50 @@ MidinoteCommandUnitTests : BNUnitTest {
 		^note;
 	}
 
+	test_beforeImage_recordsOnlyNoteNumbersThatChange {
+		var cmd, image, notes, plain;
+		cmd = MidinoteCommand.new;
+		notes = [
+			this.prMockNote(0, 60),
+			this.prMockNote(1, 60),
+			this.prMockNote(1, 72)
+		];
+		plain = (startTime: 2, noteNumber: 60);
+		image = cmd.beforeImage((selectedNotes: [notes[0], notes[1], notes[2], plain], values: [48, 72]));
+		this.assertEquals(image[notes[0]][\noteNumber], 60);
+		this.assertEquals(image[notes[1]][\noteNumber], 60);
+		this.assertEquals(image[notes[2]], nil);
+		this.assertEquals(image[plain], nil);
+		this.assertEquals(cmd.beforeImage((selectedNotes: [notes[2]], values: [72])), nil);
+	}
+
 	test_name_isMidinote {
 		var cmd = MidinoteCommand.new;
 		this.assertEquals(cmd.name, "midinote");
+	}
+
+	test_restore_putsBackTheCapturedNoteNumbers {
+		var after, before, cmd, notes;
+		cmd = MidinoteCommand.new;
+		notes = [
+			this.prMockNote(0, 60),
+			this.prMockNote(1, 64),
+			this.prMockNote(1, 67)
+		];
+		before = cmd.beforeImage((selectedNotes: notes, values: [48, 50]));
+		cmd.execute((selectedNotes: notes, values: [48, 50]));
+		after = cmd.afterImage((selectedNotes: notes, values: [48, 50]));
+		this.assertEquals(notes[0].noteNumber, 48);
+		this.assertEquals(notes[1].noteNumber, 50);
+		this.assertEquals(notes[2].noteNumber, 50);
+		cmd.restore(before);
+		this.assertEquals(notes[0].noteNumber, 60);
+		this.assertEquals(notes[1].noteNumber, 64);
+		this.assertEquals(notes[2].noteNumber, 67);
+		cmd.restore(after);
+		this.assertEquals(notes[0].noteNumber, 48);
+		this.assertEquals(notes[1].noteNumber, 50);
+		this.assertEquals(notes[2].noteNumber, 50);
 	}
 
 	test_valuesParameter_acceptsMidiRange {

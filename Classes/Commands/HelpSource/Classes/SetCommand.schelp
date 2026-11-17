@@ -10,7 +10,7 @@ While CODE::values:: is being typed, LINK::Classes/CommandPrompt:: asks LINK::#-
 
 CODE::values:: is offered only after CODE::key:: has been committed. The prompt inserts each parameter name when it is the only one still on offer, so the chips read CODE::key:: and CODE::values::.
 
-Execution of a known key calls that command with the same arguments dictionary. Undo records that dispatched command, not this one, so CODE::set key part:: uses LINK::Classes/PartCommand::'s before-image. A key whose command does not yet capture a before-image records nothing. An unknown key is written onto CODE::note.event[key]:: for notes that respond to CODE::event::, using the same start-time grouping as LINK::Classes/AmpCommand::. The sidebar shows that key. LINK::Classes/WriteCommand:: does not emit it. A LINK::Classes/DrumStep:: has no event, so an unknown key leaves it unchanged.
+Execution of a known key calls that command with the same arguments dictionary. Undo records that dispatched command, not this one, so CODE::set key part:: and CODE::set key midinote:: use those commands' before-images. A key whose command does not yet capture a before-image records nothing. An unknown key is written onto CODE::note.event[key]:: for notes that respond to CODE::event::, using the same start-time grouping as LINK::Classes/AmpCommand::. The sidebar shows that key. LINK::Classes/WriteCommand:: does not emit it. A LINK::Classes/DrumStep:: has no event, so an unknown key leaves it unchanged.
 
 CLASSMETHODS::
 
@@ -65,7 +65,7 @@ RETURNS::
 A LINK::Classes/Parameter::.
 
 METHOD:: undoCommand
-The command whose undo images should be stored. For a known key this is that command, so CODE::part:: stores a LINK::Classes/PartCommand:: step. An unknown key returns this command, which captures no before-image.
+The command whose undo images should be stored. For a known key this is that command, so CODE::part:: and CODE::midinote:: store that command's step. An unknown key returns this command, which captures no before-image.
 
 ARGUMENT:: args
 The arguments dictionary about to be passed to LINK::#-execute::, including CODE::\key::.
