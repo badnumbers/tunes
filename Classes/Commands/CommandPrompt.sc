@@ -2,8 +2,8 @@ CommandPrompt : SCViewHolder {
 	var prActiveCommand;
 	var prActiveParameter;
 	var prAmbientParameters;
-	var prCommands;
 	var prCommandRunner;
+	var prCommands;
 	var prCommittedArgs;
 	var prCommittedTokens;
 	var prHighlightSuggestionColour;

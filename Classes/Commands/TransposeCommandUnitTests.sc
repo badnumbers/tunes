@@ -28,14 +28,6 @@ TransposeCommandUnitTests : BNUnitTest {
 		this.assertEquals(cmd.beforeImage((selectedNotes: [note], semitones: 1.5)), nil);
 	}
 
-	test_execute_addsPositiveSemitones {
-		var cmd, note;
-		cmd = TransposeCommand.new;
-		note = this.prMockNote(60);
-		cmd.execute((selectedNotes: [note], semitones: 2));
-		this.assertEquals(note.noteNumber, 62);
-	}
-
 	test_execute_addsNegativeSemitones {
 		var cmd, note;
 		cmd = TransposeCommand.new;
@@ -44,23 +36,20 @@ TransposeCommandUnitTests : BNUnitTest {
 		this.assertEquals(note.noteNumber, 57);
 	}
 
+	test_execute_addsPositiveSemitones {
+		var cmd, note;
+		cmd = TransposeCommand.new;
+		note = this.prMockNote(60);
+		cmd.execute((selectedNotes: [note], semitones: 2));
+		this.assertEquals(note.noteNumber, 62);
+	}
+
 	test_execute_skipsObjectsThatDoNotTranspose {
 		var cmd, note;
 		cmd = TransposeCommand.new;
 		note = this.prMockNote(60);
 		cmd.execute((selectedNotes: [note, ()], semitones: 1));
 		this.assertEquals(note.noteNumber, 61);
-	}
-
-	test_semitonesParameter_isInteger {
-		var cmd, param;
-		cmd = TransposeCommand.new;
-		param = cmd.getParameter("semitones");
-		this.assertEquals(param.type, Integer);
-		this.assertEquals(param.isValid("2"), true);
-		this.assertEquals(param.isValid("-5"), true);
-		this.assertEquals(param.isValid("0"), true);
-		this.assertEquals(param.isValid("1.5"), false);
 	}
 
 	test_restore_putsBackTheNoteNumbers {
@@ -81,5 +70,16 @@ TransposeCommandUnitTests : BNUnitTest {
 		cmd.restore(after);
 		this.assertEquals(notes[0].noteNumber, 57);
 		this.assertEquals(notes[1].noteNumber, 61);
+	}
+
+	test_semitonesParameter_isInteger {
+		var cmd, param;
+		cmd = TransposeCommand.new;
+		param = cmd.getParameter("semitones");
+		this.assertEquals(param.type, Integer);
+		this.assertEquals(param.isValid("2"), true);
+		this.assertEquals(param.isValid("-5"), true);
+		this.assertEquals(param.isValid("0"), true);
+		this.assertEquals(param.isValid("1.5"), false);
 	}
 }

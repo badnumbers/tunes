@@ -16,11 +16,11 @@ PianoRoll : SCViewHolder {
 	var prPianoRollHeight;
 	var prPianoRollWidth;
 	var prPlayLoopButton;
+	var prRealTimePlayer;
 	var prRecordedNotes;
 	var prRecordingClock;
 	var prRecordingNow;
 	var prScrollView;
-	var prRealTimePlayer;
 	var prSequencer;
 	var prSequencerDocument;
 	var prSidebar;

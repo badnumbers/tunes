@@ -17,6 +17,58 @@ AmpCommandUnitTests : BNUnitTest {
 		^note;
 	}
 
+	test_execute_clipsOutOfRangeValues {
+		var cmd, notes, deleted;
+		deleted = [];
+		cmd = AmpCommand.new;
+		notes = [
+			this.prMockNote(0, stopTime: 1.0, deleteFunc: { |note| deleted = deleted.add(note) }),
+			this.prMockNote(1, stopTime: 2.0)
+		];
+		cmd.execute((selectedNotes: notes, values: [-0.2, 1.5]));
+		this.assertEquals(deleted, [notes[0]]);
+		this.assertEquals(notes[0].event[\amp], nil);
+		this.assertEquals(notes[0].velocity, 100);
+		this.assertEquals(notes[1].event[\amp], 1);
+		this.assertEquals(notes[1].velocity, 127);
+	}
+
+	test_execute_sharedStartTime_sharesArrayValue {
+		var cmd, notes;
+		cmd = AmpCommand.new;
+		notes = [
+			this.prMockNote(0, 60, stopTime: 1.0),
+			this.prMockNote(1, 64, stopTime: 2.0),
+			this.prMockNote(1, 67, stopTime: 2.0),
+			this.prMockNote(2, 60, stopTime: 3.0),
+			this.prMockNote(3, 60, stopTime: 4.0)
+		];
+		cmd.execute((selectedNotes: notes, values: [1, 0.5]));
+		this.assertEquals(notes[0].event[\amp], 1);
+		this.assertEquals(notes[1].event[\amp], 0.5);
+		this.assertEquals(notes[2].event[\amp], 0.5);
+		this.assertEquals(notes[3].event[\amp], 1);
+		this.assertEquals(notes[4].event[\amp], 0.5);
+	}
+
+	test_execute_wrapsValuesOverDistinctStartTimes {
+		var cmd, notes;
+		cmd = AmpCommand.new;
+		notes = [
+			this.prMockNote(0, stopTime: 1.0),
+			this.prMockNote(1, stopTime: 2.0),
+			this.prMockNote(2, stopTime: 3.0),
+			this.prMockNote(3, stopTime: 4.0),
+			this.prMockNote(4, stopTime: 5.0)
+		];
+		cmd.execute((selectedNotes: notes, values: [1, 0.5]));
+		this.assertEquals(notes[0].event[\amp], 1);
+		this.assertEquals(notes[1].event[\amp], 0.5);
+		this.assertEquals(notes[2].event[\amp], 1);
+		this.assertEquals(notes[3].event[\amp], 0.5);
+		this.assertEquals(notes[4].event[\amp], 1);
+	}
+
 	test_name_isAmp {
 		var cmd = AmpCommand.new;
 		this.assertEquals(cmd.name, "amp");
@@ -162,57 +214,5 @@ AmpCommandUnitTests : BNUnitTest {
 		this.assertEquals(param.isValid("0.25"), true);
 		this.assertEquals(param.isValid(""), false);
 		this.assertEquals(param.isValid("abc"), false);
-	}
-
-	test_execute_wrapsValuesOverDistinctStartTimes {
-		var cmd, notes;
-		cmd = AmpCommand.new;
-		notes = [
-			this.prMockNote(0, stopTime: 1.0),
-			this.prMockNote(1, stopTime: 2.0),
-			this.prMockNote(2, stopTime: 3.0),
-			this.prMockNote(3, stopTime: 4.0),
-			this.prMockNote(4, stopTime: 5.0)
-		];
-		cmd.execute((selectedNotes: notes, values: [1, 0.5]));
-		this.assertEquals(notes[0].event[\amp], 1);
-		this.assertEquals(notes[1].event[\amp], 0.5);
-		this.assertEquals(notes[2].event[\amp], 1);
-		this.assertEquals(notes[3].event[\amp], 0.5);
-		this.assertEquals(notes[4].event[\amp], 1);
-	}
-
-	test_execute_sharedStartTime_sharesArrayValue {
-		var cmd, notes;
-		cmd = AmpCommand.new;
-		notes = [
-			this.prMockNote(0, 60, stopTime: 1.0),
-			this.prMockNote(1, 64, stopTime: 2.0),
-			this.prMockNote(1, 67, stopTime: 2.0),
-			this.prMockNote(2, 60, stopTime: 3.0),
-			this.prMockNote(3, 60, stopTime: 4.0)
-		];
-		cmd.execute((selectedNotes: notes, values: [1, 0.5]));
-		this.assertEquals(notes[0].event[\amp], 1);
-		this.assertEquals(notes[1].event[\amp], 0.5);
-		this.assertEquals(notes[2].event[\amp], 0.5);
-		this.assertEquals(notes[3].event[\amp], 1);
-		this.assertEquals(notes[4].event[\amp], 0.5);
-	}
-
-	test_execute_clipsOutOfRangeValues {
-		var cmd, notes, deleted;
-		deleted = [];
-		cmd = AmpCommand.new;
-		notes = [
-			this.prMockNote(0, stopTime: 1.0, deleteFunc: { |note| deleted = deleted.add(note) }),
-			this.prMockNote(1, stopTime: 2.0)
-		];
-		cmd.execute((selectedNotes: notes, values: [-0.2, 1.5]));
-		this.assertEquals(deleted, [notes[0]]);
-		this.assertEquals(notes[0].event[\amp], nil);
-		this.assertEquals(notes[0].velocity, 100);
-		this.assertEquals(notes[1].event[\amp], 1);
-		this.assertEquals(notes[1].velocity, 127);
 	}
 }

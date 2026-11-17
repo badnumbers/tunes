@@ -33,6 +33,36 @@ MidinoteCommandUnitTests : BNUnitTest {
 		this.assertEquals(cmd.beforeImage((selectedNotes: [notes[2]], values: [72])), nil);
 	}
 
+	test_execute_sharedStartTime_sharesArrayValue {
+		var cmd, notes;
+		cmd = MidinoteCommand.new;
+		notes = [
+			this.prMockNote(0, 60),
+			this.prMockNote(1, 60),
+			this.prMockNote(1, 64),
+			this.prMockNote(2, 67)
+		];
+		cmd.execute((selectedNotes: notes, values: [60, 72]));
+		this.assertEquals(notes[0].noteNumber, 60);
+		this.assertEquals(notes[1].noteNumber, 72);
+		this.assertEquals(notes[2].noteNumber, 72);
+		this.assertEquals(notes[3].noteNumber, 60);
+	}
+
+	test_execute_wrapsValuesOverDistinctStartTimes {
+		var cmd, notes;
+		cmd = MidinoteCommand.new;
+		notes = [
+			this.prMockNote(0),
+			this.prMockNote(1),
+			this.prMockNote(2)
+		];
+		cmd.execute((selectedNotes: notes, values: [60, 72]));
+		this.assertEquals(notes[0].noteNumber, 60);
+		this.assertEquals(notes[1].noteNumber, 72);
+		this.assertEquals(notes[2].noteNumber, 60);
+	}
+
 	test_name_isMidinote {
 		var cmd = MidinoteCommand.new;
 		this.assertEquals(cmd.name, "midinote");
@@ -73,35 +103,5 @@ MidinoteCommandUnitTests : BNUnitTest {
 		this.assertEquals(param.isValid("128"), false);
 		this.assertEquals(param.isValid("1.5"), false);
 		this.assertEquals(param.isValid(""), false);
-	}
-
-	test_execute_wrapsValuesOverDistinctStartTimes {
-		var cmd, notes;
-		cmd = MidinoteCommand.new;
-		notes = [
-			this.prMockNote(0),
-			this.prMockNote(1),
-			this.prMockNote(2)
-		];
-		cmd.execute((selectedNotes: notes, values: [60, 72]));
-		this.assertEquals(notes[0].noteNumber, 60);
-		this.assertEquals(notes[1].noteNumber, 72);
-		this.assertEquals(notes[2].noteNumber, 60);
-	}
-
-	test_execute_sharedStartTime_sharesArrayValue {
-		var cmd, notes;
-		cmd = MidinoteCommand.new;
-		notes = [
-			this.prMockNote(0, 60),
-			this.prMockNote(1, 60),
-			this.prMockNote(1, 64),
-			this.prMockNote(2, 67)
-		];
-		cmd.execute((selectedNotes: notes, values: [60, 72]));
-		this.assertEquals(notes[0].noteNumber, 60);
-		this.assertEquals(notes[1].noteNumber, 72);
-		this.assertEquals(notes[2].noteNumber, 72);
-		this.assertEquals(notes[3].noteNumber, 60);
 	}
 }

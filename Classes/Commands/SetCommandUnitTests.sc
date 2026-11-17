@@ -43,10 +43,76 @@ SetCommandUnitTests : BNUnitTest {
 		this.assertEquals(cmd.beforeImage((key: \amp, selectedNotes: [notes[0]], values: [0.5])), nil);
 	}
 
-	test_new_rejectsEmptyCommands {
-		this.assertException({
-			SetCommand([]);
-		}, Error);
+	test_execute_amp_matchesAmpCommand {
+		var ampNotes, setNotes;
+		ampNotes = [this.prMockNote(0), this.prMockNote(1)];
+		setNotes = [this.prMockNote(0), this.prMockNote(1)];
+		AmpCommand.new.execute((selectedNotes: ampNotes, values: [1, 0.5]));
+		this.prSetCommand.execute((key: \amp, selectedNotes: setNotes, values: [1, 0.5]));
+		this.assertEquals(setNotes[0].event[\amp], ampNotes[0].event[\amp]);
+		this.assertEquals(setNotes[1].event[\amp], ampNotes[1].event[\amp]);
+		this.assertEquals(setNotes[0].velocity, ampNotes[0].velocity);
+		this.assertEquals(setNotes[1].velocity, ampNotes[1].velocity);
+	}
+
+	test_execute_foo_writesWrappedEventValues {
+		var notes;
+		notes = [
+			this.prMockNote(0),
+			this.prMockNote(1),
+			this.prMockNote(1),
+			this.prMockNote(2)
+		];
+		this.prSetCommand.execute((key: \foo, selectedNotes: notes, values: [0.9, 0.5]));
+		this.assertEquals(notes[0].event[\foo], 0.9);
+		this.assertEquals(notes[1].event[\foo], 0.5);
+		this.assertEquals(notes[2].event[\foo], 0.5);
+		this.assertEquals(notes[3].event[\foo], 0.9);
+	}
+
+	test_execute_legato_matchesLegatoCommand {
+		var legatoArgs, legatoNotes, setArgs, setNotes;
+		legatoNotes = [this.prMockNote(0, stopTime: 1.0), this.prMockNote(1, stopTime: 2.0)];
+		setNotes = [this.prMockNote(0, stopTime: 1.0), this.prMockNote(1, stopTime: 2.0)];
+		legatoArgs = (selectedNotes: legatoNotes, allNotes: legatoNotes, loopEnd: 4, values: [0.5, 1.5]);
+		setArgs = (key: \legato, selectedNotes: setNotes, allNotes: setNotes, loopEnd: 4, values: [0.5, 1.5]);
+		LegatoCommand.new.execute(legatoArgs);
+		this.prSetCommand.execute(setArgs);
+		this.assertEquals(setNotes[0].event[\legato], legatoNotes[0].event[\legato]);
+		this.assertEquals(setNotes[1].event[\legato], legatoNotes[1].event[\legato]);
+		this.assertEquals(setNotes[0].stopTime, legatoNotes[0].stopTime);
+		this.assertEquals(setNotes[1].stopTime, legatoNotes[1].stopTime);
+	}
+
+	test_execute_unknownKey_leavesNoteWithoutEventUnchanged {
+		var note;
+		note = PlayableNote(0, 60, 100);
+		this.prSetCommand.execute((key: \foo, selectedNotes: [note], values: [0.5]));
+		this.assertEquals(note.noteNumber, 60);
+		this.assertEquals(note.velocity, 100);
+	}
+
+	test_fallbackValues_acceptNumbersFromZeroToOne {
+		var param = this.prSetCommand.getParameter("values");
+		this.assertEquals(param.isValid("0.9 0.5"), true);
+		this.assertEquals(param.isValid("0"), true);
+		this.assertEquals(param.isValid("1"), true);
+		this.assertEquals(param.isValid("1.5"), false);
+		this.assertEquals(param.isValid("-0.1"), false);
+	}
+
+	test_isValid_usesTheBorrowedConstraint {
+		var cmd, notes;
+		cmd = this.prSetCommand;
+		notes = [this.prMockNote(0)];
+		this.assertEquals(cmd.isValid((key: \foo, values: [0.9, 0.5], selectedNotes: notes)), true);
+		this.assertEquals(cmd.isValid((key: \foo, values: [1.5], selectedNotes: notes)), false);
+		this.assertEquals(cmd.isValid((key: \amp, values: [1.5], selectedNotes: notes)), true);
+		this.assertEquals(cmd.isValid((key: \legato, values: [1.5], selectedNotes: notes, allNotes: notes, loopEnd: 4)), true);
+		this.assertEquals(cmd.isValid((key: \legato, values: [0], selectedNotes: notes, allNotes: notes, loopEnd: 4)), false);
+		this.assertEquals(cmd.isValid((key: \legato, values: [0.5], selectedNotes: notes)), false);
+		this.assertEquals(cmd.isValid((key: \midinote, values: [60, 72], selectedNotes: notes)), true);
+		this.assertEquals(cmd.isValid((key: \midinote, values: [1.5], selectedNotes: notes)), false);
 	}
 
 	test_new_rejectsCommandWithoutValues {
@@ -59,6 +125,19 @@ SetCommandUnitTests : BNUnitTest {
 		this.assertException({
 			SetCommand([AmpCommand.new, AmpCommand.new]);
 		}, Error);
+	}
+
+	test_new_rejectsEmptyCommands {
+		this.assertException({
+			SetCommand([]);
+		}, Error);
+	}
+
+	test_parameterIsOffered_hidesValuesUntilKeyIsSet {
+		var cmd = this.prSetCommand;
+		this.assertEquals(cmd.parameterIsOffered(cmd.getParameter("key"), ()), true);
+		this.assertEquals(cmd.parameterIsOffered(cmd.getParameter("values"), ()), false);
+		this.assertEquals(cmd.parameterIsOffered(cmd.getParameter("values"), (key: \foo)), true);
 	}
 
 	test_resolveParameter_borrowsTheCommandValuesParameter {
@@ -83,85 +162,6 @@ SetCommandUnitTests : BNUnitTest {
 			cmd.resolveParameter(cmd.getParameter("values"), (key: \foo)),
 			cmd.getParameter("values")
 		);
-	}
-
-	test_fallbackValues_acceptNumbersFromZeroToOne {
-		var param = this.prSetCommand.getParameter("values");
-		this.assertEquals(param.isValid("0.9 0.5"), true);
-		this.assertEquals(param.isValid("0"), true);
-		this.assertEquals(param.isValid("1"), true);
-		this.assertEquals(param.isValid("1.5"), false);
-		this.assertEquals(param.isValid("-0.1"), false);
-	}
-
-	test_parameterIsOffered_hidesValuesUntilKeyIsSet {
-		var cmd = this.prSetCommand;
-		this.assertEquals(cmd.parameterIsOffered(cmd.getParameter("key"), ()), true);
-		this.assertEquals(cmd.parameterIsOffered(cmd.getParameter("values"), ()), false);
-		this.assertEquals(cmd.parameterIsOffered(cmd.getParameter("values"), (key: \foo)), true);
-	}
-
-	test_isValid_usesTheBorrowedConstraint {
-		var cmd, notes;
-		cmd = this.prSetCommand;
-		notes = [this.prMockNote(0)];
-		this.assertEquals(cmd.isValid((key: \foo, values: [0.9, 0.5], selectedNotes: notes)), true);
-		this.assertEquals(cmd.isValid((key: \foo, values: [1.5], selectedNotes: notes)), false);
-		this.assertEquals(cmd.isValid((key: \amp, values: [1.5], selectedNotes: notes)), true);
-		this.assertEquals(cmd.isValid((key: \legato, values: [1.5], selectedNotes: notes, allNotes: notes, loopEnd: 4)), true);
-		this.assertEquals(cmd.isValid((key: \legato, values: [0], selectedNotes: notes, allNotes: notes, loopEnd: 4)), false);
-		this.assertEquals(cmd.isValid((key: \legato, values: [0.5], selectedNotes: notes)), false);
-		this.assertEquals(cmd.isValid((key: \midinote, values: [60, 72], selectedNotes: notes)), true);
-		this.assertEquals(cmd.isValid((key: \midinote, values: [1.5], selectedNotes: notes)), false);
-	}
-
-	test_execute_amp_matchesAmpCommand {
-		var ampNotes, setNotes;
-		ampNotes = [this.prMockNote(0), this.prMockNote(1)];
-		setNotes = [this.prMockNote(0), this.prMockNote(1)];
-		AmpCommand.new.execute((selectedNotes: ampNotes, values: [1, 0.5]));
-		this.prSetCommand.execute((key: \amp, selectedNotes: setNotes, values: [1, 0.5]));
-		this.assertEquals(setNotes[0].event[\amp], ampNotes[0].event[\amp]);
-		this.assertEquals(setNotes[1].event[\amp], ampNotes[1].event[\amp]);
-		this.assertEquals(setNotes[0].velocity, ampNotes[0].velocity);
-		this.assertEquals(setNotes[1].velocity, ampNotes[1].velocity);
-	}
-
-	test_execute_legato_matchesLegatoCommand {
-		var legatoArgs, legatoNotes, setArgs, setNotes;
-		legatoNotes = [this.prMockNote(0, stopTime: 1.0), this.prMockNote(1, stopTime: 2.0)];
-		setNotes = [this.prMockNote(0, stopTime: 1.0), this.prMockNote(1, stopTime: 2.0)];
-		legatoArgs = (selectedNotes: legatoNotes, allNotes: legatoNotes, loopEnd: 4, values: [0.5, 1.5]);
-		setArgs = (key: \legato, selectedNotes: setNotes, allNotes: setNotes, loopEnd: 4, values: [0.5, 1.5]);
-		LegatoCommand.new.execute(legatoArgs);
-		this.prSetCommand.execute(setArgs);
-		this.assertEquals(setNotes[0].event[\legato], legatoNotes[0].event[\legato]);
-		this.assertEquals(setNotes[1].event[\legato], legatoNotes[1].event[\legato]);
-		this.assertEquals(setNotes[0].stopTime, legatoNotes[0].stopTime);
-		this.assertEquals(setNotes[1].stopTime, legatoNotes[1].stopTime);
-	}
-
-	test_execute_foo_writesWrappedEventValues {
-		var notes;
-		notes = [
-			this.prMockNote(0),
-			this.prMockNote(1),
-			this.prMockNote(1),
-			this.prMockNote(2)
-		];
-		this.prSetCommand.execute((key: \foo, selectedNotes: notes, values: [0.9, 0.5]));
-		this.assertEquals(notes[0].event[\foo], 0.9);
-		this.assertEquals(notes[1].event[\foo], 0.5);
-		this.assertEquals(notes[2].event[\foo], 0.5);
-		this.assertEquals(notes[3].event[\foo], 0.9);
-	}
-
-	test_execute_unknownKey_leavesNoteWithoutEventUnchanged {
-		var note;
-		note = PlayableNote(0, 60, 100);
-		this.prSetCommand.execute((key: \foo, selectedNotes: [note], values: [0.5]));
-		this.assertEquals(note.noteNumber, 60);
-		this.assertEquals(note.velocity, 100);
 	}
 
 	test_restore_unknownKey_putsBackTheEventValue {

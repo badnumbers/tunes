@@ -1,4 +1,18 @@
 SequencerKeyRouterUnitTests : BNUnitTest {
+	test_bindingWithNilModifiers_doesNotError {
+		var router, result;
+		router = SequencerKeyRouter.new;
+		router.activeContext_(\record);
+		result = router.handleKeyDown(
+			nil,
+			ViewKeyModifier.ctrl,
+			ViewUnicode.none,
+			ViewKeycode.control,
+			ViewQtKey.control
+		);
+		this.assertEquals(result.isHandled, false);
+	}
+
 	test_ctrlShiftZ_invokesRedoNotUndo {
 		var redo, router, undo;
 		redo = false;
@@ -78,18 +92,12 @@ SequencerKeyRouterUnitTests : BNUnitTest {
 		this.assertEquals(invoked, false);
 	}
 
-	test_bindingWithNilModifiers_doesNotError {
-		var router, result;
+	test_unhandledKey_keyDownReturnValue_doesNotError {
+		var router, returnValue;
 		router = SequencerKeyRouter.new;
 		router.activeContext_(\record);
-		result = router.handleKeyDown(
-			nil,
-			ViewKeyModifier.ctrl,
-			ViewUnicode.none,
-			ViewKeycode.control,
-			ViewQtKey.control
-		);
-		this.assertEquals(result.isHandled, false);
+		returnValue = router.keyDownReturnValue($`, 0, $`.ascii, $`.ascii, $`.ascii);
+		this.assertEquals(returnValue.isNil, true);
 	}
 
 	test_unhandledKey_returnsEventNotRouter {
@@ -99,13 +107,5 @@ SequencerKeyRouterUnitTests : BNUnitTest {
 		result = router.handleKeyDown($`, 0, $`.ascii, $`.ascii, $`.ascii);
 		this.assertEquals(result.isKindOf(Event), true);
 		this.assertEquals(result.isHandled, false);
-	}
-
-	test_unhandledKey_keyDownReturnValue_doesNotError {
-		var router, returnValue;
-		router = SequencerKeyRouter.new;
-		router.activeContext_(\record);
-		returnValue = router.keyDownReturnValue($`, 0, $`.ascii, $`.ascii, $`.ascii);
-		this.assertEquals(returnValue.isNil, true);
 	}
 }
