@@ -6,7 +6,9 @@ RELATED:: Classes/Command, Classes/Parameter, Classes/CommandPrompt, Classes/Pia
 DESCRIPTION::
 TELETYPE::DeleteCommand:: is a LINK::Classes/Command:: named CODE::delete:: that deletes every note in CODE::selectedNotes::. LINK::Classes/PianoRoll:: supplies the notes through LINK::Classes/CommandPrompt#-ambientParameters:: as CODE::selectedNotes::, so the user does not type an argument. After the CODE::delete:: chip is committed, LINK::Classes/CommandPrompt:: treats the command as satisfied. Press Return to execute. With the piano-roll note area focused, the Delete key runs this command on the selected notes.
 
-Each note that responds to CODE::delete:: is deleted. LINK::Classes/PianoRollNote#-delete:: removes the note view and runs the note's delete callback, which drops the note from the roll and updates the embedded LINK::Classes/RealTimePlayer:: sequence. An empty selection is a no-op.
+Each note that responds to CODE::delete:: is deleted. LINK::Classes/PianoRollNote#-delete:: removes the note view and runs the note's delete callback, which drops the note from the roll and updates the embedded LINK::Classes/RealTimePlayer:: sequence. An empty selection is a no-op. A note that is already deleted is left out of the undo step.
+
+LINK::#-beforeImage:: stores the same amplitude snapshot LINK::Classes/AmpCommand:: stores, including CODE::\deleted:: false. LINK::#-restore:: writes that snapshot back through LINK::Classes/PianoRollNote#-restoreAmplitudeImage::, which is the same membership restore as amplitude CODE::0::. Undo puts the note back in the roll and creates its view again. Redo deletes it again.
 
 CLASSMETHODS::
 
@@ -18,11 +20,38 @@ A new TELETYPE::DeleteCommand:: instance.
 
 INSTANCEMETHODS::
 
+METHOD:: afterImage
+The amplitude snapshot of each note in the before-image, after LINK::#-execute::. CODE::\deleted:: is true.
+
+ARGUMENT:: args
+The same arguments dictionary passed to LINK::#-execute::.
+
+ARGUMENT:: before
+The LINK::Classes/IdentityDictionary:: returned by LINK::#-beforeImage::.
+
+RETURNS::
+An LINK::Classes/IdentityDictionary:: from note to its LINK::Classes/PianoRollNote#-amplitudeImage::, or CODE::nil:: when CODE::before:: is empty.
+
+METHOD:: beforeImage
+The amplitude snapshot of each selected note that is still in the roll. A note that is already deleted is left out.
+
+ARGUMENT:: args
+The same arguments dictionary about to be passed to LINK::#-execute::.
+
+RETURNS::
+An LINK::Classes/IdentityDictionary:: from note to its LINK::Classes/PianoRollNote#-amplitudeImage::, or CODE::nil:: when every selected note is already deleted.
+
 METHOD:: execute
 Deletes each note in CODE::\selectedNotes:: that responds to CODE::delete::.
 
 ARGUMENT:: args
 A LINK::Classes/Dictionary:: or LINK::Classes/Event:: with CODE::\selectedNotes:: (an LINK::Classes/Array:: of notes that respond to CODE::delete::). A missing or empty array deletes nothing.
+
+METHOD:: restore
+Writes each snapshot back through LINK::Classes/PianoRollNote#-restoreAmplitudeImage::. A snapshot with CODE::\deleted:: false puts the note back. A snapshot with CODE::\deleted:: true deletes it.
+
+ARGUMENT:: image
+An LINK::Classes/IdentityDictionary:: from note to an amplitude snapshot, or CODE::nil::.
 
 EXAMPLES::
 
@@ -50,3 +79,5 @@ notes.do({ |note| note.stop(note.startTime + 1.0) });
 DeleteCommand.new.execute((selectedNotes: notes));
 )
 ::
+
+PRIVATE:: prEachNote
