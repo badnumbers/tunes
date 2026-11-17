@@ -10,10 +10,7 @@ PianoRollNoteUnitTests : BNUnitTest {
 			viewFunc: { |n| View() },
 			selectFunc: { },
 			deselectFunc: { },
-			setPart1Func: { },
-			setPart2Func: { },
-			setPart3Func: { },
-			setPart4Func: { },
+			paintFunc: { },
 			moveFunc: { |view, newStart, newStop| postln("moveFunc is being called"); movedTimes = [newStart, newStop]; },
 			deleteFunc: deleteFunc
 		);
@@ -43,6 +40,28 @@ PianoRollNoteUnitTests : BNUnitTest {
 		this.assertEquals(note.isSelected, false);
 		note.amp_(-1);
 		this.assertEquals(deleted, [note]);
+	}
+
+	test_assignPart_storesPartAndCallsPaintFunc {
+		var note, painted;
+		painted = [];
+		note = PianoRollNote(
+			0,
+			60,
+			100,
+			viewFunc: { \noteView },
+			selectFunc: { },
+			deselectFunc: { },
+			paintFunc: { |view| painted = painted.add(view) },
+			moveFunc: { }
+		);
+		note.assignPart(5);
+		this.assertEquals(note.partNumber, 5);
+		this.assertEquals(painted.size, 0);
+		note.instVarPut(\prView, \noteView);
+		note.assignPart(6);
+		this.assertEquals(note.partNumber, 6);
+		this.assertEquals(painted, [\noteView]);
 	}
 
 	test_delete_invokesDeleteFuncOnce {

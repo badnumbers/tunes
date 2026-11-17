@@ -35,6 +35,31 @@ SequencerKeyRouter {
 				char: $4,
 				consume: true
 			),
+			\assignPart5: (
+				contexts: [\record],
+				char: $5,
+				consume: true
+			),
+			\assignPart6: (
+				contexts: [\record],
+				char: $6,
+				consume: true
+			),
+			\assignPart7: (
+				contexts: [\record],
+				char: $7,
+				consume: true
+			),
+			\assignPart8: (
+				contexts: [\record],
+				char: $8,
+				consume: true
+			),
+			\assignPart9: (
+				contexts: [\record],
+				char: $9,
+				consume: true
+			),
 			\focusCommandPrompt: (
 				contexts: [\record],
 				qtKeys: [ViewQtKey.escape],

@@ -1,7 +1,7 @@
 TITLE:: PianoRollNote
 SUMMARY:: One recorded note in the piano roll with selection, part assignment, and grid editing.
 CATEGORIES:: Streams-Patterns-Events
-RELATED:: Classes/PianoRoll, Classes/PlayableNote, Classes/Event, Classes/AmpCommand, Classes/DeleteCommand, Classes/LeftCommand, Classes/LegatoCommand, Classes/RightCommand
+RELATED:: Classes/PianoRoll, Classes/PlayableNote, Classes/Event, Classes/AmpCommand, Classes/DeleteCommand, Classes/LeftCommand, Classes/LegatoCommand, Classes/PartCommand, Classes/RightCommand
 
 DESCRIPTION::
 TELETYPE::PianoRollNote:: wraps a LINK::Classes/PlayableNote:: and a LINK::Classes/Event:: with piano-roll UI callbacks (view creation, selection highlighting, part colours, view repositioning after timing edits, and deletion). Commands such as LINK::Classes/AmpCommand:: and LINK::Classes/LegatoCommand:: write keys onto the composed LINK::Classes/Event:: (for example CODE::\amp::, CODE::\legato::) and keep the LINK::Classes/PlayableNote:: in sync. LINK::Classes/DeleteCommand:: calls LINK::#-delete::, which removes the note view and runs the optional delete callback. LINK::Classes/LeftCommand:: and LINK::Classes/RightCommand:: call LINK::#-nudgeLeft:: and LINK::#-nudgeRight::. LINK::Classes/PianoRoll:: creates instances when recording MIDI or dev-mode fake notes.
@@ -39,17 +39,8 @@ LINK::Classes/Function:: called when the note becomes selected, with the note vi
 ARGUMENT:: deselectFunc
 LINK::Classes/Function:: called when the note is deselected, with the note view and this note. LINK::Classes/PianoRoll:: restores the part colour on the border.
 
-ARGUMENT:: setPart1Func
-LINK::Classes/Function:: called when part 1 is assigned to a selected note.
-
-ARGUMENT:: setPart2Func
-LINK::Classes/Function:: called when part 2 is assigned to a selected note.
-
-ARGUMENT:: setPart3Func
-LINK::Classes/Function:: called when part 3 is assigned to a selected note.
-
-ARGUMENT:: setPart4Func
-LINK::Classes/Function:: called when part 4 is assigned to a selected note.
+ARGUMENT:: paintFunc
+LINK::Classes/Function:: called with the note view when the part or the amplitude changes and the view exists. LINK::Classes/PianoRoll:: uses it to paint the part colour.
 
 ARGUMENT:: moveFunc
 LINK::Classes/Function:: called after timing edits with CODE::func.value(view, startTime, stopTime)::.
@@ -60,10 +51,16 @@ Optional LINK::Classes/Function:: called from LINK::#-delete:: with the note as 
 INSTANCEMETHODS::
 
 METHOD:: amp_
-Clips CODE::value:: to CODE::0::–CODE::1::. A clipped value of CODE::0:: calls LINK::#-delete:: and does not write the event or the velocity. Any value above CODE::0:: stores it as CODE::\amp:: on the composed LINK::Classes/Event:: and passes the clipped value to LINK::Classes/PlayableNote#-amp_::, which sets the MIDI velocity. A tiny positive value stays a note even when that velocity rounds to CODE::0::. When the note view exists, the fill and the opaque border are drawn again. LINK::Classes/AmpCommand:: calls this method, so that opacity updates. Part 1 uses LINK::Classes/GuiPalette#-colour1::, part 2 uses LINK::Classes/GuiPalette#-colour2::, part 3 uses LINK::Classes/GuiPalette#-colour3::, and part 4 uses LINK::Classes/GuiPalette#-colour4::. An unselected note's border is that colour at full opacity. A selected note's border stays LINK::Classes/GuiPalette#-extreme2::. The fill uses the same colour at this amplitude as opacity.
+Clips CODE::value:: to CODE::0::–CODE::1::. A clipped value of CODE::0:: calls LINK::#-delete:: and does not write the event or the velocity. Any value above CODE::0:: stores it as CODE::\amp:: on the composed LINK::Classes/Event:: and passes the clipped value to LINK::Classes/PlayableNote#-amp_::, which sets the MIDI velocity. A tiny positive value stays a note even when that velocity rounds to CODE::0::. When the note view exists, CODE::paintFunc:: is called so the roll can redraw the fill and the border. LINK::Classes/AmpCommand:: calls this method, so that opacity updates. The roll chooses the part colour, wrapping LINK::Classes/GuiPalette#-colour1:: through LINK::Classes/GuiPalette#-colour5::. An unselected note's border is that colour at full opacity. A selected note's border stays LINK::Classes/GuiPalette#-extreme2::. The fill uses the same colour at this amplitude as opacity.
 
 ARGUMENT:: value
 A LINK::Classes/SimpleNumber:: amplitude. Values outside CODE::0:: to CODE::1:: are clipped silently.
+
+METHOD:: assignPart
+Stores CODE::partNumber:: on the wrapped LINK::Classes/PlayableNote:: and, when the note view exists, calls CODE::paintFunc:: with that view. LINK::Classes/PartCommand:: calls this method.
+
+ARGUMENT:: partNumber
+An LINK::Classes/Integer:: part number.
 
 METHOD:: delete
 Removes the note view, clears selection without running the deselect callback, and calls CODE::deleteFunc:: once with this note. A later LINK::#-stop:: does not recreate the view. A second call does not call CODE::deleteFunc:: again.
@@ -114,7 +111,7 @@ ARGUMENT:: resolution
 Grid spacing in beats.
 
 METHOD:: partNumber
-The part stored on the wrapped LINK::Classes/PlayableNote::. New notes are part 1. LINK::#-setPartIfSelected:: changes it, from 1 to 4, when the note is selected. The roll uses that number for the note colour, and LINK::Classes/WriteCommand:: uses it to group the pattern.
+The part stored on the wrapped LINK::Classes/PlayableNote::. New notes are part 1. LINK::#-assignPart:: changes it. The roll uses that number for the note colour, and LINK::Classes/WriteCommand:: uses it to group the pattern.
 
 RETURNS::
 An LINK::Classes/Integer::.
@@ -133,12 +130,6 @@ A LINK::Classes/View:: whose bounds define the selection rectangle.
 
 ARGUMENT:: addToExistingSelection
 When true, notes outside the rectangle are left unchanged; when false, they are deselected.
-
-METHOD:: setPartIfSelected
-If selected, assigns part CODE::partNumber:: (1–4) and runs the matching part callback.
-
-ARGUMENT:: partNumber
-Part index from 1 to 4.
 
 METHOD:: snapToGrid
 Snaps the start time to the nearest grid line at CODE::resolution:: beats and shifts the stop time by the same delta so duration is preserved. Start time is clamped at beat zero.

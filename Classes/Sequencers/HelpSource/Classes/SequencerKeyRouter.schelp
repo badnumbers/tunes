@@ -25,7 +25,7 @@ SequencerKeyRouterUnitTests.run;
 CLASSMETHODS::
 
 METHOD:: defaultBindings
-Returns the default action-to-chord binding table used by new instances.
+Returns the default action-to-chord binding table used by new instances. Record-context part assignment is CODE::\assignPart1:: through CODE::\assignPart9:: on characters CODE::$1:: through CODE::$9::.
 
 METHOD:: new
 Creates a TELETYPE::SequencerKeyRouter:: with CODE::#*defaultBindings::.
@@ -85,7 +85,7 @@ ARGUMENT:: context
 Context symbol (for example CODE::\record::).
 
 ARGUMENT:: action
-Action symbol (for example CODE::\assignPart1::; must exist in the binding table for key-down dispatch).
+Action symbol (for example CODE::\assignPart1:: through CODE::\assignPart9::; must exist in the binding table for key-down dispatch).
 
 ARGUMENT:: handler
 LINK::Classes/Function:: invoked when the binding matches.

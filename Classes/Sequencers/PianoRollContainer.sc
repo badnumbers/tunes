@@ -90,10 +90,13 @@ PianoRollContainer : SCViewHolder {
 	}
 
 	prRegisterKeyHandlers {
-		prKeyRouter.on(\record, \assignPart1, { this.prAssignPart(1) });
-		prKeyRouter.on(\record, \assignPart2, { this.prAssignPart(2) });
-		prKeyRouter.on(\record, \assignPart3, { this.prAssignPart(3) });
-		prKeyRouter.on(\record, \assignPart4, { this.prAssignPart(4) });
+		9.do({ |index|
+			var partNumber;
+			partNumber = index + 1;
+			prKeyRouter.on(\record, ("assignPart" ++ partNumber).asSymbol, {
+				this.prAssignPart(partNumber);
+			});
+		});
 		prKeyRouter.on(\record, \focusCommandPrompt, { this.prFocusCommandPrompt });
 	}
 

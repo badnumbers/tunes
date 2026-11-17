@@ -9,10 +9,7 @@ LegatoCommandUnitTests : BNUnitTest {
 			viewFunc: { View() },
 			selectFunc: { },
 			deselectFunc: { },
-			setPart1Func: { },
-			setPart2Func: { },
-			setPart3Func: { },
-			setPart4Func: { },
+			paintFunc: { },
 			moveFunc: { |view, newStart, newStop| }
 		);
 		note.stop(stopTime);
@@ -116,7 +113,7 @@ LegatoCommandUnitTests : BNUnitTest {
 		otherPart = this.prMockNote(1, stopTime: 1.5);
 		samePart = this.prMockNote(3, stopTime: 3.5);
 		otherPart.toggleSelect;
-		otherPart.setPartIfSelected(2);
+		otherPart.assignPart(2);
 		otherPart.deselect;
 		cmd.execute((
 			selectedNotes: [selected],

@@ -32,10 +32,7 @@ var note = PianoRollNote(0.0, 60, 100,
 	viewFunc: { View() },
 	selectFunc: {},
 	deselectFunc: {},
-	setPart1Func: {},
-	setPart2Func: {},
-	setPart3Func: {},
-	setPart4Func: {},
+	paintFunc: {},
 	moveFunc: {}
 );
 note.stop(1.0);

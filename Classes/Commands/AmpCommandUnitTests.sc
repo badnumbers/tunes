@@ -9,10 +9,7 @@ AmpCommandUnitTests : BNUnitTest {
 			viewFunc: { View() },
 			selectFunc: { },
 			deselectFunc: { },
-			setPart1Func: { },
-			setPart2Func: { },
-			setPart3Func: { },
-			setPart4Func: { },
+			paintFunc: { },
 			moveFunc: { |view, newStart, newStop| },
 			deleteFunc: deleteFunc
 		);

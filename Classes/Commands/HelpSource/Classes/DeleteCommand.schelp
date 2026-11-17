@@ -33,10 +33,7 @@ var notes = [
 		viewFunc: { View() },
 		selectFunc: {},
 		deselectFunc: {},
-		setPart1Func: {},
-		setPart2Func: {},
-		setPart3Func: {},
-		setPart4Func: {},
+		paintFunc: {},
 		moveFunc: {},
 		deleteFunc: { |note| ("deleted " ++ note.noteNumber).postln }
 	),
@@ -44,10 +41,7 @@ var notes = [
 		viewFunc: { View() },
 		selectFunc: {},
 		deselectFunc: {},
-		setPart1Func: {},
-		setPart2Func: {},
-		setPart3Func: {},
-		setPart4Func: {},
+		paintFunc: {},
 		moveFunc: {},
 		deleteFunc: { |note| ("deleted " ++ note.noteNumber).postln }
 	)

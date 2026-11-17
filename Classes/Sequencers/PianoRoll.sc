@@ -33,10 +33,10 @@ PianoRoll : SCViewHolder {
 	assignSelectedToPart {
 		|partNumber|
 		Validator.validateMethodParameterType(partNumber, Integer, "partNumber", "PianoRoll", "assignSelectedToPart");
-		if (partNumber < 1 or: { partNumber > 4 }, {
-			Error(format("The partNumber parameter provided to PianoRoll.assignSelectedToPart must be an integer from 1 to 4. The value % was provided.", partNumber)).throw;
+		if (partNumber < 1 or: { partNumber > 9 }, {
+			Error(format("The partNumber parameter provided to PianoRoll.assignSelectedToPart must be an integer from 1 to 9. The value % was provided.", partNumber)).throw;
 		});
-		this.prAssignPartIfSelected(partNumber);
+		PartCommand.new.execute((selectedNotes: this.selectedNotes, values: [partNumber]));
 	}
 
 	commandPrompt {
@@ -83,8 +83,9 @@ PianoRoll : SCViewHolder {
 				LeftCommand.new,
 				LegatoCommand.new,
 				MidinoteCommand.new,
+				PartCommand.new,
 				RightCommand.new,
-				SetCommand([AmpCommand.new, LegatoCommand.new, MidinoteCommand.new]),
+				SetCommand([AmpCommand.new, LegatoCommand.new, MidinoteCommand.new, PartCommand.new]),
 				SnapCommand.new,
 				TransposeCommand.new,
 				WriteCommand(prSequencerDocument, prSequencer)
@@ -415,19 +416,17 @@ PianoRoll : SCViewHolder {
 		this.prRefreshSidebar;
 	}
 
-	prAssignPartIfSelected {
-		|partNumber|
-		prRecordedNotes.do({|recordedNote| recordedNote.setPartIfSelected(partNumber); });
-	}
-
 	prColourForPart {
 		|partNumber|
-		switch (partNumber,
-			1, { ^prPalette.colour1 },
-			2, { ^prPalette.colour2 },
-			3, { ^prPalette.colour3 },
-			4, { ^prPalette.colour4 }
-		);
+		var colours;
+		colours = [
+			prPalette.colour1,
+			prPalette.colour2,
+			prPalette.colour3,
+			prPalette.colour4,
+			prPalette.colour5
+		];
+		^(colours[(partNumber - 1).wrap(0, 4)]);
 	}
 
 	prDeleteNote {
@@ -551,10 +550,7 @@ PianoRoll : SCViewHolder {
 				viewFunc: prDrawNote,
 				selectFunc: prNoteSelectFunc,
 				deselectFunc: prNoteDeselectFunc,
-				setPart1Func: { |view| this.prPaintNote(pianoRollNote, view) },
-				setPart2Func: { |view| this.prPaintNote(pianoRollNote, view) },
-				setPart3Func: { |view| this.prPaintNote(pianoRollNote, view) },
-				setPart4Func: { |view| this.prPaintNote(pianoRollNote, view) },
+				paintFunc: { |view| this.prPaintNote(pianoRollNote, view) },
 				moveFunc: { |view, startTime, stopTime| view.bounds_(Rect(startTime * prNoteViewScale[\horizontal], view.bounds.top, (stopTime - startTime) * prNoteViewScale[\horizontal], view.bounds.height)) },
 				deleteFunc: prNoteDeleteFunc
 			);
@@ -601,10 +597,7 @@ PianoRoll : SCViewHolder {
 					viewFunc: prDrawNote,
 					selectFunc: prNoteSelectFunc,
 					deselectFunc: prNoteDeselectFunc,
-					setPart1Func: { |view| this.prPaintNote(pianoRollNote, view) },
-					setPart2Func: { |view| this.prPaintNote(pianoRollNote, view) },
-					setPart3Func: { |view| this.prPaintNote(pianoRollNote, view) },
-					setPart4Func: { |view| this.prPaintNote(pianoRollNote, view) },
+					paintFunc: { |view| this.prPaintNote(pianoRollNote, view) },
 					moveFunc: { |view, startTime, stopTime| view.bounds_(Rect(startTime * prNoteViewScale[\horizontal], view.bounds.top, (stopTime - startTime) * prNoteViewScale[\horizontal], view.bounds.height)) },
 					deleteFunc: prNoteDeleteFunc
 				);

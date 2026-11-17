@@ -1,12 +1,12 @@
 TITLE:: SetCommand
 SUMMARY:: Command that sets a named key on selected notes, delegating known keys to their own commands.
 CATEGORIES:: Commands
-RELATED:: Classes/AmpCommand, Classes/Command, Classes/CommandPrompt, Classes/LegatoCommand, Classes/MidinoteCommand, Classes/Parameter, Classes/PianoRoll, Classes/PianoRollNote, Classes/SuggestedValues
+RELATED:: Classes/AmpCommand, Classes/Command, Classes/CommandPrompt, Classes/LegatoCommand, Classes/MidinoteCommand, Classes/Parameter, Classes/PartCommand, Classes/PianoRoll, Classes/PianoRollNote, Classes/SuggestedValues
 
 DESCRIPTION::
-TELETYPE::SetCommand:: is a LINK::Classes/Command:: named CODE::set::. It takes a CODE::key:: and a space-separated list of CODE::values::. LINK::Classes/PianoRoll:: passes LINK::Classes/AmpCommand::, LINK::Classes/LegatoCommand::, and LINK::Classes/MidinoteCommand::. LINK::Classes/DrumProgrammer:: passes LINK::Classes/AmpCommand:: only. Those names are the suggested keys. A key that matches none of them, such as CODE::foo::, is still accepted.
+TELETYPE::SetCommand:: is a LINK::Classes/Command:: named CODE::set::. It takes a CODE::key:: and a space-separated list of CODE::values::. LINK::Classes/PianoRoll:: passes LINK::Classes/AmpCommand::, LINK::Classes/LegatoCommand::, LINK::Classes/MidinoteCommand::, and LINK::Classes/PartCommand::. LINK::Classes/DrumProgrammer:: passes LINK::Classes/AmpCommand:: only. Those names are the suggested keys. A key that matches none of them, such as CODE::foo::, is still accepted.
 
-While CODE::values:: is being typed, LINK::Classes/CommandPrompt:: asks LINK::#-resolveParameter:: for the parameter that should parse them. For a known key that object is the dispatched command's own CODE::values:: parameter, so the type and constraint stay with that command. CODE::legato:: accepts numbers greater than CODE::0::, including values above CODE::1::. CODE::midinote:: accepts integers from CODE::0:: to CODE::127::. CODE::amp:: accepts any LINK::Classes/SimpleNumber::, and the note clips it to CODE::0::–CODE::1:: on execution. An unknown key uses this command's own CODE::values:: parameter: an array of LINK::Classes/SimpleNumber::s from CODE::0:: to CODE::1:: inclusive.
+While CODE::values:: is being typed, LINK::Classes/CommandPrompt:: asks LINK::#-resolveParameter:: for the parameter that should parse them. For a known key that object is the dispatched command's own CODE::values:: parameter, so the type and constraint stay with that command. CODE::legato:: accepts numbers greater than CODE::0::, including values above CODE::1::. CODE::midinote:: accepts integers from CODE::0:: to CODE::127::. CODE::part:: accepts integers from CODE::1:: to CODE::9::. CODE::amp:: accepts any LINK::Classes/SimpleNumber::, and the note clips it to CODE::0::–CODE::1:: on execution. An unknown key uses this command's own CODE::values:: parameter: an array of LINK::Classes/SimpleNumber::s from CODE::0:: to CODE::1:: inclusive.
 
 CODE::values:: is offered only after CODE::key:: has been committed. The prompt inserts each parameter name when it is the only one still on offer, so the chips read CODE::key:: and CODE::values::.
 

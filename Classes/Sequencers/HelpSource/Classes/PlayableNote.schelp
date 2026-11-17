@@ -70,7 +70,7 @@ RETURNS::
 An LINK::Classes/Integer::.
 
 METHOD:: partNumber
-The part used when this note is written into a pattern. A new note is part 1. Setting replaces it with an LINK::Classes/Integer::. LINK::Classes/PianoRollNote:: keeps piano-roll parts in the range 1 to 4. LINK::Classes/DrumProgrammer:: sets a hit's part to its MIDI note number.
+The part used when this note is written into a pattern. A new note is part 1. Setting replaces it with an LINK::Classes/Integer::. Piano-roll parts assigned from the roll are integers from 1 to 9. LINK::Classes/DrumProgrammer:: sets a hit's part to its MIDI note number.
 
 ARGUMENT:: value
 When setting, the new part number.

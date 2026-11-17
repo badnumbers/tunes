@@ -38,10 +38,7 @@ var notes = [0, 1, 1, 2].collect({
 		viewFunc: { View() },
 		selectFunc: {},
 		deselectFunc: {},
-		setPart1Func: {},
-		setPart2Func: {},
-		setPart3Func: {},
-		setPart4Func: {},
+		paintFunc: {},
 		moveFunc: {}
 	);
 	note.stop(start + 1.0);
