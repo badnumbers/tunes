@@ -16,6 +16,24 @@ LegatoCommandUnitTests : BNUnitTest {
 		^note;
 	}
 
+	test_beforeImage_recordsLegatoAndStopTimeThatChange {
+		var args, cmd, image, notes, plain;
+		cmd = LegatoCommand.new;
+		notes = [
+			this.prMockNote(0, stopTime: 0.9),
+			this.prMockNote(1, stopTime: 1.5)
+		];
+		notes[1].legato_(0.5, 4);
+		plain = (startTime: 2);
+		args = (selectedNotes: notes, allNotes: notes, loopEnd: 4, values: [0.5]);
+		image = cmd.beforeImage(args);
+		this.assertEquals(image[notes[0]][\legato], nil);
+		this.assertEquals(image[notes[0]][\stopTime], 0.9);
+		this.assertEquals(image[notes[1]], nil);
+		this.assertEquals(cmd.beforeImage((selectedNotes: [notes[1]], allNotes: notes, loopEnd: 4, values: [0.5])), nil);
+		this.assertEquals(cmd.beforeImage((selectedNotes: [plain], allNotes: [], loopEnd: nil, values: [0.5])), nil);
+	}
+
 	test_name_isLegato {
 		var cmd = LegatoCommand.new;
 		this.assertEquals(cmd.name, "legato");
@@ -123,5 +141,37 @@ LegatoCommandUnitTests : BNUnitTest {
 		));
 		this.assertEquals(selected.event[\legato], 0.5);
 		this.assertEquals(selected.stopTime, 1.5);
+	}
+
+	test_restore_putsBackLegatoAndStopTime {
+		var after, args, before, cmd, notes;
+		cmd = LegatoCommand.new;
+		notes = [
+			this.prMockNote(0, stopTime: 0.9),
+			this.prMockNote(1, stopTime: 1.2)
+		];
+		notes[1].event[\legato] = 0.25;
+		args = (selectedNotes: notes, allNotes: notes, loopEnd: 4, values: [0.5]);
+		before = cmd.beforeImage(args);
+		this.assertEquals(before[notes[0]][\legato], nil);
+		this.assertEquals(before[notes[0]][\stopTime], 0.9);
+		this.assertEquals(before[notes[1]][\legato], 0.25);
+		this.assertEquals(before[notes[1]][\stopTime], 1.2);
+		cmd.execute(args);
+		this.assertEquals(notes[0].event[\legato], 0.5);
+		this.assertEquals(notes[0].stopTime, 0.5);
+		this.assertEquals(notes[1].event[\legato], 0.5);
+		this.assertEquals(notes[1].stopTime, 2.5);
+		after = cmd.afterImage(args, before);
+		cmd.restore(before);
+		this.assertEquals(notes[0].event.keys.includes(\legato), false);
+		this.assertEquals(notes[0].stopTime, 0.9);
+		this.assertEquals(notes[1].event[\legato], 0.25);
+		this.assertEquals(notes[1].stopTime, 1.2);
+		cmd.restore(after);
+		this.assertEquals(notes[0].event[\legato], 0.5);
+		this.assertEquals(notes[0].stopTime, 0.5);
+		this.assertEquals(notes[1].event[\legato], 0.5);
+		this.assertEquals(notes[1].stopTime, 2.5);
 	}
 }

@@ -105,6 +105,19 @@ PianoRollNote {
 		^prSelected;
 	}
 
+	legatoImage {
+		^(legato: prEvent[\legato], stopTime: this.stopTime);
+	}
+
+	legatoImageIfChanged {
+		|value, nextOnset|
+		var newStop;
+		if (nextOnset.isNil or: { value.isNil } or: { value <= 0 }, { ^nil });
+		newStop = this.startTime + ((nextOnset - this.startTime) * value);
+		if ((prEvent[\legato] == value) && { this.stopTime == newStop }, { ^nil });
+		^(this.legatoImage);
+	}
+
 	legato_ {
 		|value, nextOnsetTime|
 		Validator.validateMethodParameterType(value, SimpleNumber, "value", "PianoRollNote", "legato_");
@@ -285,6 +298,28 @@ PianoRollNote {
 			prPlayableNote.velocity_(velocity);
 		});
 		this.prApplyPartColour;
+	}
+
+	restoreLegatoImage {
+		|image|
+		var legato, stopTime;
+		if (image.isNil, { ^this });
+		legato = image[\legato];
+		stopTime = image[\stopTime];
+		if (stopTime.isNil, { ^this });
+		if (prEvent.keys.includes(\legato), {
+			prEvent.removeAt(\legato);
+		});
+		if (legato.notNil, {
+			prEvent[\legato] = legato;
+		});
+		if (this.stopTime != stopTime, {
+			prOriginalStopTime = stopTime;
+			prPlayableNote.stopTime = stopTime;
+			if (prView.notNil, {
+				prMoveFunc.value(prView, this.startTime, stopTime);
+			});
+		});
 	}
 
 	restoreTimeImage {

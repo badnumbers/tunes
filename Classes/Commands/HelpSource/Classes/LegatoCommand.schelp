@@ -8,7 +8,9 @@ TELETYPE::LegatoCommand:: is a LINK::Classes/Command:: named CODE::legato:: that
 
 CODE::values:: is a space-separated list of LINK::Classes/SimpleNumber::s greater than CODE::0::. Values greater than CODE::1:: are allowed. The Event key is stored as given, with no clipping or mapping. Notes are ordered by CODE::startTime:: only. Notes that share a start time take the same array value; the list wraps and advances only when start time changes.
 
-Sounding duration is a proportion of the inter-onset interval: CODE::stopTime = startTime + (nextOnset - startTime) * legato::. CODE::nextOnset:: is the earliest later start time among CODE::allNotes:: in the same part. For a part with no later note, CODE::nextOnset:: is CODE::loopEnd::.
+Sounding duration is a proportion of the inter-onset interval: CODE::stopTime = startTime + (nextOnset - startTime) * legato::. CODE::nextOnset:: is the earliest later start time among CODE::allNotes:: in the same part. For a part with no later note, CODE::nextOnset:: is CODE::loopEnd::. A note with no next onset is left unchanged.
+
+LINK::#-beforeImage:: records the previous CODE::\legato::, including CODE::nil:: when that key was absent, and the previous stop time, for each note whose legato or stop time would change. LINK::#-restore:: writes those back and repositions the view. A note that is already at the target is left out, so an edit that changes nothing is not an undo step.
 
 Example: four notes at beats CODE::0, 1, 1, 2:: with CODE::loopEnd:: CODE::4:: and CODE::legato values 0.5:: become stop times CODE::0.5, 1.5, 1.5, 3::.
 
@@ -22,11 +24,38 @@ A new TELETYPE::LegatoCommand:: instance.
 
 INSTANCEMETHODS::
 
+METHOD:: afterImage
+The legato and stop time of each note in the before-image, after LINK::#-execute::.
+
+ARGUMENT:: args
+The same arguments dictionary passed to LINK::#-execute::.
+
+ARGUMENT:: before
+The LINK::Classes/IdentityDictionary:: returned by LINK::#-beforeImage::.
+
+RETURNS::
+An LINK::Classes/IdentityDictionary:: from note to an event with CODE::\legato:: and CODE::\stopTime::, or CODE::nil:: when CODE::before:: is empty.
+
+METHOD:: beforeImage
+The previous legato and stop time of each selected note whose legato or stop time would change.
+
+ARGUMENT:: args
+The same arguments dictionary about to be passed to LINK::#-execute::.
+
+RETURNS::
+An LINK::Classes/IdentityDictionary:: from note to an event with CODE::\legato:: and CODE::\stopTime::, or CODE::nil:: when every selected note is already at its target. CODE::\legato:: is CODE::nil:: when the key was absent.
+
 METHOD:: execute
 Applies wrapped legato values to CODE::\selectedNotes:: grouped by start time, writing CODE::\legato:: and updating stop times from the next onset in the same part (or CODE::\loopEnd::).
 
 ARGUMENT:: args
 A LINK::Classes/Dictionary:: or LINK::Classes/Event:: with CODE::\selectedNotes:: (an LINK::Classes/Array:: of notes that respond to CODE::legato_::), CODE::\allNotes:: (an LINK::Classes/Array:: of notes that respond to CODE::partNumber:: and CODE::startTime::), CODE::\loopEnd:: (a LINK::Classes/Number::), and CODE::\values:: (a non-empty LINK::Classes/Array:: of LINK::Classes/SimpleNumber::s greater than CODE::0::).
+
+METHOD:: restore
+Writes CODE::\legato:: and CODE::\stopTime:: from an image back onto each note. A CODE::nil:: legato removes the key.
+
+ARGUMENT:: image
+An LINK::Classes/IdentityDictionary:: from note to an event with CODE::\legato:: and CODE::\stopTime::, or CODE::nil::.
 
 EXAMPLES::
 
@@ -52,3 +81,5 @@ LegatoCommand.new.execute((
 ));
 )
 ::
+
+PRIVATE:: prEachTarget

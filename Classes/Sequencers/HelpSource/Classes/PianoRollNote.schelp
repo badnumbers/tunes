@@ -101,6 +101,24 @@ A LINK::Classes/Boolean::.
 METHOD:: isSelected
 Returns whether this note is currently selected.
 
+METHOD:: legatoImage
+The legato undo snapshot: CODE::\legato:: (CODE::nil:: when the event has no legato) and CODE::\stopTime::.
+
+RETURNS::
+An LINK::Classes/Event::.
+
+METHOD:: legatoImageIfChanged
+The current LINK::#-legatoImage:: when CODE::value:: and CODE::nextOnset:: would change this note, or CODE::nil:: when the event already stores that legato and the stop time already matches CODE::startTime + (nextOnset - startTime) * value::.
+
+ARGUMENT:: value
+A LINK::Classes/SimpleNumber:: legato greater than CODE::0::.
+
+ARGUMENT:: nextOnset
+The beat LINK::#-legato_:: would use as the next onset.
+
+RETURNS::
+An LINK::Classes/Event::, or CODE::nil::.
+
 METHOD:: legato_
 Stores CODE::value:: as CODE::\legato:: on the composed LINK::Classes/Event:: with no clipping or mapping, then sets the wrapped LINK::Classes/PlayableNote:: stop time via LINK::Classes/PlayableNote#-applyLegato::. Repositions the note view when it exists.
 
@@ -151,6 +169,12 @@ Writes an amplitude snapshot from LINK::#-amplitudeImage:: back onto this note. 
 
 ARGUMENT:: image
 An LINK::Classes/Event:: with CODE::\amp::, CODE::\velocity::, and CODE::\deleted::, or CODE::nil::.
+
+METHOD:: restoreLegatoImage
+Writes a legato snapshot back onto this note. CODE::\legato:: is removed when the snapshot's legato is CODE::nil::. CODE::\stopTime:: is written back, and CODE::moveFunc:: is called when the note view exists and the stop time changes. LINK::Classes/LegatoCommand:: calls this method.
+
+ARGUMENT:: image
+An LINK::Classes/Event:: with CODE::\legato:: and CODE::\stopTime::, or CODE::nil::.
 
 METHOD:: restoreTimeImage
 Writes CODE::\startTime:: and CODE::\stopTime:: from a time snapshot back onto this note. When the note view exists, CODE::moveFunc:: is called with the restored times. LINK::Classes/LeftCommand::, LINK::Classes/RightCommand::, and LINK::Classes/SnapCommand:: call this method.
