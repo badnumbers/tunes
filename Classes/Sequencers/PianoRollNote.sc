@@ -168,27 +168,15 @@ PianoRollNote {
 
 	nudgeLeft {
 		|resolution|
-		var currentStart, newStart, delta;
-		currentStart = this.startTime;
-		if (this.prIsOnGrid(resolution), {
-			newStart = currentStart - resolution;
-		}, {
-			newStart = (currentStart / resolution).floor * resolution;
-		});
-		delta = newStart - currentStart;
+		var delta;
+		delta = this.prStartAfterNudge(resolution, -1) - this.startTime;
 		this.prApplyTimeDelta(delta);
 	}
 
 	nudgeRight {
 		|resolution|
-		var currentStart, newStart, delta;
-		currentStart = this.startTime;
-		if (this.prIsOnGrid(resolution), {
-			newStart = currentStart + resolution;
-		}, {
-			newStart = (currentStart / resolution).ceil * resolution;
-		});
-		delta = newStart - currentStart;
+		var delta;
+		delta = this.prStartAfterNudge(resolution, 1) - this.startTime;
 		this.prApplyTimeDelta(delta);
 	}
 
@@ -229,6 +217,23 @@ PianoRollNote {
 		var gridIndex;
 		gridIndex = this.startTime / resolution;
 		^ (gridIndex - gridIndex.round).abs < 1e-9;
+	}
+
+	prStartAfterNudge {
+		|spacing, direction|
+		var currentStart, newStart;
+		currentStart = this.startTime;
+		if (this.prIsOnGrid(spacing), {
+			newStart = currentStart + (spacing * direction);
+		}, {
+			if (direction < 0, {
+				newStart = (currentStart / spacing).floor * spacing;
+			}, {
+				newStart = (currentStart / spacing).ceil * spacing;
+			});
+		});
+		if (newStart < 0, { ^0 });
+		^newStart;
 	}
 
 	prUndelete {
@@ -272,6 +277,23 @@ PianoRollNote {
 			prPlayableNote.velocity_(velocity);
 		});
 		this.prApplyPartColour;
+	}
+
+	restoreTimeImage {
+		|image|
+		var startTime, stopTime;
+		if (image.isNil, { ^this });
+		startTime = image[\startTime];
+		stopTime = image[\stopTime];
+		if (startTime.isNil or: { stopTime.isNil }, { ^this });
+		if ((this.startTime == startTime) && { this.stopTime == stopTime }, { ^this });
+		prOriginalStartTime = startTime;
+		prOriginalStopTime = stopTime;
+		prPlayableNote.startTime = startTime;
+		prPlayableNote.stopTime = stopTime;
+		if (prView.notNil, {
+			prMoveFunc.value(prView, startTime, stopTime);
+		});
 	}
 
 	selectIfEnclosed {
@@ -319,6 +341,19 @@ PianoRollNote {
 
 	stopTime {
 		^prPlayableNote.stopTime;
+	}
+
+	timeImage {
+		^(startTime: this.startTime, stopTime: this.stopTime);
+	}
+
+	timeImageIfNudged {
+		|spacing, direction|
+		var nudged;
+		if (spacing.isNil, { ^nil });
+		nudged = this.prStartAfterNudge(spacing, direction);
+		if (nudged == this.startTime, { ^nil });
+		^(this.timeImage);
 	}
 
 	toggleSelect {

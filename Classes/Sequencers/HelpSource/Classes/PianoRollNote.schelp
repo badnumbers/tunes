@@ -152,6 +152,12 @@ Writes an amplitude snapshot from LINK::#-amplitudeImage:: back onto this note. 
 ARGUMENT:: image
 An LINK::Classes/Event:: with CODE::\amp::, CODE::\velocity::, and CODE::\deleted::, or CODE::nil::.
 
+METHOD:: restoreTimeImage
+Writes CODE::\startTime:: and CODE::\stopTime:: from a time snapshot back onto this note. When the note view exists, CODE::moveFunc:: is called with the restored times. LINK::Classes/LeftCommand:: and LINK::Classes/RightCommand:: call this method.
+
+ARGUMENT:: image
+An LINK::Classes/Event:: with CODE::\startTime:: and CODE::\stopTime::, or CODE::nil::.
+
 METHOD:: selectIfEnclosed
 Selects or deselects based on whether this note's view lies inside CODE::possiblyEnclosingView::.
 
@@ -179,6 +185,24 @@ Note-off time in beats.
 METHOD:: stopTime
 Returns the note-off time in beats.
 
+METHOD:: timeImage
+The start and stop time currently stored on this note.
+
+RETURNS::
+An LINK::Classes/Event:: with CODE::\startTime:: and CODE::\stopTime::.
+
+METHOD:: timeImageIfNudged
+The current LINK::#-timeImage:: when a nudge by CODE::spacing:: in CODE::direction:: would move the start time, or CODE::nil:: when the start would stay put. CODE::direction:: is CODE::-1:: for left and CODE::1:: for right. LINK::Classes/LeftCommand:: and LINK::Classes/RightCommand:: use this to skip notes that are already at the destination, including a left nudge clamped at beat zero.
+
+ARGUMENT:: spacing
+The grid step in beats.
+
+ARGUMENT:: direction
+CODE::-1:: to try a left nudge, or CODE::1:: to try a right nudge.
+
+RETURNS::
+An LINK::Classes/Event::, or CODE::nil::.
+
 METHOD:: toggleSelect
 Toggles selection and runs the select or deselect callback.
 
@@ -191,4 +215,4 @@ An LINK::Classes/Integer::. Negative values lower the note.
 METHOD:: velocity
 Returns the wrapped note's velocity.
 
-PRIVATE:: init, prApplyPartColour, prApplyTimeDelta, prIsOnGrid, prUndelete
+PRIVATE:: init, prApplyPartColour, prApplyTimeDelta, prIsOnGrid, prStartAfterNudge, prUndelete

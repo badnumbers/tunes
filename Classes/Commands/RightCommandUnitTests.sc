@@ -16,6 +16,18 @@ RightCommandUnitTests : BNUnitTest {
 		^note;
 	}
 
+	test_beforeImage_recordsTimesThatChange {
+		var cmd, image, note, plain;
+		cmd = RightCommand.new;
+		note = this.prMockNote(1.2, 2.2);
+		plain = (startTime: 1.0, stopTime: 2.0);
+		image = cmd.beforeImage((selectedNotes: [note, plain], resolution: 1));
+		this.assertEquals(image[note][\startTime], 1.2);
+		this.assertEquals(image[note][\stopTime], 2.2);
+		this.assertEquals(image[plain], nil);
+		this.assertEquals(cmd.beforeImage((selectedNotes: [note], resolution: 17)), nil);
+	}
+
 	test_execute_offGrid_movesToNextGridLine {
 		var cmd, note;
 		cmd = RightCommand.new;
@@ -60,5 +72,23 @@ RightCommandUnitTests : BNUnitTest {
 		this.assertEquals(param.isValid("17"), false);
 		this.assertEquals(param.isValid("4.5"), false);
 		this.assertEquals(param.isValid("abc"), false);
+	}
+
+	test_restore_putsBackTheTimes {
+		var after, args, before, cmd, note;
+		cmd = RightCommand.new;
+		note = this.prMockNote(1.0, 2.5);
+		args = (selectedNotes: [note], resolution: 4);
+		before = cmd.beforeImage(args);
+		cmd.execute(args);
+		this.assertEquals(note.startTime, 1.25);
+		this.assertEquals(note.stopTime, 2.75);
+		after = cmd.afterImage(args, before);
+		cmd.restore(before);
+		this.assertEquals(note.startTime, 1.0);
+		this.assertEquals(note.stopTime, 2.5);
+		cmd.restore(after);
+		this.assertEquals(note.startTime, 1.25);
+		this.assertEquals(note.stopTime, 2.75);
 	}
 }
