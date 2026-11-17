@@ -88,6 +88,7 @@ DrumProgrammer : SCViewHolder {
 			bounds: nil,
 			commands: [
 				AmpCommand.new,
+				SetCommand([AmpCommand.new]),
 				WriteCommand(prSequencerDocument, prSequencer)
 			],
 			palette: prPalette,

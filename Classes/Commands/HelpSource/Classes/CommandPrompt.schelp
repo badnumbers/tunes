@@ -1,7 +1,7 @@
 TITLE:: CommandPrompt
 SUMMARY:: Text field with live command, parameter, and argument completion for an interactive command prompt.
 CATEGORIES:: GUI>Views
-RELATED:: Classes/Command, Classes/CommandChip, Classes/CommandSuggestion, Classes/Parameter, Classes/GuiPalette, Classes/SCViewHolder, Classes/View
+RELATED:: Classes/Command, Classes/CommandChip, Classes/CommandSuggestion, Classes/Parameter, Classes/SetCommand, Classes/SuggestedValues, Classes/GuiPalette, Classes/SCViewHolder, Classes/View
 
 DESCRIPTION::
 TELETYPE::CommandPrompt:: is a LINK::Classes/SCViewHolder:: providing an interactive command line with structured token chips for commands, parameters, and arguments.
@@ -10,8 +10,8 @@ As the user types:
 LIST::
 ## In the initial state, matching LINK::Classes/Command:: names are suggested as LINK::Classes/CommandSuggestion:: rows. Pressing Tab commits the command name as a LINK::Classes/CommandChip::.
 ## Once a command is selected, any parameters configured in LINK::#-ambientParameters:: that match the command are automatically evaluated and bound without requiring user input or displaying a chip. A bound value of CODE::nil:: still counts as assigned.
-## If exactly one LINK::Classes/Parameter:: remains unassigned after that, its name is committed automatically so the user only types the argument. Otherwise remaining unassigned parameter names are suggested; pressing Tab commits the parameter name as a LINK::Classes/CommandChip::.
-## When expecting an argument, the input is validated against the parameter's type and constraints (with discrete suggestions if defined). Pressing Tab commits the value as a LINK::Classes/CommandChip::.
+## A parameter whose LINK::Classes/Command#-parameterIsOffered:: is CODE::false:: is withheld. LINK::Classes/SetCommand:: withholds CODE::values:: until CODE::key:: has been committed. If exactly one offered parameter remains unassigned, its name is committed automatically, including just after an argument is committed. Otherwise the offered parameter names are suggested; pressing Tab commits the parameter name as a LINK::Classes/CommandChip::.
+## When expecting an argument, LINK::Classes/Command#-resolveParameter:: supplies the parameter that parses the text, so LINK::Classes/SetCommand:: can borrow the CODE::values:: parameter of the command named by the committed key. That parameter's type and constraints are what the input is checked against. A LINK::Classes/Collection:: constraint suggests those values and accepts only them. Pressing Tab commits the typed text when it is one of those values, or the highlighted suggestion when the text field is empty. A LINK::Classes/SuggestedValues:: constraint suggests those values and also accepts any other value of the parameter type. Pressing Tab commits the highlighted suggestion when the current word is a prefix of it, including when the field is empty. Pressing Tab commits the typed text when it matches none of the suggestions, as long as that text parses as the parameter type. For an array parameter the current word is the last space-separated token, and Tab replaces only that token. A custom value that is only a prefix of a suggestion is completed to the highlight instead. The committed value becomes a LINK::Classes/CommandChip::.
 ## A live validity indicator on the right indicates whether the command is incomplete (CODE::…::) or fully satisfied (CODE::✓::). Pressing Return executes the command.
 ## Pressing Backspace on an empty text field removes the last committed token chip and unwinds the parser state.
 ::
@@ -91,7 +91,7 @@ When setting, the new input-field string.
 RETURNS::
 A LINK::Classes/String::.
 
-PRIVATE:: init, prApplySelection, prAutoCommitSoleRemainingParameter, prClearSuggestions, prCommitHighlightedToken, prCommitParameter, prCurrentState, prCurrentWord, prExecuteCommand, prInstallTextFieldKeyHandlers, prIsParameterAssigned, prMoveSelection, prPositionSuggestionsView, prRemoveLastCommittedToken, prResetPrompt, prUpdateStatusIndicator, prUpdateSuggestions
+PRIVATE:: init, prApplySelection, prArgumentStringReplacingLastWord, prAutoCommitSoleRemainingParameter, prClearSuggestions, prCommitHighlightedToken, prCommitParameter, prCurrentState, prCurrentWord, prExecuteCommand, prInstallTextFieldKeyHandlers, prIsParameterAssigned, prMoveSelection, prPositionSuggestionsView, prRemoveLastCommittedToken, prResetPrompt, prResolvedActiveParameter, prUnassignedOfferedParameters, prUpdateStatusIndicator, prUpdateSuggestions
 
 EXAMPLES::
 

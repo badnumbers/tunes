@@ -82,7 +82,9 @@ PianoRoll : SCViewHolder {
 				DeleteCommand.new,
 				LeftCommand.new,
 				LegatoCommand.new,
+				MidinoteCommand.new,
 				RightCommand.new,
+				SetCommand([AmpCommand.new, LegatoCommand.new, MidinoteCommand.new]),
 				SnapCommand.new,
 				TransposeCommand.new,
 				WriteCommand(prSequencerDocument, prSequencer)

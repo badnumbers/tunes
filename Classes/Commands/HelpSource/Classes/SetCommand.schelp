@@ -1,0 +1,67 @@
+TITLE:: SetCommand
+SUMMARY:: Command that sets a named key on selected notes, delegating known keys to their own commands.
+CATEGORIES:: Commands
+RELATED:: Classes/AmpCommand, Classes/Command, Classes/CommandPrompt, Classes/LegatoCommand, Classes/MidinoteCommand, Classes/Parameter, Classes/PianoRoll, Classes/PianoRollNote, Classes/SuggestedValues
+
+DESCRIPTION::
+TELETYPE::SetCommand:: is a LINK::Classes/Command:: named CODE::set::. It takes a CODE::key:: and a space-separated list of CODE::values::. LINK::Classes/PianoRoll:: passes LINK::Classes/AmpCommand::, LINK::Classes/LegatoCommand::, and LINK::Classes/MidinoteCommand::. LINK::Classes/DrumProgrammer:: passes LINK::Classes/AmpCommand:: only. Those names are the suggested keys. A key that matches none of them, such as CODE::foo::, is still accepted.
+
+While CODE::values:: is being typed, LINK::Classes/CommandPrompt:: asks LINK::#-resolveParameter:: for the parameter that should parse them. For a known key that object is the dispatched command's own CODE::values:: parameter, so the type and constraint stay with that command. CODE::legato:: accepts numbers greater than CODE::0::, including values above CODE::1::. CODE::midinote:: accepts integers from CODE::0:: to CODE::127::. CODE::amp:: accepts any LINK::Classes/SimpleNumber::, and the note clips it to CODE::0::–CODE::1:: on execution. An unknown key uses this command's own CODE::values:: parameter: an array of LINK::Classes/SimpleNumber::s from CODE::0:: to CODE::1:: inclusive.
+
+CODE::values:: is offered only after CODE::key:: has been committed. The prompt inserts each parameter name when it is the only one still on offer, so the chips read CODE::key:: and CODE::values::.
+
+Execution of a known key calls that command with the same arguments dictionary. An unknown key is written onto CODE::note.event[key]:: for notes that respond to CODE::event::, using the same start-time grouping as LINK::Classes/AmpCommand::. The sidebar shows that key. LINK::Classes/WriteCommand:: does not emit it. A LINK::Classes/DrumStep:: has no event, so an unknown key leaves it unchanged.
+
+CLASSMETHODS::
+
+METHOD:: new
+Creates a new TELETYPE::SetCommand::.
+
+ARGUMENT:: commands
+An LINK::Classes/Array:: of LINK::Classes/Command:: instances. Each must define a CODE::values:: parameter, and the names must be unique. The array must not be empty.
+
+RETURNS::
+A new TELETYPE::SetCommand:: instance.
+
+INSTANCEMETHODS::
+
+METHOD:: execute
+Dispatches a known key to its command. Writes any other key onto the note event.
+
+ARGUMENT:: args
+A LINK::Classes/Dictionary:: or LINK::Classes/Event:: with CODE::\key::, CODE::\values::, and CODE::\selectedNotes::. A dispatched LINK::Classes/LegatoCommand:: also reads CODE::\allNotes:: and CODE::\loopEnd::.
+
+METHOD:: isValid
+Returns whether CODE::key::, CODE::selectedNotes::, and CODE::values:: are valid. CODE::values:: is checked with the resolved parameter. A known key must also be valid for its command.
+
+ARGUMENT:: argsDict
+A LINK::Classes/Dictionary:: or LINK::Classes/Event:: of argument values.
+
+RETURNS::
+A LINK::Classes/Boolean::.
+
+METHOD:: parameterIsOffered
+Returns whether the prompt should offer this parameter given the arguments committed so far. CODE::values:: waits until CODE::key:: is present.
+
+ARGUMENT:: param
+The LINK::Classes/Parameter:: being considered.
+
+ARGUMENT:: argsDict
+A LINK::Classes/Dictionary:: or LINK::Classes/Event:: of arguments committed so far, or CODE::nil::.
+
+RETURNS::
+A LINK::Classes/Boolean::.
+
+METHOD:: resolveParameter
+Returns the parameter that should parse an argument. For CODE::values:: and a known key, that is the dispatched command's CODE::values:: parameter. Otherwise it is CODE::param::.
+
+ARGUMENT:: param
+The LINK::Classes/Parameter:: from this command's own list.
+
+ARGUMENT:: argsDict
+A LINK::Classes/Dictionary:: or LINK::Classes/Event:: of arguments committed so far, or CODE::nil::.
+
+RETURNS::
+A LINK::Classes/Parameter::.
+
+PRIVATE:: prArg, prCommandForKey, prSetCommands, prWriteUnknownKey

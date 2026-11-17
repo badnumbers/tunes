@@ -4,6 +4,10 @@ Parameter {
 	var prName;
 	var prType;
 
+	acceptsCustomValues {
+		^prConstraint.isKindOf(SuggestedValues);
+	}
+
 	constraint {
 		^prConstraint;
 	}
@@ -36,7 +40,15 @@ Parameter {
 		Validator.validateMethodParameterType(name, [String, Symbol], "name", "Parameter", "new");
 		Validator.validateMethodParameterType(type, Class, "type", "Parameter", "new");
 		Validator.validateMethodParameterType(isArray, Boolean, "isArray", "Parameter", "new");
-		Validator.validateMethodParameterType(constraint, [Function, Collection], "constraint", "Parameter", "new", allowNil: true);
+		Validator.validateMethodParameterType(constraint, [Function, Collection, SuggestedValues], "constraint", "Parameter", "new", allowNil: true);
+		if (constraint.isKindOf(SuggestedValues), {
+			constraint.values.do({
+				|value|
+				if (value.isKindOf(type).not, {
+					Error(format("Each value in a SuggestedValues constraint for parameter '%' must be a %. The value %, which has the class %, was provided.", name, type, value, value.class)).throw;
+				});
+			});
+		});
 		^super.new.init(name, type, isArray, constraint);
 	}
 
@@ -128,6 +140,17 @@ Parameter {
 			});
 		});
 		^(hasDigits && { dotCount <= 1 });
+	}
+
+	suggestionValues {
+		if (prConstraint.isNil, { ^nil });
+		if (prConstraint.isKindOf(Collection), {
+			^prConstraint.as(Array);
+		});
+		if (prConstraint.isKindOf(SuggestedValues), {
+			^prConstraint.values;
+		});
+		^nil;
 	}
 
 	type {

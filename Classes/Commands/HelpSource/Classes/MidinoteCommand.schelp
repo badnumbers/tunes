@@ -1,0 +1,27 @@
+TITLE:: MidinoteCommand
+SUMMARY:: Command that sets MIDI note numbers on selected piano-roll notes.
+CATEGORIES:: Commands
+RELATED:: Classes/Command, Classes/CommandPrompt, Classes/Parameter, Classes/PianoRoll, Classes/PianoRollNote, Classes/SetCommand
+
+DESCRIPTION::
+TELETYPE::MidinoteCommand:: is a LINK::Classes/Command:: named CODE::midinote:: that sets the MIDI note number of each selected LINK::Classes/PianoRollNote::. LINK::Classes/PianoRoll:: supplies the notes through LINK::Classes/CommandPrompt#-ambientParameters:: as CODE::selectedNotes::.
+
+CODE::values:: is a space-separated list of LINK::Classes/Integer::s from CODE::0:: to CODE::127::. Notes are ordered by CODE::startTime:: only. Notes that share a start time take the same array value; the list wraps and advances only when start time changes. Each note is moved with LINK::Classes/PianoRollNote#-transpose:: by the difference between the target and its current note number, which slides the note view by that many rows. A note that does not respond to CODE::noteNumber:: and CODE::transpose::, such as a LINK::Classes/DrumStep::, is left unchanged.
+
+Example: four notes numbered CODE::60:: at beats CODE::0, 1, 1, 2:: with CODE::midinote values 60 72:: become note numbers CODE::60, 72, 72, 60::.
+
+CLASSMETHODS::
+
+METHOD:: new
+Creates a new TELETYPE::MidinoteCommand::. Takes no arguments; note numbers are applied by LINK::#-execute::.
+
+RETURNS::
+A new TELETYPE::MidinoteCommand:: instance.
+
+INSTANCEMETHODS::
+
+METHOD:: execute
+Applies wrapped MIDI note numbers to CODE::\selectedNotes:: grouped by start time.
+
+ARGUMENT:: args
+A LINK::Classes/Dictionary:: or LINK::Classes/Event:: with CODE::\selectedNotes:: (an LINK::Classes/Array:: of notes that respond to CODE::noteNumber:: and CODE::transpose::) and CODE::\values:: (a non-empty LINK::Classes/Array:: of LINK::Classes/Integer::s from CODE::0:: to CODE::127::).

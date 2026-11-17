@@ -1,0 +1,30 @@
+TITLE:: SuggestedValues
+SUMMARY:: Prompted values for a parameter that still accepts another value of the same type.
+CATEGORIES:: Control
+RELATED:: Classes/Command, Classes/CommandPrompt, Classes/Parameter
+
+DESCRIPTION::
+TELETYPE::SuggestedValues:: is a constraint for a LINK::Classes/Parameter::. LINK::Classes/CommandPrompt:: offers the values as suggestions. The user can commit a highlighted suggestion, or type a different value of the parameter's type. A plain LINK::Classes/Collection:: constraint accepts only the listed values.
+
+Each value's text form must be one token. An empty string, or a value whose text contains a space, is rejected. The values must also match the parameter type when the LINK::Classes/Parameter:: is created.
+
+CLASSMETHODS::
+
+METHOD:: new
+Creates a TELETYPE::SuggestedValues::.
+
+ARGUMENT:: values
+A LINK::Classes/Collection:: of suggested values, stored in iteration order. The collection must not be empty, and no entry may be CODE::nil::.
+
+RETURNS::
+A new TELETYPE::SuggestedValues:: instance.
+
+INSTANCEMETHODS::
+
+METHOD:: values
+The suggested values, in the order they were given.
+
+RETURNS::
+An LINK::Classes/Array::. The array is a copy.
+
+PRIVATE:: init

@@ -60,7 +60,17 @@ Command {
 		^super.new.init(name, parameters ?? { [] }, action);
 	}
 
+	parameterIsOffered {
+		|param, argsDict|
+		^true;
+	}
+
 	parameters {
 		^prParameters;
+	}
+
+	resolveParameter {
+		|param, argsDict|
+		^param;
 	}
 }

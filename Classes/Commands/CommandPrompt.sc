@@ -120,13 +120,21 @@ CommandPrompt : SCViewHolder {
 		});
 	}
 
+	prArgumentStringReplacingLastWord {
+		|replacement|
+		var words;
+		words = prTextField.string.split($ );
+		if (words.size == 0, {
+			^replacement;
+		});
+		words[words.size - 1] = replacement;
+		^words.join(" ");
+	}
+
 	prAutoCommitSoleRemainingParameter {
 		var unassigned;
 		if (prActiveCommand.isNil, { ^this });
-		unassigned = prActiveCommand.parameters.reject({
-			|param|
-			this.prIsParameterAssigned(param);
-		});
+		unassigned = this.prUnassignedOfferedParameters;
 		if (unassigned.size == 1, {
 			this.prCommitParameter(unassigned[0]);
 		});
@@ -144,7 +152,7 @@ CommandPrompt : SCViewHolder {
 	}
 
 	prCommitHighlightedToken {
-		var candidateString, chip, cmd, parsedVal, state;
+		var candidateString, chip, cmd, parsedVal, resolved, state;
 		state = this.prCurrentState;
 
 		if (state == \expectingCommand, {
@@ -188,12 +196,21 @@ CommandPrompt : SCViewHolder {
 		});
 
 		if (state == \expectingArgument, {
+			resolved = this.prResolvedActiveParameter;
 			candidateString = prTextField.string.stripWhiteSpace;
-			if (candidateString.isEmpty && { prSelectedIndex.notNil } && { prMatchingItems.size > 0 }, {
-				candidateString = prMatchingItems[prSelectedIndex].asString;
+			if (resolved.acceptsCustomValues && { prMatchingItems.size > 0 } && { prSelectedIndex.notNil }, {
+				if (resolved.isArray, {
+					candidateString = this.prArgumentStringReplacingLastWord(prMatchingItems[prSelectedIndex].asString);
+				}, {
+					candidateString = prMatchingItems[prSelectedIndex].asString;
+				});
+			}, {
+				if (candidateString.isEmpty && { prSelectedIndex.notNil } && { prMatchingItems.size > 0 }, {
+					candidateString = prMatchingItems[prSelectedIndex].asString;
+				});
 			});
-			if (candidateString.notEmpty && { prActiveParameter.isValid(candidateString) }, {
-				parsedVal = prActiveParameter.parse(candidateString);
+			if (candidateString.notEmpty && { resolved.isValid(candidateString) }, {
+				parsedVal = resolved.parse(candidateString);
 				chip = CommandChip(candidateString, prPalette.colour3, prTextFieldHeight);
 				prInputRowLayout.insert(chip, prCommittedTokens.size);
 				prCommittedTokens = prCommittedTokens.add((type: \argument, name: candidateString, view: chip, parameter: prActiveParameter, value: parsedVal));
@@ -201,6 +218,7 @@ CommandPrompt : SCViewHolder {
 				prActiveParameter = nil;
 				prTextField.string_("");
 				this.prClearSuggestions;
+				this.prAutoCommitSoleRemainingParameter;
 				this.prUpdateStatusIndicator;
 				this.prUpdateSuggestions;
 				prTextField.focus;
@@ -223,10 +241,7 @@ CommandPrompt : SCViewHolder {
 			^\expectingCommand;
 		});
 		if (prActiveParameter.isNil, {
-			unassigned = prActiveCommand.parameters.reject({
-				|param|
-				this.prIsParameterAssigned(param);
-			});
+			unassigned = this.prUnassignedOfferedParameters;
 			if (unassigned.size > 0, {
 				^\expectingParameter;
 			}, {
@@ -392,6 +407,20 @@ CommandPrompt : SCViewHolder {
 		prTextField.focus;
 	}
 
+	prResolvedActiveParameter {
+		if (prActiveCommand.isNil || { prActiveParameter.isNil }, {
+			^prActiveParameter;
+		});
+		^(prActiveCommand.resolveParameter(prActiveParameter, prCommittedArgs));
+	}
+
+	prUnassignedOfferedParameters {
+		^prActiveCommand.parameters.reject({
+			|param|
+			this.prIsParameterAssigned(param) || { prActiveCommand.parameterIsOffered(param, prCommittedArgs).not };
+		});
+	}
+
 	prUpdateStatusIndicator {
 		var isExecutable = false;
 		if (prActiveCommand.notNil && { prActiveCommand.isValid(prCommittedArgs) }, {
@@ -410,7 +439,7 @@ CommandPrompt : SCViewHolder {
 	}
 
 	prUpdateSuggestions {
-		var currentWord, matchingItems, state, suggestionHeight, suggestionWidth, suggestionsHeight, unassigned, words;
+		var currentWord, matchingItems, state, suggestionHeight, suggestionValues, suggestionWidth, suggestionsHeight, unassigned, words;
 		words = prTextField.string.split($ );
 		this.prClearSuggestions;
 		matchingItems = [];
@@ -425,10 +454,7 @@ CommandPrompt : SCViewHolder {
 		});
 
 		if (state == \expectingParameter, {
-			unassigned = prActiveCommand.parameters.reject({
-				|param|
-				this.prIsParameterAssigned(param);
-			});
+			unassigned = this.prUnassignedOfferedParameters;
 			matchingItems = unassigned.select({
 				|param|
 				param.name.beginsWith(currentWord);
@@ -436,10 +462,13 @@ CommandPrompt : SCViewHolder {
 		});
 
 		if (state == \expectingArgument, {
-			if (prActiveParameter.notNil && { prActiveParameter.constraint.notNil } && { prActiveParameter.constraint.isKindOf(Collection) }, {
-				matchingItems = prActiveParameter.constraint.as(Array).collect(_.asString).select({
-					|itemStr|
-					itemStr.beginsWith(currentWord);
+			if (prActiveParameter.notNil, {
+				suggestionValues = this.prResolvedActiveParameter.suggestionValues;
+				if (suggestionValues.notNil, {
+					matchingItems = suggestionValues.collect(_.asString).select({
+						|itemStr|
+						currentWord.isEmpty || { itemStr.beginsWith(currentWord) };
+					});
 				});
 			});
 		});
