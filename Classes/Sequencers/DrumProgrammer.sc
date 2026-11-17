@@ -248,11 +248,12 @@ DrumProgrammer : SCViewHolder {
 
 	prExecuteCommand {
 		|command, args|
-		var before;
-		before = command.beforeImage(args);
+		var before, recorded;
+		recorded = command.undoCommand(args);
+		before = recorded.beforeImage(args);
 		command.execute(args);
 		if (before.notNil && { before.size > 0 }, {
-			prUndoHistory.push(command, before, command.afterImage(args));
+			prUndoHistory.push(recorded, before, recorded.afterImage(args));
 		});
 	}
 

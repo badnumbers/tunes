@@ -140,4 +140,25 @@ SetCommandUnitTests : BNUnitTest {
 		this.assertEquals(note.noteNumber, 60);
 		this.assertEquals(note.velocity, 100);
 	}
+
+	test_undoCommand_partRestoresThroughTheDispatchedCommand {
+		var after, args, before, note, part, recorded, set;
+		note = this.prMockNote(0);
+		part = PartCommand.new;
+		set = SetCommand([AmpCommand.new, part]);
+		args = (key: \part, selectedNotes: [note], values: [4]);
+		recorded = set.undoCommand(args);
+		this.assertEquals(recorded === part, true);
+		before = recorded.beforeImage(args);
+		this.assertEquals(before[note][\partNumber], 1);
+		set.execute(args);
+		this.assertEquals(note.partNumber, 4);
+		after = recorded.afterImage(args);
+		recorded.restore(before);
+		this.assertEquals(note.partNumber, 1);
+		recorded.restore(after);
+		this.assertEquals(note.partNumber, 4);
+		this.assertEquals(set.undoCommand((key: \foo, selectedNotes: [note], values: [0.5])) === set, true);
+		this.assertEquals(set.undoCommand((key: \amp, selectedNotes: [note], values: [0.5])).beforeImage((selectedNotes: [note], values: [0.5])), nil);
+	}
 }

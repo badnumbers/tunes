@@ -16,6 +16,23 @@ PartCommandUnitTests : BNUnitTest {
 		^note;
 	}
 
+	test_beforeImage_recordsOnlyPartsThatChange {
+		var cmd, image, notes, plain;
+		cmd = PartCommand.new;
+		notes = [
+			this.prMockNote(0),
+			this.prMockNote(1),
+			this.prMockNote(1)
+		];
+		notes[2].assignPart(9);
+		plain = (startTime: 2);
+		image = cmd.beforeImage((selectedNotes: [notes[0], notes[1], notes[2], plain], values: [4, 9]));
+		this.assertEquals(image[notes[0]][\partNumber], 1);
+		this.assertEquals(image[notes[1]][\partNumber], 1);
+		this.assertEquals(image[notes[2]], nil);
+		this.assertEquals(image[plain], nil);
+	}
+
 	test_execute_sharedStartTime_sharesArrayValue {
 		var cmd, notes;
 		cmd = PartCommand.new;
@@ -59,6 +76,32 @@ PartCommandUnitTests : BNUnitTest {
 	test_name_isPart {
 		var cmd = PartCommand.new;
 		this.assertEquals(cmd.name, "part");
+	}
+
+	test_restore_putsBackTheCapturedParts {
+		var after, before, cmd, notes;
+		cmd = PartCommand.new;
+		notes = [
+			this.prMockNote(0),
+			this.prMockNote(1),
+			this.prMockNote(1)
+		];
+		notes[0].assignPart(2);
+		notes[2].assignPart(3);
+		before = cmd.beforeImage((selectedNotes: notes, values: [5, 6]));
+		cmd.execute((selectedNotes: notes, values: [5, 6]));
+		after = cmd.afterImage((selectedNotes: notes, values: [5, 6]));
+		this.assertEquals(notes[0].partNumber, 5);
+		this.assertEquals(notes[1].partNumber, 6);
+		this.assertEquals(notes[2].partNumber, 6);
+		cmd.restore(before);
+		this.assertEquals(notes[0].partNumber, 2);
+		this.assertEquals(notes[1].partNumber, 1);
+		this.assertEquals(notes[2].partNumber, 3);
+		cmd.restore(after);
+		this.assertEquals(notes[0].partNumber, 5);
+		this.assertEquals(notes[1].partNumber, 6);
+		this.assertEquals(notes[2].partNumber, 6);
 	}
 
 	test_valuesParameter_acceptsPartsOneToNine {

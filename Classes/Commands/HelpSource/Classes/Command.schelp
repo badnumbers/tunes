@@ -118,4 +118,13 @@ Writes an image captured by LINK::#-beforeImage:: or LINK::#-afterImage:: back o
 ARGUMENT:: image
 An LINK::Classes/IdentityDictionary::, or CODE::nil::.
 
+METHOD:: undoCommand
+The command whose before-image and after-image should be stored for this execution. The default is this command. LINK::Classes/SetCommand:: returns the dispatched command, so CODE::set key part:: records a LINK::Classes/PartCommand:: step.
+
+ARGUMENT:: args
+The arguments dictionary about to be passed to LINK::#-execute::.
+
+RETURNS::
+A LINK::Classes/Command::.
+
 PRIVATE:: init

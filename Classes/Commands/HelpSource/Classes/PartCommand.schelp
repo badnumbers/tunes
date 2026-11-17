@@ -8,6 +8,8 @@ TELETYPE::PartCommand:: is a LINK::Classes/Command:: named CODE::part:: that set
 
 CODE::values:: is a space-separated list of LINK::Classes/Integer::s from CODE::1:: to CODE::9::. Notes are ordered by CODE::startTime:: only. Notes that share a start time take the same array value; the list wraps and advances only when start time changes. A single value, such as CODE::2::, therefore sets every selected note to that part. Each note that responds to CODE::assignPart:: stores the part and asks the roll to paint it. A note that does not, such as a LINK::Classes/DrumStep::, is left unchanged, and this command is not offered on the drum programmer.
 
+LINK::#-beforeImage:: records the previous part of each note whose part will change. LINK::#-restore:: writes those parts back, or writes the LINK::#-afterImage:: on redo. A note that is already on the target part is left out of the before-image, so an edit that changes nothing is not an undo step.
+
 The roll paints part 1 with LINK::Classes/GuiPalette#-colour1::, part 2 with LINK::Classes/GuiPalette#-colour2::, part 3 with LINK::Classes/GuiPalette#-colour3::, part 4 with LINK::Classes/GuiPalette#-colour4::, and part 5 with LINK::Classes/GuiPalette#-colour5::. Part 6 uses colour1 again. Part 9 uses colour4. LINK::Classes/SetCommand:: on the piano roll includes this command, so CODE::set key part:: borrows the same 1–9 constraint.
 
 Example: four notes at beats CODE::0, 1, 1, 2:: with CODE::part values 1 9:: become parts CODE::1, 9, 9, 1::.
@@ -22,8 +24,34 @@ A new TELETYPE::PartCommand:: instance.
 
 INSTANCEMETHODS::
 
+METHOD:: afterImage
+The part now stored on each selected note that responds to CODE::assignPart::, after LINK::#-execute::.
+
+ARGUMENT:: args
+The same arguments dictionary passed to LINK::#-execute::.
+
+RETURNS::
+An LINK::Classes/IdentityDictionary:: from note to an event with CODE::\partNumber::, or CODE::nil:: when no such note was selected.
+
+METHOD:: beforeImage
+The part stored on each selected note whose part differs from the value LINK::#-execute:: would write.
+
+ARGUMENT:: args
+The same arguments dictionary about to be passed to LINK::#-execute::.
+
+RETURNS::
+An LINK::Classes/IdentityDictionary:: from note to an event with CODE::\partNumber::, or CODE::nil:: when every selected note is already on its target part.
+
 METHOD:: execute
 Applies wrapped part numbers to CODE::\selectedNotes:: grouped by start time.
 
 ARGUMENT:: args
 A LINK::Classes/Dictionary:: or LINK::Classes/Event:: with CODE::\selectedNotes:: (an LINK::Classes/Array:: of notes that respond to CODE::assignPart::) and CODE::\values:: (a non-empty LINK::Classes/Array:: of LINK::Classes/Integer::s from CODE::1:: to CODE::9::).
+
+METHOD:: restore
+Writes CODE::\partNumber:: from an image produced by LINK::#-beforeImage:: or LINK::#-afterImage:: back onto each note.
+
+ARGUMENT:: image
+An LINK::Classes/IdentityDictionary:: from note to an event with CODE::\partNumber::, or CODE::nil::.
+
+PRIVATE:: prEachTarget

@@ -122,4 +122,12 @@ SetCommand : Command {
 		if (cmd.notNil, { ^(cmd.getParameter("values")) });
 		^param;
 	}
+
+	undoCommand {
+		|args|
+		var cmd;
+		cmd = this.prCommandForKey(this.prArg(args, "key"));
+		if (cmd.isNil, { ^this });
+		^cmd;
+	}
 }

@@ -87,4 +87,9 @@ Command {
 	restore {
 		|image|
 	}
+
+	undoCommand {
+		|args|
+		^this;
+	}
 }
