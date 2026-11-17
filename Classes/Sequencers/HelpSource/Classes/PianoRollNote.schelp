@@ -153,7 +153,7 @@ ARGUMENT:: image
 An LINK::Classes/Event:: with CODE::\amp::, CODE::\velocity::, and CODE::\deleted::, or CODE::nil::.
 
 METHOD:: restoreTimeImage
-Writes CODE::\startTime:: and CODE::\stopTime:: from a time snapshot back onto this note. When the note view exists, CODE::moveFunc:: is called with the restored times. LINK::Classes/LeftCommand:: and LINK::Classes/RightCommand:: call this method.
+Writes CODE::\startTime:: and CODE::\stopTime:: from a time snapshot back onto this note. When the note view exists, CODE::moveFunc:: is called with the restored times. LINK::Classes/LeftCommand::, LINK::Classes/RightCommand::, and LINK::Classes/SnapCommand:: call this method.
 
 ARGUMENT:: image
 An LINK::Classes/Event:: with CODE::\startTime:: and CODE::\stopTime::, or CODE::nil::.
@@ -203,6 +203,15 @@ CODE::-1:: to try a left nudge, or CODE::1:: to try a right nudge.
 RETURNS::
 An LINK::Classes/Event::, or CODE::nil::.
 
+METHOD:: timeImageIfSnapped
+The current LINK::#-timeImage:: when snapping to CODE::spacing:: would move the start time, or CODE::nil:: when the start is already on that grid. LINK::Classes/SnapCommand:: uses this to skip notes that would not move.
+
+ARGUMENT:: spacing
+The grid step in beats.
+
+RETURNS::
+An LINK::Classes/Event::, or CODE::nil::.
+
 METHOD:: toggleSelect
 Toggles selection and runs the select or deselect callback.
 
@@ -215,4 +224,4 @@ An LINK::Classes/Integer::. Negative values lower the note.
 METHOD:: velocity
 Returns the wrapped note's velocity.
 
-PRIVATE:: init, prApplyPartColour, prApplyTimeDelta, prIsOnGrid, prStartAfterNudge, prUndelete
+PRIVATE:: init, prApplyPartColour, prApplyTimeDelta, prIsOnGrid, prStartAfterNudge, prStartAfterSnap, prUndelete

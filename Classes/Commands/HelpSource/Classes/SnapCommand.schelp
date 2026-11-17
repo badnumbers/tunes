@@ -17,6 +17,8 @@ LIST::
 
 Each note's start time is shifted in the closest direction to the nearest multiple of CODE::1.0 / resolution:: beats while preserving duration. Timing edits on LINK::Classes/PianoRollNote:: reposition the note view automatically.
 
+LINK::#-beforeImage:: records the start and stop time of each note whose start would change. A note already on the grid is left out, so an edit that changes nothing is not an undo step. LINK::#-restore:: writes those times back and repositions the view.
+
 CLASSMETHODS::
 
 METHOD:: new
@@ -27,11 +29,38 @@ A new TELETYPE::SnapCommand:: instance.
 
 INSTANCEMETHODS::
 
+METHOD:: afterImage
+The start and stop time of each note in the before-image, after LINK::#-execute::.
+
+ARGUMENT:: args
+The same arguments dictionary passed to LINK::#-execute::.
+
+ARGUMENT:: before
+The LINK::Classes/IdentityDictionary:: returned by LINK::#-beforeImage::.
+
+RETURNS::
+An LINK::Classes/IdentityDictionary:: from note to an event with CODE::\startTime:: and CODE::\stopTime::, or CODE::nil:: when CODE::before:: is empty.
+
+METHOD:: beforeImage
+The start and stop time of each selected note whose start would snap to a new grid line.
+
+ARGUMENT:: args
+The same arguments dictionary about to be passed to LINK::#-execute::.
+
+RETURNS::
+An LINK::Classes/IdentityDictionary:: from note to an event with CODE::\startTime:: and CODE::\stopTime::, or CODE::nil:: when every selected note is already on the grid.
+
 METHOD:: execute
 Snaps each note in CODE::\selectedNotes:: to the grid implied by CODE::\resolution::.
 
 ARGUMENT:: args
 A LINK::Classes/Dictionary:: or LINK::Classes/Event:: with CODE::\selectedNotes:: (an LINK::Classes/Array:: of notes that respond to CODE::snapToGrid::) and CODE::\resolution:: (an LINK::Classes/Integer:: from 1 to 16).
+
+METHOD:: restore
+Writes CODE::\startTime:: and CODE::\stopTime:: from an image back onto each note and repositions its view.
+
+ARGUMENT:: image
+An LINK::Classes/IdentityDictionary:: from note to an event with CODE::\startTime:: and CODE::\stopTime::, or CODE::nil::.
 
 EXAMPLES::
 
@@ -55,3 +84,5 @@ snapCmd.execute((
 ));
 )
 ::
+
+PRIVATE:: prEachNote, prGridSpacing

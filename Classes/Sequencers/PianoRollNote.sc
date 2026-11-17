@@ -236,6 +236,14 @@ PianoRollNote {
 		^newStart;
 	}
 
+	prStartAfterSnap {
+		|spacing|
+		var snapped;
+		snapped = (this.startTime / spacing).round * spacing;
+		if (snapped < 0, { ^0 });
+		^snapped;
+	}
+
 	prUndelete {
 		if (prDeleted.not, { ^this });
 		prDeleted = false;
@@ -315,10 +323,8 @@ PianoRollNote {
 
 	snapToGrid {
 		|resolution|
-		var currentStart, snappedStart, delta;
-		currentStart = this.startTime;
-		snappedStart = (currentStart / resolution).round * resolution;
-		delta = snappedStart - currentStart;
+		var delta;
+		delta = this.prStartAfterSnap(resolution) - this.startTime;
 		this.prApplyTimeDelta(delta);
 	}
 
@@ -353,6 +359,15 @@ PianoRollNote {
 		if (spacing.isNil, { ^nil });
 		nudged = this.prStartAfterNudge(spacing, direction);
 		if (nudged == this.startTime, { ^nil });
+		^(this.timeImage);
+	}
+
+	timeImageIfSnapped {
+		|spacing|
+		var snapped;
+		if (spacing.isNil, { ^nil });
+		snapped = this.prStartAfterSnap(spacing);
+		if (snapped == this.startTime, { ^nil });
 		^(this.timeImage);
 	}
 
