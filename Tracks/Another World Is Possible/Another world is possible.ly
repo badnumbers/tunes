@@ -36,8 +36,8 @@
     }
   }
   \new Staff \with { instrumentName = "REV2" } \relative c''' {
+    \clef "treble^(8)" % Notes are an octave higher
     \key ef \minor
-    \ottava 1
     <bf~ df~ gf>1 | % 1
     <bf df af'>1 | % 2
     <ef af cf > | % 3
@@ -94,7 +94,7 @@
   }
   \new Staff \with { instrumentName = "REV2" } \relative c''' {
     \key ef \minor
-    \ottava 1
+    \clef "treble^(8)" % Notes are an octave higher
     \repeat volta 2 {
       <bf~ af'>1 | % 1
       <bf~ ef>1 | % 2
@@ -146,7 +146,7 @@
 <<
   \new Staff \with { instrumentName = "REV2" } \relative c''' {
     \key ef \minor
-    \ottava 1
+    \clef "treble^(8)" % Notes are an octave higher
     <bf~ df~ gf>1 | % 1
     <bf df af'>1 | % 2
     <ef af cf > | % 3
@@ -179,7 +179,7 @@
 <<
   \new Staff \with { instrumentName = "REV2" } \relative c''' {
     \key ef \minor
-    \ottava 1
+    \clef "treble^(8)" % Notes are an octave higher
     <af df gf>1 | % 1
     << { ef'1 } \\ { <gf, bf>2 <ef af> }  >> | % 2
     <af df gf>1 | % 3
@@ -230,7 +230,7 @@
 <<
   \new Staff \with { instrumentName = "REV2" } \relative c''' {
     \key ef \minor
-    \ottava 1
+    \clef "treble^(8)" % Notes are an octave higher
     \repeat volta 2
     {
       << { <df~ g~>1 } \\ { g,2 a } >> | % 1
