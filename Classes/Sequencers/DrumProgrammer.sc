@@ -5,6 +5,7 @@ DrumProgrammer : SCViewHolder {
 	var prHighlightedColumn;
 	var prHitDuration = 0.0625;
 	var prIsPlaying = false;
+	var prKeyRouter;
 	var prLabelColumnWidth;
 	var prLabelFont;
 	var prNotes;
@@ -24,13 +25,16 @@ DrumProgrammer : SCViewHolder {
 	var prStepBeats = 0.25;
 	var prStepCount;
 	var prSyncTo = 4;
+	var prUndoHistory;
 	var prVelocity = 100;
 
 	init {
-		|sequencer, sequencerDocument|
+		|sequencer, sequencerDocument, keyRouter|
 		var addDrumSoundButton, addStepButton, canvas, content, playButton, prompt, root, scroll, stopButton, strip, syncMenu;
 		prSequencer = sequencer;
 		prSequencerDocument = sequencerDocument;
+		prKeyRouter = keyRouter;
+		prUndoHistory = UndoHistory.new;
 		prPalette = GuiPalette.default;
 		prStepCount = 16;
 		prNotes = Array.new;
@@ -100,7 +104,8 @@ DrumProgrammer : SCViewHolder {
 				loopEnd: { if (prStepCount > 0, { prStepCount * prStepBeats }, { nil }) }
 			),
 			overlayParent: root,
-			onExecute: nil
+			onExecute: nil,
+			commandRunner: { |command, args| this.prExecuteCommand(command, args) }
 		);
 		scroll = ScrollView();
 		scroll.hasBorder_(false);
@@ -119,7 +124,15 @@ DrumProgrammer : SCViewHolder {
 		root.onResize_({
 			content.bounds = root.bounds.moveTo(0, 0);
 		});
+		this.prInstallKeyDown(root);
+		this.prInstallKeyDown(canvas);
+		this.prInstallKeyDown(scroll);
 		this.view = root;
+		if (prKeyRouter.notNil, {
+			prKeyRouter.on(\drums, \undo, { this.undo });
+			prKeyRouter.on(\drums, \redo, { this.redo });
+			prKeyRouter.on(\drums, \redoY, { this.redo });
+		});
 		this.prSortedDrumSoundNames.do({
 			|name|
 			this.prAppendDrumSound(name);
@@ -145,10 +158,11 @@ DrumProgrammer : SCViewHolder {
 	}
 
 	*new {
-		|sequencer, sequencerDocument|
+		|sequencer, sequencerDocument, keyRouter|
 		Validator.validateMethodParameterType(sequencer, Sequencer, "sequencer", "DrumProgrammer", "new", allowNil: true);
 		Validator.validateMethodParameterType(sequencerDocument, SequencerDocument, "sequencerDocument", "DrumProgrammer", "new", allowNil: true);
-		^super.new.init(sequencer, sequencerDocument);
+		Validator.validateMethodParameterType(keyRouter, SequencerKeyRouter, "keyRouter", "DrumProgrammer", "new", allowNil: true);
+		^super.new.init(sequencer, sequencerDocument, keyRouter);
 	}
 
 	prAddDrumSound {
@@ -175,6 +189,7 @@ DrumProgrammer : SCViewHolder {
 			|steps, rowIndex|
 			var step;
 			step = this.prMakeStep(index, prRowNoteNumbers[rowIndex]);
+			this.prInstallKeyDown(step.square);
 			prRowViews[rowIndex].layout.insert(step.square, steps.size + 1);
 			steps = steps.add(step);
 			prRowSteps[rowIndex] = steps;
@@ -231,6 +246,16 @@ DrumProgrammer : SCViewHolder {
 		this.prSyncSequence;
 	}
 
+	prExecuteCommand {
+		|command, args|
+		var before;
+		before = command.beforeImage(args);
+		command.execute(args);
+		if (before.notNil && { before.size > 0 }, {
+			prUndoHistory.push(command, before, command.afterImage(args));
+		});
+	}
+
 	prFindNote {
 		|noteNumber, startTime|
 		^prNotes.detect({
@@ -261,6 +286,13 @@ DrumProgrammer : SCViewHolder {
 		});
 	}
 
+	prInstallKeyDown {
+		|view|
+		view.keyDownAction_({ |view, char, modifiers, unicode, keycode, key|
+			this.prKeyDownReturn(char, modifiers, unicode, keycode, key);
+		});
+	}
+
 	prInstallRow {
 		|name, noteNumber|
 		var rowView, steps;
@@ -269,6 +301,12 @@ DrumProgrammer : SCViewHolder {
 		prRowViews = prRowViews.add(rowView);
 		prRowSteps = prRowSteps.add(steps);
 		prRowNoteNumbers = prRowNoteNumbers.add(noteNumber);
+	}
+
+	prKeyDownReturn {
+		|char, modifiers, unicode, keycode, key|
+		if (prKeyRouter.isNil, { ^nil });
+		^(prKeyRouter.keyDownReturnValue(char, modifiers, unicode, keycode, key));
 	}
 
 	prMakeButton {
@@ -319,12 +357,14 @@ DrumProgrammer : SCViewHolder {
 		held = false;
 		layout = HLayout().spacing_(8).margins_(0);
 		label = this.prMakeLabel(name);
+		this.prInstallKeyDown(label);
 		layout.add(label);
 		steps = Array.new;
 		prStepCount.do({
 			|index|
 			var step;
 			step = this.prMakeStep(index, noteNumber);
+			this.prInstallKeyDown(step.square);
 			layout.add(step.square);
 			steps = steps.add(step);
 		});
@@ -579,7 +619,15 @@ DrumProgrammer : SCViewHolder {
 		prRealTimePlayer.loopEnd_(end);
 	}
 
+	redo {
+		prUndoHistory.redo;
+	}
+
 	stop {
 		this.prStop;
+	}
+
+	undo {
+		prUndoHistory.undo;
 	}
 }

@@ -28,6 +28,7 @@ PianoRoll : SCViewHolder {
 	var prSyncMenu;
 	var prSyncTo = 4;
 	var prTimeline;
+	var prUndoHistory;
 	var prView;
 
 	assignSelectedToPart {
@@ -36,7 +37,7 @@ PianoRoll : SCViewHolder {
 		if (partNumber < 1 or: { partNumber > 9 }, {
 			Error(format("The partNumber parameter provided to PianoRoll.assignSelectedToPart must be an integer from 1 to 9. The value % was provided.", partNumber)).throw;
 		});
-		PartCommand.new.execute((selectedNotes: this.selectedNotes, values: [partNumber]));
+		this.prExecuteCommand(PartCommand.new, (selectedNotes: this.selectedNotes, values: [partNumber]));
 	}
 
 	commandPrompt {
@@ -44,7 +45,7 @@ PianoRoll : SCViewHolder {
 	}
 
 	deleteSelected {
-		DeleteCommand.new.execute((selectedNotes: this.selectedNotes));
+		this.prExecuteCommand(DeleteCommand.new, (selectedNotes: this.selectedNotes));
 	}
 
 	focusBackground {
@@ -68,6 +69,7 @@ PianoRoll : SCViewHolder {
 		prPalette = palette;
 		prSequencer = sequencer;
 		prSequencerDocument = sequencerDocument;
+		prUndoHistory = UndoHistory.new;
 		prSidebar = PianoRollSidebar(prPalette);
 
 		prView = View(parent, bounds);
@@ -103,7 +105,8 @@ PianoRoll : SCViewHolder {
 				midiChannel: { prRealTimePlayer.midiChannel }
 			),
 			overlayParent: prView,
-			onExecute: { this.prRefreshSidebar }
+			onExecute: { this.prRefreshSidebar },
+			commandRunner: { |command, args| this.prExecuteCommand(command, args) }
 		);
 
 		contentLayoutView.layout = VLayout(
@@ -442,6 +445,16 @@ PianoRoll : SCViewHolder {
 		});
 	}
 
+	prExecuteCommand {
+		|command, args|
+		var before;
+		before = command.beforeImage(args);
+		command.execute(args);
+		if (before.notNil && { before.size > 0 }, {
+			prUndoHistory.push(command, before, command.afterImage(args));
+		});
+	}
+
 	prFillForNote {
 		|note, colour|
 		var amp, fill;
@@ -571,6 +584,10 @@ PianoRoll : SCViewHolder {
 		});
 	}
 
+	redo {
+		prUndoHistory.redo;
+	}
+
 	selectedNotes {
 		^this.prSelectedNotes;
 	}
@@ -666,5 +683,9 @@ PianoRoll : SCViewHolder {
 			Error(format("The newSyncTo parameter provided to PianoRoll.syncTo_ must be an integer from 1 to 16. The value % was provided.", newSyncTo)).throw;
 		});
 		prSyncTo = newSyncTo;
+	}
+
+	undo {
+		prUndoHistory.undo;
 	}
 }

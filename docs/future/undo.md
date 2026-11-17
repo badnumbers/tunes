@@ -1,0 +1,29 @@
+# Undo
+
+Each piano roll and each drum programmer keeps its own undo history. One command execution is one step. The editor owns the history, not the command prompt, because the Delete key and other shortcuts call commands directly. Both the prompt and those shortcuts go through one editor method that runs the command and, when there is something to undo, records the step.
+
+The history entry holds the same note or drum-step objects the command received. They are the anchor. It also holds an `IdentityDictionary` from each of those objects to the values the command is about to overwrite. The command reads those values before it writes. Only objects it actually changes are entered. A `nil` event key is stored as `nil`, so undo can tell "this key was absent" from "this key was zero". If the dictionary is empty, the editor does not push a step.
+
+Undo restores that dictionary. It does not run the forward command again, and it does not recompute anything from the original arguments. Those arguments are not enough: a MIDI-note target does not remember the previous note number, legato's next onset depends on the other notes at that moment, and a snap does not remember where an off-grid note used to be.
+
+## Soft delete
+
+Deleting a piano-roll note is a membership change. The history entry's note list is the set that left the roll. The note object, its `PlayableNote`, its event, and its callbacks stay intact. The note is taken out of the roll's list. Its view is removed and cleared, because the Qt view is the expensive part and undo creates a new one through the note's existing view function. Setting amplitude to zero is this same soft delete.
+
+A drum step stays in the grid. Clearing a hit only drops the `PlayableNote` inside that step. The history key is the step, and the stored value is the hit that was cleared.
+
+## Memory
+
+SuperCollider has no deep size-of. The note data in a history entry is small. The views must not be retained. The stack is capped at a fixed number of entries, on the order of 50 to 100, which bounds the case that does grow: repeatedly deleting a large take, where each entry keeps those notes alive until it falls off the end.
+
+Dropping an entry is enough for collection. The collector traces from roots and collects cycles. A note that is still on the roll stays. A soft-deleted note referenced only by that entry is collected, along with its playable note, event, and callbacks. Collection is incremental, so this happens on a later pass rather than inside the call that dropped the entry.
+
+## Redo branch
+
+Undo walks back through the stack. Those steps stay available for redo. If the user goes back three steps and then makes a new edit, those three steps are discarded. A later edit cannot be branched on top of an undone prefix. That discarded branch drops its dictionaries in the same way as an entry that falls off the cap.
+
+## Turning it on
+
+Ctrl+Z undoes. Ctrl+Shift+Z and Ctrl+Y redo. Each piano roll and the drum programmer already own an undo history, and the command prompt plus the part and delete keys run through the editor so a step can be recorded. The keys do nothing until a command's `beforeImage` returns a non-empty dictionary. Backward behaviour is added one command at a time. The prompt runs the command object it was given, so `set` records a step only when `SetCommand` itself captures a before-image, not merely when the command it dispatches learns how.
+
+Recording new notes, dragging notes, and moving loop markers do not go through commands yet. They stay outside this history until they do. Direct edits on a drum square are the same.

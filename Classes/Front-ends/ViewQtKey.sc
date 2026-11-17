@@ -7,4 +7,6 @@ ViewQtKey {
 	classvar <>m = 77;
 	classvar <>return = 16777220;
 	classvar <>right = 16777236;
+	classvar <>y = 89;
+	classvar <>z = 90;
 }

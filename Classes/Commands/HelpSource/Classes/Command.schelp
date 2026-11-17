@@ -1,7 +1,7 @@
 TITLE:: Command
 SUMMARY:: Base representation of a command with named parameters and an execution action.
 CATEGORIES:: Control
-RELATED:: Classes/AmpCommand, Classes/CommandPrompt, Classes/DeleteCommand, Classes/LeftCommand, Classes/LegatoCommand, Classes/MidinoteCommand, Classes/Parameter, Classes/PartCommand, Classes/RightCommand, Classes/SetCommand, Classes/SnapCommand, Classes/TransposeCommand, Classes/WriteCommand
+RELATED:: Classes/AmpCommand, Classes/CommandPrompt, Classes/DeleteCommand, Classes/LeftCommand, Classes/LegatoCommand, Classes/MidinoteCommand, Classes/Parameter, Classes/PartCommand, Classes/RightCommand, Classes/SetCommand, Classes/SnapCommand, Classes/TransposeCommand, Classes/UndoHistory, Classes/WriteCommand
 
 DESCRIPTION::
 TELETYPE::Command:: represents an executable command. It defines a name, a list of accepted LINK::Classes/Parameter:: instances, and an optional execution action LINK::Classes/Function::. Ad-hoc instances pass an action to LINK::#*new::. Subclasses such as LINK::Classes/AmpCommand::, LINK::Classes/DeleteCommand::, LINK::Classes/LeftCommand::, LINK::Classes/LegatoCommand::, LINK::Classes/MidinoteCommand::, LINK::Classes/PartCommand::, LINK::Classes/RightCommand::, LINK::Classes/SetCommand::, LINK::Classes/SnapCommand::, LINK::Classes/TransposeCommand::, and LINK::Classes/WriteCommand:: override LINK::#-execute:: instead of passing an action.
@@ -30,6 +30,24 @@ Returns the execution function for this command, if specified.
 
 RETURNS::
 A LINK::Classes/Function:: or CODE::nil::.
+
+METHOD:: afterImage
+Returns the values written by the last LINK::#-execute::, for redo. The default is CODE::nil::. An editor calls this only after LINK::#-beforeImage:: returned a non-empty dictionary.
+
+ARGUMENT:: args
+The same arguments dictionary passed to LINK::#-execute::.
+
+RETURNS::
+An LINK::Classes/IdentityDictionary::, or CODE::nil::.
+
+METHOD:: beforeImage
+Reads the values LINK::#-execute:: is about to overwrite. The default is CODE::nil::, and the editor then records no undo step. A command that can reverse itself returns an LINK::Classes/IdentityDictionary:: from each changed note or drum step to those previous values, including CODE::nil:: when a key was absent.
+
+ARGUMENT:: args
+The same arguments dictionary about to be passed to LINK::#-execute::.
+
+RETURNS::
+An LINK::Classes/IdentityDictionary::, or CODE::nil::.
 
 METHOD:: execute
 Executes the command with the provided arguments dictionary.
@@ -93,5 +111,11 @@ A LINK::Classes/Dictionary:: or LINK::Classes/Event:: of arguments committed so 
 
 RETURNS::
 A LINK::Classes/Parameter::.
+
+METHOD:: restore
+Writes an image captured by LINK::#-beforeImage:: or LINK::#-afterImage:: back onto the notes. The default does nothing.
+
+ARGUMENT:: image
+An LINK::Classes/IdentityDictionary::, or CODE::nil::.
 
 PRIVATE:: init

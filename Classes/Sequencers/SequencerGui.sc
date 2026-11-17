@@ -106,7 +106,7 @@ SequencerGui {
 					).margins_(25).spacing_(25)
 				),
 				prSynthDesk = SynthDesk(),
-				drumProgrammer = DrumProgrammer(prSequencer, prDocument)
+				drumProgrammer = DrumProgrammer(prSequencer, prDocument, prKeyRouter)
 		)).margins_(20).spacing_(20);
 
 		// Draw buttons in main header
@@ -115,6 +115,7 @@ SequencerGui {
 		});
 		drumsButton.mouseUpAction_({
 			stackLayout.index_(4);
+			prKeyRouter.activeContext_(\drums);
 		});
 		{
 			var initialTempo = prSequencer.tempo.clip(1, 4);

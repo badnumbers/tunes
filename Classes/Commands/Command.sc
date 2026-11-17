@@ -7,6 +7,16 @@ Command {
 		^prAction;
 	}
 
+	afterImage {
+		|args|
+		^nil;
+	}
+
+	beforeImage {
+		|args|
+		^nil;
+	}
+
 	execute {
 		|argsDict|
 		if (prAction.notNil, {
@@ -72,5 +82,9 @@ Command {
 	resolveParameter {
 		|param, argsDict|
 		^param;
+	}
+
+	restore {
+		|image|
 	}
 }

@@ -25,7 +25,7 @@ SequencerKeyRouterUnitTests.run;
 CLASSMETHODS::
 
 METHOD:: defaultBindings
-Returns the default action-to-chord binding table used by new instances. Record-context part assignment is CODE::\assignPart1:: through CODE::\assignPart9:: on characters CODE::$1:: through CODE::$9::. CODE::\delete:: is the Delete key.
+Returns the default action-to-chord binding table used by new instances. Record-context part assignment is CODE::\assignPart1:: through CODE::\assignPart9:: on characters CODE::$1:: through CODE::$9::. CODE::\delete:: is the Delete key. CODE::\undo:: is Ctrl+Z. CODE::\redo:: is Ctrl+Shift+Z. CODE::\redoY:: is Ctrl+Y. Undo and redo are also active in the CODE::\drums:: context. A binding is considered only when the active context is one of its contexts.
 
 METHOD:: new
 Creates a TELETYPE::SequencerKeyRouter:: with CODE::#*defaultBindings::.

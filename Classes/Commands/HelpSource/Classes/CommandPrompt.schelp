@@ -50,6 +50,9 @@ An optional LINK::Classes/View:: or LINK::Classes/Window:: where the suggestions
 ARGUMENT:: onExecute
 An optional LINK::Classes/Function:: called after a command executes successfully, before the prompt is cleared. Pass CODE::nil:: to do nothing.
 
+ARGUMENT:: commandRunner
+An optional LINK::Classes/Function:: called with the command and its arguments dictionary instead of LINK::Classes/Command#-execute::. The editor uses this to record an undo step. Pass CODE::nil:: to execute the command directly. CODE::onExecute:: still runs afterwards.
+
 RETURNS::
 A new TELETYPE::CommandPrompt:: instance.
 

@@ -33,3 +33,9 @@ Qt Return / main Enter key.
 
 METHOD:: right
 Right arrow.
+
+METHOD:: y
+Letter Y (ASCII CODE::89::). Ctrl+Y uses this value in the Qt key argument.
+
+METHOD:: z
+Letter Z (ASCII CODE::90::). Ctrl+Z uses this value in the Qt key argument.

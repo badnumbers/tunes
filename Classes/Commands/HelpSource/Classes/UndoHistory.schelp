@@ -1,0 +1,42 @@
+TITLE:: UndoHistory
+SUMMARY:: Per-editor stack of command before-images and after-images.
+CATEGORIES:: Commands
+RELATED:: Classes/Command, Classes/DrumProgrammer, Classes/PianoRoll
+
+DESCRIPTION::
+TELETYPE::UndoHistory:: is the undo stack for one LINK::Classes/PianoRoll:: or one LINK::Classes/DrumProgrammer::. LINK::#-push:: records one command execution. LINK::#-undo:: restores that command's before-image and keeps the step for LINK::#-redo::. A new LINK::#-push:: discards any steps that were undone and not yet redone.
+
+LINK::#-push:: ignores a CODE::nil:: or empty before-image, so a command that cannot yet reverse itself adds nothing. The stack keeps at most CODE::maxEntries:: steps. The oldest step is dropped when a new one would exceed that limit. Dropping a step drops its dictionaries; the garbage collector can then collect a soft-deleted note that no other entry and no editor still references.
+
+CLASSMETHODS::
+
+METHOD:: new
+Creates an empty history.
+
+ARGUMENT:: maxEntries
+Maximum number of undo steps. An LINK::Classes/Integer:: of at least 1. The default is 100.
+
+RETURNS::
+A new TELETYPE::UndoHistory::.
+
+INSTANCEMETHODS::
+
+METHOD:: push
+Records a step and discards the redo branch. Does nothing when CODE::before:: is CODE::nil:: or empty.
+
+ARGUMENT:: command
+The LINK::Classes/Command:: that performed the edit. LINK::#-undo:: and LINK::#-redo:: call LINK::Classes/Command#-restore:: on it.
+
+ARGUMENT:: before
+An LINK::Classes/IdentityDictionary:: from each changed note or drum step to the values CODE::command:: overwrote. CODE::nil:: values are kept.
+
+ARGUMENT:: after
+An LINK::Classes/IdentityDictionary:: of the values after the edit, passed to LINK::Classes/Command#-restore:: on redo. CODE::nil:: is allowed until a command supplies one.
+
+METHOD:: redo
+Restores the most recently undone step's after-image and makes that step undoable again. Does nothing when no step has been undone.
+
+METHOD:: undo
+Restores the most recent step's before-image and makes that step redoable. Does nothing when the stack is empty.
+
+PRIVATE:: init

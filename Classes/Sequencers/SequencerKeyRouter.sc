@@ -69,6 +69,26 @@ SequencerKeyRouter {
 				contexts: [\record],
 				qtKeys: [ViewQtKey.escape],
 				consume: true
+			),
+			\redo: (
+				contexts: [\record, \drums],
+				qtKeys: [ViewQtKey.z],
+				modifiers: [\ctrl, \shift],
+				consume: true
+			),
+			\redoY: (
+				contexts: [\record, \drums],
+				qtKeys: [ViewQtKey.y],
+				modifiers: [\ctrl],
+				withoutModifiers: [\shift],
+				consume: true
+			),
+			\undo: (
+				contexts: [\record, \drums],
+				qtKeys: [ViewQtKey.z],
+				modifiers: [\ctrl],
+				withoutModifiers: [\shift],
+				consume: true
 			)
 		);
 	}
@@ -76,10 +96,6 @@ SequencerKeyRouter {
 	handleKeyDown {
 		|char, modifiers, unicode, keycode, key|
 		var action;
-
-		if (prActiveContext != \record, {
-			^(this.prUnmatchedKeyDown(char, modifiers, keycode));
-		});
 
 		action = this.prMatchingAction(char, modifiers, keycode, key);
 		if (action.notNil, {
@@ -139,6 +155,7 @@ SequencerKeyRouter {
 		contexts = binding[\contexts];
 		if (contexts.notNil && { contexts.includes(prActiveContext).not }, { ^false });
 		if (this.prModifiersMatch(modifiers, binding[\modifiers]).not, { ^false });
+		if (this.prForbiddenModifiersAbsent(modifiers, binding[\withoutModifiers]).not, { ^false });
 
 		if (binding[\char].notNil && (char == binding[\char]), { ^true });
 		if (binding[\charAscii].notNil && char.notNil && { binding[\charAscii].includes(char.ascii) }, { ^true });
@@ -146,6 +163,21 @@ SequencerKeyRouter {
 		if (binding[\keycodes].notNil && { binding[\keycodes].includes(keycode) }, { ^true });
 
 		^false;
+	}
+
+	prForbiddenModifiersAbsent {
+		|modifiers, names|
+		if (names.isNil or: { names.size == 0 }, { ^true });
+		if (modifiers.isNil, { ^true });
+		^names.every({
+			|name|
+			switch (name,
+				\ctrl, { modifiers.isCtrl.not },
+				\shift, { modifiers.isShift.not },
+				\alt, { modifiers.isAlt.not },
+				{ true }
+			);
+		});
 	}
 
 	prInvokeHandler {

@@ -3,6 +3,7 @@ CommandPrompt : SCViewHolder {
 	var prActiveParameter;
 	var prAmbientParameters;
 	var prCommands;
+	var prCommandRunner;
 	var prCommittedArgs;
 	var prCommittedTokens;
 	var prHighlightSuggestionColour;
@@ -47,9 +48,10 @@ CommandPrompt : SCViewHolder {
 	}
 
 	init {
-		|parent, bounds, commands, palette, ambientParameters, overlayParent, onExecute|
+		|parent, bounds, commands, palette, ambientParameters, overlayParent, onExecute, commandRunner|
 		var effectiveOverlayParent;
 		prCommands = commands;
+		prCommandRunner = commandRunner;
 		prPalette = palette;
 		prAmbientParameters = ambientParameters ?? { IdentityDictionary.new };
 		prOnExecute = onExecute;
@@ -92,7 +94,7 @@ CommandPrompt : SCViewHolder {
 	}
 
 	*new {
-		|parent, bounds, commands, palette, ambientParameters, overlayParent, onExecute|
+		|parent, bounds, commands, palette, ambientParameters, overlayParent, onExecute, commandRunner|
 		Validator.validateMethodParameterType(commands, Array, "commands", "CommandPrompt", "new");
 		commands.do({
 			|command|
@@ -102,7 +104,8 @@ CommandPrompt : SCViewHolder {
 		Validator.validateMethodParameterType(ambientParameters, Dictionary, "ambientParameters", "CommandPrompt", "new", allowNil: true);
 		Validator.validateMethodParameterType(overlayParent, View, "overlayParent", "CommandPrompt", "new", allowNil: true);
 		Validator.validateMethodParameterType(onExecute, Function, "onExecute", "CommandPrompt", "new", allowNil: true);
-		^super.new.init(parent, bounds, commands, palette ?? { GuiPalette.default }, ambientParameters ?? { IdentityDictionary.new }, overlayParent, onExecute);
+		Validator.validateMethodParameterType(commandRunner, Function, "commandRunner", "CommandPrompt", "new", allowNil: true);
+		^super.new.init(parent, bounds, commands, palette ?? { GuiPalette.default }, ambientParameters ?? { IdentityDictionary.new }, overlayParent, onExecute, commandRunner);
 	}
 
 	palette {
@@ -258,7 +261,11 @@ CommandPrompt : SCViewHolder {
 
 	prExecuteCommand {
 		if (prActiveCommand.notNil && { prActiveCommand.isValid(prCommittedArgs) }, {
-			prActiveCommand.execute(prCommittedArgs);
+			if (prCommandRunner.notNil, {
+				prCommandRunner.value(prActiveCommand, prCommittedArgs);
+			}, {
+				prActiveCommand.execute(prCommittedArgs);
+			});
 			if (prOnExecute.notNil, {
 				prOnExecute.value;
 			});

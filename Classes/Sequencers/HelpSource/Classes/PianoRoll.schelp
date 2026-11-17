@@ -12,6 +12,8 @@ Focus the note area after clicking it:
 TABLE::
 ## Keys || Behaviour
 ## 1–9 || Assign part on selected notes
+## Ctrl+Z || Undo the last recorded command
+## Ctrl+Shift+Z, Ctrl+Y || Redo
 ## Delete || Delete the selected notes
 ## Escape || Focus the command prompt
 ::
@@ -85,6 +87,9 @@ The MIDI note number.
 ARGUMENT:: chan
 The MIDI channel. A note-on stores it on the embedded LINK::Classes/RealTimePlayer::.
 
+METHOD:: redo
+Restores the most recently undone command on this roll. Does nothing when there is nothing to redo, including when no command has recorded an undo step yet.
+
 METHOD:: selectedNotes
 Returns an LINK::Classes/Array:: of currently selected LINK::Classes/PianoRollNote:: instances.
 
@@ -106,4 +111,7 @@ The Sync-to grid in beats. An integer from 1 to 16. The default is 4. LINK::#-pl
 ARGUMENT:: newSyncTo
 The new grid size when setting. An integer from 1 to 16.
 
-PRIVATE:: init, prApplyNoteEdits, prColourForPart, prDeleteNote, prFillForNote, prMakeTransportStrip, prPaintNote, prRefreshSidebar, prSelectedNotes, prUpdateLoopControls
+METHOD:: undo
+Restores the previous recorded command on this roll. Does nothing when the undo stack is empty. A command records a step only when its LINK::Classes/Command#-beforeImage:: is a non-empty dictionary. Ctrl+Z calls this when the note area is focused.
+
+PRIVATE:: init, prApplyNoteEdits, prColourForPart, prDeleteNote, prExecuteCommand, prFillForNote, prMakeTransportStrip, prPaintNote, prRefreshSidebar, prSelectedNotes, prUpdateLoopControls

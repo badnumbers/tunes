@@ -95,6 +95,12 @@ PianoRollContainer : SCViewHolder {
 		^PianoRoll(palette: prPalette, sequencer: prSequencer, devMode: prDevMode, keyRouter: prKeyRouter, sequencerDocument: prSequencerDocument);
 	}
 
+	prRedo {
+		if (prActiveRoll.notNil, {
+			prActiveRoll.redo;
+		});
+	}
+
 	prRegisterKeyHandlers {
 		9.do({ |index|
 			var partNumber;
@@ -105,6 +111,9 @@ PianoRollContainer : SCViewHolder {
 		});
 		prKeyRouter.on(\record, \delete, { this.prDeleteSelected });
 		prKeyRouter.on(\record, \focusCommandPrompt, { this.prFocusCommandPrompt });
+		prKeyRouter.on(\record, \redo, { this.prRedo });
+		prKeyRouter.on(\record, \redoY, { this.prRedo });
+		prKeyRouter.on(\record, \undo, { this.prUndo });
 	}
 
 	prSelectRoll {
@@ -115,6 +124,12 @@ PianoRollContainer : SCViewHolder {
 		prActiveRoll = prRolls[index];
 		prActiveRoll.addDependant(this);
 		prActiveRoll.focusBackground;
+	}
+
+	prUndo {
+		if (prActiveRoll.notNil, {
+			prActiveRoll.undo;
+		});
 	}
 
 	stopAll {
