@@ -1,5 +1,6 @@
 ViewQtKey {
 	classvar <>control = 16777249;
+	classvar <>delete = 16777223;
 	classvar <>enter = 16777221;
 	classvar <>escape = 16777216;
 	classvar <>left = 16777234;

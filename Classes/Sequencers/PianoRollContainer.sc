@@ -59,6 +59,12 @@ PianoRollContainer : SCViewHolder {
 		});
 	}
 
+	prDeleteSelected {
+		if (prActiveRoll.notNil, {
+			prActiveRoll.deleteSelected;
+		});
+	}
+
 	prFocusCommandPrompt {
 		if (prActiveRoll.notNil, {
 			prActiveRoll.commandPrompt.focus;
@@ -97,6 +103,7 @@ PianoRollContainer : SCViewHolder {
 				this.prAssignPart(partNumber);
 			});
 		});
+		prKeyRouter.on(\record, \delete, { this.prDeleteSelected });
 		prKeyRouter.on(\record, \focusCommandPrompt, { this.prFocusCommandPrompt });
 	}
 

@@ -43,6 +43,10 @@ PianoRoll : SCViewHolder {
 		^prCommandPrompt;
 	}
 
+	deleteSelected {
+		DeleteCommand.new.execute((selectedNotes: this.selectedNotes));
+	}
+
 	focusBackground {
 		prBackgroundView.focus;
 	}

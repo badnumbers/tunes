@@ -12,6 +12,7 @@ Focus the note area after clicking it:
 TABLE::
 ## Keys || Behaviour
 ## 1–9 || Assign part on selected notes
+## Delete || Delete the selected notes
 ## Escape || Focus the command prompt
 ::
 
@@ -59,6 +60,9 @@ The embedded LINK::Classes/CommandPrompt:: instance used for command input.
 
 RETURNS::
 A LINK::Classes/CommandPrompt::.
+
+METHOD:: deleteSelected
+Deletes every selected note by executing LINK::Classes/DeleteCommand::. An empty selection does nothing.
 
 METHOD:: focusBackground
 Gives keyboard focus to the note area.

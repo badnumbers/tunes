@@ -60,6 +60,11 @@ SequencerKeyRouter {
 				char: $9,
 				consume: true
 			),
+			\delete: (
+				contexts: [\record],
+				qtKeys: [ViewQtKey.delete],
+				consume: true
+			),
 			\focusCommandPrompt: (
 				contexts: [\record],
 				qtKeys: [ViewQtKey.escape],

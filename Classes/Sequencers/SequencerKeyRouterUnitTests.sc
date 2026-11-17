@@ -1,4 +1,16 @@
 SequencerKeyRouterUnitTests : BNUnitTest {
+	test_deleteKey_invokesDeleteBinding {
+		var invoked, result, router;
+		invoked = false;
+		router = SequencerKeyRouter.new;
+		router.activeContext_(\record);
+		router.on(\record, \delete, { invoked = true });
+		result = router.handleKeyDown(nil, 0, ViewUnicode.none, ViewKeycode.none, ViewQtKey.delete);
+		this.assertEquals(invoked, true);
+		this.assertEquals(result.isHandled, true);
+		this.assertEquals(result.consume, true);
+	}
+
 	test_recordBindings_ignoredInArrangeContext {
 		var router, invoked;
 		invoked = false;

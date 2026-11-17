@@ -13,6 +13,9 @@ CLASSMETHODS::
 METHOD:: control
 The Control modifier key itself (key-up/key-down for the modifier, not “Ctrl held”).
 
+METHOD:: delete
+Qt Delete (16777223).
+
 METHOD:: enter
 Qt Enter (typically keypad).
 
