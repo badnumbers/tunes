@@ -1,6 +1,40 @@
 SetCommand : Command {
 	var prCommandsByKey;
 
+	afterImage {
+		|args, before|
+		var image;
+		if (before.isNil, { ^nil });
+		image = IdentityDictionary.new;
+		before.keysValuesDo({
+			|note, previous|
+			var key;
+			if (previous.notNil && { note.respondsTo(\event) }, {
+				key = previous[\key];
+				image.put(note, (key: key, value: note.event[key]));
+			});
+		});
+		if (image.size == 0, { ^nil });
+		^image;
+	}
+
+	beforeImage {
+		|args|
+		var image, key;
+		key = this.prArg(args, "key");
+		if (this.prCommandForKey(key).notNil, { ^nil });
+		image = IdentityDictionary.new;
+		this.prEachUnknownTarget(args, { |note, target|
+			var current;
+			current = note.event[key];
+			if (current != target, {
+				image.put(note, (key: key, value: current));
+			});
+		});
+		if (image.size == 0, { ^nil });
+		^image;
+	}
+
 	execute {
 		|args|
 		var cmd;
@@ -81,6 +115,28 @@ SetCommand : Command {
 		^(prCommandsByKey[key.asSymbol]);
 	}
 
+	prEachUnknownTarget {
+		|args, func|
+		var key, lastStart, selectedNotes, sorted, valueIndex, values;
+		key = this.prArg(args, "key");
+		values = this.prArg(args, "values");
+		selectedNotes = this.prArg(args, "selectedNotes") ? [];
+		if (key.isNil or: { values.isNil } or: { values.size == 0 }, { ^this });
+		sorted = selectedNotes.copy.sort({ |a, b| a.startTime < b.startTime });
+		valueIndex = 0;
+		lastStart = nil;
+		sorted.do({
+			|note|
+			if (note.respondsTo(\event), {
+				if (lastStart.notNil && { note.startTime != lastStart }, {
+					valueIndex = valueIndex + 1;
+				});
+				lastStart = note.startTime;
+				func.value(note, values.wrapAt(valueIndex));
+			});
+		});
+	}
+
 	prSetCommands {
 		|commands|
 		prCommandsByKey = IdentityDictionary.new;
@@ -92,25 +148,10 @@ SetCommand : Command {
 
 	prWriteUnknownKey {
 		|args|
-		var key, lastStart, selectedNotes, sorted, valueIndex, values;
+		var key;
 		key = this.prArg(args, "key");
-		values = this.prArg(args, "values");
-		selectedNotes = this.prArg(args, "selectedNotes") ? [];
-		if (key.isNil || { values.isNil } || { values.size == 0 }, {
-			^this;
-		});
-		sorted = selectedNotes.copy.sort({ |a, b| a.startTime < b.startTime });
-		valueIndex = 0;
-		lastStart = nil;
-		sorted.do({
-			|note|
-			if (note.respondsTo(\event), {
-				if (lastStart.notNil && { note.startTime != lastStart }, {
-					valueIndex = valueIndex + 1;
-				});
-				lastStart = note.startTime;
-				note.event[key] = values.wrapAt(valueIndex);
-			});
+		this.prEachUnknownTarget(args, { |note, target|
+			note.event[key] = target;
 		});
 	}
 
@@ -121,6 +162,28 @@ SetCommand : Command {
 		cmd = this.prCommandForKey(this.prArg(argsDict, "key"));
 		if (cmd.notNil, { ^(cmd.getParameter("values")) });
 		^param;
+	}
+
+	restore {
+		|image|
+		if (image.isNil, { ^this });
+		image.keysValuesDo({
+			|note, previous|
+			var key, value;
+			if (previous.notNil && { note.respondsTo(\event) }, {
+				key = previous[\key];
+				value = previous[\value];
+				if (key.notNil, {
+					if (value.isNil, {
+						if (note.event.keys.includes(key), {
+							note.event.removeAt(key);
+						});
+					}, {
+						note.event[key] = value;
+					});
+				});
+			});
+		});
 	}
 
 	undoCommand {

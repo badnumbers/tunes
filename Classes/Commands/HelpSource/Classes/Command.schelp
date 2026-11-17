@@ -122,7 +122,7 @@ ARGUMENT:: image
 An LINK::Classes/IdentityDictionary::, or CODE::nil::.
 
 METHOD:: undoCommand
-The command whose before-image and after-image should be stored for this execution. The default is this command. LINK::Classes/SetCommand:: returns the dispatched command, so CODE::set key amp::, CODE::set key part::, and CODE::set key midinote:: record that command's step.
+The command whose before-image and after-image should be stored for this execution. The default is this command. LINK::Classes/SetCommand:: returns the dispatched command, so CODE::set key amp::, CODE::set key part::, and CODE::set key midinote:: record that command's step. An unknown key records a LINK::Classes/SetCommand:: step for the event key.
 
 ARGUMENT:: args
 The arguments dictionary about to be passed to LINK::#-execute::.

@@ -10,7 +10,7 @@ While CODE::values:: is being typed, LINK::Classes/CommandPrompt:: asks LINK::#-
 
 CODE::values:: is offered only after CODE::key:: has been committed. The prompt inserts each parameter name when it is the only one still on offer, so the chips read CODE::key:: and CODE::values::.
 
-Execution of a known key calls that command with the same arguments dictionary. Undo records that dispatched command, not this one, so CODE::set key amp::, CODE::set key part::, and CODE::set key midinote:: use those commands' before-images. A key whose command does not yet capture a before-image records nothing. An unknown key is written onto CODE::note.event[key]:: for notes that respond to CODE::event::, using the same start-time grouping as LINK::Classes/AmpCommand::. The sidebar shows that key. LINK::Classes/WriteCommand:: does not emit it. A LINK::Classes/DrumStep:: has no event, so an unknown key leaves it unchanged.
+Execution of a known key calls that command with the same arguments dictionary. Undo records that dispatched command, not this one, so CODE::set key amp::, CODE::set key part::, and CODE::set key midinote:: use those commands' before-images. A known key whose command has no before-image, such as CODE::legato::, records nothing. An unknown key is written onto CODE::note.event[key]:: for notes that respond to CODE::event::, using the same start-time grouping as LINK::Classes/AmpCommand::. Undo of that write stores the key name and the previous value, including CODE::nil:: when the key was absent, and writes that value back. The sidebar shows that key. LINK::Classes/WriteCommand:: does not emit it. A LINK::Classes/DrumStep:: has no event, so an unknown key leaves it unchanged.
 
 CLASSMETHODS::
 
@@ -24,6 +24,27 @@ RETURNS::
 A new TELETYPE::SetCommand:: instance.
 
 INSTANCEMETHODS::
+
+METHOD:: afterImage
+The event value now stored for each note in the before-image, after LINK::#-execute:: wrote an unknown key.
+
+ARGUMENT:: args
+The same arguments dictionary passed to LINK::#-execute::. This method reads the before-image instead.
+
+ARGUMENT:: before
+The LINK::Classes/IdentityDictionary:: returned by LINK::#-beforeImage::.
+
+RETURNS::
+An LINK::Classes/IdentityDictionary:: from note to an event with CODE::\key:: and CODE::\value::, or CODE::nil:: when CODE::before:: is empty.
+
+METHOD:: beforeImage
+The previous event value of each selected note whose unknown key would change. A known key returns CODE::nil::, because that command owns the undo step. A note already storing the target value is left out.
+
+ARGUMENT:: args
+The same arguments dictionary about to be passed to LINK::#-execute::.
+
+RETURNS::
+An LINK::Classes/IdentityDictionary:: from note to an event with CODE::\key:: and CODE::\value::, or CODE::nil:: when nothing would change. CODE::\value:: is CODE::nil:: when the key was absent.
 
 METHOD:: execute
 Dispatches a known key to its command. Writes any other key onto the note event.
@@ -64,8 +85,14 @@ A LINK::Classes/Dictionary:: or LINK::Classes/Event:: of arguments committed so 
 RETURNS::
 A LINK::Classes/Parameter::.
 
+METHOD:: restore
+Writes CODE::\key:: and CODE::\value:: from an unknown-key image back onto each note. A CODE::nil:: value removes the key.
+
+ARGUMENT:: image
+An LINK::Classes/IdentityDictionary:: from note to an event with CODE::\key:: and CODE::\value::, or CODE::nil::.
+
 METHOD:: undoCommand
-The command whose undo images should be stored. For a known key this is that command, so CODE::amp::, CODE::part::, and CODE::midinote:: store that command's step. An unknown key returns this command, which captures no before-image.
+The command whose undo images should be stored. For a known key this is that command, so CODE::amp::, CODE::part::, and CODE::midinote:: store that command's step. An unknown key returns this command, which records the event value.
 
 ARGUMENT:: args
 The arguments dictionary about to be passed to LINK::#-execute::, including CODE::\key::.
@@ -73,4 +100,4 @@ The arguments dictionary about to be passed to LINK::#-execute::, including CODE
 RETURNS::
 A LINK::Classes/Command::.
 
-PRIVATE:: prArg, prCommandForKey, prSetCommands, prWriteUnknownKey
+PRIVATE:: prArg, prCommandForKey, prEachUnknownTarget, prSetCommands, prWriteUnknownKey

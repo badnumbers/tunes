@@ -6,6 +6,16 @@ The history entry holds the same note or drum-step objects the command received.
 
 Undo restores that dictionary. It does not run the forward command again, and it does not recompute anything from the original arguments. Those arguments are not enough: a MIDI-note target does not remember the previous note number, legato's next onset depends on the other notes at that moment, and a snap does not remember where an off-grid note used to be.
 
+## The image is enough
+
+`restore` is called later with that dictionary and nothing else. The command object stored beside it only interprets the image. It must not remember the arguments. `SetCommand` is reused for every key, so a known key stores the dispatched command, the one whose `restore` understands the snapshot. An unknown key stores `SetCommand` itself. Each entry in that snapshot names the event key and the previous value. A missing key is stored as `nil`, so undo can remove it again.
+
+A value that the forward write mutates in place has to be copied into the snapshot. An amplitude change keeps the same drum hit and writes a new velocity onto it, so the snapshot keeps the old velocity as well as the hit.
+
+The editor passes the before-image into `afterImage`. That is how the after snapshot covers the same objects once their old values are gone. A command that can find those objects from the arguments alone can ignore the extra dictionary.
+
+When delete records a step, it uses the same membership restore as amplitude zero.
+
 ## Soft delete
 
 Deleting a piano-roll note is a membership change. The history entry's note list is the set that left the roll. The note object, its `PlayableNote`, its event, and its callbacks stay intact. The note is taken out of the roll's list. Its view is removed and cleared, because the Qt view is the expensive part and undo creates a new one through the note's existing view function. Setting amplitude to zero is this same soft delete.
@@ -24,6 +34,6 @@ Undo walks back through the stack. Those steps stay available for redo. If the u
 
 ## Turning it on
 
-Ctrl+Z undoes. Ctrl+Shift+Z and Ctrl+Y redo. Each piano roll and the drum programmer already own an undo history, and the command prompt plus the part and delete keys run through the editor so a step can be recorded. The keys do nothing until a command's `beforeImage` returns a non-empty dictionary. Backward behaviour is added one command at a time. The prompt runs the command object it was given. `set key amp`, `set key part`, and `set key midinote` record that dispatched command's step, because `SetCommand` returns the command it dispatches as the one that owns the images. A key whose command has no before-image still records nothing. `amp` is recorded in both the piano roll and the drum programmer. Amplitude `0` restores a removed piano-roll note, including a new view, and restores a cleared drum hit on its step. The Delete key still records nothing.
+Ctrl+Z undoes. Ctrl+Shift+Z and Ctrl+Y redo. Each piano roll and the drum programmer already own an undo history, and the command prompt plus the part and delete keys run through the editor so a step can be recorded. The keys do nothing until a command's `beforeImage` returns a non-empty dictionary. Backward behaviour is added one command at a time. The prompt runs the command object it was given. `set key amp`, `set key part`, and `set key midinote` record that dispatched command's step. `set key foo` records a `SetCommand` step for the event key. A known key whose command has no before-image, such as legato, still records nothing. `amp` is recorded in both the piano roll and the drum programmer. Amplitude `0` restores a removed piano-roll note, including a new view, and restores a cleared drum hit on its step. The Delete key still records nothing.
 
 Recording new notes, dragging notes, and moving loop markers do not go through commands yet. They stay outside this history until they do. Direct edits on a drum square are the same.

@@ -20,6 +20,29 @@ SetCommandUnitTests : BNUnitTest {
 		^SetCommand([AmpCommand.new, LegatoCommand.new, MidinoteCommand.new]);
 	}
 
+	test_beforeImage_unknownKey_recordsThePreviousEventValue {
+		var cmd, image, notes, plain;
+		cmd = this.prSetCommand;
+		notes = [
+			this.prMockNote(0),
+			this.prMockNote(1),
+			this.prMockNote(1),
+			this.prMockNote(2)
+		];
+		notes[1].event[\foo] = 0.5;
+		notes[2].event[\foo] = 0.2;
+		plain = PlayableNote(3, 60, 100);
+		image = cmd.beforeImage((key: \foo, selectedNotes: [notes[0], notes[1], notes[2], notes[3], plain], values: [0.9, 0.5]));
+		this.assertEquals(image[notes[0]][\key], \foo);
+		this.assertEquals(image[notes[0]][\value], nil);
+		this.assertEquals(image[notes[1]], nil);
+		this.assertEquals(image[notes[2]][\value], 0.2);
+		this.assertEquals(image[notes[3]][\value], nil);
+		this.assertEquals(image[plain], nil);
+		this.assertEquals(cmd.beforeImage((key: \foo, selectedNotes: [notes[1]], values: [0.5])), nil);
+		this.assertEquals(cmd.beforeImage((key: \amp, selectedNotes: [notes[0]], values: [0.5])), nil);
+	}
+
 	test_new_rejectsEmptyCommands {
 		this.assertException({
 			SetCommand([]);
@@ -141,6 +164,37 @@ SetCommandUnitTests : BNUnitTest {
 		this.assertEquals(note.velocity, 100);
 	}
 
+	test_restore_unknownKey_putsBackTheEventValue {
+		var after, args, before, cmd, notes, plain;
+		cmd = this.prSetCommand;
+		notes = [
+			this.prMockNote(0),
+			this.prMockNote(1),
+			this.prMockNote(1)
+		];
+		notes[2].event[\bar] = 0.2;
+		plain = PlayableNote(2, 60, 100);
+		args = (key: \bar, selectedNotes: [notes[0], notes[1], notes[2], plain], values: [0.4, 0.8]);
+		before = cmd.beforeImage(args);
+		this.assertEquals(before[notes[0]][\value], nil);
+		this.assertEquals(before[notes[1]][\value], nil);
+		this.assertEquals(before[notes[2]][\value], 0.2);
+		this.assertEquals(before[plain], nil);
+		cmd.execute(args);
+		this.assertEquals(notes[0].event[\bar], 0.4);
+		this.assertEquals(notes[1].event[\bar], 0.8);
+		this.assertEquals(notes[2].event[\bar], 0.8);
+		after = cmd.afterImage(args, before);
+		cmd.restore(before);
+		this.assertEquals(notes[0].event.keys.includes(\bar), false);
+		this.assertEquals(notes[1].event.keys.includes(\bar), false);
+		this.assertEquals(notes[2].event[\bar], 0.2);
+		cmd.restore(after);
+		this.assertEquals(notes[0].event[\bar], 0.4);
+		this.assertEquals(notes[1].event[\bar], 0.8);
+		this.assertEquals(notes[2].event[\bar], 0.8);
+	}
+
 	test_undoCommand_ampRestoresThroughTheDispatchedCommand {
 		var after, amp, args, before, note, recorded, set;
 		note = this.prMockNote(0, stopTime: 1.0);
@@ -201,6 +255,5 @@ SetCommandUnitTests : BNUnitTest {
 		recorded.restore(after);
 		this.assertEquals(note.partNumber, 4);
 		this.assertEquals(set.undoCommand((key: \foo, selectedNotes: [note], values: [0.5])) === set, true);
-		this.assertEquals(set.beforeImage((key: \foo, selectedNotes: [note], values: [0.5])), nil);
 	}
 }
