@@ -16,6 +16,18 @@ TransposeCommandUnitTests : BNUnitTest {
 		^note;
 	}
 
+	test_beforeImage_recordsNoteNumbersThatChange {
+		var cmd, image, note, plain;
+		cmd = TransposeCommand.new;
+		note = this.prMockNote(60);
+		plain = (noteNumber: 60);
+		image = cmd.beforeImage((selectedNotes: [note, plain], semitones: 2));
+		this.assertEquals(image[note][\noteNumber], 60);
+		this.assertEquals(image[plain], nil);
+		this.assertEquals(cmd.beforeImage((selectedNotes: [note], semitones: 0)), nil);
+		this.assertEquals(cmd.beforeImage((selectedNotes: [note], semitones: 1.5)), nil);
+	}
+
 	test_execute_addsPositiveSemitones {
 		var cmd, note;
 		cmd = TransposeCommand.new;
@@ -49,5 +61,25 @@ TransposeCommandUnitTests : BNUnitTest {
 		this.assertEquals(param.isValid("-5"), true);
 		this.assertEquals(param.isValid("0"), true);
 		this.assertEquals(param.isValid("1.5"), false);
+	}
+
+	test_restore_putsBackTheNoteNumbers {
+		var after, args, before, cmd, notes;
+		cmd = TransposeCommand.new;
+		notes = [this.prMockNote(60), this.prMockNote(64)];
+		args = (selectedNotes: notes, semitones: -3);
+		before = cmd.beforeImage(args);
+		this.assertEquals(before[notes[0]][\noteNumber], 60);
+		this.assertEquals(before[notes[1]][\noteNumber], 64);
+		cmd.execute(args);
+		this.assertEquals(notes[0].noteNumber, 57);
+		this.assertEquals(notes[1].noteNumber, 61);
+		after = cmd.afterImage(args);
+		cmd.restore(before);
+		this.assertEquals(notes[0].noteNumber, 60);
+		this.assertEquals(notes[1].noteNumber, 64);
+		cmd.restore(after);
+		this.assertEquals(notes[0].noteNumber, 57);
+		this.assertEquals(notes[1].noteNumber, 61);
 	}
 }

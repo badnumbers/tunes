@@ -8,6 +8,8 @@ TELETYPE::TransposeCommand:: is a LINK::Classes/Command:: named CODE::transpose:
 
 CODE::semitones:: is an LINK::Classes/Integer::. Positive values raise the note, negative values lower it, and zero leaves it unchanged. LINK::Classes/PianoRollNote#-transpose:: updates the wrapped LINK::Classes/PlayableNote:: and, when the note view exists, moves that view by the same number of rows.
 
+LINK::#-beforeImage:: records the previous note number of each note that would move. LINK::#-restore:: moves those notes back with CODE::transpose::, and moves them forward again from LINK::#-afterImage:: on redo. A transposition of zero changes nothing, so it is not an undo step. A note that does not respond to CODE::noteNumber:: and CODE::transpose:: is left out of the image.
+
 CLASSMETHODS::
 
 METHOD:: new
@@ -18,11 +20,35 @@ A new TELETYPE::TransposeCommand:: instance.
 
 INSTANCEMETHODS::
 
+METHOD:: afterImage
+The note number now stored on each selected note that responds to CODE::noteNumber:: and CODE::transpose::, after LINK::#-execute::.
+
+ARGUMENT:: args
+The same arguments dictionary passed to LINK::#-execute::.
+
+RETURNS::
+An LINK::Classes/IdentityDictionary:: from note to an event with CODE::\noteNumber::, or CODE::nil:: when no such note was selected.
+
+METHOD:: beforeImage
+The note number stored on each selected note before a non-zero integer transposition.
+
+ARGUMENT:: args
+The same arguments dictionary about to be passed to LINK::#-execute::.
+
+RETURNS::
+An LINK::Classes/IdentityDictionary:: from note to an event with CODE::\noteNumber::, or CODE::nil:: when CODE::\semitones:: is not a non-zero LINK::Classes/Integer:: or no selected note can be moved.
+
 METHOD:: execute
 Adds CODE::\semitones:: to every note in CODE::\selectedNotes:: that responds to CODE::transpose::.
 
 ARGUMENT:: args
 A LINK::Classes/Dictionary:: or LINK::Classes/Event:: with CODE::\selectedNotes:: (an LINK::Classes/Array:: of notes) and CODE::\semitones:: (an LINK::Classes/Integer::).
+
+METHOD:: restore
+Moves each note to the CODE::\noteNumber:: stored in an image from LINK::#-beforeImage:: or LINK::#-afterImage::, using CODE::transpose:: so the note view slides with it.
+
+ARGUMENT:: image
+An LINK::Classes/IdentityDictionary:: from note to an event with CODE::\noteNumber::, or CODE::nil::.
 
 EXAMPLES::
 
@@ -43,3 +69,5 @@ TransposeCommand.new.execute((
 note.noteNumber; // 58
 )
 ::
+
+PRIVATE:: prEachTarget
