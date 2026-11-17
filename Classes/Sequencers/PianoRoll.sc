@@ -556,7 +556,6 @@ PianoRoll : SCViewHolder {
 			);
 			prRecordedNotes = prRecordedNotes.add(pianoRollNote);
 			prRealTimePlayer.midiChannel_(chan);
-			this.prUpdateLoopControls;
 		}, {
 			activeNotesForThisNoteNumber = prRecordedNotes.select({ |note| (note.noteNumber == noteNumber) && (note.stopTime.isNil) });
 			if (activeNotesForThisNoteNumber.size > 1, {
