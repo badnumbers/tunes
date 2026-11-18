@@ -2,6 +2,7 @@ GridSlider : SCViewHolder {
 	var prAction;
 	var prBorderView;
 	var prDragging = false;
+	var prReleaseAction;
 	var prRightClickAction;
 	var prTopView;
 	var prValue = 0;
@@ -28,9 +29,10 @@ GridSlider : SCViewHolder {
 	}
 
 	init {
-		|bottomColour, topColour, action, rightClickAction|
+		|bottomColour, topColour, action, rightClickAction, releaseAction|
 		prAction = action;
 		prRightClickAction = rightClickAction;
+		prReleaseAction = releaseAction;
 		prBorderView = BorderView();
 		prBorderView.borderWidth_(0);
 		prBorderView.background_(bottomColour);
@@ -47,12 +49,13 @@ GridSlider : SCViewHolder {
 	}
 
 	*new {
-		|bottomColour, topColour, action, rightClickAction|
+		|bottomColour, topColour, action, rightClickAction, releaseAction|
 		Validator.validateMethodParameterType(bottomColour, Color, "bottomColour", "GridSlider", "new");
 		Validator.validateMethodParameterType(topColour, Color, "topColour", "GridSlider", "new");
 		Validator.validateMethodParameterType(action, Function, "action", "GridSlider", "new", true);
 		Validator.validateMethodParameterType(rightClickAction, Function, "rightClickAction", "GridSlider", "new", true);
-		^super.new.init(bottomColour, topColour, action, rightClickAction);
+		Validator.validateMethodParameterType(releaseAction, Function, "releaseAction", "GridSlider", "new", true);
+		^super.new.init(bottomColour, topColour, action, rightClickAction, releaseAction);
 	}
 
 	prApplyPointer {
@@ -123,6 +126,9 @@ GridSlider : SCViewHolder {
 
 	prOnMouseUp {
 		prDragging = false;
+		if (prReleaseAction.notNil, {
+			prReleaseAction.value;
+		});
 	}
 
 	value {

@@ -4,7 +4,7 @@ CATEGORIES:: GUI>Views
 RELATED:: Classes/AmpCommand, Classes/BorderView, Classes/DrumProgrammer, Classes/GridSlider, Classes/PlayableNote
 
 DESCRIPTION::
-TELETYPE::DrumStep:: is one column of a LINK::Classes/DrumProgrammer:: row. It is not a view. It holds a LINK::Classes/GridSlider::, the column start time, the drum's MIDI note number, and a LINK::Classes/PlayableNote:: when that square is a hit. An empty square still has a step, so LINK::Classes/AmpCommand:: can turn it on. The slider shows the hit's amplitude: the top of the square is CODE::1:: and the bottom is CODE::0::. Left click or left drag sets that amplitude and turns the hit on. Dragging to CODE::0::, or a right click, turns it off. LINK::#-amp_:: does the same: a mapped velocity above CODE::0:: ensures a hit, and a mapped velocity of CODE::0:: clears one. An existing hit keeps its velocity until a new amplitude is set. LINK::Classes/DrumProgrammer:: supplies the callbacks that add and remove the note from the sequence. A row with no MIDI note number ignores both mouse buttons.
+TELETYPE::DrumStep:: is one column of a LINK::Classes/DrumProgrammer:: row. It is not a view. It holds a LINK::Classes/GridSlider::, the column start time, the drum's MIDI note number, and a LINK::Classes/PlayableNote:: when that square is a hit. An empty square still has a step, so LINK::Classes/AmpCommand:: can turn it on. The slider shows the hit's amplitude: the top of the square is CODE::1:: and the bottom is CODE::0::. Left click or left drag sets that amplitude and turns the hit on. Dragging to CODE::0::, or a right click, turns it off. LINK::#-amp_:: does the same: a mapped velocity above CODE::0:: ensures a hit, and a mapped velocity of CODE::0:: clears one. An existing hit keeps its velocity until a new amplitude is set. LINK::Classes/DrumProgrammer:: supplies the callbacks that add and remove the note from the sequence, and an optional callback that records one undo step for a whole left gesture or a right click. A row with no MIDI note number ignores both mouse buttons.
 
 CLASSMETHODS::
 
@@ -37,6 +37,9 @@ Called with the LINK::Classes/PlayableNote:: when a hit is cleared.
 
 ARGUMENT:: existingNote
 A LINK::Classes/PlayableNote:: already stored for this column, or CODE::nil::. When present, the slider shows that note's amplitude and the add callback is not called.
+
+ARGUMENT:: recordFunc
+Called with the amplitude image from before a change and the image from after it, once when a left drag ends or a right click clears a hit. Not called when the image is unchanged, and not called by LINK::#-amp_::. May be CODE::nil::.
 
 RETURNS::
 A new TELETYPE::DrumStep:: instance.
@@ -88,4 +91,4 @@ The column start time in beats.
 RETURNS::
 A LINK::Classes/SimpleNumber::.
 
-PRIVATE:: init, prClearHit, prEnsureHit, prSetAmp, prSyncSlider
+PRIVATE:: init, prAmplitudeChanged, prClearHit, prEnsureHit, prGestureClear, prGestureFinish, prGestureSetAmp, prSetAmp, prSyncSlider

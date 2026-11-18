@@ -6,7 +6,7 @@ RELATED:: Classes/BorderView, Classes/Color, Classes/DrumStep, Classes/SCViewHol
 DESCRIPTION::
 TELETYPE::GridSlider:: is a LINK::Classes/SCViewHolder::. The bottom layer is a LINK::Classes/BorderView::. A second LINK::Classes/View:: sits on top of it, aligned to the bottom, and grows upward. Value CODE::1:: fills the area inside the border. Value CODE::0:: gives that top view no height, so only the bottom colour shows. The parent of the top view has no layout; its rectangle is set from the value. A border insets the top view by the border width so the top view does not paint over the outline.
 
-The top of the inner area is value CODE::1:: and the bottom pixel is value CODE::0::. A left press and a left drag both set the value from the pointer, including when the pointer leaves the control. A right press calls the right-click function and does not change the value.
+The top of the inner area is value CODE::1:: and the bottom pixel is value CODE::0::. A left press and a left drag both set the value from the pointer, including when the pointer leaves the control. A left release calls the release function. A right press calls the right-click function and does not change the value.
 
 CLASSMETHODS::
 
@@ -24,6 +24,9 @@ Called with the new value after a left press or left drag. May be CODE::nil::.
 
 ARGUMENT:: rightClickAction
 Called on a right press. May be CODE::nil::.
+
+ARGUMENT:: releaseAction
+Called on a left release. May be CODE::nil::.
 
 RETURNS::
 A new TELETYPE::GridSlider:: instance.

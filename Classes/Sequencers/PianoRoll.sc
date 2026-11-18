@@ -12,6 +12,7 @@ PianoRoll : SCViewHolder {
 	var prNoteDeselectFunc;
 	var prNoteSelectFunc;
 	var prNoteViewScale;
+	var prOpenNotes;
 	var prPalette;
 	var prPianoRollHeight;
 	var prPianoRollWidth;
@@ -179,6 +180,7 @@ PianoRoll : SCViewHolder {
 			handled;
 		};
 		prScrollView.mouseWheelAction_(scrollWheel);
+		prOpenNotes = Array.new;
 		prRecordedNotes = Array.newClear;
 
 		prNoteViewScale = Dictionary.with(*[\horizontal -> 40, \vertical -> 10]);
@@ -472,8 +474,10 @@ PianoRoll : SCViewHolder {
 		|note|
 		if (prRecordedNotes.includes(note).not, {
 			prRecordedNotes = prRecordedNotes.add(note);
-			this.prApplyNoteEdits;
-			this.prUpdateLoopControls;
+			AppClock.sched(0.0, {
+				this.prApplyNoteEdits;
+				this.prUpdateLoopControls;
+			});
 		});
 	}
 
@@ -582,15 +586,18 @@ PianoRoll : SCViewHolder {
 				deleteFunc: prNoteDeleteFunc,
 				insertFunc: { |note| this.prInsertNote(note) }
 			);
-			prRecordedNotes = prRecordedNotes.add(pianoRollNote);
+			prOpenNotes = prOpenNotes.add(pianoRollNote);
 			prRealTimePlayer.midiChannel_(chan);
 		}, {
-			activeNotesForThisNoteNumber = prRecordedNotes.select({ |note| (note.noteNumber == noteNumber) && (note.stopTime.isNil) });
+			activeNotesForThisNoteNumber = prOpenNotes.select({ |note| (note.noteNumber == noteNumber) && { note.stopTime.isNil } });
 			if (activeNotesForThisNoteNumber.size > 1, {
 				Error(format("Something has gone really wrong here. There was more than one active note for note number %.", noteNumber)).throw;
 			});
 			if (activeNotesForThisNoteNumber.size == 1, {
-				activeNotesForThisNoteNumber[0].stop(now);
+				pianoRollNote = activeNotesForThisNoteNumber[0];
+				prOpenNotes.remove(pianoRollNote);
+				pianoRollNote.stop(now);
+				this.prExecuteCommand(AddCommand.new, (note: pianoRollNote));
 			});
 		});
 	}
@@ -605,7 +612,6 @@ PianoRoll : SCViewHolder {
 
 	startRecording {
 		var acquired;
-		var startOffset = 5.0.rand + 2;
 		var absoluteStartTime;
 
 		if (prIsRecording, { ^this });
@@ -615,28 +621,7 @@ PianoRoll : SCViewHolder {
 		absoluteStartTime = prRecordingClock.beats.floor;
 		prRecordingNow = { (prRecordingClock.beats - (Server.default.latency * prRecordingClock.tempo)) - absoluteStartTime };
 
-		if (prDevMode, {
-			var now = prRecordingNow.value;
-			16.do({
-				|index|
-				var start = now + startOffset + 10.0.rand;
-				var stop = start + 10.0.rand;
-				var noteNumber = if (index == 0, { 0 }, {
-					if (index == 1, { 127 }, { 127.rand });
-				});
-				var pianoRollNote = PianoRollNote(start, noteNumber, 127.rand,
-					viewFunc: prDrawNote,
-					selectFunc: prNoteSelectFunc,
-					deselectFunc: prNoteDeselectFunc,
-					paintFunc: { |view| this.prPaintNote(pianoRollNote, view) },
-					moveFunc: { |view, startTime, stopTime| view.bounds_(Rect(startTime * prNoteViewScale[\horizontal], view.bounds.top, (stopTime - startTime) * prNoteViewScale[\horizontal], view.bounds.height)) },
-					deleteFunc: prNoteDeleteFunc,
-				insertFunc: { |note| this.prInsertNote(note) }
-				);
-				pianoRollNote.stop(stop);
-				prRecordedNotes = prRecordedNotes.add(pianoRollNote);
-			});
-		}, {
+		if (prDevMode.not, {
 			Setup.server;
 		});
 		Metronome.play(prRecordingClock);
@@ -652,6 +637,7 @@ PianoRoll : SCViewHolder {
 	stopRecording {
 		var startTime = inf, stopTime = 0;
 		if (prIsRecording.not, { ^this });
+		prOpenNotes = Array.new;
 		prIsRecording = false;
 		this.changed(\isRecording, prIsRecording);
 		Metronome.stop;

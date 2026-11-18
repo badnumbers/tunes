@@ -1,0 +1,69 @@
+TITLE:: AddCommand
+SUMMARY:: Command that inserts one finished piano-roll note.
+CATEGORIES:: Commands
+RELATED:: Classes/Command, Classes/PianoRoll, Classes/PianoRollNote, Classes/UndoHistory
+
+DESCRIPTION::
+TELETYPE::AddCommand:: is a LINK::Classes/Command:: named CODE::add::. It inserts a finished LINK::Classes/PianoRollNote:: into the roll. The caller supplies that note. The command does not read a clock, a MIDI message, or a stop time. LINK::Classes/PianoRoll:: calls it when a recorded note-off finishes the note that note-on created. A later gesture can finish its own note and call the same command.
+
+LINK::#-beforeImage:: maps the note to CODE::inserted: false:: when it is not yet in the roll. LINK::#-execute:: calls LINK::Classes/PianoRollNote#-insert::. LINK::#-afterImage:: maps that note to CODE::inserted: true::. LINK::#-restore:: with CODE::inserted: false:: deletes the note. LINK::#-restore:: with CODE::inserted: true:: inserts it again and creates its view. The note object, including its onset and stop time, stays the same across undo and redo. A note that is already inserted produces no undo step.
+
+CLASSMETHODS::
+
+METHOD:: new
+Creates a new TELETYPE::AddCommand::. Takes no arguments. The note is passed to LINK::#-execute::.
+
+RETURNS::
+A new TELETYPE::AddCommand:: instance.
+
+INSTANCEMETHODS::
+
+METHOD:: afterImage
+Whether each note in the before-image is inserted, after LINK::#-execute::.
+
+ARGUMENT:: args
+The same arguments dictionary passed to LINK::#-execute::.
+
+ARGUMENT:: before
+The LINK::Classes/IdentityDictionary:: returned by LINK::#-beforeImage::.
+
+RETURNS::
+An LINK::Classes/IdentityDictionary:: from note to an event with CODE::\inserted::, or CODE::nil:: when CODE::before:: is empty.
+
+METHOD:: beforeImage
+The note about to be inserted, mapped to CODE::inserted: false::. A note that is already inserted, or a missing note, produces no image.
+
+ARGUMENT:: args
+An arguments dictionary with CODE::\note::, the LINK::Classes/PianoRollNote:: to insert.
+
+RETURNS::
+An LINK::Classes/IdentityDictionary:: from that note to CODE::(inserted: false)::, or CODE::nil:: when there is nothing to insert.
+
+METHOD:: execute
+Inserts CODE::\note:: when it responds to LINK::Classes/PianoRollNote#-insert::. Does not create the view.
+
+ARGUMENT:: args
+A LINK::Classes/Dictionary:: or LINK::Classes/Event:: with CODE::\note::. A missing note inserts nothing.
+
+METHOD:: restore
+Writes each snapshot back. CODE::\inserted:: false deletes the note. CODE::\inserted:: true inserts it and creates its view when it has a stop time and no view yet.
+
+ARGUMENT:: image
+An LINK::Classes/IdentityDictionary:: from note to an event with CODE::\inserted::, or CODE::nil::.
+
+EXAMPLES::
+
+CODE::
+(
+var note = PianoRollNote(0, 60, 100,
+	viewFunc: { View() },
+	selectFunc: {},
+	deselectFunc: {},
+	paintFunc: {},
+	moveFunc: {},
+	insertFunc: { |inserted| ("inserted " ++ inserted.noteNumber).postln }
+);
+note.stop(1.0);
+AddCommand.new.execute((note: note));
+)
+::

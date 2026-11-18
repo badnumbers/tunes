@@ -1,9 +1,11 @@
 DrumStep {
 	var prAddFunc;
+	var prGestureBefore;
 	var prHitDuration;
 	var prNote;
 	var prNoteNumber;
 	var prPalette;
+	var prRecordFunc;
 	var prRemoveFunc;
 	var prSquare;
 	var prStartTime;
@@ -37,7 +39,7 @@ DrumStep {
 	}
 
 	init {
-		|noteNumber, startTime, palette, squareSize, velocity, hitDuration, addFunc, removeFunc, existingNote|
+		|noteNumber, startTime, palette, squareSize, velocity, hitDuration, addFunc, removeFunc, existingNote, recordFunc|
 		prNoteNumber = noteNumber;
 		prStartTime = startTime;
 		prPalette = palette;
@@ -45,12 +47,14 @@ DrumStep {
 		prHitDuration = hitDuration;
 		prAddFunc = addFunc;
 		prRemoveFunc = removeFunc;
+		prRecordFunc = recordFunc;
 		prNote = existingNote;
 		prSquare = GridSlider(
 			prPalette.colour5,
 			prPalette.colour3,
-			{ |amp| this.prSetAmp(amp) },
-			{ this.prClearHit; this.prSyncSlider }
+			{ |amp| this.prGestureSetAmp(amp) },
+			{ this.prGestureClear },
+			{ this.prGestureFinish }
 		);
 		prSquare.minSize_(squareSize@squareSize);
 		prSquare.maxSize_(squareSize@squareSize);
@@ -60,7 +64,7 @@ DrumStep {
 	}
 
 	*new {
-		|noteNumber, startTime, palette, squareSize, velocity, hitDuration, addFunc, removeFunc, existingNote|
+		|noteNumber, startTime, palette, squareSize, velocity, hitDuration, addFunc, removeFunc, existingNote, recordFunc|
 		Validator.validateMethodParameterType(noteNumber, Integer, "noteNumber", "DrumStep", "new", true);
 		Validator.validateMethodParameterType(startTime, SimpleNumber, "startTime", "DrumStep", "new");
 		Validator.validateMethodParameterType(palette, GuiPalette, "palette", "DrumStep", "new");
@@ -70,11 +74,17 @@ DrumStep {
 		Validator.validateMethodParameterType(addFunc, Function, "addFunc", "DrumStep", "new");
 		Validator.validateMethodParameterType(removeFunc, Function, "removeFunc", "DrumStep", "new");
 		Validator.validateMethodParameterType(existingNote, PlayableNote, "existingNote", "DrumStep", "new", true);
-		^super.new.init(noteNumber, startTime, palette, squareSize, velocity, hitDuration, addFunc, removeFunc, existingNote);
+		Validator.validateMethodParameterType(recordFunc, Function, "recordFunc", "DrumStep", "new", true);
+		^super.new.init(noteNumber, startTime, palette, squareSize, velocity, hitDuration, addFunc, removeFunc, existingNote, recordFunc);
 	}
 
 	playableNote {
 		^prNote;
+	}
+
+	prAmplitudeChanged {
+		|before, after|
+		^(before[\hit] !== after[\hit] or: { before[\velocity] != after[\velocity] });
 	}
 
 	prClearHit {
@@ -98,6 +108,36 @@ DrumStep {
 		note.stopTime_(prStartTime + prHitDuration);
 		prNote = note;
 		prAddFunc.value(note);
+	}
+
+	prGestureClear {
+		var after, before;
+		before = this.amplitudeImage;
+		this.prClearHit;
+		this.prSyncSlider;
+		after = this.amplitudeImage;
+		prGestureBefore = nil;
+		if (this.prAmplitudeChanged(before, after) and: { prRecordFunc.notNil }, {
+			prRecordFunc.value(before, after);
+		});
+	}
+
+	prGestureFinish {
+		var after;
+		if (prGestureBefore.isNil, { ^this });
+		after = this.amplitudeImage;
+		if (this.prAmplitudeChanged(prGestureBefore, after) and: { prRecordFunc.notNil }, {
+			prRecordFunc.value(prGestureBefore, after);
+		});
+		prGestureBefore = nil;
+	}
+
+	prGestureSetAmp {
+		|amp|
+		if (prGestureBefore.isNil, {
+			prGestureBefore = this.amplitudeImage;
+		});
+		this.prSetAmp(amp);
 	}
 
 	prSetAmp {

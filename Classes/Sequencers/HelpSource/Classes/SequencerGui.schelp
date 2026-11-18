@@ -15,7 +15,7 @@ ARGUMENT:: sequencer
 The LINK::Classes/Sequencer:: that this LINK::Classes/SequencerGui:: provides a visual representation of.
 
 ARGUMENT:: devMode
-When CODE::true::, the embedded LINK::Classes/PianoRoll:: skips MIDI setup and fills fake notes for development.
+When CODE::true::, the embedded LINK::Classes/PianoRoll:: skips MIDI and server setup.
 
 INSTANCEMETHODS::
 

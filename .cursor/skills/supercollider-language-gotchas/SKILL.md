@@ -1,6 +1,6 @@
 ---
 name: supercollider-language-gotchas
-description: Documents non-obvious SuperCollider language semantics and common mistakes in this repo. Use when writing or debugging .sc code, GUI keyDown/keyUp handlers, closures assigned in init, early returns (^), Char values, Event dictionaries, nil-safe lookups, or unit tests that synthesize keyboard events.
+description: Documents non-obvious SuperCollider language semantics and common mistakes in this repo. Use when writing or debugging .sc code, GUI keyDown/keyUp handlers, closures assigned in init, early returns (^), Char values, Event dictionaries, nil-safe lookups, Array.add, List, or unit tests that synthesize keyboard events.
 ---
 
 # SuperCollider language gotchas
@@ -170,6 +170,39 @@ if (contextHandlers.notNil, {
 ```
 
 A binding match may occur with **no subscriber** registered; invoking a handler must be a no-op, not an error.
+
+## `Array.add` may return a new array
+
+An `Array` has a fixed capacity (`maxSize`). `add` writes into the receiver when a free slot remains. When the array is full, it returns a **new** array and leaves the receiver unchanged. The result has to be stored:
+
+```supercollider
+// WRONG — second add is discarded once capacity is full
+recorded = [];
+recorded.add(first);
+recorded.add(second); // recorded is still [first]
+
+// RIGHT
+recorded = [];
+recorded = recorded.add(first);
+recorded = recorded.add(second);
+```
+
+An empty literal `[]` has `maxSize` 1, so the first `add` appears to work and the second silently disappears. Indexing the missing slot then yields `nil`.
+
+`List` keeps one object and assigns `add`'s result internally. Use it when a callback appends to a collection owned by the caller. Assignment inside that callback updates the frame that created the function, which is often a helper argument, so the caller's variable still points at the original array:
+
+```supercollider
+// WRONG — assignment updates prStep's argument, not the test's variable
+prStep { |recorded|
+    ^DrumStep(..., { |item| recorded = recorded.add(item) });
+}
+
+// RIGHT — List#add grows the same object the caller holds
+recorded = List.new;
+step = this.prStep(recorded);
+```
+
+See `Array.schelp` ("For Arrays, the `add` method may or may not return the same Array object").
 
 ## Logic and collections
 

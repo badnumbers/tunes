@@ -411,12 +411,12 @@ DrumProgrammer : SCViewHolder {
 
 	prMakeStep {
 		|columnIndex, noteNumber|
-		var existing;
+		var existing, step;
 		existing = nil;
 		if (noteNumber.notNil, {
 			existing = this.prFindNote(noteNumber, this.prNoteStartTime(columnIndex));
 		});
-		^DrumStep(
+		step = DrumStep(
 			noteNumber,
 			this.prNoteStartTime(columnIndex),
 			prPalette,
@@ -425,8 +425,10 @@ DrumProgrammer : SCViewHolder {
 			prHitDuration,
 			{ |note| this.prAddNote(note) },
 			{ |note| this.prRemoveNote(note) },
-			existing
+			existing,
+			{ |before, after| this.prRecordAmplitudeGesture(step, before, after) }
 		);
+		^step;
 	}
 
 	prNoteStartTime {
@@ -459,6 +461,16 @@ DrumProgrammer : SCViewHolder {
 			midi.noteOff(chan: prRealTimePlayer.midiChannel, note: noteNumber, veloc: 100);
 			nil
 		});
+	}
+
+	prRecordAmplitudeGesture {
+		|step, before, after|
+		var afterImage, beforeImage;
+		beforeImage = IdentityDictionary.new;
+		beforeImage.put(step, before);
+		afterImage = IdentityDictionary.new;
+		afterImage.put(step, after);
+		prUndoHistory.push(AmpCommand.new, beforeImage, afterImage);
 	}
 
 	prRefreshRemoveButtons {

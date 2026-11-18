@@ -6,6 +6,7 @@ PianoRollNote {
 	var prDeselectFunc;
 	var prEvent;
 	var prInsertFunc;
+	var prInserted = false;
 	var prMoveFunc;
 	var prOriginalBounds;
 	var prOriginalStartTime;
@@ -64,6 +65,7 @@ PianoRollNote {
 	delete {
 		if (prDeleted, { ^this });
 		prDeleted = true;
+		prInserted = false;
 		prSelected = false;
 		if (prView.notNil, {
 			prView.remove;
@@ -77,6 +79,16 @@ PianoRollNote {
 	deselect {
 		prSelected = false;
 		prDeselectFunc.value(prView, this);
+	}
+
+	ensureView {
+		if (prDeleted, { ^this });
+		if (prView.notNil, { ^this });
+		if (this.stopTime.isNil and: { prOriginalBounds.isNil }, { ^this });
+		prView = prViewFunc.value(this);
+		if (prView.notNil, {
+			prOriginalBounds = prView.bounds;
+		});
 	}
 
 	event {
@@ -97,8 +109,21 @@ PianoRollNote {
 		prEvent = Event.new.parent_(nil);
 	}
 
+	insert {
+		if (prInserted, { ^this });
+		prInserted = true;
+		prDeleted = false;
+		if (prInsertFunc.notNil, {
+			prInsertFunc.value(this);
+		});
+	}
+
 	isDeleted {
 		^prDeleted;
+	}
+
+	isInserted {
+		^prInserted;
 	}
 
 	isSelected {
@@ -259,16 +284,8 @@ PianoRollNote {
 
 	prUndelete {
 		if (prDeleted.not, { ^this });
-		prDeleted = false;
-		if (prInsertFunc.notNil, {
-			prInsertFunc.value(this);
-		});
-		if (prOriginalBounds.notNil && { prView.isNil }, {
-			prView = prViewFunc.value(this);
-			if (prView.notNil, {
-				prOriginalBounds = prView.bounds;
-			});
-		});
+		this.insert;
+		this.ensureView;
 	}
 
 	refreshView {
@@ -372,11 +389,8 @@ PianoRollNote {
 		Validator.validateMethodParameterType(stopTime,Float,"stopTime","SequencerNote","stop");
 		prOriginalStopTime = stopTime;
 		prPlayableNote.stopTime = stopTime;
-		AppClock.sched(0.0,{
-			if (prDeleted.not, {
-				prView = prViewFunc.value(this);
-				prOriginalBounds = prView.bounds;
-			});
+		AppClock.sched(0.0, {
+			this.ensureView;
 		});
 	}
 

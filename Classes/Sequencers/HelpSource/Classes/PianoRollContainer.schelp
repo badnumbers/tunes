@@ -18,7 +18,7 @@ ARGUMENT:: sequencer
 The LINK::Classes/Sequencer:: passed to every LINK::Classes/PianoRoll::.
 
 ARGUMENT:: devMode
-When CODE::true::, rolls fill fake notes instead of receiving recording MIDI. The default is CODE::false::.
+When CODE::true::, recording does not install MIDI input. The default is CODE::false::.
 
 ARGUMENT:: keyRouter
 The LINK::Classes/SequencerKeyRouter:: whose record-context actions this container registers.
