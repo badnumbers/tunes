@@ -2,6 +2,7 @@ Config {
 	classvar configFileName = "config.yaml";
 	classvar prHardwareSynthesizers;
 	classvar prMidi;
+	classvar prMidiKeyboards;
 	classvar prServer;
 	classvar prConfigLoaded = false;
 
@@ -138,6 +139,36 @@ Config {
 					prMidi = MIDIConfig(config["MIDI"]["DeviceName"], config["MIDI"]["PortName"]);
 				});
 
+				prMidiKeyboards = Array.new;
+				if (config["MIDIKeyboards"].isNil, {
+					warn(format("The configuration file at % is missing the section called 'MIDIKeyboards'. No MIDI keyboards will be connected. See the help file for the Config class for guidance.", Platform.userConfigDir +/+ configFileName));
+				}, {
+					if (config["MIDIKeyboards"].isMemberOf(Array) == false, {
+						warn(format("The configuration file at % has a section called 'MIDIKeyboards', but this section is expected to be a YAML collection. See the help file for the Config class for guidance.", Platform.userConfigDir +/+ configFileName));
+					}, {
+						config["MIDIKeyboards"].do({
+							|item, index|
+							var addKeyboard = true;
+							if (item.isMemberOf(Dictionary) == false, {
+								warn(format("Item % in the 'MIDIKeyboards' section of the configuration file at % is not a YAML mapping. This item will not be added to the configuration. See the help file for the Config class for guidance.", index + 1, Platform.userConfigDir +/+ configFileName));
+								addKeyboard = false;
+							}, {
+								if (item["Name"].isNil or: { item["Name"].isMemberOf(String).not } or: { item["Name"].size == 0 }, {
+									warn(format("Item % in the 'MIDIKeyboards' section of the configuration file at % does not have a non-empty 'Name' property. This item will not be added to the configuration. See the help file for the Config class for guidance.", index + 1, Platform.userConfigDir +/+ configFileName));
+									addKeyboard = false;
+								});
+								if (item["Port"].isNil or: { item["Port"].isMemberOf(String).not } or: { Validator.stringIsInteger(item["Port"]).not } or: { item["Port"].asInteger < 0 }, {
+									warn(format("Item % in the 'MIDIKeyboards' section of the configuration file at % does not have a 'Port' property that is a whole number of 0 or more. This item will not be added to the configuration. See the help file for the Config class for guidance.", index + 1, Platform.userConfigDir +/+ configFileName));
+									addKeyboard = false;
+								});
+							});
+							if (addKeyboard, {
+								prMidiKeyboards = prMidiKeyboards.add(MIDIKeyboardConfig(item["Name"], item["Port"].asInteger));
+							});
+						});
+					});
+				});
+
 				if (config["Server"].isNil, {
 					warn(format("The configuration file at % is missing the section called 'Server'. The server configuration will be set to the default values of 2 input bus channels and 2 output bus channels. See the help file for the Config class for guidance.", Platform.userConfigDir +/+ configFileName));
 					setServerConfig = false;
@@ -192,6 +223,18 @@ Config {
 		});
 
 		^prMidi;
+	}
+
+	*midiKeyboards {
+		if (prConfigLoaded == false, {
+			this.load;
+		});
+
+		if (prMidiKeyboards.isNil, {
+			Error(format("Config.midiKeyboards was called but the configuration file at % was not found. See the help file for the Config class for guidance.", Platform.userConfigDir +/+ configFileName)).throw;
+		});
+
+		^prMidiKeyboards;
 	}
 
 	*openConfigFile {

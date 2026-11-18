@@ -94,6 +94,11 @@ HardwareSynthesizers:
       - 16
     InputBusChannels:
       - 1
+MIDIKeyboards:
+  - Name: "Keystation 61 MK3"
+    Port: 0
+  - Name: "KeyStep Pro"
+    Port: 0
 MIDI:
   DeviceName: "Scarlett 18i8 USB"
   PortName: "Scarlett 18i8 USB MIDI 1"

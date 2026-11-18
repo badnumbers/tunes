@@ -1,7 +1,7 @@
 TITLE:: Config
 SUMMARY:: Configuration for a music production setup.
 CATEGORIES:: Core
-RELATED:: Classes/HardwareSynthesizerConfig, Classes/MIDIConfig, Classes/ServerConfig
+RELATED:: Classes/HardwareSynthesizerConfig, Classes/MIDIConfig, Classes/MIDIKeyboardConfig, Classes/ServerConfig
 
 DESCRIPTION::
 A utility class for managing the configuration for a music production setup.
@@ -26,6 +26,11 @@ HardwareSynthesizers:
     InputBusChannels:
       - 6
       - 7
+MIDIKeyboards:
+  - Name: "Keystation 61 MK3"
+    Port: 0
+  - Name: "KeyStep Pro"
+    Port: 0
 MIDI:
   DeviceName: "Scarlett 18i8 USB"
   PortName: "Scarlett 18i8 USB MIDI 1"
@@ -69,6 +74,15 @@ If the configuration has not been loaded yet, calls LINK::#*load::. Then returns
 
 NOTE::
 If the STRONG::Configuration File:: does not contain the STRONG::MIDI:: section then CODE::nil:: is returned.
+::
+
+METHOD:: midiKeyboards
+If the configuration has not been loaded yet, calls LINK::#*load::. Then returns an LINK::Classes/Array:: of LINK::Classes/MIDIKeyboardConfig:: read from the STRONG::MIDIKeyboards:: section of the STRONG::Configuration File::.
+
+Each entry's CODE::Name:: is the ALSA sequencer client name, and CODE::Port:: is that client's port index. Port CODE::0:: is the first port. These values are passed to CODE::aconnect:: by LINK::Classes/PipeWire#*connectMidiKeyboards::. The receiver is the device name from LINK::#*midi::, on its ALSA port CODE::0::.
+
+NOTE::
+If the STRONG::Configuration File:: does not contain the STRONG::MIDIKeyboards:: section, a warning is posted and an empty LINK::Classes/Array:: is returned.
 ::
 
 METHOD:: openConfigFile

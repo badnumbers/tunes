@@ -1,0 +1,28 @@
+TITLE:: MIDIKeyboardConfig
+SUMMARY:: Contains the configuration for a MIDI keyboard.
+CATEGORIES:: Core
+RELATED:: Classes/Config
+
+DESCRIPTION::
+This class contains the configuration for one MIDI keyboard. LINK::Classes/PipeWire#*connectMidiKeyboards:: uses it to subscribe the keyboard's ALSA sequencer port to the MIDI interface.
+
+CLASSMETHODS::
+
+METHOD:: new
+Creates a new instance of CODE::MIDIKeyboardConfig::.
+
+ARGUMENT:: name
+The ALSA sequencer client name, as printed by CODE::aconnect -l::. For example, CODE::"Keystation 61 MK3"::.
+
+ARGUMENT:: port
+The port index on that client. CODE::0:: is the first port. On the Keystation 61 MK3, port CODE::0:: is the note output and port CODE::1:: is the transport output.
+
+INSTANCEMETHODS::
+
+METHOD:: name
+The ALSA sequencer client name.
+
+METHOD:: port
+The port index on that client.
+
+PRIVATE:: init

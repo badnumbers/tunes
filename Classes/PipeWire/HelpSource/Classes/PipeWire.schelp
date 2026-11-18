@@ -3,7 +3,7 @@ SUMMARY:: Utilities for working with PipeWire.
 CATEGORIES:: Core
 
 DESCRIPTION::
-A set of utilities for working with PipeWire.
+A set of utilities for working with PipeWire. MIDI keyboards are subscribed to the MIDI interface with CODE::aconnect::.
 
 CLASSMETHODS::
 
@@ -57,4 +57,12 @@ LIST::
 You may wish to use the Synths page in LINK::Classes/SequencerGui:: to help with this.
 ::
 
-PRIVATE:: prLink, prUnlink
+METHOD:: connectMidiKeyboards
+Subscribes each keyboard in LINK::Classes/Config#*midiKeyboards:: to ALSA port CODE::0:: of the device name in LINK::Classes/Config#*midi::. The command is CODE::aconnect::, using the keyboard's client name and port index.
+
+A keyboard that is not plugged in is skipped. A subscription that already exists is left in place. Any other failure posts a warning.
+
+METHOD:: disconnectMidiKeyboards
+Removes the subscriptions made by LINK::#*connectMidiKeyboards::. A keyboard that is not plugged in, or that was not subscribed, is skipped.
+
+PRIVATE:: prAconnect, prLink, prUnlink

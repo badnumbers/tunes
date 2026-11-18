@@ -50,6 +50,47 @@ PipeWire {
 		});
 	}
 
+	*connectMidiKeyboards {
+		var destination;
+		destination = Config.midi.deviceName;
+		Config.midiKeyboards.do({
+			|keyboard|
+			this.prAconnect(keyboard, destination, false);
+		});
+	}
+
+	*disconnectMidiKeyboards {
+		var destination;
+		destination = Config.midi.deviceName;
+		Config.midiKeyboards.do({
+			|keyboard|
+			this.prAconnect(keyboard, destination, true);
+		});
+	}
+
+	*prAconnect {
+		|keyboard, destination, disconnect|
+		var command, ignored, output;
+		if (disconnect, {
+			command = format("aconnect -d \"%:%\" \"%:0\" 2>&1", keyboard.name, keyboard.port, destination);
+		}, {
+			command = format("aconnect \"%:%\" \"%:0\" 2>&1", keyboard.name, keyboard.port, destination);
+		});
+		output = command.unixCmdGetStdOut;
+		// A missing keyboard, an existing subscription, and a disconnect of a subscription that is not there are all fine.
+		ignored = output.isEmpty;
+		if (output.contains("Connection is already subscribed"), { ignored = true });
+		if (output.contains("invalid sender address"), { ignored = true });
+		if (disconnect and: { output.contains("No subscription is found") }, { ignored = true });
+		if (ignored.not, {
+			if (disconnect, {
+				warn(format("PipeWire could not disconnect % port % from %.\n%", keyboard.name, keyboard.port, destination, output));
+			}, {
+				warn(format("PipeWire could not connect % port % to %.\n%", keyboard.name, keyboard.port, destination, output));
+			});
+		});
+	}
+
 	*prLink {
 		|inputBusChannel, outputPort|
 		var inputPort, output;
