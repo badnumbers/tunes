@@ -1,0 +1,68 @@
+TITLE:: DragCommand
+SUMMARY:: Command that moves one piano-roll note in time and pitch.
+CATEGORIES:: Commands
+RELATED:: Classes/Command, Classes/PianoRoll, Classes/PianoRollNote, Classes/UndoHistory
+
+DESCRIPTION::
+TELETYPE::DragCommand:: is a LINK::Classes/Command:: named CODE::drag::. It places one LINK::Classes/PianoRollNote:: at a new onset and MIDI note number. Duration is preserved, so the stop time moves with the onset. LINK::Classes/PianoRoll:: calls it when a drag is released. It is not offered by the command prompt.
+
+The view follows the pointer while the button is held. That movement is not recorded. On release, LINK::#-beforeImage:: stores the note's start time, stop time, and MIDI note number, then LINK::#-execute:: calls LINK::Classes/PianoRollNote#-moveTo::. LINK::#-afterImage:: stores the same three values after the move. LINK::#-restore:: writes that snapshot back, including the stop time from the snapshot. A release that leaves the onset and MIDI note number unchanged produces no undo step.
+
+CLASSMETHODS::
+
+METHOD:: new
+Creates a new TELETYPE::DragCommand::. Takes no arguments. The note and its destination are passed to LINK::#-execute::.
+
+RETURNS::
+A new TELETYPE::DragCommand:: instance.
+
+INSTANCEMETHODS::
+
+METHOD:: afterImage
+The start time, stop time, and MIDI note number of each note in the before-image, after LINK::#-execute::.
+
+ARGUMENT:: args
+The same arguments dictionary passed to LINK::#-execute::.
+
+ARGUMENT:: before
+The LINK::Classes/IdentityDictionary:: returned by LINK::#-beforeImage::.
+
+RETURNS::
+An LINK::Classes/IdentityDictionary:: from note to an event with CODE::\startTime::, CODE::\stopTime::, and CODE::\noteNumber::, or CODE::nil:: when CODE::before:: is empty.
+
+METHOD:: beforeImage
+The note's start time, stop time, and MIDI note number before the move. A missing note or destination, or a destination that matches the current onset and MIDI note number, produces no image.
+
+ARGUMENT:: args
+An arguments dictionary with CODE::\note::, CODE::\startTime::, and CODE::\noteNumber::.
+
+RETURNS::
+An LINK::Classes/IdentityDictionary:: from that note to an event with CODE::\startTime::, CODE::\stopTime::, and CODE::\noteNumber::, or CODE::nil:: when there is nothing to move.
+
+METHOD:: execute
+Moves CODE::\note:: to CODE::\startTime:: and CODE::\noteNumber:: when the note responds to LINK::Classes/PianoRollNote#-moveTo::. Duration is preserved.
+
+ARGUMENT:: args
+A LINK::Classes/Dictionary:: or LINK::Classes/Event:: with CODE::\note::, CODE::\startTime::, and CODE::\noteNumber::. A missing note or destination moves nothing.
+
+METHOD:: restore
+Writes each snapshot back. The stored start time and stop time are restored together, then the MIDI note number is restored. The stop time is the one stored in the snapshot.
+
+ARGUMENT:: image
+An LINK::Classes/IdentityDictionary:: from note to an event with CODE::\startTime::, CODE::\stopTime::, and CODE::\noteNumber::, or CODE::nil::.
+
+EXAMPLES::
+
+CODE::
+(
+var note = PianoRollNote(0, 60, 100,
+	viewFunc: {},
+	selectFunc: {},
+	deselectFunc: {},
+	paintFunc: {},
+	moveFunc: {}
+);
+note.stop(1.0);
+DragCommand.new.execute((note: note, startTime: 2, noteNumber: 64));
+)
+::

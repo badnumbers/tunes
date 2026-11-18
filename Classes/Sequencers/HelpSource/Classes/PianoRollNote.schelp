@@ -1,7 +1,7 @@
 TITLE:: PianoRollNote
 SUMMARY:: One recorded note in the piano roll with selection, part assignment, and grid editing.
 CATEGORIES:: Streams-Patterns-Events
-RELATED:: Classes/PianoRoll, Classes/PlayableNote, Classes/Event, Classes/AddCommand, Classes/AmpCommand, Classes/DeleteCommand, Classes/LeftCommand, Classes/LegatoCommand, Classes/PartCommand, Classes/RightCommand
+RELATED:: Classes/PianoRoll, Classes/PlayableNote, Classes/Event, Classes/AddCommand, Classes/AmpCommand, Classes/DeleteCommand, Classes/DragCommand, Classes/LeftCommand, Classes/LegatoCommand, Classes/PartCommand, Classes/RightCommand
 
 DESCRIPTION::
 TELETYPE::PianoRollNote:: wraps a LINK::Classes/PlayableNote:: and a LINK::Classes/Event:: with piano-roll UI callbacks (view creation, selection highlighting, part colours, view repositioning after timing edits, and deletion). Commands such as LINK::Classes/AmpCommand:: and LINK::Classes/LegatoCommand:: write keys onto the composed LINK::Classes/Event:: (for example CODE::\amp::, CODE::\legato::) and keep the LINK::Classes/PlayableNote:: in sync. LINK::Classes/DeleteCommand:: calls LINK::#-delete::, which removes the note view and runs the optional delete callback. LINK::Classes/LeftCommand:: and LINK::Classes/RightCommand:: call LINK::#-nudgeLeft:: and LINK::#-nudgeRight::. LINK::Classes/PianoRoll:: creates an instance on note-on and LINK::Classes/AddCommand:: inserts that same note on note-off.

@@ -367,7 +367,11 @@ PianoRoll : SCViewHolder {
 						dy = parentY - dragOrigin.y;
 						placed = snappedDrag.value(dx, dy);
 						view.bounds = dragOriginBounds;
-						pianoRollNote.moveTo(placed.startTime, placed.noteNumber);
+						this.prExecuteCommand(DragCommand.new, (
+							note: pianoRollNote,
+							startTime: placed.startTime,
+							noteNumber: placed.noteNumber
+						));
 						this.prApplyNoteEdits;
 					});
 					dragOrigin = nil;

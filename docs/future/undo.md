@@ -38,4 +38,4 @@ Ctrl+Z undoes. Ctrl+Shift+Z and Ctrl+Y redo. Each piano roll and the drum progra
 
 `AddCommand` inserts a finished piano-roll note. Note-on creates that note and holds it aside. Note-off writes the stop time, then the command inserts the same object. Undo removes it. Redo inserts it again. The times stay on the note. A later mouse gesture can finish its own note and call the same command. A drum-square left drag records one amplitude step: the image from before the first write, and the image after mouse-up. A right-click that clears a hit records one step the same way. `AmpCommand.restore` applies either image. The slider writes go straight to the step, and `amp` from the prompt does not record them again.
 
-Dragging existing notes and moving loop markers stay outside this history.
+Releasing a drag on an existing piano-roll note records one `DragCommand` step: the start time, stop time, and MIDI note number from before the move, and the same three after it. The view follows the pointer during the drag and is not recorded. A release that leaves the note in place records nothing. `DragCommand` is not on the prompt. Moving loop markers stays outside this history.
