@@ -1,6 +1,6 @@
 TITLE:: PipeWire
-summary:: Utilities for working with PipeWire.
-categories:: Core
+SUMMARY:: Utilities for working with PipeWire.
+CATEGORIES:: Core
 
 DESCRIPTION::
 A set of utilities for working with PipeWire.
@@ -10,7 +10,7 @@ CLASSMETHODS::
 METHOD:: connectToSoundcard
 Connects the specified hardware synthesizer to the soundcard.
 
-This is done by reading the LINK::Classes/Synthesizer#-inputBusChannels:: property and connecting those port numbers in PipeWire.
+This is done by reading the LINK::Classes/Synthesizer#-inputBusChannels:: property and connecting those port numbers in PipeWire. If a link cannot be made, a warning is posted.
 
 The logic for making the connections is as follows:
 
@@ -19,24 +19,14 @@ TABLE::
     ## 0 || Nothing is done. ||
     ## 1 || The synthesizer's input is connected to both the left and the right output channels of the soundcard. ||
     ## 2 || The synthesizer's first input is connected to left output channel of the soundcard and the second input is connected to the right channel. ||
-    ## More than 2 || Nothing is done. ||
+    ## More than 2 || Nothing is connected, and a warning is posted. ||
 ::
 
 ARGUMENT:: synthesizer
 An instance of LINK::Classes/Synthesizer:: or LINK::Classes/HardwareSynthesizerConfig::.
 
 METHOD:: connectAllToSoundcard
-For all hardware synthesizers configured in LINK::Classes/Config#*hardwareSynthesizers::, connects the synthesizer to the soundcard.
-
-The logic for making the connections for each synthesizer is as follows:
-
-TABLE::
-    ## Number of input bus channels || Behaviour ||
-    ## 0 || Nothing is done. ||
-    ## 1 || The synthesizer's input is connected to both the left and the right output channels of the soundcard. ||
-    ## 2 || The synthesizer's first input is connected to left output channel of the soundcard and the second input is connected to the right channel. ||
-    ## More than 2 || Nothing is done. ||
-::
+Calls LINK::Classes/PipeWire#*connectToSoundcard:: for each hardware synthesizer configured in LINK::Classes/Config#*hardwareSynthesizers::.
 
 METHOD:: disconnectFromSoundcard
 Disconnects the specified hardware synthesizer from the soundcard.
@@ -56,7 +46,7 @@ ARGUMENT:: synthesizer
 An instance of LINK::Classes/Synthesizer:: or LINK::Classes/HardwareSynthesizerConfig::.
 
 METHOD:: disconnectAllFromSoundcard
-For all hardware synthesizers configured in LINK::Classes/Config#*hardwareSynthesizers::, disconnects the synthesizer from the soundcard.
+Calls LINK::Classes/PipeWire#*disconnectFromSoundcard:: for each hardware synthesizer configured in LINK::Classes/Config#*hardwareSynthesizers::.
 
 NOTE::
 After running this method, you will not hear any sound from the hardware synthesizers unless:
@@ -66,3 +56,5 @@ LIST::
 ::
 You may wish to use the Synths page in LINK::Classes/SequencerGui:: to help with this.
 ::
+
+PRIVATE:: prLink, prUnlink
