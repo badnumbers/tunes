@@ -5,7 +5,9 @@ SequencerGui {
 	var prMainHeader;
 	var prPalette;
 	var prSequencer;
+	var prRecordPage;
 	var prSequencerData;
+	var prStackLayout;
 	var prSettingsView;
 	var prSynthDesk;
 	var prWindow;
@@ -24,7 +26,7 @@ SequencerGui {
 
 	init {
 		|sequencer,devMode|
-		var window, stackLayout, midiIndicator, synthsButton, drumsButton, settingsButton, arrangeButton, recordButton, recordPage, drumProgrammer;
+		var window, midiIndicator, synthsButton, drumsButton, settingsButton, arrangeButton, recordButton, recordPage, drumProgrammer;
 		var tempoKnob, metronomeKnob;
 		var totalMidiNoteCount = 0;
 		var renderButtonFunc;
@@ -49,6 +51,13 @@ SequencerGui {
 		};
 
 		prArranger = Arranger(prSequencer, prDocument);
+		prArranger.openAction_({
+			|id, placed, midiChannel|
+			if (prRecordPage.openPattern(id.asString, placed, midiChannel), {
+				prStackLayout.index_(1);
+				prKeyRouter.activeContext_(\record);
+			});
+		});
 		prSequencer.addDependant(this);
 		prSequencer.sequenceIds.do({
 			|id|
@@ -56,7 +65,8 @@ SequencerGui {
 		});
 
 		prWindow = Window("Sequencer").background_(prPalette.colour1).front;
-		recordPage = PianoRollContainer(palette: prPalette, sequencer: prSequencer, devMode: devMode, keyRouter: prKeyRouter, sequencerDocument: prDocument);
+		prRecordPage = PianoRollContainer(palette: prPalette, sequencer: prSequencer, devMode: devMode, keyRouter: prKeyRouter, sequencerDocument: prDocument);
+		recordPage = prRecordPage;
 		prWindow.layout = VLayout(
 			prMainHeader = BorderView().background_(prPalette.colour2).minHeight_(100).maxHeight_(100).borderWidth_(0).layout_(HLayout(
 				StaticText().string_("Sequencer").stringColor_(prPalette.colour5).font_(Font(size:32)),
@@ -68,7 +78,7 @@ SequencerGui {
 				drumsButton = renderButtonFunc.value("Drums"),
 				midiIndicator = BorderView().background_(prPalette.colour2).borderColour_(prPalette.colour3).borderRadius_(3).borderWidth_(2).minSize_(50@50).maxSize_(50@50);
 			).margins_(25).spacing_(25)),
-			stackLayout = StackLayout(
+			prStackLayout = StackLayout(
 				prArranger,
 				recordPage,
 				prSettingsView = View().background_(prPalette.colour2).layout_(
@@ -111,10 +121,10 @@ SequencerGui {
 
 		// Draw buttons in main header
 		synthsButton.mouseUpAction_({
-			stackLayout.index_(3);
+			prStackLayout.index_(3);
 		});
 		drumsButton.mouseUpAction_({
-			stackLayout.index_(4);
+			prStackLayout.index_(4);
 			prKeyRouter.activeContext_(\drums);
 		});
 		{
@@ -130,15 +140,15 @@ SequencerGui {
 			Metronome.volume_(knob.value);
 		});
 		settingsButton.mouseUpAction_({
-			stackLayout.index_(2);
+			prStackLayout.index_(2);
 			prKeyRouter.activeContext_(\settings);
 		});
 		arrangeButton.mouseUpAction_({
-			stackLayout.index_(0);
+			prStackLayout.index_(0);
 			prKeyRouter.activeContext_(\arrange);
 		});
 		recordButton.mouseUpAction_({
-			stackLayout.index_(1);
+			prStackLayout.index_(1);
 			prKeyRouter.activeContext_(\record);
 		});
 
@@ -164,7 +174,7 @@ SequencerGui {
 
 
 		////////////////////////////
-		stackLayout.index_(1);
+		prStackLayout.index_(1);
 		////////////////////////////
 
 

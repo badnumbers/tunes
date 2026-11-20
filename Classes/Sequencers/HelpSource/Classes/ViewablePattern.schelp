@@ -1,0 +1,55 @@
+TITLE:: ViewablePattern
+SUMMARY:: Decides whether a sequence can be drawn in the piano roll.
+CATEGORIES:: Streams-Patterns-Events
+RELATED:: Classes/PianoRollPattern, Classes/Sequence, Classes/Sequencer, Classes/Arranger
+
+DESCRIPTION::
+TELETYPE::ViewablePattern:: decides whether a LINK::Classes/Sequence:: can be opened in the piano roll. LINK::#*refusal:: returns CODE::nil:: when it can. Otherwise it returns CODE::\composition::, CODE::\shape::, or CODE::\infinite::. Note placement does not repeat these rules. LINK::Classes/PianoRollPattern:: asks LINK::#*isViewablePattern:: and then expands a pattern this class has already accepted. A missing sequence is not this class's concern.
+
+Only a live CODE::\midi:: sequence is viewable. A CODE::\composition:: is refused, including a composition named from a nested chip. A nested chip that names a MIDI sequence uses that sequence.
+
+A viewable pattern is a straightforward sequence with a finite length. An infinite length is CODE::\infinite::. The exception is a finite phrase whose own repeats value is CODE::inf::. That phrase is viewable, and the infinite repeats are not written. A LINK::Classes/Ppar:: of finite LINK::Classes/Pbind::s with repeats CODE::inf:: is the same notes as that LINK::Classes/Ppar:: with repeats 1.
+
+A LINK::Classes/Pbind:: has a finite length only when at least one value is a LINK::Classes/Pseq:: with a finite integer repeats count. The event count is the smallest CODE::list.size * repeats:: among those CODE::Pseq::s. Constants, and CODE::Pseq::s whose repeats value is CODE::inf::, supply values for that many steps and then stop. They do not extend the phrase. It is CODE::\infinite:: when every value is a constant, every value is a CODE::Pseq:: with CODE::inf:: repeats, or the keys are a mix of those two. Nothing in that CODE::Pbind:: ends, so there is no length to draw. CODE::Pseq([60, 62], inf):: with CODE::\dur, 1:: is that mix. CODE::Pseq([60, 62], inf):: with CODE::\dur, Pseq([1, 1], 3):: is finite: six steps, and the pitch CODE::Pseq:: cycles.
+
+SUBSECTION:: Event pattern
+Exactly LINK::Classes/Pbind::, or exactly LINK::Classes/Ppar:: whose list items are all finite LINK::Classes/Pbind::s. LINK::Classes/Ptpar::, a LINK::Classes/Pseq:: of events, LINK::Classes/Prand::, LINK::Classes/Pchain::, and filter patterns are CODE::\shape::. The class is compared with equality, so a subclass does not count. The CODE::Ppar:: repeats value, including CODE::inf:: and integers greater than 1, is not written. The children are placed once, in parallel. A CODE::Ppar:: whose children are CODE::\infinite:: is CODE::\infinite::. CODE::\shape:: on any child is reported before CODE::\infinite::.
+
+SUBSECTION:: Value pattern
+For every key: a constant, or a LINK::Classes/Pseq::. Finite integer repeats are that stream's length. CODE::inf:: repeats are not a length. Anything else (LINK::Classes/Pwhite::, LINK::Classes/Prand::, a nested pattern, a CODE::Pseq:: list item that is a pattern) is CODE::\shape::. A non-integer CODE::offset:: is CODE::\shape::. A negative integer offset is read with CODE::wrapAt::.
+
+SUBSECTION:: Step values
+A step value must be a number, a rest (the rest symbol or a LINK::Classes/Rest::, matching CODE::isRest::), or a flat array of those (a chord, or per-note amp or legato). CODE::dur:: and CODE::stretch:: must be a single positive number. Legato must be greater than 0. An unusable value is CODE::\shape:: rather than opening a partial roll. The chord size is the array size of CODE::\midinote::, or of CODE::\note:: or CODE::\degree:: when CODE::\midinote:: is absent. An array on another key must be that size, or the step is a single value when it is not a chord.
+
+Part numbers are not stored on the pattern LINK::Classes/WriteCommand:: writes. A lone CODE::Pbind:: is part 1. Each CODE::Ppar:: child is part 1, 2, and so on in list order. A CODE::\part:: key, when it is an integer constant or CODE::Pseq::, overrides that.
+
+CLASSMETHODS::
+
+METHOD:: isViewable
+True only when LINK::#*refusal:: returns CODE::nil::.
+
+ARGUMENT:: sequence
+A LINK::Classes/Sequence::.
+
+RETURNS::
+A LINK::Classes/Boolean::.
+
+METHOD:: isViewablePattern
+The pattern check alone, used by note expansion. A value that is not a LINK::Classes/Pattern:: returns false and does not throw.
+
+ARGUMENT:: pattern
+A LINK::Classes/Pattern::, or any other value.
+
+RETURNS::
+A LINK::Classes/Boolean::.
+
+METHOD:: refusal
+CODE::nil:: when the sequence is viewable. CODE::\composition:: for a CODE::\composition:: sequence. CODE::\shape:: when the pattern is not a straightforward sequence. CODE::\infinite:: when that sequence does not end.
+
+ARGUMENT:: sequence
+A LINK::Classes/Sequence::.
+
+RETURNS::
+CODE::nil::, CODE::\composition::, CODE::\shape::, or CODE::\infinite::.
+
+PRIVATE:: prItemRefusal, prPatternRefusal, prPbindRefusal, prPparRefusal, prStepRefusal, prValueAt, prValueRefusal

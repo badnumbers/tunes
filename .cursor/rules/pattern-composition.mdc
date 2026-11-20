@@ -27,6 +27,6 @@ Only `\composition` sequences are walked. A MIDI sequence stays a single label c
 
 Do not treat `Seq().pat` as the value of a `Pbind` key. That asks a whole sequence for one event key. This work does not walk inside `Pbind`.
 
-Loading a pattern back into the piano roll or drum grid is a later iteration. Only an atomic pattern, the shape `WriteCommand` writes for one named sequence on one synth, would be editable there. A composition is not.
+A viewable atomic pattern can be loaded into the piano roll. Ctrl+click its chip. `ViewablePattern` decides which sequences open, and `PianoRollPattern` expands the notes. A composition cannot. The drum grid still cannot load a pattern.
 
 Drum-grid patterns are ordinary named leaves once `WriteCommand` has stored them. This work does not extend `DrumProgrammer`. `PatternText` and `SequencerGui_Old` stay retired.

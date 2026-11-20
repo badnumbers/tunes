@@ -4,14 +4,14 @@ CATEGORIES:: Streams-Patterns-Events
 RELATED:: Classes/PianoRoll, Classes/PianoRollTimeline
 
 DESCRIPTION::
-TELETYPE::PianoRollLoopMarkers:: holds three one-pixel-wide LINK::Classes/View:: lines on the roll: loop start and loop end (LINK::Classes/GuiPalette#-colour5::) and a playback head (LINK::Classes/GuiPalette#-colour3::). The playback head defaults to beat zero and is moved with LINK::#-playheadTime_::. LINK::Classes/PianoRoll#-stopRecording:: applies the recorded note range by calling LINK::#-loopStart_::, then LINK::#-playheadTime_:: with the same unsnapped beat argument as LINK::#-loopStart_::, then LINK::#-loopEnd_:: (snapping and ordering rules as for timeline clicks).
+TELETYPE::PianoRollLoopMarkers:: holds three one-pixel-wide LINK::Classes/View:: lines on the roll: loop start and loop end (LINK::Classes/GuiPalette#-colour5::) and a playback head (LINK::Classes/GuiPalette#-colour3::). The playback head defaults to beat zero and is moved with LINK::#-playheadTime_::. LINK::Classes/PianoRoll#-stopRecording:: applies the recorded note range by calling LINK::#-loopStart_::, then LINK::#-playheadTime_:: with the same unsnapped beat argument as LINK::#-loopStart_::, then LINK::#-loopEnd_:: (snapping and ordering rules as for timeline clicks). LINK::#-setExactLoop:: places both bounds and the playhead without that snap.
 
 Snap resolution for timeline clicks and for LINK::#-playheadTime_:: is stored in the instance variable CODE::prSnapResolutionBeats:: (beats between snap grid points; default one sixteenth note). Clicks are snapped with rounding before the start/end ordering rules are applied.
 
 CLASSMETHODS::
 
 METHOD:: new
-Creates a TELETYPE::PianoRollLoopMarkers::. The line LINK::Classes/View::s are created on the first successful call to LINK::#-playheadTime_::, LINK::#-loopStart_::, or LINK::#-loopEnd_::.
+Creates a TELETYPE::PianoRollLoopMarkers::. The line LINK::Classes/View::s are created on the first successful call to LINK::#-playheadTime_::, LINK::#-loopStart_::, LINK::#-loopEnd_::, or LINK::#-setExactLoop::.
 
 ARGUMENT:: parent
 The roll surface (typically the piano roll LINK::Classes/UserView::) on which the lines are parented.
@@ -92,5 +92,14 @@ Unsnapped playback position in beats.
 
 ARGUMENT:: snap
 When true (default), snap CODE::rawBeat:: to the grid defined by CODE::prSnapResolutionBeats::; when false, store CODE::rawBeat:: verbatim.
+
+METHOD:: setExactLoop
+Sets the loop start, the loop end, and the playhead to the given beats without the quarter-beat snap used by clicks. Both move callbacks run. A warning is posted and nothing is stored when CODE::end:: is not after CODE::start::.
+
+ARGUMENT:: start
+The loop start and playhead, in beats.
+
+ARGUMENT:: end
+The loop end, in beats. This is not clipped to the canvas.
 
 PRIVATE:: init, prSnapBeat, prUpdateLineViews

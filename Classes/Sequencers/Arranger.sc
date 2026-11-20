@@ -1,5 +1,6 @@
 Arranger : SCViewHolder {
 	var prChips;
+	var prOpenAction;
 	var prPinned;
 	var prSequencer;
 	var prSequencerDocument;
@@ -45,6 +46,12 @@ Arranger : SCViewHolder {
 			});
 		});
 		this.prPackUnpinned;
+	}
+
+	openAction_ {
+		|action|
+		Validator.validateMethodParameterType(action, Function, "action", "Arranger", "openAction_", allowNil: true);
+		prOpenAction = action;
 	}
 
 	init {
@@ -134,6 +141,33 @@ Arranger : SCViewHolder {
 		});
 	}
 
+	prOpenPattern {
+		|id|
+		var placed, refusal, sequence;
+		sequence = prSequencer.prSequenceAt(id);
+		if (sequence.isNil, {
+			warn(format("Can't open sequence % in the piano roll.", id));
+			^this;
+		});
+		refusal = ViewablePattern.refusal(sequence);
+		if (refusal == \composition, {
+			"A composition can't be opened in the piano roll.".warn;
+			^this;
+		});
+		if (refusal == \infinite, {
+			"This pattern does not end, so it can't be opened in the piano roll.".warn;
+			^this;
+		});
+		if (refusal.notNil, {
+			"Only a Pbind, or a Ppar of Pbinds, made of constants and Pseqs can be opened in the piano roll.".warn;
+			^this;
+		});
+		placed = PianoRollPattern.from(sequence.pattern);
+		if (placed.notNil and: { prOpenAction.notNil }, {
+			prOpenAction.value(id, placed, Synths(sequence.synthId).midiChannel);
+		});
+	}
+
 	prSelectPattern {
 		|id|
 		if (prSequencerDocument.isNil, {
@@ -156,10 +190,17 @@ Arranger : SCViewHolder {
 			chip.clickAction_({
 				this.prSelectPattern(id);
 			});
+			chip.openAction_({
+				this.prOpenPattern(id);
+			});
 		}, {
 			chip = CompositionChip(this.view, prSequencer, id, structure, {
 				|selectedId|
 				this.prSelectPattern(selectedId);
+			});
+			chip.openAction_({
+				|selectedId|
+				this.prOpenPattern(selectedId);
 			});
 		});
 		chip.dragAction_({

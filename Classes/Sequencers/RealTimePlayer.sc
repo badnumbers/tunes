@@ -151,7 +151,7 @@ RealTimePlayer {
 		});
 
 		if (newTime > prMaximumSequenceLength, {
-			Error(format("The newTime parameter provided to RealTimePlayer.loopEnd_ must not be greater than %. The value % was provided.", prMaximumSequenceLength, newTime)).throw;
+			prMaximumSequenceLength = newTime;
 		});
 
 		newTime = newTime.round(0.25);
@@ -178,7 +178,7 @@ RealTimePlayer {
 		});
 
 		if (newTime > prMaximumSequenceLength, {
-			Error(format("The newTime parameter provided to RealTimePlayer.loopStart_ must not be greater than %. The value % was provided.", prMaximumSequenceLength, newTime)).throw;
+			prMaximumSequenceLength = newTime;
 		});
 
 		newTime = newTime.round(0.25);

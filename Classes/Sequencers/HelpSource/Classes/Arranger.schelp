@@ -1,10 +1,10 @@
 TITLE:: Arranger
 SUMMARY:: Absolute layout of sequence chips for the SequencerGui Arrange page.
 CATEGORIES:: Streams-Patterns-Events
-RELATED:: Classes/CompositionChip, Classes/PatternChip, Classes/PatternStructure, Classes/SCViewHolder, Classes/Sequencer, Classes/SequencerDocument, Classes/SequencerGui
+RELATED:: Classes/CompositionChip, Classes/PatternChip, Classes/PatternStructure, Classes/PianoRollPattern, Classes/SCViewHolder, Classes/Sequencer, Classes/SequencerDocument, Classes/SequencerGui, Classes/ViewablePattern
 
 DESCRIPTION::
-TELETYPE::Arranger:: is a LINK::Classes/SCViewHolder:: that LINK::Classes/SequencerGui:: shows when the Arrange button is pressed. Its view has no layout decorator, so each top-level chip keeps the bounds it is given. A MIDI sequence is a LINK::Classes/PatternChip::. A composition is a LINK::Classes/CompositionChip:: whose body is the LINK::Classes/Sequencer#-patternStructure:: for that id. Leaves stay on the canvas as well as inside a composition. Nested chips do not drag, and their positions are not stored. A chip whose id has a stored origin is pinned there. The other chips pack in LINK::Classes/Sequencer#-sequenceIds:: order, with a margin of 10 and a gap of 10, wrapping to the arranger's width. Resizing packs only the unpinned chips and clamps pinned chips into the view for display. That clamp is not written. Dropping a dragged chip stores the clamped integer origin and, when a LINK::Classes/SequencerDocument:: was given, writes the origin map. A single click selects that pattern's CODE::Seq().addMidiSequence:: or CODE::Seq().compose:: call in the sequencer document and leaves the document where it is. When that call is missing, or no document was given, a warning is posted. A CODE::nil:: document skips the write. Replacing a sequence builds that chip again. LINK::#-applyPlaying:: highlights every chip whose id is the one playing.
+TELETYPE::Arranger:: is a LINK::Classes/SCViewHolder:: that LINK::Classes/SequencerGui:: shows when the Arrange button is pressed. Its view has no layout decorator, so each top-level chip keeps the bounds it is given. A MIDI sequence is a LINK::Classes/PatternChip::. A composition is a LINK::Classes/CompositionChip:: whose body is the LINK::Classes/Sequencer#-patternStructure:: for that id. Leaves stay on the canvas as well as inside a composition. Nested chips do not drag, and their positions are not stored. A chip whose id has a stored origin is pinned there. The other chips pack in LINK::Classes/Sequencer#-sequenceIds:: order, with a margin of 10 and a gap of 10, wrapping to the arranger's width. Resizing packs only the unpinned chips and clamps pinned chips into the view for display. That clamp is not written. Dropping a dragged chip stores the clamped integer origin and, when a LINK::Classes/SequencerDocument:: was given, writes the origin map. A single click selects that pattern's CODE::Seq().addMidiSequence:: or CODE::Seq().compose:: call in the sequencer document and leaves the document where it is. Ctrl+left-click asks LINK::Classes/ViewablePattern:: whether that sequence can be opened. A composition, a pattern that does not end, and a pattern that is not a LINK::Classes/Pbind:: or a LINK::Classes/Ppar:: of LINK::Classes/Pbind::s made of constants and LINK::Classes/Pseq::s each post a warning and stay on the arranger. A viewable sequence calls LINK::#-openAction_:: with the id and a LINK::Classes/PianoRollPattern::. That click does not select the source line and does not toggle playback. When that call is missing, or no document was given, a warning is posted. A CODE::nil:: document skips the write. Replacing a sequence builds that chip again. LINK::#-applyPlaying:: highlights every chip whose id is the one playing.
 
 CLASSMETHODS::
 
@@ -37,4 +37,10 @@ A LINK::Classes/Symbol:: or CODE::nil::.
 METHOD:: applyOrigins
 Moves each shown chip to its stored origin and pins it. A chip with no stored origin becomes unpinned and is packed again. This does not write the document.
 
-PRIVATE:: init, prClamp, prClampPinned, prCommitDrag, prMakeChip, prPackUnpinned, prPlaceChip, prRebuild, prSelectPattern, prViewReady
+METHOD:: openAction_
+Called with a sequence id, a LINK::Classes/PianoRollPattern::, and that sequence's synth MIDI channel when Ctrl+left-click opens a viewable sequence. CODE::nil:: clears it.
+
+ARGUMENT:: action
+A LINK::Classes/Function:: or CODE::nil::. The function receives the sequence LINK::Classes/Symbol::, the LINK::Classes/PianoRollPattern::, and the synth's MIDI channel.
+
+PRIVATE:: init, prClamp, prClampPinned, prCommitDrag, prMakeChip, prOpenPattern, prPackUnpinned, prPlaceChip, prRebuild, prSelectPattern, prViewReady

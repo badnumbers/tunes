@@ -122,6 +122,24 @@ PianoRollLoopMarkers {
 		^prPlayheadTime;
 	}
 
+	setExactLoop {
+		|start, end|
+		Validator.validateMethodParameterType(start, Number, "start", "PianoRollLoopMarkers", "setExactLoop");
+		Validator.validateMethodParameterType(end, Number, "end", "PianoRollLoopMarkers", "setExactLoop");
+		if (end <= start, {
+			"PianoRollLoopMarkers: cannot set an exact loop ending at % when it starts at %.".format(end, start).warn;
+			^this;
+		});
+		prStartBeat = start;
+		prStopBeat = end;
+		prLoopStartSet = true;
+		prLoopEndSet = true;
+		prPlayheadTime = start;
+		this.prUpdateLineViews;
+		if (prOnLoopStartMove.notNil, { prOnLoopStartMove.value(start) });
+		if (prOnLoopEndMove.notNil, { prOnLoopEndMove.value(end) });
+	}
+
 	playheadTime_ {
 		|rawBeat,snap=true|
 		var snapped;

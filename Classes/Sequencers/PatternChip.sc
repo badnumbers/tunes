@@ -5,6 +5,8 @@ PatternChip : BorderView {
 	var prDragAction;
 	var prDragging = false;
 	var prGrab;
+	var prCtrlClick = false;
+	var prOpenAction;
 	var prSequenceId;
 	var prSequencer;
 
@@ -18,6 +20,12 @@ PatternChip : BorderView {
 		|action|
 		Validator.validateMethodParameterType(action, Function, "action", "PatternChip", "dragAction_", allowNil: true);
 		prDragAction = action;
+	}
+
+	openAction_ {
+		|action|
+		Validator.validateMethodParameterType(action, Function, "action", "PatternChip", "openAction_", allowNil: true);
+		prOpenAction = action;
 	}
 
 	moveTo {
@@ -59,7 +67,8 @@ PatternChip : BorderView {
 		this.view.mouseDownAction_({
 			|view, x, y, modifiers, buttonNumber, clickCount|
 			if (buttonNumber == 0, {
-				if (clickCount == 2, {
+				prCtrlClick = modifiers.isCtrl and: { clickCount == 1 };
+				if (clickCount == 2 and: { modifiers.isCtrl.not }, {
 					this.prTogglePlay;
 				});
 				prGrab = x@y;
@@ -96,11 +105,16 @@ PatternChip : BorderView {
 			if (prDragging && { prDragAction.notNil }, {
 				prDragAction.value(view.bounds.origin);
 			}, {
-				if (prArmClick && { prClickAction.notNil }, {
-					prClickAction.value;
+				if (prArmClick and: { prCtrlClick } and: { prOpenAction.notNil }, {
+					prOpenAction.value;
+				}, {
+					if (prArmClick && { prClickAction.notNil }, {
+						prClickAction.value;
+					});
 				});
 			});
 			prArmClick = false;
+			prCtrlClick = false;
 			prDragging = false;
 			prGrab = nil;
 			nil

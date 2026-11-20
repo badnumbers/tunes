@@ -1,5 +1,7 @@
 PianoRoll : SCViewHolder {
 	var prAbsoluteStartTime;
+	var prBeatCount = 130;
+	var prBeatLineViews;
 	var prActiveModifierKeys=0;
 	var prBackgroundView;
 	var prCommandPrompt;
@@ -53,9 +55,52 @@ PianoRoll : SCViewHolder {
 		prBackgroundView.focus;
 	}
 
+	loadPattern {
+		|pattern, midiChannel|
+		var channel, channels, end, latest, margin, start;
+		Validator.validateMethodParameterType(pattern, PianoRollPattern, "pattern", "PianoRoll", "loadPattern");
+		Validator.validateMethodParameterType(midiChannel, SimpleNumber, "midiChannel", "PianoRoll", "loadPattern", allowNil: true);
+		channel = midiChannel;
+		channels = pattern.notes.collect({
+			|note|
+			var keys;
+			keys = note[\eventKeys];
+			if (keys.isNil, { nil }, { keys[\chan] });
+		});
+		if (channels.size > 0 and: {
+			channels.every({ |chan| chan.isKindOf(SimpleNumber) and: { chan == channels[0] } })
+		}, {
+			channel = channels[0];
+		});
+		if (channel.notNil, {
+			prRealTimePlayer.midiChannel_(channel);
+		});
+		margin = 4;
+		start = margin;
+		end = margin + pattern.duration;
+		latest = end;
+		pattern.notes.do({
+			|note|
+			var stop;
+			stop = note[\stopTime] + margin;
+			if (stop > latest, { latest = stop });
+		});
+		this.prEnsureBeats(latest);
+		pattern.notes.do({
+			|note|
+			this.prPlaceLoadedNote(note, margin);
+		});
+		if (pattern.duration > 0, {
+			prLoopMarkers.setExactLoop(start, end);
+			prRealTimePlayer.playheadTime_(start);
+		});
+		this.prApplyNoteEdits;
+		this.prUpdateLoopControls;
+		this.prRefreshSidebar;
+	}
+
 	init {
 		|parent,bounds,palette,sequencer,devMode,keyRouter,sequencerDocument|
-		var beatLineViews;
 		var contentLayoutView;
 		var dragOrigin;
 		var scrollWheel;
@@ -151,9 +196,9 @@ PianoRoll : SCViewHolder {
 					viewportOffset = canvasX - origin.x;
 					zoomIndex = newIndex;
 					prNoteViewScale[\horizontal] = newScale;
-					prPianoRollWidth = 130 * newScale;
+					prPianoRollWidth = prBeatCount * newScale;
 					prBackgroundView.bounds = Rect(0, 0, prPianoRollWidth, prPianoRollHeight);
-					beatLineViews.do({
+					prBeatLineViews.do({
 						|line, index|
 						line.bounds = Rect(index * newScale, 0, 1, prBackgroundView.bounds.height);
 					});
@@ -277,10 +322,10 @@ PianoRoll : SCViewHolder {
 			nil;
 		});
 
-		beatLineViews = Array.new;
-		(prBackgroundView.bounds.width / prNoteViewScale[\horizontal]).do({
+		prBeatLineViews = Array.new;
+		prBeatCount.do({
 			|index|
-			beatLineViews = beatLineViews.add(
+			prBeatLineViews = prBeatLineViews.add(
 				View(prBackgroundView, Rect(index * prNoteViewScale[\horizontal], 0, 1, prBackgroundView.bounds.height)).background_(prPalette.colour1.multiply(0.5)).acceptsMouse_(false)
 			);
 		});
@@ -451,6 +496,24 @@ PianoRoll : SCViewHolder {
 		});
 	}
 
+	prEnsureBeats {
+		|beats|
+		var needed, scale;
+		needed = beats.ceil.asInteger.max(prBeatCount);
+		if (needed == prBeatCount, { ^this });
+		scale = prNoteViewScale[\horizontal];
+		(prBeatCount .. (needed - 1)).do({
+			|index|
+			prBeatLineViews = prBeatLineViews.add(
+				View(prBackgroundView, Rect(index * scale, 0, 1, prBackgroundView.bounds.height)).background_(prPalette.colour1.multiply(0.5)).acceptsMouse_(false)
+			);
+		});
+		prBeatCount = needed;
+		prPianoRollWidth = prBeatCount * scale;
+		prBackgroundView.bounds = Rect(0, 0, prPianoRollWidth, prPianoRollHeight);
+		prTimeline.horizontalScale_(scale, prPianoRollWidth - 4);
+	}
+
 	prExecuteCommand {
 		|command, args|
 		var before, recorded;
@@ -472,6 +535,33 @@ PianoRoll : SCViewHolder {
 		fill = colour.copy;
 		fill.alpha = amp;
 		^fill;
+	}
+
+	prPlaceLoadedNote {
+		|note, margin|
+		var pianoRollNote, start, stop;
+		start = note[\startTime] + margin;
+		stop = note[\stopTime] + margin;
+		pianoRollNote = PianoRollNote(start, note[\noteNumber], note[\velocity],
+			viewFunc: prDrawNote,
+			selectFunc: prNoteSelectFunc,
+			deselectFunc: prNoteDeselectFunc,
+			paintFunc: { |view| this.prPaintNote(pianoRollNote, view) },
+			moveFunc: { |view, startTime, stopTime| view.bounds_(Rect(startTime * prNoteViewScale[\horizontal], view.bounds.top, (stopTime - startTime) * prNoteViewScale[\horizontal], view.bounds.height)) },
+			deleteFunc: prNoteDeleteFunc,
+			insertFunc: { |inserted| this.prInsertNote(inserted) }
+		);
+		pianoRollNote.assignPart(note[\partNumber]);
+		pianoRollNote.event[\amp] = note[\amp];
+		pianoRollNote.event[\legato] = note[\legato];
+		if (note[\eventKeys].notNil, {
+			note[\eventKeys].keysValuesDo({
+				|key, value|
+				pianoRollNote.event[key] = value;
+			});
+		});
+		pianoRollNote.stop(stop.asFloat);
+		pianoRollNote.insert;
 	}
 
 	prInsertNote {

@@ -4,7 +4,7 @@ CATEGORIES:: GUI>Views
 RELATED:: Classes/Arranger, Classes/BorderView, Classes/Sequencer
 
 DESCRIPTION::
-TELETYPE::PatternChip:: is a LINK::Classes/BorderView:: that LINK::Classes/Arranger:: places for each sequence. It stores that sequence's LINK::Classes/Symbol:: id, the same id LINK::Classes/Sequencer:: uses, and shows it as a centred LINK::Classes/StaticText::. The chip uses LINK::Classes/GuiPalette#-colour3:: as its fill and LINK::Classes/GuiPalette#-colour4:: as its border colour. The border width is 1 and the corner radius is 5. A left double-click calls LINK::Classes/Sequencer#-play:: with that id and looping on. Double-clicking the chip for the id that is already playing calls LINK::Classes/Sequencer#-stop::. LINK::#-applyPlaying:: sets the border to LINK::Classes/GuiPalette#-extreme2:: while that id is playing, and restores LINK::Classes/GuiPalette#-colour4:: otherwise. A left click calls LINK::#-clickAction_::. A left-button drag that travels more than 4 pixels moves the chip, brings it to the front, and keeps it inside its parent. Releasing the button calls LINK::#-dragAction_:: with the chip's origin. A click that became a drag does not call LINK::#-clickAction_::. A double-click stays under that threshold and still toggles playback.
+TELETYPE::PatternChip:: is a LINK::Classes/BorderView:: that LINK::Classes/Arranger:: places for each sequence. It stores that sequence's LINK::Classes/Symbol:: id, the same id LINK::Classes/Sequencer:: uses, and shows it as a centred LINK::Classes/StaticText::. The chip uses LINK::Classes/GuiPalette#-colour3:: as its fill and LINK::Classes/GuiPalette#-colour4:: as its border colour. The border width is 1 and the corner radius is 5. A left double-click calls LINK::Classes/Sequencer#-play:: with that id and looping on. Double-clicking the chip for the id that is already playing calls LINK::Classes/Sequencer#-stop::. LINK::#-applyPlaying:: sets the border to LINK::Classes/GuiPalette#-extreme2:: while that id is playing, and restores LINK::Classes/GuiPalette#-colour4:: otherwise. A left click calls LINK::#-clickAction_::. A left-button drag that travels more than 4 pixels moves the chip, brings it to the front, and keeps it inside its parent. Releasing the button calls LINK::#-dragAction_:: with the chip's origin. A click that became a drag does not call LINK::#-clickAction_::. A double-click stays under that threshold and still toggles playback. Ctrl+left-click, released without dragging, calls LINK::#-openAction_:: and does not select or toggle playback. Ctrl+drag still drags and does not open.
 
 CLASSMETHODS::
 
@@ -36,6 +36,12 @@ Called with the chip's origin when a drag is released. CODE::nil:: clears it.
 
 ARGUMENT:: action
 A LINK::Classes/Function:: or CODE::nil::. The function receives one LINK::Classes/Point::, the chip's parent-relative origin.
+
+METHOD:: openAction_
+Called when Ctrl+left-click is released without becoming a drag. CODE::nil:: clears it. That click does not call LINK::#-clickAction_:: and does not toggle playback.
+
+ARGUMENT:: action
+A LINK::Classes/Function:: or CODE::nil::. The function is called with no arguments.
 
 METHOD:: moveTo
 Moves the chip so its top-left is CODE::origin::.

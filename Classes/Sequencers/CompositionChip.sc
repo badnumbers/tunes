@@ -10,6 +10,8 @@ CompositionChip : BorderView {
 	var prSequencer;
 	var prStructure;
 	var prTitleHeight;
+	var prCtrlClick = false;
+	var prOpenAction;
 
 	applyPlaying {
 		|playingId|
@@ -35,6 +37,12 @@ CompositionChip : BorderView {
 		|action|
 		Validator.validateMethodParameterType(action, Function, "action", "CompositionChip", "dragAction_", allowNil: true);
 		prDragAction = action;
+	}
+
+	openAction_ {
+		|action|
+		Validator.validateMethodParameterType(action, Function, "action", "CompositionChip", "openAction_", allowNil: true);
+		prOpenAction = action;
 	}
 
 	moveTo {
@@ -185,12 +193,14 @@ CompositionChip : BorderView {
 
 	prWire {
 		|chip, layout|
-		var arm;
+		var arm, openClick;
 		arm = false;
+		openClick = false;
 		chip.view.mouseDownAction_({
 			|view, x, y, modifiers, buttonNumber, clickCount|
 			if (buttonNumber == 0, {
-				if (clickCount == 2, {
+				openClick = modifiers.isCtrl and: { clickCount == 1 };
+				if (clickCount == 2 and: { modifiers.isCtrl.not }, {
 					this.prTogglePlay(layout.chipSequenceId ? layout.chipSelectId);
 				});
 				arm = true;
@@ -198,10 +208,15 @@ CompositionChip : BorderView {
 			nil
 		});
 		chip.view.mouseUpAction_({
-			if (arm and: { layout.chipSelectId.notNil }, {
-				prSelectAction.value(layout.chipSelectId);
+			if (arm and: { openClick } and: { layout.chipSequenceId.notNil } and: { prOpenAction.notNil }, {
+				prOpenAction.value(layout.chipSequenceId);
+			}, {
+				if (arm and: { openClick.not } and: { layout.chipSelectId.notNil }, {
+					prSelectAction.value(layout.chipSelectId);
+				});
 			});
 			arm = false;
+			openClick = false;
 			nil
 		});
 	}
@@ -210,7 +225,8 @@ CompositionChip : BorderView {
 		this.view.mouseDownAction_({
 			|view, x, y, modifiers, buttonNumber, clickCount|
 			if (buttonNumber == 0, {
-				if (clickCount == 2, {
+				prCtrlClick = modifiers.isCtrl and: { clickCount == 1 };
+				if (clickCount == 2 and: { modifiers.isCtrl.not }, {
 					this.prTogglePlay(prSequenceId);
 				});
 				if (y < prTitleHeight, {
@@ -248,11 +264,16 @@ CompositionChip : BorderView {
 			if (prDragging and: { prDragAction.notNil }, {
 				prDragAction.value(this.view.bounds.origin);
 			}, {
-				if (prArmClick, {
-					prSelectAction.value(prSequenceId);
+				if (prArmClick and: { prCtrlClick } and: { prOpenAction.notNil }, {
+					prOpenAction.value(prSequenceId);
+				}, {
+					if (prArmClick, {
+						prSelectAction.value(prSequenceId);
+					});
 				});
 			});
 			prArmClick = false;
+			prCtrlClick = false;
 			prDragging = false;
 			prGrab = nil;
 			nil

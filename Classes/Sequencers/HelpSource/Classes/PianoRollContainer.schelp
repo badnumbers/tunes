@@ -1,10 +1,10 @@
 TITLE:: PianoRollContainer
 SUMMARY:: Tabbed container that directs keystrokes and recording MIDI to one piano roll.
 CATEGORIES:: Streams-Patterns-Events
-RELATED:: Classes/MIDIdef, Classes/PianoRoll, Classes/Sequencer, Classes/SequencerDocument, Classes/SequencerGui, Classes/SequencerKeyRouter, Classes/Tabset
+RELATED:: Classes/MIDIdef, Classes/PianoRoll, Classes/PianoRollPattern, Classes/Sequencer, Classes/SequencerDocument, Classes/SequencerGui, Classes/SequencerKeyRouter, Classes/Tabset
 
 DESCRIPTION::
-TELETYPE::PianoRollContainer:: is a LINK::Classes/SCViewHolder:: whose view is a LINK::Classes/Tabset:: of LINK::Classes/PianoRoll::s. The first roll is created by calling the tabset's LINK::Classes/Tabset#-addViewFunc::, and the CODE::+:: tab uses that same function. Every roll is named Sequence plus an incrementing count, starting at 1. The container registers the record-context actions CODE::\assignPart1:: through CODE::\assignPart9::, CODE::\delete::, CODE::\focusCommandPrompt::, CODE::\redo::, CODE::\redoY::, and CODE::\undo:: once on the shared LINK::Classes/SequencerKeyRouter::, and those actions call the selected roll. It subscribes to that roll. When the roll announces CODE::\isRecording:: as CODE::true::, the container sets the tabset's LINK::Classes/Tabset#-canSwitchTab:: to CODE::false::, so neither another tab nor CODE::+:: can be selected until recording stops. Unless dev mode is on, it also installs CODE::recordMidi_noteOn:: and CODE::recordMidi_noteOff:: and forwards each message to LINK::Classes/PianoRoll#-receiveRecordingMidi::. When recording stops, it frees those defs and allows tab switching again. Loops that are already playing are left running. LINK::#-stopAll:: stops the loop and recording on every roll.
+TELETYPE::PianoRollContainer:: is a LINK::Classes/SCViewHolder:: whose view is a LINK::Classes/Tabset:: of LINK::Classes/PianoRoll::s. The first roll is created by calling the tabset's LINK::Classes/Tabset#-addViewFunc::, and the CODE::+:: tab uses that same function. Every roll created that way is named Sequence plus an incrementing count, starting at 1. LINK::#-openPattern:: adds a tab under a caller-supplied name, loads a LINK::Classes/PianoRollPattern:: into a fresh roll, and selects that tab. It posts a warning and returns false while the selected roll is recording. The container registers the record-context actions CODE::\assignPart1:: through CODE::\assignPart9::, CODE::\delete::, CODE::\focusCommandPrompt::, CODE::\redo::, CODE::\redoY::, and CODE::\undo:: once on the shared LINK::Classes/SequencerKeyRouter::, and those actions call the selected roll. It subscribes to that roll. When the roll announces CODE::\isRecording:: as CODE::true::, the container sets the tabset's LINK::Classes/Tabset#-canSwitchTab:: to CODE::false::, so neither another tab nor CODE::+:: can be selected until recording stops. Unless dev mode is on, it also installs CODE::recordMidi_noteOn:: and CODE::recordMidi_noteOff:: and forwards each message to LINK::Classes/PianoRoll#-receiveRecordingMidi::. When recording stops, it frees those defs and allows tab switching again. Loops that are already playing are left running. LINK::#-stopAll:: stops the loop and recording on every roll.
 
 CLASSMETHODS::
 
@@ -30,6 +30,21 @@ RETURNS::
 A new TELETYPE::PianoRollContainer:: instance.
 
 INSTANCEMETHODS::
+
+METHOD:: openPattern
+Adds a tab named CODE::name::, loads CODE::pattern:: into a fresh roll, and selects that tab. CODE::midiChannel:: is passed to that roll. Returns false, and posts a warning, when the selected roll is recording.
+
+ARGUMENT:: name
+A LINK::Classes/String:: used as the tab title.
+
+ARGUMENT:: pattern
+A LINK::Classes/PianoRollPattern::.
+
+ARGUMENT:: midiChannel
+A LINK::Classes/SimpleNumber::, or CODE::nil::. Passed to LINK::Classes/PianoRoll#-loadPattern::.
+
+RETURNS::
+CODE::true:: when the tab was added, CODE::false:: when recording blocked it.
 
 METHOD:: stopAll
 Stops the loop and recording on every LINK::Classes/PianoRoll:: in the tabset, and frees any recording LINK::Classes/MIDIdef::s this container installed.

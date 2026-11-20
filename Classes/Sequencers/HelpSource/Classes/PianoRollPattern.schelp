@@ -1,0 +1,49 @@
+TITLE:: PianoRollPattern
+SUMMARY:: Expands a viewable pattern into piano-roll notes.
+CATEGORIES:: Streams-Patterns-Events
+RELATED:: Classes/ViewablePattern, Classes/PianoRoll, Classes/Pbind, Classes/Ppar, Classes/WriteCommand
+
+DESCRIPTION::
+TELETYPE::PianoRollPattern:: turns a pattern LINK::Classes/ViewablePattern:: has already accepted into notes. LINK::#*from:: returns CODE::nil:: unless LINK::Classes/ViewablePattern#*isViewablePattern:: is true. It does not decide those rules.
+
+Per LINK::Classes/Pbind::, every key is expanded to that event count, then the steps are walked on that part's own clock. Step length is CODE::dur * stretch::, defaulting to CODE::1 * 1::. The pattern duration is the sum of those step lengths, including the final note or chord. Note length is CODE::legato * step::, default legato CODE::0.8::, so a note can end before or after that final step. A rest advances time and emits no note. Times stay relative to 0. The roll adds its margin when it places them.
+
+Pitch is a numeric CODE::\midinote:: when present, including chord arrays. Otherwise a default LINK::Classes/Event:: resolves CODE::\note:: or CODE::\degree:: (default midinote 60). The note number is rounded and clipped to 0–127. Amplitude defaults to CODE::0.5:: when CODE::\amp:: is absent. Velocity is that amplitude mapped with CODE::linlin(0, 1, 0, 127):: and rounded. Other keys are copied onto the note, split across a chord when the value is an array of the same size. CODE::\dur::, CODE::\stretch::, CODE::\legato::, CODE::\amp::, CODE::\midinote::, and CODE::\part:: are applied as timing, pitch, and part rather than copied as extra keys.
+
+A lone CODE::Pbind:: is part 1. Each CODE::Ppar:: child is part 1, 2, and so on in list order. An integer CODE::\part:: overrides that. For a CODE::Ppar::, the duration is the longer child, each child including its own final CODE::\dur::. The CODE::Ppar:: repeats value is not written. Finite CODE::Pseq:: repeats are that stream's length. A longer stream is cut to the shorter one.
+
+CLASSMETHODS::
+
+METHOD:: from
+Expands CODE::pattern:: when it is viewable.
+
+ARGUMENT:: pattern
+A LINK::Classes/Pattern::.
+
+RETURNS::
+A TELETYPE::PianoRollPattern::, or CODE::nil:: when the pattern is not viewable.
+
+METHOD:: new
+Creates a TELETYPE::PianoRollPattern:: from a duration and note events. LINK::#*from:: is the usual constructor.
+
+ARGUMENT:: duration
+A LINK::Classes/SimpleNumber::. The sum of the step lengths, including the final step.
+
+ARGUMENT:: notes
+An LINK::Classes/Array:: of LINK::Classes/Event::s. Each event has CODE::startTime::, CODE::stopTime::, CODE::noteNumber::, CODE::velocity::, CODE::partNumber::, CODE::amp::, CODE::legato::, and CODE::eventKeys::.
+
+INSTANCEMETHODS::
+
+METHOD:: duration
+The phrase length in beats, including the final step's CODE::\dur::. This is not the last note's stop time.
+
+RETURNS::
+A LINK::Classes/SimpleNumber::.
+
+METHOD:: notes
+One event per note. Times are relative to 0.
+
+RETURNS::
+An LINK::Classes/Array:: of LINK::Classes/Event::s.
+
+PRIVATE:: init, prBuild, prChordValue, prEmit, prFiniteLength, prNotesForPbind, prPitches, prStepIsRest, prStreams, prValueAt

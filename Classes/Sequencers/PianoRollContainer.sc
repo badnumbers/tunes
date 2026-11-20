@@ -43,6 +43,25 @@ PianoRollContainer : SCViewHolder {
 		^super.new.init(palette, sequencer, devMode, keyRouter, sequencerDocument);
 	}
 
+	openPattern {
+		|name, pattern, midiChannel|
+		var index, roll;
+		Validator.validateMethodParameterType(name, String, "name", "PianoRollContainer", "openPattern");
+		Validator.validateMethodParameterType(pattern, PianoRollPattern, "pattern", "PianoRollContainer", "openPattern");
+		Validator.validateMethodParameterType(midiChannel, SimpleNumber, "midiChannel", "PianoRollContainer", "openPattern", allowNil: true);
+		if (prTabset.canSwitchTab.not, {
+			"Stop recording before opening a pattern in the piano roll.".warn;
+			^false;
+		});
+		roll = this.prMakeRoll;
+		prRolls = prRolls.add(roll);
+		prTabset.addTab(name, roll);
+		roll.loadPattern(pattern, midiChannel);
+		index = prRolls.size - 1;
+		prTabset.prSelectTab(index);
+		^true;
+	}
+
 	prAddRoll {
 		var name, roll;
 		name = "Sequence" + prPianoRollCounter;
