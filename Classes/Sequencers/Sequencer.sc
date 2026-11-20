@@ -380,6 +380,15 @@ Sequencer {
 		^prPlayingId;
 	}
 
+	midiChannelFor {
+		|id|
+		var sequence;
+		Validator.validateMethodParameterType(id, Symbol, "id", "Sequencer", "midiChannelFor");
+		sequence = prSequences[id];
+		if (sequence.isNil or: { sequence.synthId.isNil }, { ^nil });
+		^Synths(sequence.synthId).midiChannel;
+	}
+
 	prEmbedNamed {
 		|id, inval|
 		var sequence, stack;
@@ -432,7 +441,7 @@ Sequencer {
 			[
 				\type, \midi,
 				\midiout, Synths(sequence.synthId).midiout,
-				\chan, Synths(sequence.synthId).midiChannel,
+				\chan, this.midiChannelFor(sequence.id),
 			].do({
 				|element|
 				preKeys.add(element);

@@ -164,7 +164,7 @@ Arranger : SCViewHolder {
 		});
 		placed = PianoRollPattern.from(sequence.pattern);
 		if (placed.notNil and: { prOpenAction.notNil }, {
-			prOpenAction.value(id, placed, Synths(sequence.synthId).midiChannel);
+			prOpenAction.value(id, placed, prSequencer.midiChannelFor(id));
 		});
 	}
 

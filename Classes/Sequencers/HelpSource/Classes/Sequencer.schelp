@@ -194,6 +194,15 @@ The id passed to the current LINK::#-play::, or CODE::nil:: when nothing started
 RETURNS::
 A LINK::Classes/Symbol:: or CODE::nil::.
 
+METHOD::midiChannelFor
+The MIDI channel of the synthesizer for a MIDI sequence. Playback of that sequence uses this channel, and opening the sequence in a piano roll stores it on that roll's player. A missing sequence, and a sequence with no synth, return CODE::nil::.
+
+ARGUMENT::id
+A LINK::Classes/Symbol::.
+
+RETURNS::
+An LINK::Classes/Integer::, or CODE::nil::.
+
 PRIVATE:: prAddKeySet, prAt, prBindDocument, prCloseWithDocument, prEmbedNamed, prGuiClosed, prReleaseSoundingNotes, prSequenceAt, prTrackMidiEvent, prWrapSequence
 
 EXAMPLES::

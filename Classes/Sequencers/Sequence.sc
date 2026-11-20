@@ -5,7 +5,7 @@ Sequence {
 	var prType;
 
 	id {
-		prId;
+		^prId;
 	}
 
 	init {
